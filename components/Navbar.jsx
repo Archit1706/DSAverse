@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import { algorithmCategories } from '../data/algorithmCategories';
 import { ChevronDown, Menu, X } from 'lucide-react';
