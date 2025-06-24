@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { algorithmCategories } from '../data/algorithmCategories';
+import Link from 'next/link';
 
 const AlgorithmsGrid = () => (
     <section className="py-16 bg-gray-50">
@@ -26,14 +27,14 @@ const AlgorithmsGrid = () => (
 
                         <div className="grid grid-cols-1 gap-2">
                             {category.algorithms.map((algorithm, algorithmIndex) => (
-                                <a
+                                <Link
                                     key={algorithmIndex}
-                                    href={`#${algorithm.toLowerCase().replace(/\s+/g, '-')}`}
+                                    href={`/${category.name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}/${algorithm.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}`}
                                     className={`flex items-center justify-between p-3 rounded-lg hover:bg-white transition-colors group ${category.textColor}`}
                                 >
                                     <span className="font-medium">{algorithm}</span>
                                     <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
