@@ -22,8 +22,11 @@ export const algorithmCategories = [
         textColor: "text-green-700",
         algorithms: [
             "Factorial",
-            "Reversing a String",
-            "N-Queens Problem"
+            "String Reversal",
+            "Fibonacci Sequence",
+            "N-Queens",
+            "Maze Solver",
+            "Tower of Hanoi",
         ]
     },
     {
@@ -65,6 +68,23 @@ export const algorithmCategories = [
             "Counting Sort",
             "Radix Sort",
             "Heap Sort"
+        ]
+    },
+    {
+        name: "Searching",
+        color: "bg-red-400",
+        lightColor: "bg-red-50",
+        borderColor: "border-red-200",
+        textColor: "text-red-700",
+        algorithms: [
+            "Binary Search",
+            "Linear Search",
+            "Jump Search",
+            "Interpolation Search",
+            "Exponential Search",
+            "Fibonacci Search",
+            "Ternary Search",
+            "Block Search",
         ]
     },
     {
