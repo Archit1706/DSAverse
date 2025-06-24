@@ -6,12 +6,12 @@ export const algorithmCategories = [
         borderColor: "border-blue-200",
         textColor: "text-blue-700",
         algorithms: [
-            "Stack: Array Implementation",
-            "Stack: Linked List Implementation",
-            "Queues: Array Implementation",
-            "Queues: Linked List Implementation",
-            "Lists: Array Implementation",
-            "Lists: Linked List Implementation"
+            "Stack: Array",
+            "Stack: Linked List",
+            "Queues: Array",
+            "Queues: Linked List",
+            "Lists: Array",
+            "Lists: Linked List"
         ]
     },
     {
