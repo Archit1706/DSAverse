@@ -193,7 +193,7 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                                         placeholder="Enter text (max 10 chars)"
                                     />
                                     <div className="text-sm text-gray-500 mt-1">
-                                        Reversed: "{reverseString(inputString)}"
+                                        Reversed: &ldquo;{reverseString(inputString)}&rdquo;
                                     </div>
                                 </div>
 
@@ -256,7 +256,7 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                                 {currentState.result && (
                                     <div className="text-sm">
                                         <span className="font-medium text-gray-700">Current Result: </span>
-                                        <span className="font-mono text-green-700">"{currentState.result}"</span>
+                                        <span className="font-mono text-green-700">&ldquo;{currentState.result}&rdquo;</span>
                                     </div>
                                 )}
                             </div>
@@ -295,7 +295,7 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                                         <div className="bg-yellow-100 border-2 border-yellow-400 rounded-lg p-3">
                                             <span className="text-sm text-gray-600">Processing: </span>
                                             <span className="font-mono text-lg font-bold text-yellow-800">
-                                                "{currentState.currentChar}"
+                                                &ldquo;{currentState.currentChar}&rdquo;
                                             </span>
                                         </div>
                                         <ChevronRight className="h-6 w-6 text-gray-400 mx-4" />
@@ -328,7 +328,7 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                                                     <span className="font-bold">{call.function}</span>
                                                     {call.result && (
                                                         <span className="ml-4 text-purple-700">
-                                                            → "{call.result}"
+                                                            → &ldquo;{call.result}&rdquo;
                                                         </span>
                                                     )}
                                                 </div>
@@ -344,7 +344,7 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                                     <h4 className="text-lg font-semibold text-green-800 mb-2">Current Result</h4>
                                     <div className="flex justify-center">
                                         <div className="font-mono text-2xl font-bold text-green-700">
-                                            "{currentState.result}"
+                                            &ldquo;{currentState.result}&rdquo;
                                         </div>
                                     </div>
                                 </div>

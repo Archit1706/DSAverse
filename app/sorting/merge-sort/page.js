@@ -578,7 +578,7 @@ def merge(left, right):
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
-                                    <span>External sorting (data doesn't fit in memory)</span>
+                                    <span>External sorting (data doesn&apos;t fit in memory)</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>

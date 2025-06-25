@@ -653,7 +653,7 @@ function isValid(row, col, maze, visited) {
                             <h4 className="font-bold text-green-700 mb-2">Algorithm Variations</h4>
                             <ul className="text-gray-600 text-sm space-y-1">
                                 <li>• A* Search: Uses heuristics for efficiency</li>
-                                <li>• Dijkstra's: Finds shortest weighted paths</li>
+                                <li>• Dijkstra&apos;s: Finds shortest weighted paths</li>
                                 <li>• BFS: Finds shortest unweighted paths</li>
                                 <li>• Wall Follower: Simple maze solving rule</li>
                             </ul>

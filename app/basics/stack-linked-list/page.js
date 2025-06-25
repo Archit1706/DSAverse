@@ -530,7 +530,7 @@ class StackLinkedList:
                                 <div className="flex items-start">
                                     <span className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-2"></span>
                                     <div>
-                                        <strong>Memory Efficient:</strong> Only allocates what's needed
+                                        <strong>Memory Efficient:</strong> Only allocates what&apos;s needed
                                     </div>
                                 </div>
                                 <div className="flex items-start">

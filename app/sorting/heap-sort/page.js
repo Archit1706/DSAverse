@@ -682,7 +682,7 @@ def heapify(arr, n, i):
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
-                                    <span>Graph algorithms (Dijkstra's, Prim's)</span>
+                                    <span>Graph algorithms (Dijkstra&apos;s, Prim&apos;s)</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
