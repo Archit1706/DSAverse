@@ -106,7 +106,7 @@ const Navbar = () => {
 
                             {activeDropdown && (
                                 <div
-                                    className="absolute top-full -left-10 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden"
+                                    className="absolute top-full -left-20 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden max-w-[220px]"
                                     onMouseEnter={handleMouseEnter}
                                     onMouseLeave={handleMouseLeave}
                                 >
