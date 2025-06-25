@@ -1,7 +1,7 @@
+"use client"
 import React from 'react';
 import { ArrowRight, Search, BarChart3, GitBranch, Layers, Target, Shuffle, Network, Calculator } from 'lucide-react';
 import Link from 'next/link';
-import { algorithmCategories } from '@/data/algorithmCategories';
 
 // Visual components for each algorithm
 const AlgorithmVisuals = {
@@ -14,11 +14,11 @@ const AlgorithmVisuals = {
         </div>
     ),
     "Stack: Linked List": () => (
-        <div className="flex flex-col items-center space-y-1">
+        <div className="flex flex-col items-center space-y-0">
             {[1, 2, 3].map(i => (
-                <div key={i} className="flex items-center">
+                <div key={i} className="flex flex-col items-center">
                     <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white"></div>
-                    {i < 3 && <div className="w-1 h-3 bg-blue-400 ml-2"></div>}
+                    {i < 3 && <div className="w-0.5 h-2 bg-blue-400"></div>}
                 </div>
             ))}
         </div>
@@ -36,7 +36,7 @@ const AlgorithmVisuals = {
             {[1, 2, 3].map(i => (
                 <div key={i} className="flex items-center">
                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    {i < 3 && <div className="w-2 h-0.5 bg-blue-400"></div>}
+                    {i < 3 && <div className="w-2 h-0.5 ml-1 bg-blue-400"></div>}
                 </div>
             ))}
         </div>
@@ -102,12 +102,18 @@ const AlgorithmVisuals = {
     ),
     "Tower of Hanoi": () => (
         <div className="flex items-end justify-center space-x-2 h-8">
-            {[3, 2, 1].map(i => (
-                <div key={i} className="flex flex-col items-center">
-                    <div className={`w-${i * 2 + 2} h-2 bg-green-${400 + i * 100} rounded mb-1`}></div>
-                    <div className="w-1 h-4 bg-green-700"></div>
-                </div>
-            ))}
+            <div className="flex flex-col items-center">
+                <div className="w-6 h-1.5 bg-green-600 rounded mb-0.5"></div>
+                <div className="w-4 h-1.5 bg-green-500 rounded mb-0.5"></div>
+                <div className="w-2 h-1.5 bg-green-400 rounded mb-0.5"></div>
+                <div className="w-0.5 h-3 bg-green-700"></div>
+            </div>
+            <div className="flex flex-col items-center">
+                <div className="w-0.5 h-6 bg-green-700"></div>
+            </div>
+            <div className="flex flex-col items-center">
+                <div className="w-0.5 h-6 bg-green-700"></div>
+            </div>
         </div>
     ),
 
@@ -117,23 +123,23 @@ const AlgorithmVisuals = {
             <Search className="w-4 h-4 text-purple-500" />
             <div className="flex ml-2 space-x-1">
                 {[1, 2, 3, 4].map(i => (
-                    <div key={i} className={`w-2 h-4 ${i === 3 ? 'bg-purple-600' : 'bg-purple-300'} rounded`}></div>
+                    <div key={i} className={`w-2 h-4 ${i === 3 ? 'bg-purple-600 animate-pulse' : 'bg-purple-300'} rounded`}></div>
                 ))}
             </div>
         </div>
     ),
     "Binary Search Trees": () => (
         <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-3 left-1 w-2 h-2 bg-purple-400 rounded-full"></div>
-            <div className="absolute top-3 right-1 w-2 h-2 bg-purple-400 rounded-full"></div>
-            <div className="absolute top-1 left-2 w-3 h-0.5 bg-purple-300 transform rotate-45"></div>
-            <div className="absolute top-1 right-2 w-3 h-0.5 bg-purple-300 transform -rotate-45"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full"></div>
+            <div className="absolute top-5 left-0 w-3 h-3 bg-purple-400 rounded-full"></div>
+            <div className="absolute top-5 right-0 w-3 h-3 bg-purple-400 rounded-full"></div>
+            <div className="absolute top-5.5 left-2 w-3 h-0.5 bg-purple-800 transform rounded -rotate-45 origin-left"></div>
+            <div className="absolute top-5.5 right-2 w-3 h-0.5 bg-purple-800 transform rounded rotate-45 origin-right"></div>
         </div>
     ),
     "AVL Trees": () => (
         <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-purple-600 rounded-full border-2 border-purple-400"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-purple-600 rounded-full animate-pulse border-2 border-purple-400"></div>
             <div className="absolute top-4 left-1 w-2 h-2 bg-purple-500 rounded-full"></div>
             <div className="absolute top-4 right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
         </div>
@@ -277,7 +283,7 @@ const AlgorithmVisuals = {
     "Quick Sort": () => (
         <div className="flex items-end space-x-1">
             {[2, 1, 4, 3].map((height, i) => (
-                <div key={i} className={`w-2 h-${height} ${i === 2 ? 'bg-orange-700' : 'bg-orange-500'} rounded`}></div>
+                <div key={i} className={`w-2 h-${height} ${i === 2 ? 'bg-orange-700 animate-pulse' : 'bg-orange-500'} rounded`}></div>
             ))}
         </div>
     ),
@@ -335,7 +341,7 @@ const AlgorithmVisuals = {
         <div className="flex items-center space-x-1">
             <div className="w-2 h-4 bg-red-300 rounded"></div>
             <div className="w-2 h-4 bg-red-300 rounded"></div>
-            <div className="w-2 h-4 bg-red-600 rounded border-2 border-red-800"></div>
+            <div className="w-2 h-4 bg-red-600 rounded border-2 border-red-800 animate-pulse"></div>
             <div className="w-2 h-4 bg-red-300 rounded"></div>
             <div className="w-2 h-4 bg-red-300 rounded"></div>
         </div>
@@ -356,9 +362,9 @@ const AlgorithmVisuals = {
     ),
     "Interpolation Search": () => (
         <div className="relative w-8 h-6">
-            <div className="absolute bottom-0 w-full h-1 bg-red-300 rounded"></div>
-            <div className="absolute bottom-1 left-1/3 w-0.5 h-4 bg-red-600 rounded"></div>
-            <Target className="absolute top-0 right-1 w-3 h-3 text-red-500" />
+            <div className="absolute bottom-2 w-full h-0.5 bg-red-300 rounded"></div>
+            <div className="absolute bottom-1 left-5 w-0.5 h-4 bg-red-600 rounded"></div>
+            <div className="absolute bottom-3 left-4 w-2 h-2 bg-red-500 rounded-full"></div>
         </div>
     ),
     "Exponential Search": () => (
@@ -379,7 +385,7 @@ const AlgorithmVisuals = {
         <div className="flex flex-col space-y-1">
             <div className="flex space-x-1">
                 {[1, 2, 3].map(i => (
-                    <div key={i} className={`w-2 h-2 ${i === 2 ? 'bg-red-600' : 'bg-red-400'} rounded`}></div>
+                    <div key={i} className={`w-3 h-3 ${i === 2 ? 'bg-red-600' : 'bg-red-400'} rounded`}></div>
                 ))}
             </div>
             <div className="w-6 h-0.5 bg-red-300 rounded"></div>
@@ -388,7 +394,7 @@ const AlgorithmVisuals = {
     "Block Search": () => (
         <div className="grid grid-cols-3 gap-1">
             {[0, 0, 1, 0, 0, 0, 0, 0, 0].map((active, i) => (
-                <div key={i} className={`w-2 h-2 ${active ? 'bg-red-600' : 'bg-red-300'} rounded`}></div>
+                <div key={i} className={`w-2 h-2 ${active ? 'bg-red-600 animate-pulse' : 'bg-red-300'} rounded`}></div>
             ))}
         </div>
     ),
@@ -396,9 +402,9 @@ const AlgorithmVisuals = {
     // Heap-like Data Structures
     "Heaps": () => (
         <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-2 bg-amber-600 rounded text-xs text-white text-center">9</div>
-            <div className="absolute top-3 left-1 w-2 h-2 bg-amber-500 rounded text-xs text-white text-center">7</div>
-            <div className="absolute top-3 right-1 w-2 h-2 bg-amber-500 rounded text-xs text-white text-center">8</div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-amber-600 rounded-full text-xs text-white flex items-center justify-center font-bold">9</div>
+            <div className="absolute top-5 -left-1 w-4 h-4 bg-amber-500 rounded-full text-xs text-white flex items-center justify-center font-bold">7</div>
+            <div className="absolute top-5 -right-1 w-4 h-4 bg-amber-500 rounded-full text-xs text-white flex items-center justify-center font-bold">8</div>
         </div>
     ),
     "Binomial Queues": () => (
@@ -419,16 +425,16 @@ const AlgorithmVisuals = {
     ),
     "Leftist Heaps": () => (
         <div className="relative w-8 h-6">
-            <div className="absolute top-0 left-2 w-2 h-2 bg-amber-600 rounded"></div>
-            <div className="absolute top-2 left-0 w-2 h-2 bg-amber-500 rounded"></div>
-            <div className="absolute top-4 left-1 w-1.5 h-1.5 bg-amber-400 rounded"></div>
+            <div className="absolute top-0 left-2 w-3 h-3 bg-amber-600 rounded-full"></div>
+            <div className="absolute top-3 left-0 w-3 h-3 bg-amber-500 rounded-full"></div>
+            <div className="absolute top-6 left-2 w-2 h-2 bg-amber-400 rounded-full"></div>
         </div>
     ),
     "Skew Heaps": () => (
         <div className="relative w-8 h-6">
-            <div className="absolute top-0 left-3 w-2 h-2 bg-amber-600 rounded transform rotate-12"></div>
-            <div className="absolute top-2 left-1 w-2 h-2 bg-amber-500 rounded transform -rotate-12"></div>
-            <div className="absolute top-4 right-1 w-1.5 h-1.5 bg-amber-400 rounded"></div>
+            <div className="absolute top-0 left-3 w-3 h-3 bg-amber-600 rounded-full transform rotate-12"></div>
+            <div className="absolute top-4 left-1 w-3 h-3 bg-amber-500 rounded-full transform -rotate-12"></div>
+            <div className="absolute top-6 right-1 w-2 h-2 bg-amber-400 rounded-full"></div>
         </div>
     ),
 
@@ -463,11 +469,11 @@ const AlgorithmVisuals = {
     ),
     "Dijkstra's Shortest Path": () => (
         <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-0 w-2 h-2 bg-cyan-600 rounded-full"></div>
+            <div className="absolute top-0 -left-0.5 w-2 h-2 bg-cyan-600 rounded-full"></div>
             <div className="absolute top-2 left-3 w-2 h-2 bg-cyan-500 rounded-full"></div>
-            <div className="absolute bottom-0 right-0 w-2 h-2 bg-cyan-400 rounded-full"></div>
-            <div className="absolute top-1 left-1 w-4 h-0.5 bg-cyan-500 transform rotate-12"></div>
-            <div className="absolute top-3 left-4 w-3 h-0.5 bg-cyan-400 transform rotate-45"></div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-cyan-400 rounded-full"></div>
+            <div className="absolute top-1 left-1 w-3 h-0.5 bg-cyan-800 rounded transform rotate-30 origin-left"></div>
+            <div className="absolute top-3 left-4.5 w-4.5 h-0.5 bg-cyan-800 rounded transform rotate-52 origin-left"></div>
         </div>
     ),
     "Prim's Minimum Spanning Tree": () => (
@@ -504,30 +510,33 @@ const AlgorithmVisuals = {
         <div className="relative w-8 h-8">
             <div className="absolute top-1 left-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
             <div className="absolute top-1 right-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-cyan-600 rounded-full"></div>
+            <div className="absolute bottom-1 left-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
+            <div className="absolute bottom-1 right-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
             <div className="absolute top-2 left-2 w-4 h-0.5 bg-cyan-500"></div>
-            <div className="absolute top-2 left-2 w-2 h-3 bg-cyan-500 transform rotate-45"></div>
-            <div className="absolute top-2 right-2 w-2 h-3 bg-cyan-500 transform -rotate-45"></div>
+            <div className="absolute top-2 left-2 w-0.5 h-4 bg-cyan-500"></div>
+            <div className="absolute bottom-2 left-2 w-4 h-0.5 bg-cyan-500"></div>
         </div>
     ),
 
     // Dynamic Programming
     "Fibonacci Numbers": () => (
-        <div className="grid grid-cols-3 gap-0.5">
-            <div className="text-xs text-rose-600">F(n-1)</div>
-            <div className="text-xs text-rose-500">+</div>
-            <div className="text-xs text-rose-600">F(n-2)</div>
-            <div className="w-2 h-2 bg-rose-400 rounded"></div>
-            <div className="w-2 h-2 bg-rose-500 rounded"></div>
-            <div className="w-2 h-2 bg-rose-600 rounded"></div>
+        <div className="flex flex-col items-center">
+            <div className="text-xs text-rose-600 font-mono">F(n-1)</div>
+            <div className="text-xs text-rose-600 font-mono">+</div>
+            <div className="text-xs text-rose-600 font-mono">F(n-2)</div>
+            <div className="flex space-x-1 mt-1">
+                <div className="w-2 h-2 bg-rose-400 rounded animate-pulse duration-1000"></div>
+                <div className="w-2 h-2 bg-rose-500 rounded animate-pulse duration-2000"></div>
+                <div className="w-2 h-2 bg-rose-600 rounded animate-pulse duration-3000"></div>
+            </div>
         </div>
     ),
     "Making Change": () => (
         <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 bg-rose-600 rounded-full text-xs text-white text-center">¢</div>
-            <div className="w-2 h-2 bg-rose-500 rounded-full"></div>
-            <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
-            <Calculator className="w-3 h-3 text-rose-500" />
+            <div className="w-4 h-4 bg-rose-600 rounded-full flex items-center justify-center text-xs text-white font-bold">¢</div>
+            <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-rose-400 rounded-full"></div>
+            <Calculator className="w-5 h-5 text-rose-500 animate-pulse" />
         </div>
     ),
     "Longest Common Subsequence": () => (
@@ -538,6 +547,141 @@ const AlgorithmVisuals = {
         </div>
     )
 };
+
+const algorithmCategories = [
+    {
+        name: "Basics",
+        color: "bg-blue-500",
+        lightColor: "bg-blue-50",
+        borderColor: "border-blue-200",
+        textColor: "text-blue-700",
+        algorithms: [
+            "Stack: Array",
+            "Stack: Linked List",
+            "Queues: Array",
+            "Queues: Linked List",
+            "Lists: Array",
+            "Lists: Linked List"
+        ]
+    },
+    {
+        name: "Recursion",
+        color: "bg-green-500",
+        lightColor: "bg-green-50",
+        borderColor: "border-green-200",
+        textColor: "text-green-700",
+        algorithms: [
+            "Factorial",
+            "String Reversal",
+            "Fibonacci Sequence",
+            "N-Queens",
+            "Maze Solver",
+            "Tower of Hanoi",
+        ]
+    },
+    {
+        name: "Indexing",
+        color: "bg-purple-500",
+        lightColor: "bg-purple-50",
+        borderColor: "border-purple-200",
+        textColor: "text-purple-700",
+        algorithms: [
+            "Binary and Linear Search",
+            "Binary Search Trees",
+            "AVL Trees",
+            "Red-Black Trees",
+            "Splay Trees",
+            "Open Hash Tables",
+            "Closed Hash Tables",
+            "Closed Hash Tables with Buckets",
+            "Trie (Prefix Tree)",
+            "Radix Tree",
+            "Ternary Search Tree",
+            "B Trees",
+            "B+ Trees"
+        ]
+    },
+    {
+        name: "Sorting",
+        color: "bg-orange-500",
+        lightColor: "bg-orange-50",
+        borderColor: "border-orange-200",
+        textColor: "text-orange-700",
+        algorithms: [
+            "Bubble Sort",
+            "Selection Sort",
+            "Insertion Sort",
+            "Shell Sort",
+            "Merge Sort",
+            "Quick Sort",
+            "Bucket Sort",
+            "Counting Sort",
+            "Radix Sort",
+            "Heap Sort"
+        ]
+    },
+    {
+        name: "Searching",
+        color: "bg-red-400",
+        lightColor: "bg-red-50",
+        borderColor: "border-red-200",
+        textColor: "text-red-700",
+        algorithms: [
+            "Binary Search",
+            "Linear Search",
+            "Jump Search",
+            "Interpolation Search",
+            "Exponential Search",
+            "Fibonacci Search",
+            "Ternary Search",
+            "Block Search",
+        ]
+    },
+    {
+        name: "Heap-like Data Structures",
+        color: "bg-amber-500",
+        lightColor: "bg-amber-50",
+        borderColor: "border-amber-200",
+        textColor: "text-amber-700",
+        algorithms: [
+            "Heaps",
+            "Binomial Queues",
+            "Fibonacci Heaps",
+            "Leftist Heaps",
+            "Skew Heaps"
+        ]
+    },
+    {
+        name: "Graph Algorithms",
+        color: "bg-cyan-500",
+        lightColor: "bg-cyan-50",
+        borderColor: "border-cyan-200",
+        textColor: "text-cyan-700",
+        algorithms: [
+            "Breadth-First Search",
+            "Depth-First Search",
+            "Connected Components",
+            "Dijkstra's Shortest Path",
+            "Prim's Minimum Spanning Tree",
+            "Topological Sort (Indegree)",
+            "Topological Sort (DFS)",
+            "Floyd-Warshall",
+            "Kruskal Minimum Spanning Tree"
+        ]
+    },
+    {
+        name: "Dynamic Programming",
+        color: "bg-rose-500",
+        lightColor: "bg-rose-50",
+        borderColor: "border-rose-200",
+        textColor: "text-rose-700",
+        algorithms: [
+            "Fibonacci Numbers",
+            "Making Change",
+            "Longest Common Subsequence"
+        ]
+    }
+];
 
 const AlgorithmsGrid = () => (
     <section className="py-16 bg-gray-50">
