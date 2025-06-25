@@ -47,7 +47,7 @@ const DSALoader = () => {
                             <div className="w-6 h-6 border-2 border-white rounded animate-spin border-t-transparent"></div>
                         </div>
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                            DSA Visualizer
+                            DSAverse
                         </h1>
                     </div>
 
