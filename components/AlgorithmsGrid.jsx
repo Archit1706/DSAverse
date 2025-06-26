@@ -702,7 +702,9 @@ const AlgorithmsGrid = () => (
                         <div className="flex items-center space-x-4">
                             <div className={`w-6 h-6 ${category.color} rounded-lg`}></div>
                             <h3 className={`text-2xl font-bold ${category.textColor}`}>
-                                {category.name}
+                                <Link href={`/${category.name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}`}>
+                                    {category.name}
+                                </Link>
                             </h3>
                             <div className="flex-1 h-0.5 bg-gray-200"></div>
                         </div>

@@ -115,7 +115,9 @@ const Navbar = () => {
                                             <div key={categoryIndex} className="mb-3 last:mb-0">
                                                 <div className={`px-4 py-2 ${category.lightColor} ${category.borderColor} border-l-4 mx-2 rounded-r-lg`}>
                                                     <h3 className={`font-semibold text-md ${category.textColor} mb-2`}>
-                                                        {category.name}
+                                                        <Link href={`/${category.name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}`} className="hover:text-blue-600 transition-all duration-200">
+                                                            {category.name}
+                                                        </Link>
                                                     </h3>
                                                     <div className="space-y-1">
                                                         {category.algorithms.map((algorithm, algorithmIndex) => (
@@ -166,7 +168,9 @@ const Navbar = () => {
                                 <div key={categoryIndex} className="mb-3">
                                     <div className={`mx-3 ${category.lightColor} ${category.borderColor} border-l-4 rounded-r-lg p-3`}>
                                         <h4 className={`font-medium text-sm ${category.textColor} mb-2`}>
-                                            {category.name}
+                                            <Link href={`/${category.name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}`} className="hover:text-blue-600 transition-all duration-200">
+                                                {category.name}
+                                            </Link>
                                         </h4>
                                         <div className="space-y-1">
                                             {category.algorithms.map((algorithm, algorithmIndex) => (
