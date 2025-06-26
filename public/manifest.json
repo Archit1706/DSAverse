@@ -1,0 +1,33 @@
+{
+    "name": "DSAverse",
+    "short_name": "DSAverse",
+    "description": "Learn DSA with Visualizations",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "192x192",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#000000",
+    "orientation": "portrait",
+    "scope": "/",
+    "lang": "en-US",
+    "categories": [
+        "education",
+        "learning",
+        "algorithms",
+        "data-structures",
+        "visualization"
+    ],
+    "screenshots": [
+        {
+            "src": "/og-image.png",
+            "sizes": "1200x630",
+            "type": "image/png"
+        }
+    ]
+}
