@@ -545,6 +545,38 @@ const AlgorithmVisuals = {
             <div className="text-xs text-rose-500 font-mono">ACBD</div>
             <div className="text-xs text-rose-700 font-mono underline">A_BD</div>
         </div>
+    ),
+    "0-1 Knapsack": () => (
+        <div className="relative w-8 h-8">
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-5 bg-rose-600 rounded-b-lg border-2 border-rose-700"></div>
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-4 h-2 bg-rose-500 rounded-t-lg"></div>
+            <div className="absolute top-0 left-0 w-2 h-2 bg-amber-400 rounded animate-pulse" title="💎"></div>
+            <div className="absolute top-0 right-0 w-3 h-1.5 bg-blue-400 rounded animate-pulse delay-75" title="📱"></div>
+            <div className="absolute top-2 left-3 w-1.5 h-2.5 bg-green-400 rounded animate-pulse delay-150" title="⌚"></div>
+            <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-amber-300 rounded-full"></div>
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-5 h-0.5 bg-rose-800 rounded"></div>
+        </div>
+    ),
+    "House Robber": () => (
+        <div className="flex items-end space-x-1">
+            {[1, 2, 3, 4].map((val, i) => (
+                <div key={i} className="relative flex flex-col items-center">
+                    <div className={`w-4 h-${val + 2} ${i % 2 === 0 ? 'bg-rose-500' : 'bg-rose-300'} rounded-t-lg relative border border-rose-600`}>
+                        <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-b-2 border-l-transparent border-r-transparent border-b-rose-700"></div>
+                        {i % 2 === 0 && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
+                                <div className="absolute text-xs">💰</div>
+                            </div>
+                        )}
+                        {i % 2 === 1 && (
+                            <div className="absolute top-0 right-0 w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
+                        )}
+                    </div>
+                    <div className="text-xs text-rose-600 mt-1">{i}</div>
+                </div>
+            ))}
+        </div>
     )
 };
 
@@ -678,7 +710,9 @@ const algorithmCategories = [
         algorithms: [
             "Fibonacci Numbers",
             "Making Change",
-            "Longest Common Subsequence"
+            "Longest Common Subsequence",
+            "0-1 Knapsack",
+            "House Robber"
         ]
     }
 ];

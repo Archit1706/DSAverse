@@ -128,7 +128,9 @@ export const algorithmCategories = [
         algorithms: [
             "Fibonacci Numbers",
             "Making Change",
-            "Longest Common Subsequence"
+            "Longest Common Subsequence",
+            "0-1 Knapsack",
+            "House Robber"
         ]
     }
 ];
