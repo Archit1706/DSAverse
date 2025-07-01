@@ -34,7 +34,7 @@ const ContactPage = () => {
                             Send us your feedback
                         </h2>
 
-                        <form onSubmit={handleSubmit} className="bg-gray-50 border-2 border-gray-200 rounded-xl p-8 transition hover:shadow-lg hover:border-indigo-600 space-y-6">
+                        <form action="https://getform.io/f/aolowjgb" method="POST" className="bg-gray-50 border-2 border-gray-200 rounded-xl p-8 transition hover:shadow-lg hover:border-indigo-600 space-y-6">
                             <div>
                                 <label className="block font-semibold text-gray-700 mb-2">Name</label>
                                 <input type="text" name="name" required className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
@@ -61,6 +61,8 @@ const ContactPage = () => {
                                 <label className="block font-semibold text-gray-700 mb-2">Your Message</label>
                                 <textarea name="message" rows="5" required placeholder="Tell us what's on your mind..." className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"></textarea>
                             </div>
+
+                            <input type="hidden" name="_gotcha" style={{ display: 'none !important' }} />
 
                             <button type="submit" className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-lg transition-transform hover:-translate-y-1 hover:shadow-xl">
                                 {formStatus}
