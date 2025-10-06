@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Play, Code, ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 const BubbleSortVisualizer = () => {
     const [animationStep, setAnimationStep] = useState(0);
@@ -309,14 +310,14 @@ const Hero = () => (
                         to help you understand complex algorithms and data structures with ease.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center shadow-xl hover:shadow-2xl transform hover:scale-105">
+                        <Link href="#explore" className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center shadow-xl hover:shadow-2xl transform hover:scale-105">
                             <Play className="mr-2 h-5 w-5" />
                             Start Learning
-                        </button>
-                        <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 flex items-center justify-center backdrop-blur-sm bg-white/10">
+                        </Link>
+                        <Link href="https://github.com/Archit1706/dsaverse" target="_blank" className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 flex items-center justify-center backdrop-blur-sm bg-white/10">
                             <Code className="mr-2 h-5 w-5" />
                             View Code
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 <div className="z-10">
