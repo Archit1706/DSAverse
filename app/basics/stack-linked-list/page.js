@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, ArrowLeft, Code, Clock, Plus, Minus, ArrowDown, Link2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, ArrowLeft, Code, Clock, Plus, Minus, ArrowDown, Link2, Eye, Copy } from 'lucide-react';
 import Link from 'next/link';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 export default function StackLinkedListPage() {
     const [stack, setStack] = useState([]);
@@ -319,7 +321,7 @@ class StackLinkedList:
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Enter value"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-blue-800 placeholder:text-gray-700"
                                 />
                                 <button
                                     onClick={handlePush}
@@ -340,8 +342,9 @@ class StackLinkedList:
                                 <button
                                     onClick={handlePeek}
                                     disabled={isPlaying}
-                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
                                 >
+                                    <Eye className="h-4 w-4" />
                                     Peek
                                 </button>
                             </div>
@@ -369,7 +372,7 @@ class StackLinkedList:
                                 <select
                                     value={speed}
                                     onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                    className="px-2 py-1 border border-gray-300 rounded text-sm text-gray-700"
                                 >
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
@@ -383,22 +386,22 @@ class StackLinkedList:
                             <div className="flex justify-center">
                                 <div className="relative min-h-96 flex flex-col items-center">
                                     {/* Head pointer */}
-                                    <div className="mb-4 flex items-center">
-                                        <div className="bg-gray-200 border-2 border-gray-400 rounded-lg px-3 py-2 text-sm font-semibold">
+                                    <div className="mb-4 flex flex-col items-center">
+                                        <div className="bg-gray-200 border-2 border-gray-400 rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 text-center">
                                             HEAD
                                         </div>
                                         {currentState.stack.length > 0 && (
-                                            <ArrowDown className="h-6 w-6 text-gray-600 ml-2" />
+                                            <ArrowDown className="h-6 w-6 text-gray-600" />
                                         )}
                                     </div>
 
                                     {/* New node being created (during push) */}
                                     {currentState.newNode && (
-                                        <div className="mb-4 animate-bounce">
+                                        <div className="mb-4 animate-bounce mt-4">
                                             <div className="bg-yellow-300 border-2 border-yellow-500 rounded-lg p-4 flex items-center">
                                                 <div className="text-center">
                                                     <div className="text-xs text-gray-600 mb-1">Node {currentState.newNode.id}</div>
-                                                    <div className="font-bold">{currentState.newNode.value}</div>
+                                                    <div className="font-bold text-gray-700">{currentState.newNode.value}</div>
                                                 </div>
                                                 <div className="ml-4 text-xs text-gray-600">
                                                     next: {currentState.newNode.next ? `Node ${currentState.newNode.next}` : 'NULL'}
@@ -582,9 +585,18 @@ class StackLinkedList:
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                <code>{codeExample}</code>
-                            </pre>
+                            <div className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto text-gray-700">
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="text-sm font-semibold text-gray-600 mb-2">Python</div>
+                                    <button onClick={() => navigator.clipboard.writeText(codeExample)} className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md flex items-center gap-2">
+                                        <Copy className="h-4 w-4" />
+                                        Copy
+                                    </button>
+                                </div>
+                                <SyntaxHighlighter language="python" style={a11yDark}>
+                                    {codeExample}
+                                </SyntaxHighlighter>
+                            </div>
                         </div>
                     </div>
                 </div>

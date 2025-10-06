@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, ArrowLeft, Code, Clock, Plus, Minus, ChevronDown } from 'lucide-react';
+import { Play, Pause, RotateCcw, ArrowLeft, Code, Clock, Plus, Minus, ChevronDown, Eye, Copy } from 'lucide-react';
 import Link from 'next/link';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 export default function StackArrayPage() {
     const [stack, setStack] = useState([]);
@@ -299,7 +301,7 @@ export default function StackArrayPage() {
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Enter value"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-blue-800 placeholder:text-gray-700"
                                 />
                                 <button
                                     onClick={handlePush}
@@ -320,8 +322,9 @@ export default function StackArrayPage() {
                                 <button
                                     onClick={handlePeek}
                                     disabled={isPlaying}
-                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
                                 >
+                                    <Eye className="h-4 w-4" />
                                     Peek
                                 </button>
                             </div>
@@ -349,7 +352,7 @@ export default function StackArrayPage() {
                                 <select
                                     value={speed}
                                     onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                    className="px-2 py-1 border border-gray-300 rounded text-sm text-gray-700"
                                 >
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
@@ -362,7 +365,7 @@ export default function StackArrayPage() {
                                     onChange={(e) => setMaxSize(Math.max(1, Math.min(10, parseInt(e.target.value) || 8)))}
                                     min="1"
                                     max="10"
-                                    className="w-16 px-2 py-1 border border-gray-300 rounded text-sm"
+                                    className="w-16 px-2 py-1 border border-gray-300 rounded text-sm text-gray-700"
                                 />
                             </div>
                         </div>
@@ -495,8 +498,17 @@ export default function StackArrayPage() {
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                <code>{codeExample}</code>
+                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto text-gray-700">
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="text-sm font-semibold text-gray-600 mb-2">Python</div>
+                                    <button onClick={() => navigator.clipboard.writeText(codeExample)} className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md flex items-center gap-2">
+                                        <Copy className="h-4 w-4" />
+                                        Copy
+                                    </button>
+                                </div>
+                                <SyntaxHighlighter language="python" style={a11yDark}>
+                                    {codeExample}
+                                </SyntaxHighlighter>
                             </pre>
                         </div>
                     </div>

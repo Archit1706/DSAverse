@@ -204,19 +204,19 @@ export default function BasicsPage() {
                     <div className="bg-white rounded-xl shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">Recommended Learning Path</h2>
                         <div className="space-y-3">
-                            <div className="flex items-center text-sm">
+                            <div className="flex items-center text-sm text-gray-600">
                                 <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">1</span>
                                 Start with Stack (Array)
                             </div>
-                            <div className="flex items-center text-sm">
+                            <div className="flex items-center text-sm text-gray-600">
                                 <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">2</span>
                                 Learn Queue (Array)
                             </div>
-                            <div className="flex items-center text-sm">
+                            <div className="flex items-center text-sm text-gray-600">
                                 <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">3</span>
                                 Explore Linked implementations
                             </div>
-                            <div className="flex items-center text-sm">
+                            <div className="flex items-center text-sm text-gray-600">
                                 <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">4</span>
                                 Master Dynamic Lists
                             </div>
