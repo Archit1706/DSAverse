@@ -301,7 +301,7 @@ const Hero = () => (
                 <div className="z-10">
                     <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
                         Master Data Structures & Algorithms
-                        <span className="block text-blue-200 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent">
+                        <span className="block bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent">
                             Visually
                         </span>
                     </h1>

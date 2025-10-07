@@ -1,5 +1,6 @@
 import React from 'react'
 import { BookOpen } from 'lucide-react'
+import Link from 'next/link'
 
 const Features = () => {
     return (
@@ -11,10 +12,10 @@ const Features = () => {
                 <p className="text-xl mb-8 text-indigo-100">
                     Start your journey with interactive visualizations and comprehensive explanations
                 </p>
-                <button className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-colors flex items-center justify-center mx-auto">
+                <Link href="/basics" className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-colors flex items-center justify-center mx-auto">
                     <BookOpen className="mr-2 h-5 w-5" />
                     Begin Learning Now
-                </button>
+                </Link>
             </div>
         </section>
     )

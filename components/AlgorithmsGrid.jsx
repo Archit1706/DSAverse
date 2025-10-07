@@ -103,16 +103,18 @@ const AlgorithmVisuals = {
     "Tower of Hanoi": () => (
         <div className="flex items-end justify-center space-x-2 h-8">
             <div className="flex flex-col items-center">
-                <div className="w-6 h-1.5 bg-green-600 rounded mb-0.5"></div>
-                <div className="w-4 h-1.5 bg-green-500 rounded mb-0.5"></div>
+                <div className="w-0.5 h-0.5 bg-green-700"></div>
                 <div className="w-2 h-1.5 bg-green-400 rounded mb-0.5"></div>
-                <div className="w-0.5 h-3 bg-green-700"></div>
+                <div className="w-0.5 h-0.5 bg-green-700"></div>
+                <div className="w-4 h-1.5 bg-green-500 rounded mb-0.5"></div>
+                <div className="w-0.5 h-0.5 bg-green-700"></div>
+                <div className="w-6 h-1.5 bg-green-600 rounded mb-0.5"></div>
             </div>
             <div className="flex flex-col items-center">
-                <div className="w-0.5 h-6 bg-green-700"></div>
+                <div className="w-0.5 h-8 bg-green-700"></div>
             </div>
             <div className="flex flex-col items-center">
-                <div className="w-0.5 h-6 bg-green-700"></div>
+                <div className="w-0.5 h-8 bg-green-700"></div>
             </div>
         </div>
     ),
