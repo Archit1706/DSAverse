@@ -783,11 +783,11 @@ class BinomialQueue:
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Binomial Tree B_k</h2>
                             <div className="space-y-3 text-sm text-gray-600">
-                                <div>• <strong>Definition:</strong> B₀ is single node, B_k = B_{k - 1} + B_{k - 1}</div>
+                                <div>• <strong>Definition:</strong> B₀ is a single node, and B_k = B_(k-1) + B_(k-1)</div>
                                 <div>• <strong>Node Count:</strong> Exactly 2^k nodes in B_k</div>
                                 <div>• <strong>Height:</strong> Height of B_k is k</div>
-                                <div>• <strong>Children:</strong> Root has k children: B_{k - 1}, B_{k - 2}, ..., B_0</div>
-                                <div>• <strong>Merge Rule:</strong> Two B_k trees merge to form B_{k + 1}</div>
+                                <div>• <strong>Children:</strong> Root has k children: B_(k-1), B_(k-2), ..., B_0</div>
+                                <div>• <strong>Merge Rule:</strong> Two B_k trees merge to form B_(k+1)</div>
                                 <div>• <strong>Min-Heap:</strong> Every parent ≤ children</div>
                             </div>
                         </div>
