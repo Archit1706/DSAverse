@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { algorithmCategories } from '../data/algorithmCategories';
-import { ChevronDown, Menu, X, Code2 } from 'lucide-react';
+import { ChevronDown, Menu, X, Code2, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
 const DSAverseLogo = () => (
@@ -133,6 +133,13 @@ const Navbar = () => {
                         </div>
 
                         <Link
+                            href="/cheatsheet"
+                            className="flex items-center gap-1.5 text-gray-700 hover:text-violet-600 transition-colors duration-200 font-medium px-3 py-2 rounded-md hover:bg-violet-50"
+                        >
+                            <BookOpen className="h-4 w-4" />
+                            Cheatsheet
+                        </Link>
+                        <Link
                             href="/contact"
                             className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium px-3 py-2 rounded-md hover:bg-blue-50"
                         >
@@ -162,6 +169,14 @@ const Navbar = () => {
                             className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors font-medium"
                         >
                             Home
+                        </Link>
+                        <Link
+                            href="/cheatsheet"
+                            onClick={closeMobile}
+                            className="flex items-center gap-1.5 px-3 py-2 text-gray-700 hover:text-violet-600 hover:bg-violet-50 rounded-md transition-colors font-medium"
+                        >
+                            <BookOpen className="h-4 w-4" />
+                            Cheatsheet
                         </Link>
                         <Link
                             href="/contact"

@@ -1,787 +1,199 @@
-"use client"
-import React from 'react';
-import { ArrowRight, Search, BarChart3, GitBranch, Layers, Target, Shuffle, Network, Calculator } from 'lucide-react';
+"use client";
+import React, { useState } from 'react';
 import Link from 'next/link';
+import {
+    ArrowRight, Layers, RefreshCw, ArrowUpDown, Search,
+    GitBranch, Database, Brain, BarChart2
+} from 'lucide-react';
 
-// Visual components for each algorithm
-const AlgorithmVisuals = {
-    // Basics
-    "Stack: Array": () => (
-        <div className="flex flex-col items-center space-y-1">
-            <div className="w-8 h-3 bg-blue-400 rounded animate-pulse"></div>
-            <div className="w-8 h-3 bg-blue-500 rounded"></div>
-            <div className="w-8 h-3 bg-blue-600 rounded"></div>
-        </div>
-    ),
-    "Stack: Linked List": () => (
-        <div className="flex flex-col items-center space-y-0">
-            {[1, 2, 3].map(i => (
-                <div key={i} className="flex flex-col items-center">
-                    <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white"></div>
-                    {i < 3 && <div className="w-0.5 h-2 bg-blue-400"></div>}
-                </div>
-            ))}
-        </div>
-    ),
-    "Queues: Array": () => (
-        <div className="flex items-center space-x-1">
-            <div className="w-3 h-6 bg-blue-400 rounded animate-pulse"></div>
-            <div className="w-3 h-6 bg-blue-500 rounded"></div>
-            <div className="w-3 h-6 bg-blue-600 rounded"></div>
-            <ArrowRight className="w-3 h-3 text-blue-400" />
-        </div>
-    ),
-    "Queues: Linked List": () => (
-        <div className="flex items-center space-x-1">
-            {[1, 2, 3].map(i => (
-                <div key={i} className="flex items-center">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    {i < 3 && <div className="w-2 h-0.5 ml-1 bg-blue-400"></div>}
-                </div>
-            ))}
-        </div>
-    ),
-    "Lists: Array": () => (
-        <div className="grid grid-cols-3 gap-1">
-            {[0, 1, 2].map(i => (
-                <div key={i} className="w-4 h-4 bg-blue-500 rounded text-xs text-white flex items-center justify-center">
-                    {i}
-                </div>
-            ))}
-        </div>
-    ),
-    "Lists: Linked List": () => (
-        <div className="flex items-center">
-            {[1, 2, 3].map(i => (
-                <div key={i} className="flex items-center">
-                    <div className="w-6 h-4 bg-blue-500 rounded border border-blue-600 flex items-center justify-center">
-                        <div className="w-1 h-1 bg-white rounded-full"></div>
-                    </div>
-                    {i < 3 && <ArrowRight className="w-3 h-3 text-blue-400 mx-1" />}
-                </div>
-            ))}
-        </div>
-    ),
-
-    // Recursion
-    "Factorial": () => (
-        <div className="text-center">
-            <div className="text-lg font-bold text-green-600">n!</div>
-            <div className="text-xs text-green-500">5×4×3×2×1</div>
-        </div>
-    ),
-    "String Reversal": () => (
-        <div className="flex items-center space-x-1">
-            <span className="text-sm font-mono text-green-600">abc</span>
-            <Shuffle className="w-3 h-3 text-green-500" />
-            <span className="text-sm font-mono text-green-600">cba</span>
-        </div>
-    ),
-    "Fibonacci Sequence": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute inset-0 border-2 border-green-500 rounded-full"></div>
-            <div className="absolute top-1 right-1 w-3 h-3 border border-green-400 rounded-full"></div>
-            <div className="absolute bottom-1 left-1 w-2 h-2 border border-green-300 rounded-full"></div>
-        </div>
-    ),
-    "N-Queens": () => (
-        <div className="grid grid-cols-3 gap-0.5 w-8 h-8">
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                <div key={i} className={`${i % 2 === Math.floor(i / 3) % 2 ? 'bg-green-300' : 'bg-green-200'} ${i === 1 || i === 5 ? 'bg-green-600' : ''}`}>
-                    {(i === 1 || i === 5) && <div className="text-xs text-white text-center">♛</div>}
-                </div>
-            ))}
-        </div>
-    ),
-    "Maze Solver": () => (
-        <div className="grid grid-cols-4 gap-0.5 w-8 h-8">
-            {[1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0].map((cell, i) => (
-                <div key={i} className={`${cell ? 'bg-green-600' : 'bg-green-200'} ${i === 5 ? 'bg-green-400' : ''}`}></div>
-            ))}
-        </div>
-    ),
-    "Tower of Hanoi": () => (
-        <div className="flex items-end justify-center space-x-2 h-8">
-            <div className="flex flex-col items-center">
-                <div className="w-0.5 h-0.5 bg-green-700"></div>
-                <div className="w-2 h-1.5 bg-green-400 rounded mb-0.5"></div>
-                <div className="w-0.5 h-0.5 bg-green-700"></div>
-                <div className="w-4 h-1.5 bg-green-500 rounded mb-0.5"></div>
-                <div className="w-0.5 h-0.5 bg-green-700"></div>
-                <div className="w-6 h-1.5 bg-green-600 rounded mb-0.5"></div>
-            </div>
-            <div className="flex flex-col items-center">
-                <div className="w-0.5 h-8 bg-green-700"></div>
-            </div>
-            <div className="flex flex-col items-center">
-                <div className="w-0.5 h-8 bg-green-700"></div>
-            </div>
-        </div>
-    ),
-
-    // Indexing
-    "Binary and Linear Search": () => (
-        <div className="flex items-center">
-            <Search className="w-4 h-4 text-purple-500" />
-            <div className="flex ml-2 space-x-1">
-                {[1, 2, 3, 4].map(i => (
-                    <div key={i} className={`w-2 h-4 ${i === 3 ? 'bg-purple-600 animate-pulse' : 'bg-purple-300'} rounded`}></div>
-                ))}
-            </div>
-        </div>
-    ),
-    "Binary Search Trees": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-5 left-0 w-3 h-3 bg-purple-400 rounded-full"></div>
-            <div className="absolute top-5 right-0 w-3 h-3 bg-purple-400 rounded-full"></div>
-            <div className="absolute top-5.5 left-2 w-3 h-0.5 bg-purple-800 transform rounded -rotate-45 origin-left"></div>
-            <div className="absolute top-5.5 right-2 w-3 h-0.5 bg-purple-800 transform rounded rotate-45 origin-right"></div>
-        </div>
-    ),
-    "AVL Trees": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-purple-600 rounded-full animate-pulse border-2 border-purple-400"></div>
-            <div className="absolute top-4 left-1 w-2 h-2 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-4 right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
-        </div>
-    ),
-    "Red-Black Trees": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-red-600 rounded-full"></div>
-            <div className="absolute top-4 left-1 w-2 h-2 bg-gray-800 rounded-full"></div>
-            <div className="absolute top-4 right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-        </div>
-    ),
-    "Splay Trees": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
-            <div className="absolute top-5 left-0 w-2 h-2 bg-purple-400 rounded-full"></div>
-            <div className="absolute top-0 right-0 w-2 h-2 bg-purple-400 rounded-full"></div>
-        </div>
-    ),
-    "Open Hash Tables": () => (
-        <div className="grid grid-cols-2 gap-1">
-            {[1, 0, 1, 1].map((filled, i) => (
-                <div key={i} className={`w-3 h-3 border-2 border-purple-400 ${filled ? 'bg-purple-500' : 'bg-white'} rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Closed Hash Tables": () => (
-        <div className="grid grid-cols-4 gap-0.5">
-            {[1, 1, 0, 1].map((filled, i) => (
-                <div key={i} className={`w-2 h-4 border border-purple-400 ${filled ? 'bg-purple-500' : 'bg-white'} rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Closed Hash Tables with Buckets": () => (
-        <div className="grid grid-cols-2 gap-1">
-            {[1, 2, 1, 0].map((count, i) => (
-                <div key={i} className="flex flex-col space-y-0.5">
-                    {Array(count).fill(0).map((_, j) => (
-                        <div key={j} className="w-3 h-1 bg-purple-500 rounded"></div>
-                    ))}
-                </div>
-            ))}
-        </div>
-    ),
-    "Trie (Prefix Tree)": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-purple-600 rounded-full"></div>
-            <div className="absolute top-2 left-0 w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-2 left-3 w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-2 right-0 w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-4 left-1 w-1 h-1 bg-purple-400 rounded-full"></div>
-            <div className="absolute top-4 right-1 w-1 h-1 bg-purple-400 rounded-full"></div>
-        </div>
-    ),
-    "Radix Tree": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-purple-600 rounded"></div>
-            <div className="absolute top-3 left-1 w-4 h-1 bg-purple-500 rounded"></div>
-            <div className="absolute top-3 right-1 w-2 h-1 bg-purple-500 rounded"></div>
-        </div>
-    ),
-    "Ternary Search Tree": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-purple-600 rounded-full"></div>
-            <div className="absolute top-4 left-0 w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-            <div className="absolute top-4 right-0 w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-        </div>
-    ),
-    "B Trees": () => (
-        <div className="flex flex-col items-center space-y-1">
-            <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-purple-600 rounded"></div>
-                <div className="w-2 h-2 bg-purple-600 rounded"></div>
-            </div>
-            <div className="flex space-x-2">
-                <div className="w-1.5 h-1.5 bg-purple-500 rounded"></div>
-                <div className="w-1.5 h-1.5 bg-purple-500 rounded"></div>
-                <div className="w-1.5 h-1.5 bg-purple-500 rounded"></div>
-            </div>
-        </div>
-    ),
-    "B+ Trees": () => (
-        <div className="flex flex-col items-center space-y-1">
-            <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-purple-600 rounded border border-purple-800"></div>
-                <div className="w-2 h-2 bg-purple-600 rounded border border-purple-800"></div>
-            </div>
-            <div className="flex space-x-1">
-                {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-1 h-2 bg-purple-500 rounded"></div>
-                ))}
-            </div>
-        </div>
-    ),
-
-    // Sorting
-    "Bubble Sort": () => (
-        <div className="flex items-end space-x-1">
-            {[4, 2, 3, 1].map((height, i) => (
-                <div key={i} className={`w-2 h-${height} bg-orange-${400 + height * 50} rounded animate-pulse`} style={{ animationDelay: `${i * 100}ms` }}></div>
-            ))}
-        </div>
-    ),
-    "Selection Sort": () => (
-        <div className="flex items-end space-x-1">
-            {[1, 4, 2, 3].map((height, i) => (
-                <div key={i} className={`w-2 h-${height} ${i === 0 ? 'bg-orange-600' : 'bg-orange-400'} rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Insertion Sort": () => (
-        <div className="flex items-end space-x-1">
-            {[1, 2, 4, 3].map((height, i) => (
-                <div key={i} className={`w-2 h-${height} ${i < 2 ? 'bg-orange-600' : 'bg-orange-400'} rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Shell Sort": () => (
-        <div className="grid grid-cols-4 gap-0.5">
-            {[1, 3, 2, 4].map((height, i) => (
-                <div key={i} className={`w-2 h-${height} bg-orange-500 rounded ${i % 2 === 0 ? 'border border-orange-700' : ''}`}></div>
-            ))}
-        </div>
-    ),
-    "Merge Sort": () => (
-        <div className="flex flex-col space-y-1">
-            <div className="flex space-x-1">
-                <div className="w-1 h-3 bg-orange-400 rounded"></div>
-                <div className="w-1 h-2 bg-orange-400 rounded"></div>
-                <div className="w-1 h-4 bg-orange-400 rounded"></div>
-                <div className="w-1 h-1 bg-orange-400 rounded"></div>
-            </div>
-            <div className="flex space-x-1">
-                <div className="w-1 h-1 bg-orange-600 rounded"></div>
-                <div className="w-1 h-2 bg-orange-600 rounded"></div>
-                <div className="w-1 h-3 bg-orange-600 rounded"></div>
-                <div className="w-1 h-4 bg-orange-600 rounded"></div>
-            </div>
-        </div>
-    ),
-    "Quick Sort": () => (
-        <div className="flex items-end space-x-1">
-            {[2, 1, 4, 3].map((height, i) => (
-                <div key={i} className={`w-2 h-${height} ${i === 2 ? 'bg-orange-700 animate-pulse' : 'bg-orange-500'} rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Bucket Sort": () => (
-        <div className="grid grid-cols-3 gap-1">
-            {[2, 1, 3].map((items, i) => (
-                <div key={i} className="flex flex-col-reverse space-y-reverse space-y-0.5">
-                    {Array(items).fill(0).map((_, j) => (
-                        <div key={j} className="w-2 h-1 bg-orange-500 rounded"></div>
-                    ))}
-                </div>
-            ))}
-        </div>
-    ),
-    "Counting Sort": () => (
-        <div className="flex space-x-1">
-            {[0, 2, 1, 1].map((count, i) => (
-                <div key={i} className="flex flex-col items-center">
-                    <div className="text-xs text-orange-600">{count}</div>
-                    <div className="w-2 h-2 bg-orange-500 rounded"></div>
-                </div>
-            ))}
-        </div>
-    ),
-    "Radix Sort": () => (
-        <div className="grid grid-cols-2 gap-1">
-            <div className="text-xs text-orange-600">1s</div>
-            <div className="text-xs text-orange-600">10s</div>
-            <div className="flex space-x-0.5">
-                {[1, 2].map(i => (
-                    <div key={i} className="w-1 h-2 bg-orange-500 rounded"></div>
-                ))}
-            </div>
-            <div className="flex space-x-0.5">
-                {[3, 4].map(i => (
-                    <div key={i} className="w-1 h-2 bg-orange-400 rounded"></div>
-                ))}
-            </div>
-        </div>
-    ),
-    "Heap Sort": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-2 bg-orange-600 rounded"></div>
-            <div className="absolute top-3 left-1 w-2 h-2 bg-orange-500 rounded"></div>
-            <div className="absolute top-3 right-1 w-2 h-2 bg-orange-500 rounded"></div>
-            <div className="absolute bottom-0 left-0 w-1.5 h-1.5 bg-orange-400 rounded"></div>
-            <div className="absolute bottom-0 left-2 w-1.5 h-1.5 bg-orange-400 rounded"></div>
-            <div className="absolute bottom-0 right-2 w-1.5 h-1.5 bg-orange-400 rounded"></div>
-            <div className="absolute bottom-0 right-0 w-1.5 h-1.5 bg-orange-400 rounded"></div>
-        </div>
-    ),
-
-    // Searching
-    "Binary Search": () => (
-        <div className="flex items-center space-x-1">
-            <div className="w-2 h-4 bg-red-300 rounded"></div>
-            <div className="w-2 h-4 bg-red-300 rounded"></div>
-            <div className="w-2 h-4 bg-red-600 rounded border-2 border-red-800 animate-pulse"></div>
-            <div className="w-2 h-4 bg-red-300 rounded"></div>
-            <div className="w-2 h-4 bg-red-300 rounded"></div>
-        </div>
-    ),
-    "Linear Search": () => (
-        <div className="flex items-center space-x-1">
-            {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className={`w-2 h-3 ${i === 3 ? 'bg-red-600 animate-pulse' : 'bg-red-400'} rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Jump Search": () => (
-        <div className="flex items-end space-x-1">
-            {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className={`w-2 h-3 ${i % 2 === 1 ? 'bg-red-600' : 'bg-red-300'} rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Interpolation Search": () => (
-        <div className="relative w-8 h-6">
-            <div className="absolute bottom-2 w-full h-0.5 bg-red-300 rounded"></div>
-            <div className="absolute bottom-1 left-5 w-0.5 h-4 bg-red-600 rounded"></div>
-            <div className="absolute bottom-3 left-4 w-2 h-2 bg-red-500 rounded-full"></div>
-        </div>
-    ),
-    "Exponential Search": () => (
-        <div className="flex items-end space-x-1">
-            {[1, 2, 4, 8].map((height, i) => (
-                <div key={i} className={`w-1.5 h-${Math.min(height, 4)} bg-red-500 rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Fibonacci Search": () => (
-        <div className="flex items-center space-x-1">
-            {[1, 1, 2, 3, 5].map((width, i) => (
-                <div key={i} className={`w-${Math.min(width, 3)} h-3 bg-red-500 rounded`}></div>
-            ))}
-        </div>
-    ),
-    "Ternary Search": () => (
-        <div className="flex flex-col space-y-1">
-            <div className="flex space-x-1">
-                {[1, 2, 3].map(i => (
-                    <div key={i} className={`w-3 h-3 ${i === 2 ? 'bg-red-600' : 'bg-red-400'} rounded`}></div>
-                ))}
-            </div>
-            <div className="w-6 h-0.5 bg-red-300 rounded"></div>
-        </div>
-    ),
-    "Block Search": () => (
-        <div className="grid grid-cols-3 gap-1">
-            {[0, 0, 1, 0, 0, 0, 0, 0, 0].map((active, i) => (
-                <div key={i} className={`w-2 h-2 ${active ? 'bg-red-600 animate-pulse' : 'bg-red-300'} rounded`}></div>
-            ))}
-        </div>
-    ),
-
-    // Heap-like Data Structures
-    "Heaps": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-amber-600 rounded-full text-xs text-white flex items-center justify-center font-bold">9</div>
-            <div className="absolute top-5 -left-1 w-4 h-4 bg-amber-500 rounded-full text-xs text-white flex items-center justify-center font-bold">7</div>
-            <div className="absolute top-5 -right-1 w-4 h-4 bg-amber-500 rounded-full text-xs text-white flex items-center justify-center font-bold">8</div>
-        </div>
-    ),
-    "Binomial Queues": () => (
-        <div className="flex space-x-2">
-            <div className="w-2 h-2 bg-amber-600 rounded"></div>
-            <div className="flex flex-col space-y-1">
-                <div className="w-2 h-1 bg-amber-500 rounded"></div>
-                <div className="w-2 h-1 bg-amber-400 rounded"></div>
-            </div>
-        </div>
-    ),
-    "Fibonacci Heaps": () => (
-        <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 bg-amber-600 rounded-full"></div>
-            <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-            <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
-        </div>
-    ),
-    "Leftist Heaps": () => (
-        <div className="relative w-8 h-6">
-            <div className="absolute top-0 left-2 w-3 h-3 bg-amber-600 rounded-full"></div>
-            <div className="absolute top-3 left-0 w-3 h-3 bg-amber-500 rounded-full"></div>
-            <div className="absolute top-6 left-2 w-2 h-2 bg-amber-400 rounded-full"></div>
-        </div>
-    ),
-    "Skew Heaps": () => (
-        <div className="relative w-8 h-6">
-            <div className="absolute top-0 left-3 w-3 h-3 bg-amber-600 rounded-full transform rotate-12"></div>
-            <div className="absolute top-4 left-1 w-3 h-3 bg-amber-500 rounded-full transform -rotate-12"></div>
-            <div className="absolute top-6 right-1 w-2 h-2 bg-amber-400 rounded-full"></div>
-        </div>
-    ),
-
-    // Graph Algorithms
-    "Breadth-First Search": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute top-3 left-1 w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-            <div className="absolute top-3 right-1 w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-            <div className="absolute bottom-1 left-0 w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-            <div className="absolute bottom-1 right-0 w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-        </div>
-    ),
-    "Depth-First Search": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute top-3 left-2 w-2 h-2 bg-cyan-500 rounded-full"></div>
-            <div className="absolute bottom-0 left-3 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
-        </div>
-    ),
-    "Connected Components": () => (
-        <div className="grid grid-cols-2 gap-2">
-            <div className="flex space-x-1">
-                <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full"></div>
-                <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full"></div>
-            </div>
-            <div className="flex space-x-1">
-                <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-            </div>
-        </div>
-    ),
-    "Dijkstra's Shortest Path": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-0 -left-0.5 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute top-2 left-3 w-2 h-2 bg-cyan-500 rounded-full"></div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-cyan-400 rounded-full"></div>
-            <div className="absolute top-1 left-1 w-3 h-0.5 bg-cyan-800 rounded transform rotate-30 origin-left"></div>
-            <div className="absolute top-3 left-4.5 w-4.5 h-0.5 bg-cyan-800 rounded transform rotate-52 origin-left"></div>
-        </div>
-    ),
-    "Prim's Minimum Spanning Tree": () => (
-        <Network className="w-6 h-6 text-cyan-600" />
-    ),
-    "Topological Sort (Indegree)": () => (
-        <div className="flex flex-col space-y-1">
-            <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-cyan-600 rounded"></div>
-                <ArrowRight className="w-3 h-3 text-cyan-500" />
-                <div className="w-2 h-2 bg-cyan-500 rounded"></div>
-            </div>
-            <div className="text-xs text-cyan-600 text-center">0→1</div>
-        </div>
-    ),
-    "Topological Sort (DFS)": () => (
-        <div className="flex flex-col space-y-1">
-            <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-cyan-600 rounded"></div>
-                <div className="w-2 h-2 bg-cyan-500 rounded"></div>
-                <div className="w-2 h-2 bg-cyan-400 rounded"></div>
-            </div>
-            <div className="text-xs text-cyan-600">DFS</div>
-        </div>
-    ),
-    "Floyd-Warshall": () => (
-        <div className="grid grid-cols-3 gap-0.5">
-            {[1, 2, 3, 4, 0, 6, 7, 8, 9].map((val, i) => (
-                <div key={i} className={`w-2 h-2 ${val === 0 ? 'bg-cyan-700' : 'bg-cyan-400'} rounded text-xs`}></div>
-            ))}
-        </div>
-    ),
-    "Kruskal Minimum Spanning Tree": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute top-1 left-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute top-1 right-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute bottom-1 left-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute bottom-1 right-1 w-2 h-2 bg-cyan-600 rounded-full"></div>
-            <div className="absolute top-2 left-2 w-4 h-0.5 bg-cyan-500"></div>
-            <div className="absolute top-2 left-2 w-0.5 h-4 bg-cyan-500"></div>
-            <div className="absolute bottom-2 left-2 w-4 h-0.5 bg-cyan-500"></div>
-        </div>
-    ),
-
-    // Dynamic Programming
-    "Fibonacci Numbers": () => (
-        <div className="flex flex-col items-center">
-            <div className="text-xs text-rose-600 font-mono">F(n-1)</div>
-            <div className="text-xs text-rose-600 font-mono">+</div>
-            <div className="text-xs text-rose-600 font-mono">F(n-2)</div>
-            <div className="flex space-x-1 mt-1">
-                <div className="w-2 h-2 bg-rose-400 rounded animate-pulse duration-1000"></div>
-                <div className="w-2 h-2 bg-rose-500 rounded animate-pulse duration-2000"></div>
-                <div className="w-2 h-2 bg-rose-600 rounded animate-pulse duration-3000"></div>
-            </div>
-        </div>
-    ),
-    "Making Change": () => (
-        <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-rose-600 rounded-full flex items-center justify-center text-xs text-white font-bold">¢</div>
-            <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-rose-400 rounded-full"></div>
-            <Calculator className="w-5 h-5 text-rose-500 animate-pulse" />
-        </div>
-    ),
-    "Longest Common Subsequence": () => (
-        <div className="flex flex-col space-y-1">
-            <div className="text-xs text-rose-600 font-mono">ABCD</div>
-            <div className="text-xs text-rose-500 font-mono">ACBD</div>
-            <div className="text-xs text-rose-700 font-mono underline">A_BD</div>
-        </div>
-    ),
-    "0-1 Knapsack": () => (
-        <div className="relative w-8 h-8">
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-5 bg-rose-600 rounded-b-lg border-2 border-rose-700"></div>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-4 h-2 bg-rose-500 rounded-t-lg"></div>
-            <div className="absolute top-0 left-0 w-2 h-2 bg-amber-400 rounded animate-pulse" title="💎"></div>
-            <div className="absolute top-0 right-0 w-3 h-1.5 bg-blue-400 rounded animate-pulse delay-75" title="📱"></div>
-            <div className="absolute top-2 left-3 w-1.5 h-2.5 bg-green-400 rounded animate-pulse delay-150" title="⌚"></div>
-            <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-amber-300 rounded-full"></div>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-5 h-0.5 bg-rose-800 rounded"></div>
-        </div>
-    ),
-    "House Robber": () => (
-        <div className="flex items-end space-x-1">
-            {[1, 2, 3, 4].map((val, i) => (
-                <div key={i} className="relative flex flex-col items-center">
-                    <div className={`w-4 h-${val + 2} ${i % 2 === 0 ? 'bg-rose-500' : 'bg-rose-300'} rounded-t-lg relative border border-rose-600`}>
-                        <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-b-2 border-l-transparent border-r-transparent border-b-rose-700"></div>
-                        {i % 2 === 0 && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
-                                <div className="absolute text-xs">💰</div>
-                            </div>
-                        )}
-                        {i % 2 === 1 && (
-                            <div className="absolute top-0 right-0 w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
-                        )}
-                    </div>
-                    <div className="text-xs text-rose-600 mt-1">{i}</div>
-                </div>
-            ))}
-        </div>
-    )
-};
-
-const algorithmCategories = [
+const CATEGORIES = [
     {
-        name: "Basics",
-        color: "bg-blue-500",
-        lightColor: "bg-blue-50",
-        borderColor: "border-blue-200",
-        textColor: "text-blue-700",
-        algorithms: [
-            "Stack: Array",
-            "Stack: Linked List",
-            "Queues: Array",
-            "Queues: Linked List",
-            "Lists: Array",
-            "Lists: Linked List"
-        ]
+        name:        'Basics',
+        slug:        'basics',
+        icon:        <Layers className="w-6 h-6" />,
+        description: 'Stacks, Queues & Linked Lists',
+        algorithms:  ['Stack: Array', 'Stack: Linked List', 'Queues: Array', 'Queues: Linked List', 'Lists: Array', 'Lists: Linked List'],
+        gradient:    'from-blue-500 to-cyan-500',
+        border:      'border-blue-500/30',
+        hoverBorder: 'hover:border-blue-400',
+        glow:        'hover:shadow-blue-500/20',
+        badge:       'bg-blue-500/10 text-blue-300',
     },
     {
-        name: "Recursion",
-        color: "bg-green-500",
-        lightColor: "bg-green-50",
-        borderColor: "border-green-200",
-        textColor: "text-green-700",
-        algorithms: [
-            "Factorial",
-            "String Reversal",
-            "Fibonacci Sequence",
-            "N-Queens",
-            "Maze Solver",
-            "Tower of Hanoi",
-        ]
+        name:        'Recursion',
+        slug:        'recursion',
+        icon:        <RefreshCw className="w-6 h-6" />,
+        description: 'Call Stacks & Backtracking',
+        algorithms:  ['Factorial', 'Fibonacci Sequence', 'Tower of Hanoi', 'N-Queens', 'Maze Solver', 'String Reversal'],
+        gradient:    'from-emerald-500 to-teal-500',
+        border:      'border-emerald-500/30',
+        hoverBorder: 'hover:border-emerald-400',
+        glow:        'hover:shadow-emerald-500/20',
+        badge:       'bg-emerald-500/10 text-emerald-300',
     },
     {
-        name: "Indexing",
-        color: "bg-purple-500",
-        lightColor: "bg-purple-50",
-        borderColor: "border-purple-200",
-        textColor: "text-purple-700",
-        algorithms: [
-            "Binary and Linear Search",
-            "Binary Search Trees",
-            "AVL Trees",
-            "Red-Black Trees",
-            "Splay Trees",
-            "Open Hash Tables",
-            "Closed Hash Tables",
-            "Closed Hash Tables with Buckets",
-            "Trie (Prefix Tree)",
-            "Radix Tree",
-            "Ternary Search Tree",
-            "B Trees",
-            "B+ Trees"
-        ]
+        name:        'Sorting',
+        slug:        'sorting',
+        icon:        <ArrowUpDown className="w-6 h-6" />,
+        description: 'Compare & Swap Algorithms',
+        algorithms:  ['Bubble Sort', 'Selection Sort', 'Insertion Sort', 'Merge Sort', 'Quick Sort', 'Heap Sort', 'Radix Sort', 'Bucket Sort'],
+        gradient:    'from-orange-500 to-amber-500',
+        border:      'border-orange-500/30',
+        hoverBorder: 'hover:border-orange-400',
+        glow:        'hover:shadow-orange-500/20',
+        badge:       'bg-orange-500/10 text-orange-300',
     },
     {
-        name: "Sorting",
-        color: "bg-orange-500",
-        lightColor: "bg-orange-50",
-        borderColor: "border-orange-200",
-        textColor: "text-orange-700",
-        algorithms: [
-            "Bubble Sort",
-            "Selection Sort",
-            "Insertion Sort",
-            "Shell Sort",
-            "Merge Sort",
-            "Quick Sort",
-            "Bucket Sort",
-            "Counting Sort",
-            "Radix Sort",
-            "Heap Sort"
-        ]
+        name:        'Searching',
+        slug:        'searching',
+        icon:        <Search className="w-6 h-6" />,
+        description: 'Find Targets Efficiently',
+        algorithms:  ['Binary Search', 'Linear Search', 'Jump Search', 'Interpolation Search', 'Exponential Search', 'Fibonacci Search', 'Ternary Search', 'Block Search'],
+        gradient:    'from-red-500 to-rose-500',
+        border:      'border-red-500/30',
+        hoverBorder: 'hover:border-red-400',
+        glow:        'hover:shadow-red-500/20',
+        badge:       'bg-red-500/10 text-red-300',
     },
     {
-        name: "Searching",
-        color: "bg-red-400",
-        lightColor: "bg-red-50",
-        borderColor: "border-red-200",
-        textColor: "text-red-700",
-        algorithms: [
-            "Binary Search",
-            "Linear Search",
-            "Jump Search",
-            "Interpolation Search",
-            "Exponential Search",
-            "Fibonacci Search",
-            "Ternary Search",
-            "Block Search",
-        ]
+        name:        'Heap Structures',
+        slug:        'heap-like-data-structures',
+        icon:        <Database className="w-6 h-6" />,
+        description: 'Priority Queues & Heapify',
+        algorithms:  ['Heaps', 'Binomial Queues', 'Fibonacci Heaps', 'Leftist Heaps', 'Skew Heaps'],
+        gradient:    'from-amber-500 to-yellow-500',
+        border:      'border-amber-500/30',
+        hoverBorder: 'hover:border-amber-400',
+        glow:        'hover:shadow-amber-500/20',
+        badge:       'bg-amber-500/10 text-amber-300',
     },
     {
-        name: "Heap-like Data Structures",
-        color: "bg-amber-500",
-        lightColor: "bg-amber-50",
-        borderColor: "border-amber-200",
-        textColor: "text-amber-700",
-        algorithms: [
-            "Heaps",
-            "Binomial Queues",
-            "Fibonacci Heaps",
-            "Leftist Heaps",
-            "Skew Heaps"
-        ]
+        name:        'Dynamic Prog.',
+        slug:        'dynamic-programming',
+        icon:        <Brain className="w-6 h-6" />,
+        description: 'Memoisation & Tabulation',
+        algorithms:  ['Fibonacci Numbers', 'Making Change', 'Longest Common Subsequence', '0-1 Knapsack', 'House Robber'],
+        gradient:    'from-rose-500 to-pink-600',
+        border:      'border-rose-500/30',
+        hoverBorder: 'hover:border-rose-400',
+        glow:        'hover:shadow-rose-500/20',
+        badge:       'bg-rose-500/10 text-rose-300',
     },
     {
-        name: "Graph Algorithms",
-        color: "bg-cyan-500",
-        lightColor: "bg-cyan-50",
-        borderColor: "border-cyan-200",
-        textColor: "text-cyan-700",
-        algorithms: [
-            "Breadth-First Search",
-            "Depth-First Search",
-            "Connected Components",
-            "Dijkstra's Shortest Path",
-            "Prim's Minimum Spanning Tree",
-            "Topological Sort (Indegree)",
-            "Topological Sort (DFS)",
-            "Floyd-Warshall",
-            "Kruskal Minimum Spanning Tree"
-        ]
+        name:        'Graph Algorithms',
+        slug:        'graph-algorithms',
+        icon:        <GitBranch className="w-6 h-6" />,
+        description: 'Traversal & Shortest Paths',
+        algorithms:  ['BFS', 'DFS', 'Dijkstra\'s', 'Prim\'s MST', 'Kruskal\'s MST', 'Floyd-Warshall', 'Topological Sort'],
+        gradient:    'from-cyan-500 to-sky-600',
+        border:      'border-cyan-500/30',
+        hoverBorder: 'hover:border-cyan-400',
+        glow:        'hover:shadow-cyan-500/20',
+        badge:       'bg-cyan-500/10 text-cyan-300',
     },
     {
-        name: "Dynamic Programming",
-        color: "bg-rose-500",
-        lightColor: "bg-rose-50",
-        borderColor: "border-rose-200",
-        textColor: "text-rose-700",
-        algorithms: [
-            "Fibonacci Numbers",
-            "Making Change",
-            "Longest Common Subsequence",
-            "0-1 Knapsack",
-            "House Robber"
-        ]
-    }
+        name:        'Cheatsheet',
+        slug:        'cheatsheet',
+        icon:        <BarChart2 className="w-6 h-6" />,
+        description: 'Quick Complexity Reference',
+        algorithms:  ['Time Complexity', 'Space Complexity', 'Big-O', 'Sorting Table', 'Graph Table', 'Data Structures'],
+        gradient:    'from-violet-500 to-indigo-600',
+        border:      'border-violet-500/30',
+        hoverBorder: 'hover:border-violet-400',
+        glow:        'hover:shadow-violet-500/20',
+        badge:       'bg-violet-500/10 text-violet-300',
+    },
 ];
 
-const AlgorithmsGrid = () => (
-    <section id="explore" className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    Explore All Algorithms & Data Structures
-                </h2>
-                <p className="text-xl text-gray-600">
-                    Choose from our comprehensive collection with visual representations
-                </p>
+function CategoryCard({ cat, index }) {
+    const [hovered, setHovered] = useState(false);
+
+    return (
+        <Link
+            href={`/${cat.slug}`}
+            className={`group relative rounded-2xl p-6 bg-slate-900/80 border ${cat.border} ${cat.hoverBorder} hover:shadow-xl ${cat.glow} transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1 flex flex-col gap-4 animate-fade-in-up`}
+            style={{ animationDelay: `${index * 0.07}s` }}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
+            {/* Top: icon + count */}
+            <div className="flex items-start justify-between">
+                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    {cat.icon}
+                </div>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${cat.badge}`}>
+                    {cat.algorithms.length} topics
+                </span>
             </div>
 
-            <div className="space-y-12">
-                {algorithmCategories.map((category, categoryIndex) => (
-                    <div key={categoryIndex} className="space-y-6">
-                        {/* Category Header */}
-                        <div className="flex items-center space-x-4">
-                            <div className={`w-6 h-6 ${category.color} rounded-lg`}></div>
-                            <h3 className={`text-2xl font-bold ${category.textColor}`}>
-                                <Link href={`/${category.name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}`}>
-                                    {category.name}
-                                </Link>
-                            </h3>
-                            <div className="flex-1 h-0.5 bg-gray-200"></div>
-                        </div>
+            {/* Name + description */}
+            <div>
+                <h3 className="text-white font-bold text-xl mb-1 group-hover:text-white transition-colors">{cat.name}</h3>
+                <p className="text-slate-400 text-sm">{cat.description}</p>
+            </div>
 
-                        {/* Algorithm Tiles */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                            {category.algorithms.map((algorithm, algorithmIndex) => {
-                                const Visual = AlgorithmVisuals[algorithm];
-                                return (
-                                    <Link
-                                        key={algorithmIndex}
-                                        href={`/${category.name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}/${algorithm.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '')}`}
-                                        className={`${category.lightColor} ${category.borderColor} border-2 rounded-xl p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 group cursor-pointer`}
-                                    >
-                                        <div className="flex flex-col items-center space-y-3">
-                                            {/* Visual Representation */}
-                                            <div className="w-16 h-16 flex items-center justify-center">
-                                                {Visual ? <Visual /> : (
-                                                    <div className={`w-8 h-8 ${category.color} rounded-lg`}></div>
-                                                )}
-                                            </div>
-
-                                            {/* Algorithm Name */}
-                                            <div className="text-center">
-                                                <h4 className={`font-semibold ${category.textColor} text-sm leading-tight`}>
-                                                    {algorithm}
-                                                </h4>
-                                            </div>
-
-                                            {/* Hover Arrow */}
-                                            <ArrowRight className={`h-4 w-4 ${category.textColor} opacity-0 group-hover:opacity-100 transition-opacity`} />
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    </div>
+            {/* Algorithm chips */}
+            <div className="flex flex-wrap gap-1.5">
+                {cat.algorithms.slice(0, 4).map(a => (
+                    <span key={a} className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 border border-slate-700">
+                        {a}
+                    </span>
                 ))}
+                {cat.algorithms.length > 4 && (
+                    <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-500 border border-slate-700">
+                        +{cat.algorithms.length - 4} more
+                    </span>
+                )}
             </div>
-        </div>
-    </section>
-);
 
-export default AlgorithmsGrid;
+            {/* Explore CTA */}
+            <div className={`flex items-center gap-2 text-sm font-medium bg-gradient-to-r ${cat.gradient} bg-clip-text text-transparent opacity-80 group-hover:opacity-100 transition-opacity`}>
+                Explore
+                <ArrowRight className={`w-4 h-4 transition-all duration-200 ${hovered ? 'translate-x-1' : ''}`}
+                    style={{ color: 'currentColor' }}
+                />
+            </div>
+
+            {/* Hover gradient strip at bottom */}
+            <div className={`absolute bottom-0 inset-x-0 h-0.5 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r ${cat.gradient}`} />
+        </Link>
+    );
+}
+
+export default function AlgorithmsGrid() {
+    return (
+        <section id="explore" className="relative bg-slate-950 py-24">
+            {/* top separator */}
+            <div className="pointer-events-none absolute top-0 inset-x-0 h-px"
+                style={{ background: 'linear-gradient(90deg,transparent,#8b5cf6,transparent)' }} />
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="text-center mb-14 space-y-4">
+                    <span className="inline-block text-xs font-semibold tracking-widest uppercase text-violet-400 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-1.5">
+                        All Topics
+                    </span>
+                    <h2 className="text-4xl sm:text-5xl font-bold text-white tracking-tight">
+                        Pick your
+                        <span
+                            className="gradient-text ml-3"
+                            style={{ backgroundImage: 'linear-gradient(135deg,#a78bfa,#38bdf8)' }}
+                        >
+                            starting point
+                        </span>
+                    </h2>
+                    <p className="text-slate-400 text-lg max-w-xl mx-auto">
+                        Eight categories, 38+ algorithms — each with animations, explanations, and code.
+                    </p>
+                </div>
+
+                {/* Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    {CATEGORIES.map((cat, i) => (
+                        <CategoryCard key={cat.slug} cat={cat} index={i} />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}

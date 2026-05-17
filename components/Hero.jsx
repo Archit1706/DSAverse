@@ -1,336 +1,383 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Play, Code, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import {
+    Play, ArrowRight, Github, ChevronDown,
+    Zap, BookOpen, BarChart2, Network,
+} from 'lucide-react';
 
-const BubbleSortVisualizer = () => {
-    const [animationStep, setAnimationStep] = useState(0);
-    const [sortingArray, setSortingArray] = useState([64, 34, 25, 12, 22, 11, 90]);
-    const [comparing, setComparing] = useState([]);
-    const [sorted, setSorted] = useState([]);
+/* ─── Cycling words ──────────────────────────────────── */
+const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.'];
+
+function WordCycler() {
+    const [idx, setIdx] = useState(0);
+    const [visible, setVisible] = useState(true);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setAnimationStep((prev) => (prev + 1) % 8);
-        }, 2000);
-        return () => clearInterval(interval);
+        const tick = setInterval(() => {
+            setVisible(false);
+            setTimeout(() => {
+                setIdx(i => (i + 1) % WORDS.length);
+                setVisible(true);
+            }, 350);
+        }, 2200);
+        return () => clearInterval(tick);
     }, []);
 
+    return (
+        <span
+            className="inline-block gradient-text"
+            style={{
+                backgroundImage: 'linear-gradient(135deg,#60a5fa,#a78bfa,#34d399)',
+                transition: 'opacity 0.3s ease, transform 0.3s ease',
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'translateY(0)' : 'translateY(12px)',
+                minWidth: '11ch',
+            }}
+        >
+            {WORDS[idx]}
+        </span>
+    );
+}
+
+/* ─── Mini sort visualizer ───────────────────────────── */
+const SORT_STEPS = [
+    { arr: [64, 34, 25, 12, 22, 11, 90], hi: [0, 1], done: [] },
+    { arr: [34, 64, 25, 12, 22, 11, 90], hi: [1, 2], done: [] },
+    { arr: [34, 25, 64, 12, 22, 11, 90], hi: [2, 3], done: [] },
+    { arr: [34, 25, 12, 64, 22, 11, 90], hi: [3, 4], done: [] },
+    { arr: [34, 25, 12, 22, 64, 11, 90], hi: [4, 5], done: [] },
+    { arr: [34, 25, 12, 22, 11, 64, 90], hi: [],     done: [6] },
+    { arr: [11, 12, 22, 25, 34, 64, 90], hi: [],     done: [0, 1, 2, 3, 4, 5, 6] },
+    { arr: [11, 12, 22, 25, 34, 64, 90], hi: [],     done: [0, 1, 2, 3, 4, 5, 6] },
+];
+
+function MiniVisualizer() {
+    const [step, setStep] = useState(0);
     useEffect(() => {
-        const steps = [
-            { array: [64, 34, 25, 12, 22, 11, 90], comparing: [0, 1], sorted: [] },
-            { array: [34, 64, 25, 12, 22, 11, 90], comparing: [1, 2], sorted: [] },
-            { array: [34, 25, 64, 12, 22, 11, 90], comparing: [2, 3], sorted: [] },
-            { array: [34, 25, 12, 64, 22, 11, 90], comparing: [3, 4], sorted: [] },
-            { array: [34, 25, 12, 22, 64, 11, 90], comparing: [4, 5], sorted: [] },
-            { array: [34, 25, 12, 22, 11, 64, 90], comparing: [5, 6], sorted: [] },
-            { array: [34, 25, 12, 22, 11, 64, 90], comparing: [], sorted: [6] },
-            { array: [11, 12, 22, 25, 34, 64, 90], comparing: [], sorted: [0, 1, 2, 3, 4, 5, 6] }
-        ];
-        const currentStep = steps[animationStep];
-        setSortingArray(currentStep.array);
-        setComparing(currentStep.comparing);
-        setSorted(currentStep.sorted);
-    }, [animationStep]);
+        const t = setInterval(() => setStep(s => (s + 1) % SORT_STEPS.length), 1000);
+        return () => clearInterval(t);
+    }, []);
+    const { arr, hi, done } = SORT_STEPS[step];
+    const max = Math.max(...arr);
 
     return (
-        <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 backdrop-blur-sm rounded-2xl p-6 border border-blue-300/30 shadow-xl">
-            <div className="mb-4">
-                <h3 className="text-xl font-bold mb-2 text-blue-100">Bubble Sort</h3>
-                <div className="flex items-end justify-center space-x-2 h-36">
-                    {sortingArray.map((value, index) => (
+        <div className="flex items-end justify-center gap-1.5 h-28">
+            {arr.map((v, i) => {
+                const isHi   = hi.includes(i);
+                const isDone = done.includes(i);
+                return (
+                    <div key={i} className="flex flex-col items-center gap-1">
                         <div
-                            key={index}
-                            className={`flex flex-col items-center transition-all duration-700 ease-in-out ${comparing.includes(index)
-                                ? 'transform scale-110 animate-pulse'
-                                : sorted.includes(index)
-                                    ? 'opacity-90'
-                                    : ''
-                                }`}
-                        >
-                            <div
-                                className={`w-10 rounded-t-lg transition-all duration-700 ease-in-out shadow-lg ${comparing.includes(index)
-                                    ? 'bg-gradient-to-t from-red-400 to-red-300 shadow-red-400/50'
-                                    : sorted.includes(index)
-                                        ? 'bg-gradient-to-t from-emerald-400 to-emerald-300 shadow-emerald-400/50'
-                                        : 'bg-gradient-to-t from-blue-400 to-blue-300 shadow-blue-400/50'
-                                    }`}
-                                style={{ height: `${value * 1.2}px` }}
-                            />
-                            <span className="text-sm mt-2 text-blue-100 font-medium">{value}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className="text-center">
-                <span className="text-sm text-blue-200 bg-blue-900/30 px-3 py-1 rounded-full">
-                    {comparing.length > 0 ? `Comparing ${sortingArray[comparing[0]]} and ${sortingArray[comparing[1]]}` :
-                        sorted.length === sortingArray.length ? '✨ Sorting Complete!' : 'Starting sort...'}
-                </span>
-            </div>
+                            className="w-8 rounded-t transition-all duration-500"
+                            style={{
+                                height: `${(v / max) * 96}px`,
+                                background: isDone
+                                    ? 'linear-gradient(to top,#10b981,#34d399)'
+                                    : isHi
+                                        ? 'linear-gradient(to top,#f59e0b,#fbbf24)'
+                                        : 'linear-gradient(to top,#6366f1,#818cf8)',
+                                boxShadow: isDone
+                                    ? '0 0 12px rgba(16,185,129,0.5)'
+                                    : isHi
+                                        ? '0 0 12px rgba(245,158,11,0.6)'
+                                        : 'none',
+                            }}
+                        />
+                        <span className="text-[10px] text-slate-400 font-mono">{v}</span>
+                    </div>
+                );
+            })}
         </div>
     );
-};
+}
 
-const SelectionSortVisualizer = () => {
-    const [animationStep, setAnimationStep] = useState(0);
-    const [sortingArray, setSortingArray] = useState([64, 34, 25, 12, 22, 11, 90]);
-    const [current, setCurrent] = useState(-1);
-    const [minimum, setMinimum] = useState(-1);
-    const [sorted, setSorted] = useState([]);
+/* ─── Floating background nodes ─────────────────────── */
+const BG_NODES = [
+    { top: '12%', left: '8%',  size: 6,  delay: '0s',    dur: '5s'  },
+    { top: '35%', left: '3%',  size: 4,  delay: '1.5s',  dur: '7s'  },
+    { top: '68%', left: '12%', size: 8,  delay: '0.8s',  dur: '6s'  },
+    { top: '80%', left: '5%',  size: 5,  delay: '2.2s',  dur: '5.5s'},
+    { top: '20%', right: '6%', size: 7,  delay: '0.4s',  dur: '6.5s'},
+    { top: '55%', right: '4%', size: 5,  delay: '1.8s',  dur: '7s'  },
+    { top: '75%', right: '9%', size: 9,  delay: '1s',    dur: '5s'  },
+    { top: '10%', left: '45%', size: 4,  delay: '3s',    dur: '8s'  },
+    { top: '90%', left: '55%', size: 6,  delay: '2s',    dur: '6s'  },
+];
+
+const CODE_FRAGMENTS = [
+    { text: 'O(n log n)', top: '15%', left: '7%',  delay: '0s'   },
+    { text: '[]',         top: '42%', left: '2%',  delay: '2s'   },
+    { text: '→',          top: '70%', left: '10%', delay: '1s'   },
+    { text: 'O(1)',        top: '25%', right: '5%', delay: '1.5s' },
+    { text: '{}',         top: '60%', right: '3%', delay: '0.5s' },
+    { text: 'n²',         top: '85%', right: '8%', delay: '3s'   },
+];
+
+/* ─── Stat counter ───────────────────────────────────── */
+function useCountUp(target, duration = 1600, trigger = true) {
+    const [val, setVal] = useState(0);
+    useEffect(() => {
+        if (!trigger) return;
+        const start = performance.now();
+        const raf = (now) => {
+            const t = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - t, 3);
+            setVal(Math.round(ease * target));
+            if (t < 1) requestAnimationFrame(raf);
+        };
+        requestAnimationFrame(raf);
+    }, [target, duration, trigger]);
+    return val;
+}
+
+const STATS = [
+    { label: 'Algorithms',       value: 38, suffix: '+', icon: <Zap className="w-5 h-5" />        },
+    { label: 'Categories',       value: 8,  suffix: '',  icon: <Network className="w-5 h-5" />     },
+    { label: 'Interactive Demos',value: 38, suffix: '+', icon: <BarChart2 className="w-5 h-5" />   },
+    { label: 'Completely Free',  value: 100,suffix: '%', icon: <BookOpen className="w-5 h-5" />    },
+];
+
+function StatCard({ stat, index }) {
+    const ref = useRef(null);
+    const [started, setStarted] = useState(false);
+    const val = useCountUp(stat.value, 1400, started);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setAnimationStep((prev) => (prev + 1) % 8);
-        }, 2000);
-        return () => clearInterval(interval);
+        const obs = new IntersectionObserver(
+            ([e]) => { if (e.isIntersecting) { setStarted(true); obs.disconnect(); } },
+            { threshold: 0.5 }
+        );
+        if (ref.current) obs.observe(ref.current);
+        return () => obs.disconnect();
     }, []);
 
-    useEffect(() => {
-        const steps = [
-            { array: [64, 34, 25, 12, 22, 11, 90], current: 0, minimum: 5, sorted: [] },
-            { array: [11, 34, 25, 12, 22, 64, 90], current: 1, minimum: 3, sorted: [0] },
-            { array: [11, 12, 25, 34, 22, 64, 90], current: 2, minimum: 4, sorted: [0, 1] },
-            { array: [11, 12, 22, 34, 25, 64, 90], current: 3, minimum: 4, sorted: [0, 1, 2] },
-            { array: [11, 12, 22, 25, 34, 64, 90], current: 4, minimum: -1, sorted: [0, 1, 2, 3] },
-            { array: [11, 12, 22, 25, 34, 64, 90], current: 5, minimum: -1, sorted: [0, 1, 2, 3, 4] },
-            { array: [11, 12, 22, 25, 34, 64, 90], current: -1, minimum: -1, sorted: [0, 1, 2, 3, 4, 5] },
-            { array: [11, 12, 22, 25, 34, 64, 90], current: -1, minimum: -1, sorted: [0, 1, 2, 3, 4, 5, 6] }
-        ];
-        const currentStep = steps[animationStep];
-        setSortingArray(currentStep.array);
-        setCurrent(currentStep.current);
-        setMinimum(currentStep.minimum);
-        setSorted(currentStep.sorted);
-    }, [animationStep]);
-
     return (
-        <div className="bg-gradient-to-br from-emerald-500/20 to-teal-600/20 backdrop-blur-sm rounded-2xl p-6 border border-emerald-300/30 shadow-xl">
-            <div className="mb-4">
-                <h3 className="text-xl font-bold mb-2 text-emerald-100">Selection Sort</h3>
-                <div className="flex items-end justify-center space-x-2 h-36">
-                    {sortingArray.map((value, index) => (
-                        <div
-                            key={index}
-                            className={`flex flex-col items-center transition-all duration-700 ease-in-out ${index === current
-                                ? 'transform scale-110 animate-bounce'
-                                : index === minimum
-                                    ? 'transform scale-105 animate-pulse'
-                                    : sorted.includes(index)
-                                        ? 'opacity-90'
-                                        : ''
-                                }`}
-                        >
-                            <div
-                                className={`w-10 rounded-t-lg transition-all duration-700 ease-in-out shadow-lg ${index === current
-                                    ? 'bg-gradient-to-t from-orange-400 to-orange-300 shadow-orange-400/50'
-                                    : index === minimum
-                                        ? 'bg-gradient-to-t from-yellow-400 to-yellow-300 shadow-yellow-400/50'
-                                        : sorted.includes(index)
-                                            ? 'bg-gradient-to-t from-emerald-400 to-emerald-300 shadow-emerald-400/50'
-                                            : 'bg-gradient-to-t from-teal-400 to-teal-300 shadow-teal-400/50'
-                                    }`}
-                                style={{ height: `${value * 1.2}px` }}
-                            />
-                            <span className="text-sm mt-2 text-emerald-100 font-medium">{value}</span>
-                        </div>
-                    ))}
-                </div>
+        <div
+            ref={ref}
+            className="animate-fade-in-up glass rounded-2xl px-6 py-5 text-center group hover:scale-105 transition-transform duration-300 cursor-default"
+            style={{ animationDelay: `${0.6 + index * 0.1}s` }}
+        >
+            <div className="flex justify-center mb-2 text-indigo-400 group-hover:text-indigo-300 transition-colors">
+                {stat.icon}
             </div>
-            <div className="text-center">
-                <span className="text-sm text-emerald-200 bg-emerald-900/30 px-3 py-1 rounded-full">
-                    {current >= 0 ? `Finding minimum from position ${current}` :
-                        sorted.length === sortingArray.length ? '✨ Sorting Complete!' : 'Starting sort...'}
-                </span>
+            <div className="text-3xl font-bold text-white font-mono tracking-tight">
+                {val}{stat.suffix}
             </div>
+            <div className="text-sm text-slate-400 mt-0.5">{stat.label}</div>
         </div>
     );
-};
+}
 
-const InsertionSortVisualizer = () => {
-    const [animationStep, setAnimationStep] = useState(0);
-    const [sortingArray, setSortingArray] = useState([64, 34, 25, 12, 22, 11, 90]);
-    const [current, setCurrent] = useState(-1);
-    const [sorted, setSorted] = useState([]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setAnimationStep((prev) => (prev + 1) % 8);
-        }, 2000);
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        const steps = [
-            { array: [64, 34, 25, 12, 22, 11, 90], current: 1, sorted: [0] },
-            { array: [34, 64, 25, 12, 22, 11, 90], current: 2, sorted: [0, 1] },
-            { array: [25, 34, 64, 12, 22, 11, 90], current: 3, sorted: [0, 1, 2] },
-            { array: [12, 25, 34, 64, 22, 11, 90], current: 4, sorted: [0, 1, 2, 3] },
-            { array: [12, 22, 25, 34, 64, 11, 90], current: 5, sorted: [0, 1, 2, 3, 4] },
-            { array: [11, 12, 22, 25, 34, 64, 90], current: 6, sorted: [0, 1, 2, 3, 4, 5] },
-            { array: [11, 12, 22, 25, 34, 64, 90], current: -1, sorted: [0, 1, 2, 3, 4, 5, 6] },
-            { array: [11, 12, 22, 25, 34, 64, 90], current: -1, sorted: [0, 1, 2, 3, 4, 5, 6] }
-        ];
-        const currentStep = steps[animationStep];
-        setSortingArray(currentStep.array);
-        setCurrent(currentStep.current);
-        setSorted(currentStep.sorted);
-    }, [animationStep]);
-
+/* ─── Hero ───────────────────────────────────────────── */
+export default function Hero() {
     return (
-        <div className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 backdrop-blur-sm rounded-2xl p-6 border border-purple-300/30 shadow-xl">
-            <div className="mb-4">
-                <h3 className="text-xl font-bold mb-2 text-purple-100">Insertion Sort</h3>
-                <div className="flex items-end justify-center space-x-2 h-36">
-                    {sortingArray.map((value, index) => (
-                        <div
-                            key={index}
-                            className={`flex flex-col items-center transition-all duration-700 ease-in-out ${index === current
-                                ? 'transform scale-110 animate-pulse'
-                                : sorted.includes(index)
-                                    ? 'opacity-90'
-                                    : ''
-                                }`}
-                        >
-                            <div
-                                className={`w-10 rounded-t-lg transition-all duration-700 ease-in-out shadow-lg ${index === current
-                                    ? 'bg-gradient-to-t from-pink-400 to-pink-300 shadow-pink-400/50'
-                                    : sorted.includes(index)
-                                        ? 'bg-gradient-to-t from-emerald-400 to-emerald-300 shadow-emerald-400/50'
-                                        : 'bg-gradient-to-t from-purple-400 to-purple-300 shadow-purple-400/50'
-                                    }`}
-                                style={{ height: `${value * 1.2}px` }}
-                            />
-                            <span className="text-sm mt-2 text-purple-100 font-medium">{value}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className="text-center">
-                <span className="text-sm text-purple-200 bg-purple-900/30 px-3 py-1 rounded-full">
-                    {current >= 0 ? `Inserting element at position ${current}` :
-                        sorted.length === sortingArray.length ? '✨ Sorting Complete!' : 'Starting sort...'}
-                </span>
-            </div>
-        </div>
-    );
-};
+        <section className="relative min-h-screen bg-slate-950 overflow-hidden flex flex-col">
 
-const SortingCarousel = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const visualizers = [
-        { component: <BubbleSortVisualizer />, name: "Bubble Sort" },
-        { component: <SelectionSortVisualizer />, name: "Selection Sort" },
-        { component: <InsertionSortVisualizer />, name: "Insertion Sort" }
-    ];
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % visualizers.length);
-        }, 8000);
-        return () => clearInterval(interval);
-    }, []);
-
-    const goToPrevious = () => {
-        setCurrentIndex((prev) => (prev - 1 + visualizers.length) % visualizers.length);
-    };
-
-    const goToNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % visualizers.length);
-    };
-
-    return (
-        <div className="relative">
-            <div className="overflow-hidden rounded-2xl">
+            {/* ── Background gradient orbs ── */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                {/* Primary orb */}
                 <div
-                    className="flex transition-transform duration-1000 ease-in-out"
-                    style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-                >
-                    {visualizers.map((visualizer, index) => (
-                        <div key={index} className="w-full flex-shrink-0">
-                            {visualizer.component}
-                        </div>
-                    ))}
-                </div>
+                    className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full animate-blob opacity-20"
+                    style={{ background: 'radial-gradient(circle,#6366f1,#8b5cf6,transparent 70%)' }}
+                />
+                {/* Secondary orb */}
+                <div
+                    className="absolute -bottom-60 -right-60 w-[700px] h-[700px] rounded-full animate-blob opacity-15"
+                    style={{
+                        background: 'radial-gradient(circle,#06b6d4,#3b82f6,transparent 70%)',
+                        animationDelay: '3s',
+                    }}
+                />
+                {/* Subtle grid pattern */}
+                <div
+                    className="absolute inset-0 opacity-[0.04]"
+                    style={{
+                        backgroundImage:
+                            'linear-gradient(#6366f1 1px,transparent 1px),linear-gradient(90deg,#6366f1 1px,transparent 1px)',
+                        backgroundSize: '60px 60px',
+                    }}
+                />
             </div>
 
-            {/* Navigation buttons */}
-            <button
-                onClick={goToPrevious}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg"
-            >
-                <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-                onClick={goToNext}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg"
-            >
-                <ChevronRight className="h-5 w-5" />
-            </button>
-
-            {/* Dots indicator */}
-            <div className="flex justify-center mt-4 space-x-2">
-                {visualizers.map((_, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setCurrentIndex(index)}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex
-                            ? 'bg-white shadow-lg scale-110'
-                            : 'bg-white/40 hover:bg-white/60'
-                            }`}
+            {/* ── Floating code fragments ── */}
+            <div className="pointer-events-none absolute inset-0">
+                {CODE_FRAGMENTS.map((f, i) => (
+                    <span
+                        key={i}
+                        className="absolute text-xs font-mono text-indigo-500/40 animate-float-slow select-none"
+                        style={{
+                            top: f.top, left: f.left, right: f.right,
+                            animationDelay: f.delay,
+                            animationDuration: '7s',
+                        }}
+                    >
+                        {f.text}
+                    </span>
+                ))}
+                {/* Floating dot nodes */}
+                {BG_NODES.map((n, i) => (
+                    <div
+                        key={i}
+                        className="absolute rounded-full bg-indigo-500/20 animate-float"
+                        style={{
+                            top: n.top, left: n.left, right: n.right,
+                            width: n.size, height: n.size,
+                            animationDelay: n.delay,
+                            animationDuration: n.dur,
+                        }}
                     />
                 ))}
             </div>
 
-            {/* Algorithm name indicator */}
-            <div className="text-center mt-3">
-                <span className="text-lg font-semibold text-white/90 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
-                    {visualizers[currentIndex].name}
-                </span>
-            </div>
-        </div>
-    );
-};
+            {/* ── Main content ── */}
+            <div className="relative z-10 flex-1 flex items-center">
+                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-const Hero = () => (
-    <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white min-h-screen">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-indigo-700/20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div className="z-10">
-                    <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-                        Master Data Structures & Algorithms
-                        <span className="block bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent">
-                            Visually
-                        </span>
-                    </h1>
-                    <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                        Interactive visualizations, step-by-step explanations, and comprehensive examples
-                        to help you understand complex algorithms and data structures with ease.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Link href="#explore" className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center shadow-xl hover:shadow-2xl transform hover:scale-105">
-                            <Play className="mr-2 h-5 w-5" />
-                            Start Learning
-                        </Link>
-                        <Link href="https://github.com/Archit1706/dsaverse" target="_blank" className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 flex items-center justify-center backdrop-blur-sm bg-white/10">
-                            <Code className="mr-2 h-5 w-5" />
-                            View Code
-                        </Link>
+                        {/* Left ─ copy */}
+                        <div className="space-y-8">
+                            {/* Badge */}
+                            <div className="animate-fade-in-up delay-100 inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-sm text-indigo-300 border border-indigo-500/30">
+                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                Interactive Learning Platform
+                            </div>
+
+                            {/* Headline */}
+                            <div className="space-y-2">
+                                <h1
+                                    className="animate-fade-in-up delay-200 text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight"
+                                >
+                                    Master
+                                </h1>
+                                <h1
+                                    className="animate-fade-in-up delay-300 text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight"
+                                >
+                                    <WordCycler />
+                                </h1>
+                                <h1
+                                    className="animate-fade-in-up delay-400 text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight"
+                                >
+                                    Visually.
+                                </h1>
+                            </div>
+
+                            {/* Description */}
+                            <p
+                                className="animate-fade-in-up delay-500 text-lg text-slate-400 leading-relaxed max-w-lg"
+                            >
+                                Step-by-step interactive animations for every major algorithm and
+                                data structure. Watch the logic unfold, not just the code.
+                            </p>
+
+                            {/* CTA buttons */}
+                            <div className="animate-fade-in-up delay-600 flex flex-wrap gap-4">
+                                <Link
+                                    href="/sorting"
+                                    className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.5)]"
+                                    style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}
+                                >
+                                    <Play className="w-4 h-4" />
+                                    Start Learning
+                                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                                </Link>
+                                <Link
+                                    href="/cheatsheet"
+                                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-slate-200 glass border border-slate-600 hover:border-indigo-400 hover:text-white transition-all duration-300 hover:scale-105"
+                                >
+                                    <BookOpen className="w-4 h-4" />
+                                    Complexity Cheatsheet
+                                </Link>
+                            </div>
+
+                            {/* Quick-nav chips */}
+                            <div className="animate-fade-in-up delay-700 flex flex-wrap gap-2">
+                                {['Sorting', 'Searching', 'Recursion', 'Dynamic Prog.', 'Heaps', 'Basics'].map((cat, i) => (
+                                    <Link
+                                        key={cat}
+                                        href={`/${cat.toLowerCase().replace(/[.\s]+/g, '-').replace(/-$/, '')}`}
+                                        className="px-3 py-1 rounded-full text-xs font-medium text-slate-300 border border-slate-700 hover:border-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-all duration-200"
+                                        style={{ animationDelay: `${0.7 + i * 0.05}s` }}
+                                    >
+                                        {cat}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Right ─ visualizer card */}
+                        <div className="animate-fade-in-right delay-400 flex justify-center lg:justify-end">
+                            <div
+                                className="w-full max-w-md glass rounded-3xl p-6 animate-glow-pulse"
+                                style={{ border: '1px solid rgba(99,102,241,0.3)' }}
+                            >
+                                {/* Card header */}
+                                <div className="flex items-center justify-between mb-5">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                                    </div>
+                                    <span className="text-xs font-mono text-slate-500">bubble-sort.py</span>
+                                </div>
+
+                                {/* Visualizer */}
+                                <MiniVisualizer />
+
+                                {/* Label row */}
+                                <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
+                                    <div className="flex items-center gap-3">
+                                        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: 'linear-gradient(to top,#6366f1,#818cf8)' }} />Unsorted</span>
+                                        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: 'linear-gradient(to top,#f59e0b,#fbbf24)' }} />Comparing</span>
+                                        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: 'linear-gradient(to top,#10b981,#34d399)' }} />Sorted</span>
+                                    </div>
+                                    <span className="font-mono text-indigo-400">O(n²)</span>
+                                </div>
+
+                                {/* Complexity bar */}
+                                <div className="mt-5 space-y-2">
+                                    <div className="flex items-center gap-3 text-xs">
+                                        <span className="w-16 text-slate-500 text-right">Time</span>
+                                        <div className="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                                            <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-amber-500 to-red-500" style={{ animation: 'shimmer 2s linear infinite', backgroundSize: '200% 100%' }} />
+                                        </div>
+                                        <span className="font-mono text-amber-400">O(n²)</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 text-xs">
+                                        <span className="w-16 text-slate-500 text-right">Space</span>
+                                        <div className="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                                            <div className="h-full w-[8%] rounded-full bg-gradient-to-r from-emerald-500 to-teal-400" />
+                                        </div>
+                                        <span className="font-mono text-emerald-400">O(1)</span>
+                                    </div>
+                                </div>
+
+                                {/* Bottom CTA */}
+                                <Link
+                                    href="/sorting/bubble-sort"
+                                    className="mt-5 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/10 hover:border-indigo-400 transition-all duration-200"
+                                >
+                                    <Play className="w-3.5 h-3.5" />
+                                    Open Full Visualizer
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Stats row */}
+                    <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        {STATS.map((s, i) => <StatCard key={i} stat={s} index={i} />)}
                     </div>
                 </div>
-                <div className="z-10">
-                    <SortingCarousel />
+            </div>
+
+            {/* Scroll indicator */}
+            <div className="relative z-10 flex justify-center pb-8">
+                <div className="flex flex-col items-center gap-1 text-slate-600 animate-scroll-bounce">
+                    <span className="text-xs tracking-widest uppercase font-mono">scroll</span>
+                    <ChevronDown className="w-4 h-4" />
                 </div>
             </div>
-        </div>
-
-        {/* Animated background elements */}
-        <div className="absolute top-10 left-10 w-20 h-20 bg-blue-400/20 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-10 w-16 h-16 bg-purple-400/20 rounded-full animate-bounce"></div>
-        <div className="absolute bottom-10 left-1/4 w-12 h-12 bg-indigo-400/20 rounded-full animate-ping"></div>
-    </section>
-);
-
-export default Hero;
+        </section>
+    );
+}

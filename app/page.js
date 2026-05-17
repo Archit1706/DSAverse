@@ -6,18 +6,15 @@ import AlgorithmsGrid from '@/components/AlgorithmsGrid';
 import CTA from '@/components/CTA';
 import Footer from '@/components/Footer';
 
-const DSAVisualizer = () => {
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-      <Navbar />
-      <Hero />
-      <Features />
-      <AlgorithmsGrid />
-      <CTA />
-      <Footer />
-    </div>
-  );
-};
-
-export default DSAVisualizer;
+export default function HomePage() {
+    return (
+        <div className="bg-slate-950">
+            <Navbar />
+            <Hero />
+            <Features />
+            <AlgorithmsGrid />
+            <CTA />
+            <Footer />
+        </div>
+    );
+}
