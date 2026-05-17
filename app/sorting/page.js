@@ -1,6 +1,16 @@
-"use client";
-
 import React from 'react';
+
+export const metadata = {
+    title: "Sorting Algorithms – Visualizer & Complexity Guide",
+    description:
+        "Interactive visualizations for 8 sorting algorithms including Bubble Sort, Merge Sort, Quick Sort, and Heap Sort. Compare time and space complexities, step through each algorithm, and view code examples.",
+    keywords: ["sorting algorithms", "bubble sort", "merge sort", "quick sort", "heap sort", "insertion sort", "radix sort", "algorithm visualization"],
+    openGraph: {
+        title: "Sorting Algorithms Visualizer – DSAverse",
+        description: "Step-by-step interactive sorting algorithm visualizations with complexity analysis.",
+        images: [{ url: "/og-image.png" }],
+    },
+};
 import Link from 'next/link';
 import { ArrowRight, Clock, Code, Play } from 'lucide-react';
 

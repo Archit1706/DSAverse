@@ -2,28 +2,25 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata = {
-    title: 'Sorting | DSAverse',
-    description: 'Learn the basics of sorting with visualizations.',
-    icons: {
-        icon: '/favicon.ico',
+    title: {
+        default: "Sorting Algorithms Visualizer",
+        template: "%s – Sorting | DSAverse",
     },
+    description: "Interactive step-by-step visualizations for Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, Quick Sort, Heap Sort, Radix Sort, and Bucket Sort. Compare complexities and see code examples.",
+    keywords: ["sorting algorithms", "bubble sort", "merge sort", "quick sort", "heap sort", "insertion sort", "selection sort", "radix sort", "bucket sort", "time complexity", "algorithm visualization"],
     openGraph: {
-        title: 'Sorting | DSAverse',
-        description: 'Learn the basics of sorting with visualizations.',
-        images: '/favicon.ico',
+        title: "Sorting Algorithms Visualizer – DSAverse",
+        description: "Step-by-step interactive sorting algorithm visualizations with complexity analysis.",
+        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
-        title: 'Sorting | DSAverse',
-        description: 'Learn the basics of sorting with visualizations.',
-        images: '/favicon.ico',
+        card: "summary_large_image",
+        title: "Sorting Algorithms Visualizer – DSAverse",
+        description: "Interactive sorting algorithm visualizations with step-by-step animations.",
+        images: ["/og-image.png"],
     },
-    keywords: ['DSA', 'Data Structures', 'Algorithms', 'Visualizations', 'Learn', 'Basics', 'Sorting', 'Bubble Sort', 'Selection Sort', 'Insertion Sort', 'Merge Sort', 'Quick Sort', 'Heap Sort', 'Radix Sort', 'Counting Sort', 'Bucket Sort', 'Shell Sort', 'Sort', 'Sorting Algorithms'],
-    robots: 'index, follow',
-    creator: 'Archit Rathod',
-    publisher: 'Archit Rathod',
-    applicationName: 'DSAverse',
-    authors: [{ name: 'Archit Rathod', url: 'https://archit-rathod.vercel.app/' }],
-    category: 'technology',
+    authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
+    creator: "Archit Rathod",
 }
 
 export default function SortingLayout({ children }) {

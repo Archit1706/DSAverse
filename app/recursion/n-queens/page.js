@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Play, Pause, RotateCcw, Clock, Code, Crown, AlertTriangle } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const NQueensVisualizer = () => {
     const [n, setN] = useState(4);
@@ -436,9 +437,7 @@ const NQueensVisualizer = () => {
                         <Code className="h-5 w-5 mr-2 text-green-600" />
                         Backtracking Algorithm
                     </h3>
-                    <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm border">
-                        <code>{codeExample}</code>
-                    </pre>
+                    <CodeBlock code={codeExample} language="python" />
                 </div>
 
                 {/* Analysis */}

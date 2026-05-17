@@ -2,6 +2,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap, Search } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const LinearSearchPage = () => {
     const [array, setArray] = useState([45, 23, 78, 12, 67, 34, 89, 56, 23, 91]);
@@ -367,9 +368,7 @@ def linear_search_first(arr, target):
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
-                            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-                                {codeExample}
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
 
                         {/* Real-world Applications */}

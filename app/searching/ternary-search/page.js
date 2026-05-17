@@ -2,6 +2,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap, Search } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const TernarySearchPage = () => {
     const [array, setArray] = useState([1, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65]);
@@ -527,9 +528,7 @@ const TernarySearchPage = () => {
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
-                            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-                                {codeExample}
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
 
                         {/* Real-world Applications */}

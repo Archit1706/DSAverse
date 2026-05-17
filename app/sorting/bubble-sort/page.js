@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Lightbulb, Clock, Code2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Lightbulb, Clock, Code2, CheckCircle, XCircle, Shuffle } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const BubbleSortPage = () => {
     const [array, setArray] = useState([64, 34, 25, 12, 22, 11, 90]);
@@ -252,6 +253,7 @@ const BubbleSortPage = () => {
                                     onClick={generateNewArray}
                                     className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
                                 >
+                                    <Shuffle size={18} />
                                     Randomize
                                 </button>
 
@@ -321,19 +323,19 @@ const BubbleSortPage = () => {
                                 <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-4 h-4 bg-orange-400 border border-orange-500 rounded"></div>
-                                        <span>Unsorted</span>
+                                        <span className="text-gray-700">Unsorted</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded"></div>
-                                        <span>Comparing</span>
+                                        <span className="text-gray-700">Comparing</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-4 h-4 bg-red-500 border border-red-600 rounded"></div>
-                                        <span>Swapping</span>
+                                        <span className="text-gray-700">Swapping</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-4 h-4 bg-green-500 border border-green-600 rounded"></div>
-                                        <span>Sorted</span>
+                                        <span className="text-gray-700">Sorted</span>
                                     </div>
                                 </div>
                             </div>
@@ -392,23 +394,23 @@ const BubbleSortPage = () => {
                             <h3 className="font-bold text-gray-900 mb-4">When to Use Bubble Sort</h3>
                             <ul className="space-y-2 text-sm text-gray-700">
                                 <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
+                                    <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                                     <span>Educational purposes and learning</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
+                                    <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                                     <span>Very small datasets (&lt; 10 elements)</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
+                                    <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                                     <span>When simplicity is more important than efficiency</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-red-600 mt-1">✗</span>
+                                    <XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
                                     <span>Large datasets (too slow)</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-red-600 mt-1">✗</span>
+                                    <XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
                                     <span>Production systems requiring performance</span>
                                 </li>
                             </ul>
@@ -426,9 +428,7 @@ const BubbleSortPage = () => {
 
                             {showCode && (
                                 <div className="mt-4">
-                                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                        <code>{codeExample}</code>
-                                    </pre>
+                                    <CodeBlock code={codeExample} language="python" />
                                 </div>
                             )}
                         </div>

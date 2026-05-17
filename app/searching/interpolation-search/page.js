@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Pause, Square, RotateCcw, ArrowLeft, ChevronLeft, ChevronRight, Search, Clock, Code, Target, Zap, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import CodeBlock from '@/components/CodeBlock';
 
 // Interpolation Search Page Component
 const InterpolationSearchPage = () => {
@@ -517,9 +518,7 @@ const InterpolationSearchPage = () => {
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
-                            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-                                {codeExample}
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
 
                         {/* Real-world Applications */}

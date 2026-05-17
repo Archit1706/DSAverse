@@ -1,4 +1,16 @@
 import React from 'react';
+
+export const metadata = {
+    title: "Searching Algorithms – Visualizer & Complexity Guide",
+    description:
+        "Interactive visualizations for 8 searching algorithms: Binary Search, Linear Search, Jump Search, Interpolation Search, Exponential Search, Fibonacci Search, Ternary Search, and Block Search.",
+    keywords: ["searching algorithms", "binary search", "linear search", "jump search", "interpolation search", "algorithm visualization"],
+    openGraph: {
+        title: "Searching Algorithms Visualizer – DSAverse",
+        description: "Step-by-step interactive searching algorithm visualizations with complexity analysis.",
+        images: [{ url: "/og-image.png" }],
+    },
+};
 import Link from 'next/link';
 import { ArrowRight, Clock, Code, Play, Search, Target, Zap, TrendingUp } from 'lucide-react';
 

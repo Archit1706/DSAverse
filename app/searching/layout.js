@@ -2,28 +2,25 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata = {
-    title: 'Searching | DSAverse',
-    description: 'Learn the basics of searching with visualizations.',
-    icons: {
-        icon: '/favicon.ico',
+    title: {
+        default: "Searching Algorithms Visualizer",
+        template: "%s – Searching | DSAverse",
     },
+    description: "Interactive visualizations for Binary Search, Linear Search, Jump Search, Interpolation Search, Exponential Search, Fibonacci Search, Ternary Search, and Block Search with code examples.",
+    keywords: ["searching algorithms", "binary search", "linear search", "jump search", "interpolation search", "exponential search", "fibonacci search", "ternary search", "block search", "algorithm visualization"],
     openGraph: {
-        title: 'Searching | DSAverse',
-        description: 'Learn the basics of searching with visualizations.',
-        images: '/favicon.ico',
+        title: "Searching Algorithms Visualizer – DSAverse",
+        description: "Step-by-step interactive searching algorithm visualizations with complexity analysis.",
+        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
-        title: 'Searching | DSAverse',
-        description: 'Learn the basics of searching with visualizations.',
-        images: '/favicon.ico',
+        card: "summary_large_image",
+        title: "Searching Algorithms Visualizer – DSAverse",
+        description: "Interactive searching algorithm visualizations with step-by-step animations.",
+        images: ["/og-image.png"],
     },
-    keywords: ['DSA', 'Data Structures', 'Algorithms', 'Visualizations', 'Learn', 'Basics', 'Searching', 'Linear Search', 'Binary Search', 'Ternary Search', 'Jump Search', 'Interpolation Search', 'Exponential Search', 'Fibonacci Search', 'Block Search', 'Search', 'Search Algorithms'],
-    robots: 'index, follow',
-    creator: 'Archit Rathod',
-    publisher: 'Archit Rathod',
-    applicationName: 'DSAverse',
-    authors: [{ name: 'Archit Rathod', url: 'https://archit-rathod.vercel.app/' }],
-    category: 'technology',
+    authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
+    creator: "Archit Rathod",
 }
 
 export default function SearchingLayout({ children }) {

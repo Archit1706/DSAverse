@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Play, Pause, RotateCcw, ArrowLeft, Plus, Minus, Eye, Trash2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 export default function HeapsPage() {
     const [heap, setHeap] = useState([]);
@@ -135,7 +137,8 @@ export default function HeapsPage() {
             }
 
             // Step 2: Replace root with last element
-            currentHeap[0] = currentHeap[currentHeap.length - 1];
+            const lastVal = currentHeap[currentHeap.length - 1];
+            currentHeap[0] = lastVal;
             currentHeap.pop();
 
             steps.push({
@@ -143,7 +146,7 @@ export default function HeapsPage() {
                 highlightIndices: [0],
                 operation: 'extractRoot',
                 value: rootValue,
-                explanation: `🔄 Replace root with last element (${currentHeap[0]}). Now heapify down!`,
+                explanation: `🔄 Replace root with last element (${lastVal}). Now heapify down!`,
                 phase: 'replace',
                 swapIndices: []
             });
@@ -253,12 +256,14 @@ export default function HeapsPage() {
         setStepHistory(steps);
         setCurrentStep(0);
         setInputValue('');
+        setIsPlaying(true); // Auto-play on action
     };
 
     const handleExtractRoot = () => {
         const steps = generateSteps('extractRoot');
         setStepHistory(steps);
         setCurrentStep(0);
+        setIsPlaying(true); // Auto-play on action
     };
 
     const handlePeek = () => {
@@ -270,21 +275,22 @@ export default function HeapsPage() {
     const playAnimation = () => {
         if (stepHistory.length === 0) return;
         setIsPlaying(true);
-
-        const interval = setInterval(() => {
-            setCurrentStep(prev => {
-                if (prev >= stepHistory.length - 1) {
-                    setIsPlaying(false);
-                    clearInterval(interval);
-                    if (stepHistory[stepHistory.length - 1]) {
-                        setHeap(stepHistory[stepHistory.length - 1].heap);
-                    }
-                    return prev;
-                }
-                return prev + 1;
-            });
-        }, speed);
     };
+
+    useEffect(() => {
+        let interval;
+        if (isPlaying && currentStep < stepHistory.length - 1) {
+            interval = setInterval(() => {
+                setCurrentStep(prev => prev + 1);
+            }, speed);
+        } else if (currentStep >= stepHistory.length - 1) {
+            setIsPlaying(false);
+            if (stepHistory[stepHistory.length - 1]) {
+                setHeap(stepHistory[stepHistory.length - 1].heap);
+            }
+        }
+        return () => clearInterval(interval);
+    }, [isPlaying, currentStep, stepHistory, speed]);
 
     const pauseAnimation = () => {
         setIsPlaying(false);
@@ -321,7 +327,7 @@ export default function HeapsPage() {
 
         const levels = Math.ceil(Math.log2(currentState.heap.length + 1));
         const width = 800;
-        const height = levels * 80 + 40;
+        const height = Math.max(300, levels * 80 + 40);
         const nodeRadius = 20;
 
         const getNodePosition = (index) => {
@@ -346,7 +352,7 @@ export default function HeapsPage() {
         };
 
         return (
-            <svg width={width} height={height} className="mx-auto">
+            <svg width={width} height={height} className="mx-auto block">
                 {/* Draw edges first */}
                 {currentState.heap.map((_, index) => {
                     if (index === 0) return null;
@@ -492,27 +498,18 @@ export default function HeapsPage() {
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center mb-6">
-                        <a href="/heap-like-data-structures" className="flex items-center text-white hover:text-amber-200 transition-colors mr-4">
+                        <Link href="/heap-like-data-structures" className="flex items-center text-white hover:text-amber-200 transition-colors mr-4">
                             <ArrowLeft className="h-5 w-5 mr-2" />
                             Back to Heap Data Structures
-                        </a>
+                        </Link>
                     </div>
                     <div className="text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">
                             Binary Heap Visualization
                         </h1>
                         <p className="text-xl text-amber-100 mb-6 max-w-3xl mx-auto">
-                            Explore the complete binary tree with heap property: parent nodes are always greater (max-heap) or smaller (min-heap) than their children.
+                            Complete binary tree where parent nodes are always {heapType === 'max' ? 'greater' : 'smaller'} than their children.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4 text-sm">
-                            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full">
-                                <Play className="h-4 w-4" />
-                                Interactive Heap Operations
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full">
-                                🌳 Tree & Array View
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -525,24 +522,8 @@ export default function HeapsPage() {
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-2xl font-bold text-gray-800">Heap Visualization</h2>
                             <div className="flex gap-2">
-                                <button
-                                    onClick={() => setHeapType('max')}
-                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'max'
-                                            ? 'bg-amber-500 text-white'
-                                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                        }`}
-                                >
-                                    Max Heap
-                                </button>
-                                <button
-                                    onClick={() => setHeapType('min')}
-                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'min'
-                                            ? 'bg-amber-500 text-white'
-                                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                        }`}
-                                >
-                                    Min Heap
-                                </button>
+                                <button onClick={() => { setHeapType('max'); reset(); }} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'max' ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Max Heap</button>
+                                <button onClick={() => { setHeapType('min'); reset(); }} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'min' ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Min Heap</button>
                             </div>
                         </div>
 
@@ -555,58 +536,21 @@ export default function HeapsPage() {
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Enter value"
                                     className="px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
+                                    onKeyDown={(e) => e.key === 'Enter' && handleInsert()}
                                 />
-                                <button
-                                    onClick={handleInsert}
-                                    disabled={isPlaying}
-                                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Plus className="h-4 w-4" />
-                                    Insert
-                                </button>
-                                <button
-                                    onClick={handleExtractRoot}
-                                    disabled={isPlaying}
-                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Minus className="h-4 w-4" />
-                                    Extract {heapType === 'max' ? 'Max' : 'Min'}
-                                </button>
-                                <button
-                                    onClick={handlePeek}
-                                    disabled={isPlaying}
-                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
-                                >
-                                    <Eye className="h-4 w-4" />
-                                    Peek
-                                </button>
+                                <button onClick={handleInsert} disabled={isPlaying} className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"><Plus className="h-4 w-4" /> Insert</button>
+                                <button onClick={handleExtractRoot} disabled={isPlaying || heap.length === 0} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"><Minus className="h-4 w-4" /> Extract</button>
+                                <button onClick={handlePeek} disabled={isPlaying || heap.length === 0} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"><Eye className="h-4 w-4" /> Peek</button>
                             </div>
 
                             <div className="flex flex-wrap gap-2">
-                                <button
-                                    onClick={isPlaying ? pauseAnimation : playAnimation}
-                                    disabled={stepHistory.length === 0}
-                                    className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                                    {isPlaying ? 'Pause' : 'Play'}
-                                </button>
-                                <button
-                                    onClick={reset}
-                                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
-                                >
-                                    <RotateCcw className="h-4 w-4" />
-                                    Reset
-                                </button>
+                                <button onClick={isPlaying ? pauseAnimation : playAnimation} disabled={stepHistory.length === 0} className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50">{isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />} {isPlaying ? 'Pause' : 'Play'}</button>
+                                <button onClick={reset} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center gap-2"><RotateCcw className="h-4 w-4" /> Reset</button>
                             </div>
 
                             <div className="flex items-center gap-4">
                                 <label className="text-sm font-medium text-gray-700">Speed:</label>
-                                <select
-                                    value={speed}
-                                    onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm"
-                                >
+                                <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="px-2 py-1 border border-gray-300 rounded text-sm">
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
                                     <option value={500}>Fast</option>
@@ -624,13 +568,7 @@ export default function HeapsPage() {
                             <h3 className="text-sm font-semibold text-gray-700 mb-2">Array Representation:</h3>
                             <div className="flex flex-wrap gap-2">
                                 {currentState.heap.map((value, index) => (
-                                    <div
-                                        key={index}
-                                        className={`w-12 h-12 flex flex-col items-center justify-center rounded border-2 transition-all duration-300 ${currentState.highlightIndices.includes(index)
-                                                ? 'bg-amber-400 border-amber-600 scale-110 shadow-lg'
-                                                : 'bg-amber-100 border-amber-300'
-                                            }`}
-                                    >
+                                    <div key={index} className={`w-12 h-12 flex flex-col items-center justify-center rounded border-2 transition-all duration-300 ${currentState.highlightIndices.includes(index) ? 'bg-amber-400 border-amber-600 scale-110 shadow-lg' : 'bg-amber-100 border-amber-300'}`}>
                                         <div className="text-sm font-bold text-gray-800">{value}</div>
                                         <div className="text-xs text-gray-600">[{index}]</div>
                                     </div>
@@ -704,9 +642,7 @@ export default function HeapsPage() {
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                <code>{codeExample}</code>
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>
                 </div>

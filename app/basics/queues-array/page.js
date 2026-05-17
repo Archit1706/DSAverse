@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, ArrowLeft, Code, Clock, Plus, Minus, ArrowRight, ArrowDown } from 'lucide-react';
 import Link from 'next/link';
+import CodeBlock from '@/components/CodeBlock';
 
 export default function QueueArrayPage() {
     const [queue, setQueue] = useState([]);
@@ -586,9 +587,7 @@ export default function QueueArrayPage() {
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                <code>{codeExample}</code>
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>
                 </div>

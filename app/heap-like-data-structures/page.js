@@ -1,6 +1,16 @@
-'use client';
-
 import React from 'react';
+
+export const metadata = {
+    title: "Heap-like Data Structures – Binary Heap, Fibonacci Heap & More",
+    description:
+        "Visualize heap-like data structures: Binary Heaps (min/max), Binomial Queues, Fibonacci Heaps, Leftist Heaps, and Skew Heaps. See insert, extract-min/max, and heapify operations animated.",
+    keywords: ["binary heap", "min heap", "max heap", "fibonacci heap", "binomial queue", "leftist heap", "skew heap", "priority queue", "data structure visualization"],
+    openGraph: {
+        title: "Heap Data Structures Visualizer – DSAverse",
+        description: "Interactive animations for binary heaps, fibonacci heaps, and other heap variants.",
+        images: [{ url: "/og-image.png" }],
+    },
+};
 import { Play, Code, Clock, Layers, GitMerge, Zap } from 'lucide-react';
 import Link from 'next/link';
 

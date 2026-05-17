@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Pause, Square, RotateCcw, ArrowLeft, ChevronLeft, ChevronRight, Search, Clock, Code, Target, Zap, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import CodeBlock from '@/components/CodeBlock';
 
 const ExponentialSearchPage = () => {
     const [array, setArray] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]);
@@ -518,9 +519,7 @@ def binary_search(arr, target, left, right):
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
-                            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-                                {codeExample}
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
 
                         {/* Real-world Applications */}

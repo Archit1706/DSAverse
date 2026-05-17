@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, ArrowLeft, Code, Clock, Plus, Minus, Search, Link2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import CodeBlock from '@/components/CodeBlock';
 
 export default function ListLinkedListPage() {
     const [list, setList] = useState([]);
@@ -927,9 +928,7 @@ class LinkedList:
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                <code>{codeExample}</code>
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>
                 </div>

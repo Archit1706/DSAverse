@@ -2,28 +2,25 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata = {
-    title: 'Basics | DSAverse',
-    description: 'Learn the basics of algorithms and data structures with visualizations.',
-    icons: {
-        icon: '/favicon.ico',
+    title: {
+        default: "Basic Data Structures Visualizer",
+        template: "%s – Basics | DSAverse",
     },
+    description: "Interactive visualizations of fundamental data structures: Stacks (array & linked list), Queues (array & linked list), and Lists. Learn push, pop, enqueue, dequeue step by step.",
+    keywords: ["stack", "queue", "linked list", "array", "data structures", "push pop", "enqueue dequeue", "LIFO", "FIFO", "data structure visualization"],
     openGraph: {
-        title: 'Basics | DSAverse',
-        description: 'Learn the basics of algorithms and data structures with visualizations.',
-        images: '/favicon.ico',
+        title: "Basic Data Structures Visualizer – DSAverse",
+        description: "Interactive visualizations of stacks, queues, and lists with operation animations.",
+        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
-        title: 'Basics | DSAverse',
-        description: 'Learn the basics of algorithms and data structures with visualizations.',
-        images: '/favicon.ico',
+        card: "summary_large_image",
+        title: "Basic Data Structures Visualizer – DSAverse",
+        description: "Step-by-step interactive visualizations of stacks, queues, and lists.",
+        images: ["/og-image.png"],
     },
-    keywords: ['DSA', 'Data Structures', 'Algorithms', 'Visualizations', 'Learn', 'Basics'],
-    robots: 'index, follow',
-    creator: 'Archit Rathod',
-    publisher: 'Archit Rathod',
-    applicationName: 'DSAverse',
-    authors: [{ name: 'Archit Rathod', url: 'https://archit-rathod.vercel.app/' }],
-    category: 'technology',
+    authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
+    creator: "Archit Rathod",
 }
 
 export default function BasicsLayout({ children }) {

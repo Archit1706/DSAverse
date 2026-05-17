@@ -1,6 +1,16 @@
-"use client";
-
 import React from 'react';
+
+export const metadata = {
+    title: "Dynamic Programming – Interactive Visualizer",
+    description:
+        "Visualize classic dynamic programming problems: Fibonacci Numbers, Making Change, Longest Common Subsequence, 0-1 Knapsack, and House Robber. Understand memoization and tabulation with animations.",
+    keywords: ["dynamic programming", "DP", "fibonacci", "knapsack problem", "LCS", "memoization", "tabulation", "algorithm visualization"],
+    openGraph: {
+        title: "Dynamic Programming Visualizer – DSAverse",
+        description: "Interactive step-by-step dynamic programming visualizations with subproblem breakdowns.",
+        images: [{ url: "/og-image.png" }],
+    },
+};
 import Link from 'next/link';
 import { ArrowRight, Clock, Code, Play, Brain, Zap, Target } from 'lucide-react';
 

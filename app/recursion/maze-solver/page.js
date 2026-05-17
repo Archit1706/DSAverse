@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Play, Pause, RotateCcw, Clock, Code, Map, Navigation, Target, AlertCircle } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const MazeSolverVisualizer = () => {
     const [mazeSize, setMazeSize] = useState(7);
@@ -600,9 +601,7 @@ function isValid(row, col, maze, visited) {
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             Python Implementation
                         </h3>
-                        <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm border">
-                            <code>{codeExample}</code>
-                        </pre>
+                        <CodeBlock code={codeExample} language="python" />
                     </div>
 
                     <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
@@ -610,9 +609,7 @@ function isValid(row, col, maze, visited) {
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             JavaScript Implementation
                         </h3>
-                        <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm border">
-                            <code>{javaScriptCode}</code>
-                        </pre>
+                        <CodeBlock code={javaScriptCode} language="javascript" />
                     </div>
                 </div>
 

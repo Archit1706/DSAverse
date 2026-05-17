@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Lightbulb, Clock, Code2, Home, DollarSign, Shield } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const HouseRobberPage = () => {
     const [houses, setHouses] = useState([2, 7, 9, 3, 1]);
@@ -715,9 +716,7 @@ def rob_with_houses(nums):
 
                             {showCode && (
                                 <div className="mt-4">
-                                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                        <code>{codeExample}</code>
-                                    </pre>
+                                    <CodeBlock code={codeExample} language="python" />
                                 </div>
                             )}
                         </div>

@@ -2,45 +2,25 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata = {
-    title: 'Heap-like Data Structures | DSAverse',
-    description: 'Explore heap-like data structures including binary heaps, binomial queues, fibonacci heaps, leftist heaps, and skew heaps with interactive visualizations.',
-    icons: {
-        icon: '/favicon.ico',
+    title: {
+        default: "Heap-like Data Structures Visualizer",
+        template: "%s – Heaps | DSAverse",
     },
+    description: "Explore heap-like data structures: Binary Heaps (min/max), Binomial Queues, Fibonacci Heaps, Leftist Heaps, and Skew Heaps. Visualize insert, extract, and merge operations step by step.",
+    keywords: ["binary heap", "min heap", "max heap", "fibonacci heap", "binomial queue", "leftist heap", "skew heap", "priority queue", "heapify", "extract min", "extract max", "data structure visualization"],
     openGraph: {
-        title: 'Heap-like Data Structures | DSAverse',
-        description: 'Master priority queue implementations with efficient merge, insert, and extract operations through interactive visualizations.',
-        images: '/favicon.ico',
+        title: "Heap Data Structures Visualizer – DSAverse",
+        description: "Interactive animations for binary heaps, fibonacci heaps, and other heap variants.",
+        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
-        title: 'Heap-like Data Structures | DSAverse',
-        description: 'Master priority queue implementations with efficient merge, insert, and extract operations through interactive visualizations.',
-        images: '/favicon.ico',
+        card: "summary_large_image",
+        title: "Heap Data Structures Visualizer – DSAverse",
+        description: "Interactive heap data structure visualizations with operation animations.",
+        images: ["/og-image.png"],
     },
-    keywords: [
-        'DSA',
-        'Data Structures',
-        'Heap',
-        'Binary Heap',
-        'Binomial Queue',
-        'Fibonacci Heap',
-        'Leftist Heap',
-        'Skew Heap',
-        'Priority Queue',
-        'Visualizations',
-        'Learn',
-        'Algorithms',
-        'Merge',
-        'Extract Min',
-        'Max Heap',
-        'Min Heap'
-    ],
-    robots: 'index, follow',
-    creator: 'Archit Rathod',
-    publisher: 'Archit Rathod',
-    applicationName: 'DSAverse',
-    authors: [{ name: 'Archit Rathod', url: 'https://archit-rathod.vercel.app/' }],
-    category: 'technology',
+    authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
+    creator: "Archit Rathod",
 }
 
 export default function HeapLikeDataStructuresLayout({ children }) {

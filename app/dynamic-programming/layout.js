@@ -2,34 +2,25 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata = {
-    title: 'Dynamic Programming | DSAverse',
-    description: 'Master dynamic programming with interactive visualizations and step-by-step explanations.',
-    icons: {
-        icon: '/favicon.ico',
+    title: {
+        default: "Dynamic Programming Visualizer",
+        template: "%s – Dynamic Programming | DSAverse",
     },
+    description: "Interactive visualizations for classic DP problems: Fibonacci Numbers, Making Change, Longest Common Subsequence, 0-1 Knapsack, and House Robber. Learn memoization and tabulation.",
+    keywords: ["dynamic programming", "DP", "memoization", "tabulation", "fibonacci", "knapsack", "coin change", "LCS", "house robber", "overlapping subproblems", "optimal substructure", "algorithm visualization"],
     openGraph: {
-        title: 'Dynamic Programming | DSAverse',
-        description: 'Master dynamic programming with interactive visualizations and step-by-step explanations.',
-        images: '/favicon.ico',
+        title: "Dynamic Programming Visualizer – DSAverse",
+        description: "Step-by-step interactive DP visualizations with subproblem breakdowns.",
+        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
-        title: 'Dynamic Programming | DSAverse',
-        description: 'Master dynamic programming with interactive visualizations and step-by-step explanations.',
-        images: '/favicon.ico',
+        card: "summary_large_image",
+        title: "Dynamic Programming Visualizer – DSAverse",
+        description: "Interactive DP problem visualizations with memoization and tabulation animations.",
+        images: ["/og-image.png"],
     },
-    keywords: [
-        'DSA', 'Data Structures', 'Algorithms', 'Visualizations', 'Learn', 'Dynamic Programming',
-        'DP', 'Memoization', 'Tabulation', 'Fibonacci', 'Coin Change', 'Making Change',
-        'Longest Common Subsequence', 'LCS', 'Knapsack', 'Edit Distance', 'Optimization',
-        'Bottom-up DP', 'Top-down DP', 'Overlapping Subproblems', 'Optimal Substructure',
-        'Interview Preparation', 'Competitive Programming'
-    ],
-    robots: 'index, follow',
-    creator: 'Archit Rathod',
-    publisher: 'Archit Rathod',
-    applicationName: 'DSAverse',
-    authors: [{ name: 'Archit Rathod', url: 'https://archit-rathod.vercel.app/' }],
-    category: 'technology',
+    authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
+    creator: "Archit Rathod",
 }
 
 export default function DynamicProgrammingLayout({ children }) {

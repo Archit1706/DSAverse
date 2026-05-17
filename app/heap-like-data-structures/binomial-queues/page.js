@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, ArrowLeft, Plus, Minus, Eye, Merge } from 'lucide-react';
+import Link from 'next/link';
+import { Play, Pause, RotateCcw, ArrowLeft, Plus, Minus, Eye } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 export default function BinomialQueuesPage() {
     const [trees, setTrees] = useState([]);
@@ -10,7 +12,6 @@ export default function BinomialQueuesPage() {
     const [stepHistory, setStepHistory] = useState([]);
     const [speed, setSpeed] = useState(1500);
     const [inputValue, setInputValue] = useState('');
-    const [mergeValue, setMergeValue] = useState('');
 
     useEffect(() => {
         reset();
@@ -41,7 +42,7 @@ export default function BinomialQueuesPage() {
         }
     };
 
-    const generateSteps = (operation, value = null, externalTrees = null) => {
+    const generateSteps = (operation, value = null) => {
         const steps = [];
         let currentTrees = [...trees];
 
@@ -201,7 +202,8 @@ export default function BinomialQueuesPage() {
             });
 
             // The children of removed tree become new binomial queue
-            const childrenQueue = minTree.children.reverse();
+            // Ensure they are sorted by rank for the merge logic
+            const childrenQueue = [...minTree.children].sort((a, b) => a.rank - b.rank);
 
             if (childrenQueue.length > 0) {
                 steps.push({
@@ -314,12 +316,14 @@ export default function BinomialQueuesPage() {
         setStepHistory(steps);
         setCurrentStep(0);
         setInputValue('');
+        setIsPlaying(true);
     };
 
     const handleExtractMin = () => {
         const steps = generateSteps('extractMin');
         setStepHistory(steps);
         setCurrentStep(0);
+        setIsPlaying(true);
     };
 
     const handleFindMin = () => {
@@ -331,20 +335,6 @@ export default function BinomialQueuesPage() {
     const playAnimation = () => {
         if (stepHistory.length === 0) return;
         setIsPlaying(true);
-
-        const interval = setInterval(() => {
-            setCurrentStep(prev => {
-                if (prev >= stepHistory.length - 1) {
-                    setIsPlaying(false);
-                    clearInterval(interval);
-                    if (stepHistory[stepHistory.length - 1]) {
-                        setTrees(stepHistory[stepHistory.length - 1].trees);
-                    }
-                    return prev;
-                }
-                return prev + 1;
-            });
-        }, speed);
     };
 
     const pauseAnimation = () => {
@@ -357,6 +347,21 @@ export default function BinomialQueuesPage() {
         setCurrentStep(0);
         setIsPlaying(false);
     };
+
+    useEffect(() => {
+        let interval;
+        if (isPlaying && currentStep < stepHistory.length - 1) {
+            interval = setInterval(() => {
+                setCurrentStep(prev => prev + 1);
+            }, speed);
+        } else if (currentStep >= stepHistory.length - 1) {
+            setIsPlaying(false);
+            if (stepHistory[stepHistory.length - 1]) {
+                setTrees(stepHistory[stepHistory.length - 1].trees);
+            }
+        }
+        return () => clearInterval(interval);
+    }, [isPlaying, currentStep, stepHistory, speed]);
 
     const currentState = stepHistory[currentStep] || {
         trees: trees,
@@ -374,11 +379,8 @@ export default function BinomialQueuesPage() {
         const levelHeight = 60;
         const nodeSpacing = 40;
 
-        const renderNode = (node, posX, posY, depth = 0) => {
+        const renderNode = (node, posX, posY) => {
             const elements = [];
-            const childWidth = Math.pow(2, node.rank) * nodeSpacing;
-
-            // Draw node
             const nodeColor = isHighlight && node.id === currentState.highlightTree
                 ? 'fill-yellow-400 stroke-yellow-600 animate-pulse'
                 : isCarry
@@ -407,10 +409,13 @@ export default function BinomialQueuesPage() {
                 </g>
             );
 
-            // Draw children
-            let currentX = posX - (childWidth / 2);
-            node.children.forEach((child, index) => {
-                const childX = currentX + (Math.pow(2, child.rank) * nodeSpacing) / 2;
+            // Calculate child positions recursively
+            let currentChildX = posX - (Math.pow(2, node.rank) * nodeSpacing) / 2;
+
+            node.children.forEach((child) => {
+                // Width of this child's subtree
+                const childSubtreeWidth = Math.pow(2, child.rank) * nodeSpacing;
+                const childX = currentChildX + childSubtreeWidth / 2;
                 const childY = posY + levelHeight;
 
                 // Draw edge
@@ -426,9 +431,9 @@ export default function BinomialQueuesPage() {
                 );
 
                 // Recursively draw child
-                elements.push(...renderNode(child, childX, childY, depth + 1));
+                elements.push(...renderNode(child, childX, childY));
 
-                currentX += Math.pow(2, child.rank) * nodeSpacing;
+                currentChildX += childSubtreeWidth;
             });
 
             return elements;
@@ -449,22 +454,33 @@ export default function BinomialQueuesPage() {
             );
         }
 
-        const width = Math.max(800, currentState.trees.length * 200);
+        // Dynamic width calculation
+        let totalWidth = 100;
+        currentState.trees.forEach(t => {
+            totalWidth += Math.pow(2, t.rank) * 40 + 80;
+        });
+        if (currentState.carryTree) {
+            totalWidth += Math.pow(2, currentState.carryTree.rank) * 40 + 80;
+        }
+
+        const width = Math.max(800, totalWidth);
         const height = 400;
         let currentX = 100;
 
         return (
-            <svg width={width} height={height} className="mx-auto">
+            <svg width={width} height={height} className="mx-auto block">
                 {/* Render each binomial tree */}
                 {currentState.trees.map((tree, index) => {
                     const treeWidth = Math.pow(2, tree.rank) * 40;
-                    const elements = renderBinomialTree(tree, currentX, 50, true);
+                    // Center the root of the tree within its allocated space
+                    const rootX = currentX + treeWidth / 2;
+                    const elements = renderBinomialTree(tree, rootX, 50, true);
 
                     // Add rank label
                     elements.push(
                         <text
                             key={`rank-${tree.id}`}
-                            x={currentX}
+                            x={rootX}
                             y={30}
                             textAnchor="middle"
                             className="text-sm font-bold fill-amber-700"
@@ -480,15 +496,23 @@ export default function BinomialQueuesPage() {
                 {/* Render carry tree if exists */}
                 {currentState.carryTree && (
                     <>
-                        <text
-                            x={currentX}
-                            y={30}
-                            textAnchor="middle"
-                            className="text-sm font-bold fill-orange-600"
-                        >
-                            Carry: B₍{currentState.carryTree.rank}₎
-                        </text>
-                        {renderBinomialTree(currentState.carryTree, currentX, 50, false, true)}
+                        {(() => {
+                            const carryWidth = Math.pow(2, currentState.carryTree.rank) * 40;
+                            const rootX = currentX + carryWidth / 2;
+                            return (
+                                <>
+                                    <text
+                                        x={rootX}
+                                        y={30}
+                                        textAnchor="middle"
+                                        className="text-sm font-bold fill-orange-600"
+                                    >
+                                        Carry: B₍{currentState.carryTree.rank}₎
+                                    </text>
+                                    {renderBinomialTree(currentState.carryTree, rootX, 50, false, true)}
+                                </>
+                            );
+                        })()}
                     </>
                 )}
             </svg>
@@ -610,10 +634,10 @@ class BinomialQueue:
             <div className="bg-gradient-to-r from-amber-600 to-orange-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center mb-6">
-                        <a href="/heap-like-data-structures" className="flex items-center text-white hover:text-amber-200 transition-colors mr-4">
+                        <Link href="/heap-like-data-structures" className="flex items-center text-white hover:text-amber-200 transition-colors mr-4">
                             <ArrowLeft className="h-5 w-5 mr-2" />
                             Back to Heap Data Structures
-                        </a>
+                        </Link>
                     </div>
                     <div className="text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -781,52 +805,114 @@ class BinomialQueue:
 
                         {/* Binomial Tree Properties */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Binomial Tree B_k</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
-                                <div>• <strong>Definition:</strong> B₀ is a single node, and B_k = B_(k-1) + B_(k-1)</div>
-                                <div>• <strong>Node Count:</strong> Exactly 2^k nodes in B_k</div>
-                                <div>• <strong>Height:</strong> Height of B_k is k</div>
-                                <div>• <strong>Children:</strong> Root has k children: B_(k-1), B_(k-2), ..., B_0</div>
-                                <div>• <strong>Merge Rule:</strong> Two B_k trees merge to form B_(k+1)</div>
-                                <div>• <strong>Min-Heap:</strong> Every parent ≤ children</div>
-                            </div>
-                        </div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                                Binomial Tree B<sub>k</sub>
+                            </h2>
 
-                        {/* Binary Addition Analogy */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Binary Addition Analogy</h2>
                             <div className="space-y-3 text-sm text-gray-600">
-                                <div>• Each rank represents a <strong>bit position</strong></div>
-                                <div>• At most <strong>one tree</strong> per rank (like 0 or 1)</div>
-                                <div>• Two trees of rank k → one tree of rank k+1 (<strong>carry</strong>)</div>
-                                <div>• Insert is like <strong>adding 1</strong> in binary</div>
-                                <div>• Example: 13 nodes = 1101₂ → trees of rank 0, 2, 3</div>
-                            </div>
-                            <div className="mt-4 p-3 bg-amber-50 rounded-lg">
-                                <div className="text-xs font-mono text-amber-800">
-                                    5 nodes = 101₂ → B₀ + B₂<br />
-                                    +1 → 110₂ → B₁ + B₂
+                                <div>
+                                    • <strong>Definition:</strong>{" "}
+                                    B<sub>0</sub> is a single node,{" "}
+                                    B<sub>k</sub> = B<sub>k−1</sub> + B<sub>k−1</sub>
+                                </div>
+
+                                <div>
+                                    • <strong>Node Count:</strong>{" "}
+                                    Exactly 2<sup>k</sup> nodes in B<sub>k</sub>
+                                </div>
+
+                                <div>
+                                    • <strong>Height:</strong>{" "}
+                                    Height of B<sub>k</sub> is k
+                                </div>
+
+                                <div>
+                                    • <strong>Children:</strong>{" "}
+                                    Root has k children:{" "}
+                                    B<sub>k−1</sub>, B<sub>k−2</sub>, …, B<sub>0</sub>
+                                </div>
+
+                                <div>
+                                    • <strong>Merge Rule:</strong>{" "}
+                                    Two B<sub>k</sub> trees merge to form B<sub>k+1</sub>
+                                </div>
+
+                                <div>
+                                    • <strong>Min-Heap:</strong>{" "}
+                                    Every parent ≤ children
                                 </div>
                             </div>
                         </div>
 
-                        {/* Applications */}
+
+                        {/* Binary Addition Analogy */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Applications</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                                Binary Addition Analogy
+                            </h2>
+
                             <div className="space-y-3 text-sm text-gray-600">
-                                <div>• <strong>Union-Find:</strong> Efficient merging of priority queues</div>
-                                <div>• <strong>External Sorting:</strong> K-way merge with large datasets</div>
-                                <div>• <strong>Parallel Algorithms:</strong> Distributed priority queues</div>
-                                <div>• <strong>Event Simulation:</strong> When merging queues is common</div>
+                                <div>
+                                    • Each rank represents a <strong>bit position</strong>
+                                </div>
+
+                                <div>
+                                    • At most <strong>one tree</strong> per rank (like 0 or 1)
+                                </div>
+
+                                <div>
+                                    • Two trees of rank k → one tree of rank k+1 (<strong>carry</strong>)
+                                </div>
+
+                                <div>
+                                    • Insert is like <strong>adding 1</strong> in binary
+                                </div>
+
+                                <div>
+                                    • Example: 13 nodes = 1101<sub>2</sub> → trees of rank 0, 2, 3
+                                </div>
+                            </div>
+
+                            <div className="mt-4 p-3 bg-amber-50 rounded-lg">
+                                <div className="text-xs font-mono text-amber-800">
+                                    5 nodes = 101<sub>2</sub> → B<sub>0</sub> + B<sub>2</sub>
+                                    <br />
+                                    +1 → 110<sub>2</sub> → B<sub>1</sub> + B<sub>2</sub>
+                                </div>
                             </div>
                         </div>
+
+
+                        {/* Applications */}
+                        <div className="bg-white rounded-xl shadow-lg p-6">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                                Applications
+                            </h2>
+
+                            <div className="space-y-3 text-sm text-gray-600">
+                                <div>
+                                    • <strong>Union-Find:</strong> Efficient merging of priority queues
+                                </div>
+
+                                <div>
+                                    • <strong>External Sorting:</strong> K-way merge with large datasets
+                                </div>
+
+                                <div>
+                                    • <strong>Parallel Algorithms:</strong> Distributed priority queues
+                                </div>
+
+                                <div>
+                                    • <strong>Event Simulation:</strong> When merging queues is common
+                                </div>
+                            </div>
+                        </div>
+
 
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                <code>{codeExample}</code>
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>
                 </div>

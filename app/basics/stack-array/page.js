@@ -5,6 +5,7 @@ import { Play, Pause, RotateCcw, ArrowLeft, Code, Clock, Plus, Minus, ChevronDow
 import Link from 'next/link';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import CodeBlock from '@/components/CodeBlock';
 
 export default function StackArrayPage() {
     const [stack, setStack] = useState([]);
@@ -498,18 +499,7 @@ export default function StackArrayPage() {
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto text-gray-700">
-                                <div className="flex justify-between items-center mb-2">
-                                    <div className="text-sm font-semibold text-gray-600 mb-2">Python</div>
-                                    <button onClick={() => navigator.clipboard.writeText(codeExample)} className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md flex items-center gap-2">
-                                        <Copy className="h-4 w-4" />
-                                        Copy
-                                    </button>
-                                </div>
-                                <SyntaxHighlighter language="python" style={a11yDark}>
-                                    {codeExample}
-                                </SyntaxHighlighter>
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>
                 </div>

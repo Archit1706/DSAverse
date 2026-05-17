@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Lightbulb, Clock, Code2, Package, Weight, DollarSign } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const KnapsackPage = () => {
     const [capacity, setCapacity] = useState(10);
@@ -775,9 +776,7 @@ def knapsack_with_items(weights, values, capacity):
 
                             {showCode && (
                                 <div className="mt-4">
-                                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                        <code>{codeExample}</code>
-                                    </pre>
+                                    <CodeBlock code={codeExample} language="python" />
                                 </div>
                             )}
                         </div>

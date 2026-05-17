@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Play, Pause, RotateCcw, ArrowLeft, Plus, Minus, Eye, Shuffle } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 export default function SkewHeapsPage() {
     const [heap, setHeap] = useState(null);
@@ -27,7 +29,7 @@ export default function SkewHeapsPage() {
     });
 
     // Merge two skew heaps - core operation
-    const mergeHeaps = (h1, h2, steps = [], explanation = '') => {
+    const mergeHeaps = (h1, h2, steps = []) => {
         if (!h1) return h2;
         if (!h2) return h1;
 
@@ -39,21 +41,20 @@ export default function SkewHeapsPage() {
         steps.push({
             heap: JSON.parse(JSON.stringify(h1)),
             heap2: JSON.parse(JSON.stringify(h2)),
-            highlightNodes: [h1.id, h2 ? h2.id : null],
+            highlightNodes: [h1.id, h2.id],
             explanation: `🔄 Merge: Compare roots ${h1.value} and ${h2.value}. Keep ${h1.value} as root.`,
             phase: 'compare',
             swapHappened: false
         });
 
         // Recursively merge h2 with right subtree of h1
-        const tempRight = h1.right;
-        h1.right = mergeHeaps(h2, h1.right, steps, 'recursive');
+        h1.right = mergeHeaps(h2, h1.right, steps);
 
         steps.push({
             heap: JSON.parse(JSON.stringify(h1)),
             heap2: null,
             highlightNodes: [h1.id],
-            explanation: `🔗 Merged ${h2.value} with right subtree of ${h1.value}`,
+            explanation: `🔗 Merged right subtree of ${h1.value}. Now SKEW (swap children).`,
             phase: 'merge',
             swapHappened: false
         });
@@ -65,7 +66,7 @@ export default function SkewHeapsPage() {
             heap: JSON.parse(JSON.stringify(h1)),
             heap2: null,
             highlightNodes: [h1.id],
-            explanation: `↔️ SKEW: Swap left and right children of ${h1.value}`,
+            explanation: `↔️ SKEW: Swapped left and right children of ${h1.value}`,
             phase: 'swap',
             swapHappened: true
         });
@@ -79,15 +80,6 @@ export default function SkewHeapsPage() {
 
         if (operation === 'insert') {
             const newNode = createNode(value);
-
-            steps.push({
-                heap: currentHeap,
-                heap2: newNode,
-                highlightNodes: [newNode.id],
-                explanation: `➕ Create new single-node heap with value ${value}`,
-                phase: 'create',
-                swapHappened: false
-            });
 
             if (!currentHeap) {
                 currentHeap = newNode;
@@ -103,8 +95,8 @@ export default function SkewHeapsPage() {
                 steps.push({
                     heap: currentHeap,
                     heap2: newNode,
-                    highlightNodes: [],
-                    explanation: `🔀 Begin merge of main heap with new node ${value}`,
+                    highlightNodes: [newNode.id],
+                    explanation: `➕ Create new node ${value} and merge with main heap`,
                     phase: 'prepare',
                     swapHappened: false
                 });
@@ -125,11 +117,9 @@ export default function SkewHeapsPage() {
             if (!currentHeap) {
                 steps.push({
                     heap: null,
-                    heap2: null,
                     highlightNodes: [],
                     explanation: `❌ Heap is empty! Cannot extract minimum.`,
-                    phase: 'error',
-                    swapHappened: false
+                    phase: 'error'
                 });
                 return steps;
             }
@@ -138,121 +128,43 @@ export default function SkewHeapsPage() {
 
             steps.push({
                 heap: currentHeap,
-                heap2: null,
                 highlightNodes: [currentHeap.id],
                 explanation: `🎯 Extract minimum: ${minValue} (root node)`,
-                phase: 'identify',
-                swapHappened: false
+                phase: 'identify'
             });
 
             const leftSubtree = currentHeap.left;
             const rightSubtree = currentHeap.right;
 
-            steps.push({
-                heap: leftSubtree,
-                heap2: rightSubtree,
-                highlightNodes: [],
-                explanation: `🗑️ Remove root ${minValue}. Left and right children become separate heaps`,
-                phase: 'remove',
-                swapHappened: false
-            });
-
             if (!leftSubtree && !rightSubtree) {
                 currentHeap = null;
-                steps.push({
-                    heap: null,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `✅ Extracted ${minValue}. Heap is now empty`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
-            } else if (!leftSubtree) {
-                currentHeap = rightSubtree;
-                steps.push({
-                    heap: currentHeap,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `✅ Extracted ${minValue}. Right child becomes new root`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
-            } else if (!rightSubtree) {
-                currentHeap = leftSubtree;
-                steps.push({
-                    heap: currentHeap,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `✅ Extracted ${minValue}. Left child becomes new root`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
             } else {
                 steps.push({
                     heap: leftSubtree,
                     heap2: rightSubtree,
                     highlightNodes: [],
-                    explanation: `🔀 Merge left and right subtrees`,
-                    phase: 'merging',
-                    swapHappened: false
+                    explanation: `🔀 Merge left and right subtrees of removed root`,
+                    phase: 'merging'
                 });
-
                 currentHeap = mergeHeaps(leftSubtree, rightSubtree, steps);
-
-                steps.push({
-                    heap: currentHeap,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `✅ Extracted ${minValue}. Subtrees merged successfully`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
             }
+
+            steps.push({
+                heap: currentHeap,
+                highlightNodes: [],
+                explanation: `✅ Extracted ${minValue}. Heap property maintained.`,
+                phase: 'complete'
+            });
 
         } else if (operation === 'merge') {
-            if (!currentHeap && !mergeHeap) {
-                steps.push({
-                    heap: null,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `❌ Both heaps are empty!`,
-                    phase: 'error',
-                    swapHappened: false
-                });
-                return steps;
-            }
-
-            if (!currentHeap) {
-                steps.push({
-                    heap: mergeHeap,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `✅ Main heap is empty. Result is the second heap`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
-                return steps;
-            }
-
-            if (!mergeHeap) {
-                steps.push({
-                    heap: currentHeap,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `✅ Second heap is empty. Result is the main heap`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
-                return steps;
-            }
+            if (!currentHeap && !mergeHeap) return steps;
 
             steps.push({
                 heap: currentHeap,
                 heap2: mergeHeap,
                 highlightNodes: [],
                 explanation: `🔀 Begin merging two skew heaps`,
-                phase: 'prepare',
-                swapHappened: false
+                phase: 'prepare'
             });
 
             currentHeap = mergeHeaps(currentHeap, mergeHeap, steps);
@@ -262,28 +174,16 @@ export default function SkewHeapsPage() {
                 heap2: null,
                 highlightNodes: [],
                 explanation: `✅ Merge complete! All nodes combined into single heap`,
-                phase: 'complete',
-                swapHappened: false
+                phase: 'complete'
             });
 
         } else if (operation === 'findMin') {
-            if (!currentHeap) {
-                steps.push({
-                    heap: null,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `❌ Heap is empty!`,
-                    phase: 'error',
-                    swapHappened: false
-                });
-            } else {
+            if (currentHeap) {
                 steps.push({
                     heap: currentHeap,
-                    heap2: null,
                     highlightNodes: [currentHeap.id],
                     explanation: `👀 Minimum value: ${currentHeap.value} (at root)`,
-                    phase: 'complete',
-                    swapHappened: false
+                    phase: 'complete'
                 });
             }
         }
@@ -293,18 +193,19 @@ export default function SkewHeapsPage() {
 
     const handleInsert = () => {
         if (!inputValue || isNaN(inputValue)) return;
-        const value = parseInt(inputValue);
-        const steps = generateSteps('insert', value);
+        setNodeIdCounter(p => p + 1);
+        const steps = generateSteps('insert', parseInt(inputValue));
         setStepHistory(steps);
         setCurrentStep(0);
+        setIsPlaying(true);
         setInputValue('');
-        setNodeIdCounter(prev => prev + 1);
     };
 
     const handleExtractMin = () => {
         const steps = generateSteps('extractMin');
         setStepHistory(steps);
         setCurrentStep(0);
+        setIsPlaying(true);
     };
 
     const handleMerge = () => {
@@ -312,21 +213,34 @@ export default function SkewHeapsPage() {
         const values = mergeValue.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
         if (values.length === 0) return;
 
-        // Create a heap from the values
         let newHeap = null;
         for (const val of values) {
-            const node = createNode(val);
-            if (!newHeap) {
-                newHeap = node;
-            } else {
-                newHeap = mergeHeaps(newHeap, node, []);
+            const node = {
+                value: val,
+                left: null,
+                right: null,
+                id: nodeIdCounter + Math.random()
+            };
+            // Locally merge to build the second heap
+            if (!newHeap) newHeap = node;
+            else {
+                // We need a local merge function that doesn't track steps for building the input heap
+                const localMerge = (a, b) => {
+                    if (!a) return b; if (!b) return a;
+                    if (a.value > b.value) [a, b] = [b, a];
+                    a.right = localMerge(b, a.right);
+                    [a.left, a.right] = [a.right, a.left];
+                    return a;
+                };
+                newHeap = localMerge(newHeap, node);
             }
-            setNodeIdCounter(prev => prev + 1);
         }
+        setNodeIdCounter(prev => prev + values.length);
 
         const steps = generateSteps('merge', null, newHeap);
         setStepHistory(steps);
         setCurrentStep(0);
+        setIsPlaying(true);
         setMergeValue('');
     };
 
@@ -336,29 +250,8 @@ export default function SkewHeapsPage() {
         setCurrentStep(0);
     };
 
-    const playAnimation = () => {
-        if (stepHistory.length === 0) return;
-        setIsPlaying(true);
-
-        const interval = setInterval(() => {
-            setCurrentStep(prev => {
-                if (prev >= stepHistory.length - 1) {
-                    setIsPlaying(false);
-                    clearInterval(interval);
-                    if (stepHistory[stepHistory.length - 1]) {
-                        setHeap(stepHistory[stepHistory.length - 1].heap);
-                    }
-                    return prev;
-                }
-                return prev + 1;
-            });
-        }, speed);
-    };
-
-    const pauseAnimation = () => {
-        setIsPlaying(false);
-    };
-
+    const playAnimation = () => setIsPlaying(true);
+    const pauseAnimation = () => setIsPlaying(false);
     const reset = () => {
         setHeap(null);
         setHeap2(null);
@@ -367,6 +260,27 @@ export default function SkewHeapsPage() {
         setIsPlaying(false);
         setTotalSwaps(0);
     };
+
+    useEffect(() => {
+        let interval;
+        if (isPlaying && currentStep < stepHistory.length - 1) {
+            interval = setInterval(() => {
+                setCurrentStep(prev => prev + 1);
+            }, speed);
+        } else if (currentStep >= stepHistory.length - 1) {
+            setIsPlaying(false);
+            if (stepHistory[stepHistory.length - 1]) {
+                setHeap(stepHistory[stepHistory.length - 1].heap);
+            }
+        }
+        return () => clearInterval(interval);
+    }, [isPlaying, currentStep, stepHistory, speed]);
+
+    // Count swaps
+    useEffect(() => {
+        const swapCount = stepHistory.filter(step => step.swapHappened).length;
+        setTotalSwaps(swapCount);
+    }, [stepHistory]);
 
     const currentState = stepHistory[currentStep] || {
         heap: heap,
@@ -377,74 +291,54 @@ export default function SkewHeapsPage() {
         swapHappened: false
     };
 
-    // Count swaps in current visualization
-    useEffect(() => {
-        const swapCount = stepHistory.filter(step => step.swapHappened).length;
-        setTotalSwaps(swapCount);
-    }, [stepHistory]);
-
-    const renderSkewHeap = (node, x, y, level = 0, isSecondHeap = false) => {
+    const renderSkewHeap = (node, x, y, level = 0) => {
         if (!node) return [];
 
         const elements = [];
         const nodeRadius = 20;
-        const horizontalSpacing = Math.max(200 / Math.pow(2, level), 30);
+        // Improved spacing logic to prevent overlap in deep trees
+        const minSpacing = 60;
+        const horizontalSpacing = Math.max(300 / Math.pow(1.8, level), minSpacing);
         const verticalSpacing = 70;
 
         const isHighlighted = currentState.highlightNodes.includes(node.id);
         const nodeColor = isHighlighted
             ? 'fill-yellow-400 stroke-yellow-600 animate-pulse'
-            : isSecondHeap
-                ? 'fill-orange-300 stroke-orange-500'
-                : 'fill-amber-400 stroke-amber-600';
+            : 'fill-amber-400 stroke-amber-600';
 
-        // Draw edges to children
         if (node.left) {
-            const leftX = x - horizontalSpacing;
-            const leftY = y + verticalSpacing;
             elements.push(
                 <line
                     key={`edge-left-${node.id}`}
-                    x1={x}
-                    y1={y + nodeRadius}
-                    x2={leftX}
-                    y2={leftY - nodeRadius}
+                    x1={x} y1={y + nodeRadius}
+                    x2={x - horizontalSpacing} y2={y + verticalSpacing - nodeRadius}
                     className="stroke-amber-400 stroke-2"
                 />
             );
-            elements.push(...renderSkewHeap(node.left, leftX, leftY, level + 1, isSecondHeap));
+            elements.push(...renderSkewHeap(node.left, x - horizontalSpacing, y + verticalSpacing, level + 1));
         }
 
         if (node.right) {
-            const rightX = x + horizontalSpacing;
-            const rightY = y + verticalSpacing;
             elements.push(
                 <line
                     key={`edge-right-${node.id}`}
-                    x1={x}
-                    y1={y + nodeRadius}
-                    x2={rightX}
-                    y2={rightY - nodeRadius}
+                    x1={x} y1={y + nodeRadius}
+                    x2={x + horizontalSpacing} y2={y + verticalSpacing - nodeRadius}
                     className="stroke-amber-400 stroke-2"
                 />
             );
-            elements.push(...renderSkewHeap(node.right, rightX, rightY, level + 1, isSecondHeap));
+            elements.push(...renderSkewHeap(node.right, x + horizontalSpacing, y + verticalSpacing, level + 1));
         }
 
-        // Draw node
         elements.push(
             <g key={`node-${node.id}`}>
                 <circle
-                    cx={x}
-                    cy={y}
-                    r={nodeRadius}
+                    cx={x} cy={y} r={nodeRadius}
                     className={`${nodeColor} stroke-2 transition-all duration-300`}
                 />
                 <text
-                    x={x}
-                    y={y}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
+                    x={x} y={y}
+                    textAnchor="middle" dominantBaseline="middle"
                     className="text-sm font-bold fill-gray-800"
                 >
                     {node.value}
@@ -455,69 +349,8 @@ export default function SkewHeapsPage() {
         return elements;
     };
 
-    const renderVisualization = () => {
-        if (!currentState.heap && !currentState.heap2) {
-            return (
-                <div className="flex items-center justify-center h-64 text-gray-400">
-                    <div className="text-center">
-                        <div className="text-4xl mb-2">🌳</div>
-                        <div>Empty Skew Heap</div>
-                    </div>
-                </div>
-            );
-        }
-
-        const width = currentState.heap2 ? 1000 : 600;
-        const height = 400;
-
-        return (
-            <svg width={width} height={height} className="mx-auto">
-                {/* Main heap */}
-                {currentState.heap && (
-                    <>
-                        <text x={currentState.heap2 ? 200 : 300} y={30} textAnchor="middle" className="text-sm font-bold fill-amber-700">
-                            {currentState.heap2 ? 'Heap 1' : 'Main Heap'}
-                        </text>
-                        {renderSkewHeap(currentState.heap, currentState.heap2 ? 200 : 300, 60)}
-                    </>
-                )}
-
-                {/* Second heap (during merge) */}
-                {currentState.heap2 && (
-                    <>
-                        <text x={650} y={30} textAnchor="middle" className="text-sm font-bold fill-orange-600">
-                            Heap 2
-                        </text>
-                        {renderSkewHeap(currentState.heap2, 650, 60, 0, true)}
-
-                        {/* Merge arrow */}
-                        <g>
-                            <line x1={400} y1={200} x2={500} y2={200} className="stroke-amber-600 stroke-2" markerEnd="url(#arrowhead)" />
-                            <text x={450} y={190} textAnchor="middle" className="text-xs fill-amber-700 font-semibold">
-                                MERGE
-                            </text>
-                        </g>
-
-                        <defs>
-                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                                <polygon points="0 0, 10 3, 0 6" fill="#d97706" />
-                            </marker>
-                        </defs>
-                    </>
-                )}
-            </svg>
-        );
-    };
-
-    const countNodes = (node) => {
-        if (!node) return 0;
-        return 1 + countNodes(node.left) + countNodes(node.right);
-    };
-
-    const getHeight = (node) => {
-        if (!node) return 0;
-        return 1 + Math.max(getHeight(node.left), getHeight(node.right));
-    };
+    const countNodes = (node) => !node ? 0 : 1 + countNodes(node.left) + countNodes(node.right);
+    const getHeight = (node) => !node ? 0 : 1 + Math.max(getHeight(node.left), getHeight(node.right));
 
     const codeExample = `class SkewHeapNode:
     def __init__(self, value):
@@ -605,28 +438,18 @@ heap.merge_with(heap2)  # Combine heaps`;
             <div className="bg-gradient-to-r from-amber-600 to-orange-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center mb-6">
-                        <a href="/heap-like-data-structures" className="flex items-center text-white hover:text-amber-200 transition-colors mr-4">
+                        <Link href="/heap-like-data-structures" className="flex items-center text-white hover:text-amber-200 transition-colors mr-4">
                             <ArrowLeft className="h-5 w-5 mr-2" />
                             Back to Heap Data Structures
-                        </a>
+                        </Link>
                     </div>
                     <div className="text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">
                             Skew Heap Visualization
                         </h1>
                         <p className="text-xl text-amber-100 mb-6 max-w-3xl mx-auto">
-                            Self-adjusting binary heap that unconditionally swaps children during merge. Simpler than leftist heaps with comparable amortized performance!
+                            Self-adjusting binary heap that unconditionally swaps children during merge.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4 text-sm">
-                            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full">
-                                <Play className="h-4 w-4" />
-                                Self-Adjusting Structure
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full">
-                                <Shuffle className="h-4 w-4" />
-                                Unconditional Swapping
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -653,24 +476,14 @@ heap.merge_with(heap2)  # Combine heaps`;
                                     disabled={isPlaying}
                                     className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
                                 >
-                                    <Plus className="h-4 w-4" />
-                                    Insert
+                                    <Plus className="h-4 w-4" /> Insert
                                 </button>
                                 <button
                                     onClick={handleExtractMin}
                                     disabled={isPlaying}
                                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
                                 >
-                                    <Minus className="h-4 w-4" />
-                                    Extract Min
-                                </button>
-                                <button
-                                    onClick={handleFindMin}
-                                    disabled={isPlaying}
-                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
-                                >
-                                    <Eye className="h-4 w-4" />
-                                    Find Min
+                                    <Minus className="h-4 w-4" /> Extract Min
                                 </button>
                             </div>
 
@@ -687,8 +500,7 @@ heap.merge_with(heap2)  # Combine heaps`;
                                     disabled={isPlaying}
                                     className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
                                 >
-                                    <Shuffle className="h-4 w-4" />
-                                    Merge
+                                    <Shuffle className="h-4 w-4" /> Merge
                                 </button>
                             </div>
 
@@ -705,64 +517,76 @@ heap.merge_with(heap2)  # Combine heaps`;
                                     onClick={reset}
                                     className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
                                 >
-                                    <RotateCcw className="h-4 w-4" />
-                                    Reset
+                                    <RotateCcw className="h-4 w-4" /> Reset
                                 </button>
-                            </div>
-
-                            <div className="flex items-center gap-4">
-                                <label className="text-sm font-medium text-gray-700">Speed:</label>
-                                <select
-                                    value={speed}
-                                    onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm"
-                                >
-                                    <option value={2500}>Slow</option>
-                                    <option value={1500}>Normal</option>
-                                    <option value={800}>Fast</option>
-                                </select>
+                                <div className="flex items-center gap-2 ml-auto">
+                                    <label className="text-sm font-medium text-gray-700">Speed:</label>
+                                    <select
+                                        value={speed}
+                                        onChange={(e) => setSpeed(Number(e.target.value))}
+                                        className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                    >
+                                        <option value={2500}>Slow</option>
+                                        <option value={1500}>Normal</option>
+                                        <option value={800}>Fast</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Tree Visualization */}
+                        {/* Tree Visualization with Dynamic Scrolling */}
                         <div className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 overflow-x-auto">
-                            {renderVisualization()}
+                            <div style={{ minWidth: '100%', width: 'fit-content', margin: '0 auto' }}>
+                                <svg width={currentState.heap2 ? 1400 : 2000} height={500} className="mx-auto block">
+                                    {currentState.heap && (
+                                        <>
+                                            <text x={currentState.heap2 ? 400 : 1000} y={30} textAnchor="middle" className="text-sm font-bold fill-amber-700">
+                                                {currentState.heap2 ? 'Heap 1' : 'Main Heap'}
+                                            </text>
+                                            {renderSkewHeap(currentState.heap, currentState.heap2 ? 400 : 1000, 60)}
+                                        </>
+                                    )}
+
+                                    {currentState.heap2 && (
+                                        <>
+                                            <text x={900} y={30} textAnchor="middle" className="text-sm font-bold fill-orange-600">
+                                                Heap 2
+                                            </text>
+                                            {renderSkewHeap(currentState.heap2, 900, 60)}
+
+                                            <g>
+                                                <line x1={500} y1={200} x2={800} y2={200} className="stroke-amber-600 stroke-2 dashed" strokeDasharray="5,5" />
+                                                <text x={650} y={190} textAnchor="middle" className="text-xs fill-amber-700 font-semibold">MERGE</text>
+                                            </g>
+                                        </>
+                                    )}
+                                </svg>
+                            </div>
                         </div>
 
-                        {/* Heap Statistics */}
+                        {/* Stats Panel */}
                         <div className="mb-6 grid grid-cols-3 gap-4">
                             <div className="bg-amber-50 rounded-lg p-3 text-center">
                                 <div className="text-sm text-gray-600">Nodes</div>
-                                <div className="text-2xl font-bold text-amber-600">
-                                    {countNodes(currentState.heap)}
-                                </div>
+                                <div className="text-2xl font-bold text-amber-600">{countNodes(currentState.heap)}</div>
                             </div>
                             <div className="bg-amber-50 rounded-lg p-3 text-center">
                                 <div className="text-sm text-gray-600">Height</div>
-                                <div className="text-2xl font-bold text-amber-600">
-                                    {getHeight(currentState.heap)}
-                                </div>
+                                <div className="text-2xl font-bold text-amber-600">{getHeight(currentState.heap)}</div>
                             </div>
                             <div className="bg-amber-50 rounded-lg p-3 text-center">
                                 <div className="text-sm text-gray-600">Swaps</div>
-                                <div className="text-2xl font-bold text-amber-600">
-                                    {totalSwaps}
-                                </div>
+                                <div className="text-2xl font-bold text-amber-600">{totalSwaps}</div>
                             </div>
                         </div>
 
-                        {/* Step Explanation */}
+                        {/* Explanation */}
                         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                             <h3 className="font-semibold text-amber-800 mb-2">Current Step:</h3>
                             <p className="text-amber-700">{currentState.explanation}</p>
-                            {stepHistory.length > 0 && (
-                                <div className="mt-2 text-sm text-amber-600">
-                                    Step {currentStep + 1} of {stepHistory.length}
-                                </div>
-                            )}
                             {currentState.swapHappened && (
-                                <div className="mt-2 text-sm text-orange-600 font-semibold">
-                                    ↔️ Children swapped (skewing)
+                                <div className="mt-2 text-sm text-orange-600 font-semibold animate-pulse">
+                                    ↔️ Skew Operation: Swapped Left/Right Children
                                 </div>
                             )}
                         </div>
@@ -879,9 +703,7 @@ heap.merge_with(heap2)  # Combine heaps`;
                         {/* Code Example */}
                         <div className="bg-white rounded-xl shadow-lg p-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                <code>{codeExample}</code>
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>
                 </div>

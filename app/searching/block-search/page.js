@@ -2,6 +2,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
 
 const BlockSearchPage = () => {
     const [array, setArray] = useState([1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]);
@@ -555,9 +556,7 @@ def block_search(arr, target):
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
-                            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-                                {codeExample}
-                            </pre>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
 
                         {/* Real-world Applications */}

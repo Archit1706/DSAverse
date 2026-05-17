@@ -1,6 +1,16 @@
-"use client";
-
 import React from 'react';
+
+export const metadata = {
+    title: "Recursion Algorithms – Interactive Visualizer",
+    description:
+        "Visualize recursive algorithms including Factorial, Fibonacci Sequence, Tower of Hanoi, N-Queens, Maze Solver, and String Reversal. Understand call stacks and base cases step by step.",
+    keywords: ["recursion", "recursive algorithms", "tower of hanoi", "n-queens", "fibonacci", "maze solver", "algorithm visualization"],
+    openGraph: {
+        title: "Recursion Algorithms Visualizer – DSAverse",
+        description: "Interactive step-by-step recursion visualizations with call stack animations.",
+        images: [{ url: "/og-image.png" }],
+    },
+};
 import Link from 'next/link';
 import { ArrowRight, Clock, Code, Play, Layers } from 'lucide-react';
 

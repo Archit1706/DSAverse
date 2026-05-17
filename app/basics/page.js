@@ -1,6 +1,16 @@
-'use client';
-
 import React from 'react';
+
+export const metadata = {
+    title: "Basic Data Structures – Stack, Queue & List Visualizer",
+    description:
+        "Interactive visualizations of fundamental data structures: Stacks (array & linked list), Queues (array & linked list), and Lists. Learn push, pop, enqueue, dequeue operations step by step.",
+    keywords: ["stack", "queue", "linked list", "array", "data structures", "push pop", "enqueue dequeue", "algorithm visualization"],
+    openGraph: {
+        title: "Basic Data Structures Visualizer – DSAverse",
+        description: "Interactive visualizations of stacks, queues, and lists with step-by-step operations.",
+        images: [{ url: "/og-image.png" }],
+    },
+};
 import { Play, Code, Clock, Database, List, Layers, ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
 
