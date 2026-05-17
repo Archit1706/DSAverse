@@ -232,7 +232,7 @@ export default function Hero() {
 
             {/* ── Main content ── */}
             <div className="relative z-10 flex-1 flex items-center">
-                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20">
+                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-28 pb-16">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
                         {/* Left ─ copy */}

@@ -27,7 +27,7 @@ export default function BasicsLayout({ children }) {
     return (
         <>
             <Navbar />
-            <main>{children}</main>
+            <main className="pt-16">{children}</main>
             <Footer />
         </>
     )
