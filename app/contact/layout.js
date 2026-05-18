@@ -1,30 +1,25 @@
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata = {
-    title: 'Contact | DSAverse',
-    description: 'Contact us for any questions or feedback.',
-    icons: {
-        icon: '/favicon.ico',
-    },
+    title: 'Contact – Get In Touch',
+    description:
+        'Send feedback, report bugs, request features, or inquire about collaborating on DSAverse. We read every message and respond within 24–48 hours.',
+    keywords: ['contact DSAverse', 'feedback', 'bug report', 'feature request', 'open source contribution', 'DSA visualizer'],
     openGraph: {
-        title: 'Contact | DSAverse',
-        description: 'Contact us for any questions or feedback.',
-        images: '/favicon.ico',
+        title: 'Contact DSAverse',
+        description: 'Send feedback, report bugs, or collaborate with us on DSAverse.',
+        images: [{ url: '/og-image.png' }],
     },
     twitter: {
-        title: 'Contact | DSAverse',
-        description: 'Contact us for any questions or feedback.',
-        images: '/favicon.ico',
+        card: 'summary_large_image',
+        title: 'Contact DSAverse',
+        description: 'Send feedback, report bugs, or collaborate with us on DSAverse.',
+        images: ['/og-image.png'],
     },
-    keywords: ['DSA', 'Data Structures', 'Algorithms', 'Visualizations', 'Learn', 'Basics', 'Contact', 'Feedback', 'Questions', 'Contact Us', 'Feedback', 'Questions', 'Contact Us', 'Feedback', 'Questions'],
-    robots: 'index, follow',
-    creator: 'Archit Rathod',
-    publisher: 'Archit Rathod',
-    applicationName: 'DSAverse',
     authors: [{ name: 'Archit Rathod', url: 'https://archit-rathod.vercel.app/' }],
-    category: 'technology',
-}
+    creator: 'Archit Rathod',
+};
 
 export default function ContactLayout({ children }) {
     return (
@@ -33,5 +28,5 @@ export default function ContactLayout({ children }) {
             <main className="pt-16">{children}</main>
             <Footer />
         </>
-    )
+    );
 }
