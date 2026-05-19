@@ -2,10 +2,49 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Play, Pause, RotateCcw, Clock, Code, Map, Navigation, Target, AlertCircle } from 'lucide-react';
+import {
+    ArrowLeft, Play, Pause, RotateCcw, Clock, Code, Map, Navigation, Target, AlertCircle,
+    ArrowDown, ArrowUp, Brain, CheckCircle, XCircle, Info, ChevronRight, RefreshCw
+} from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 
-const MazeSolverVisualizer = () => {
+const quizQuestions = [
+    {
+        question: "What does the maze solver do when it hits a dead end?",
+        options: [
+            "It restarts from the beginning",
+            "It marks the cell as a wall and tries a different route",
+            "It unmarks the cell as visited and removes it from the path (backtrack)",
+            "It signals that the maze has no solution"
+        ],
+        correct: 2,
+        explanation: "Backtracking sets visited[row][col] = false and pops the cell from path. This allows the algorithm to try different directions when revisiting the parent cell."
+    },
+    {
+        question: "Why is a 'visited' array necessary in recursive maze solving?",
+        options: [
+            "To count the total number of steps taken",
+            "To prevent infinite loops — without it we could revisit cells endlessly",
+            "To store the final solution path",
+            "To mark walls in the maze"
+        ],
+        correct: 1,
+        explanation: "Without tracking visited cells, the recursive solver could bounce back and forth between adjacent cells forever. The visited array ensures each cell is explored at most once."
+    },
+    {
+        question: "In what order does the default maze solver try directions?",
+        options: [
+            "Up, left, right, down",
+            "Random order each time",
+            "Toward the goal first",
+            "Right, down, left, up"
+        ],
+        correct: 3,
+        explanation: "The implementation tries directions in order: right (0,+1), down (+1,0), left (0,-1), up (-1,0). This determines the specific path found, though any valid path exists if the maze is solvable."
+    }
+];
+
+export default function MazeSolverVisualizer() {
     const [mazeSize, setMazeSize] = useState(7);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
@@ -13,172 +52,99 @@ const MazeSolverVisualizer = () => {
     const [speed, setSpeed] = useState(600);
     const [maze, setMaze] = useState([]);
     const [solutionFound, setSolutionFound] = useState(false);
+    const [quizState, setQuizState] = useState({ answered: false, selected: null, correct: false });
+    const [currentQuestion, setCurrentQuestion] = useState(0);
 
-    // Generate a solvable maze
     const generateMaze = (size) => {
-        // Create maze with borders (1 = wall, 0 = path)
-        const maze = Array(size).fill().map(() => Array(size).fill(1));
-
-        // Simple maze pattern - ensure there's always a path
-        // Create a path from top-left to bottom-right
-        for (let i = 1; i < size - 1; i++) {
-            for (let j = 1; j < size - 1; j++) {
-                // Create some open spaces
-                if ((i + j) % 3 !== 0 || (i === 1 && j === 1) || (i === size - 2 && j === size - 2)) {
-                    maze[i][j] = 0;
-                }
-            }
-        }
-
-        // Ensure start and end are open
-        maze[1][1] = 0; // Start
-        maze[size - 2][size - 2] = 0; // End
-
-        // Create guaranteed path
-        for (let i = 1; i < size - 1; i++) {
-            maze[i][1] = 0; // Vertical path down
-        }
-        for (let j = 1; j < size - 1; j++) {
-            maze[size - 2][j] = 0; // Horizontal path right
-        }
-
-        return maze;
+        const m = Array(size).fill(null).map(() => Array(size).fill(1));
+        for (let i = 1; i < size - 1; i++)
+            for (let j = 1; j < size - 1; j++)
+                if ((i + j) % 3 !== 0 || (i === 1 && j === 1) || (i === size - 2 && j === size - 2))
+                    m[i][j] = 0;
+        m[1][1] = 0;
+        m[size - 2][size - 2] = 0;
+        for (let i = 1; i < size - 1; i++) m[i][1] = 0;
+        for (let j = 1; j < size - 1; j++) m[size - 2][j] = 0;
+        return m;
     };
 
-    // Generate step history for maze solving
     const generateSteps = (mazeGrid) => {
         const steps = [];
         const size = mazeGrid.length;
-        const visited = Array(size).fill().map(() => Array(size).fill(false));
+        const visited = Array(size).fill(null).map(() => Array(size).fill(false));
         const path = [];
         let solutionPath = [];
         let foundSolution = false;
-
         const start = { row: 1, col: 1 };
         const end = { row: size - 2, col: size - 2 };
+        const directions = [{ row: 0, col: 1, name: 'right' }, { row: 1, col: 0, name: 'down' }, { row: 0, col: -1, name: 'left' }, { row: -1, col: 0, name: 'up' }];
+        const isValid = (r, c) => r >= 0 && r < size && c >= 0 && c < size && mazeGrid[r][c] === 0 && !visited[r][c];
 
-        // Directions: right, down, left, up
-        const directions = [
-            { row: 0, col: 1, name: 'right' },
-            { row: 1, col: 0, name: 'down' },
-            { row: 0, col: -1, name: 'left' },
-            { row: -1, col: 0, name: 'up' }
-        ];
-
-        const isValid = (row, col) => {
-            return row >= 0 && row < size && col >= 0 && col < size &&
-                mazeGrid[row][col] === 0 && !visited[row][col];
-        };
+        steps.push({
+            maze: mazeGrid.map(r => [...r]),
+            visited: visited.map(r => [...r]),
+            currentPos: null, path: [],
+            explanation: `Generated ${size}×${size} maze. Starting recursive backtracking from (${start.row}, ${start.col}) to (${end.row}, ${end.col})`,
+            depth: 0, action: 'start', direction: null, backtracking: false, solutionFound: false
+        });
 
         const solveMaze = (row, col, depth = 0) => {
-            // Mark current cell as visited
             visited[row][col] = true;
             path.push({ row, col });
-
             steps.push({
-                maze: mazeGrid.map(row => [...row]),
-                visited: visited.map(row => [...row]),
-                currentPos: { row, col },
-                path: [...path],
+                maze: mazeGrid.map(r => [...r]),
+                visited: visited.map(r => [...r]),
+                currentPos: { row, col }, path: [...path],
                 explanation: (row === start.row && col === start.col)
-                    ? `🚀 Starting at position (${row}, ${col})`
+                    ? `Starting at (${row}, ${col}) — exploring all directions`
                     : (row === end.row && col === end.col)
-                        ? `🎯 Reached the goal at (${row}, ${col})! Solution found!`
-                        : `📍 Exploring position (${row}, ${col}) - checking all directions`,
-                depth: depth,
-                action: 'explore',
-                direction: null,
-                backtracking: false,
-                solutionFound: false
+                        ? `Reached the goal at (${row}, ${col})!`
+                        : `Exploring (${row}, ${col}) — depth: ${depth}`,
+                depth, action: 'explore', direction: null, backtracking: false, solutionFound: false
             });
-
-            // Check if we reached the goal
             if (row === end.row && col === end.col) {
                 solutionPath = [...path];
                 foundSolution = true;
-
                 steps.push({
-                    maze: mazeGrid.map(row => [...row]),
-                    visited: visited.map(row => [...row]),
-                    currentPos: { row, col },
-                    path: [...solutionPath],
-                    explanation: `🎉 Solution found! Path has ${solutionPath.length} steps.`,
-                    depth: depth,
-                    action: 'solution',
-                    direction: null,
-                    backtracking: false,
-                    solutionFound: true
+                    maze: mazeGrid.map(r => [...r]),
+                    visited: visited.map(r => [...r]),
+                    currentPos: { row, col }, path: [...solutionPath],
+                    explanation: `Solution found! Path length: ${solutionPath.length} cells.`,
+                    depth, action: 'solution', direction: null, backtracking: false, solutionFound: true
                 });
                 return true;
             }
-
-            // Try all four directions
-            for (let i = 0; i < directions.length; i++) {
-                const dir = directions[i];
+            for (const dir of directions) {
                 const newRow = row + dir.row;
                 const newCol = col + dir.col;
-
                 if (isValid(newRow, newCol)) {
                     steps.push({
-                        maze: mazeGrid.map(row => [...row]),
-                        visited: visited.map(row => [...row]),
-                        currentPos: { row, col },
-                        path: [...path],
-                        explanation: `🔍 Found valid path ${dir.name} to (${newRow}, ${newCol}) - moving there`,
-                        depth: depth,
-                        action: 'move',
-                        direction: dir.name,
-                        nextPos: { row: newRow, col: newCol },
-                        backtracking: false,
-                        solutionFound: false
+                        maze: mazeGrid.map(r => [...r]),
+                        visited: visited.map(r => [...r]),
+                        currentPos: { row, col }, path: [...path],
+                        explanation: `Valid path ${dir.name} to (${newRow}, ${newCol}) — moving there`,
+                        depth, action: 'move', direction: dir.name,
+                        nextPos: { row: newRow, col: newCol }, backtracking: false, solutionFound: false
                     });
-
-                    // Recursive call
-                    if (solveMaze(newRow, newCol, depth + 1)) {
-                        return true;
-                    }
+                    if (solveMaze(newRow, newCol, depth + 1)) return true;
                 }
             }
-
-            // If we get here, we need to backtrack
             path.pop();
             visited[row][col] = false;
-
             if (path.length > 0) {
                 steps.push({
-                    maze: mazeGrid.map(row => [...row]),
-                    visited: visited.map(row => [...row]),
-                    currentPos: { row, col },
-                    path: [...path],
-                    explanation: `🔙 Dead end at (${row}, ${col}) - backtracking to (${path[path.length - 1].row}, ${path[path.length - 1].col})`,
-                    depth: depth,
-                    action: 'backtrack',
-                    direction: null,
-                    backtracking: true,
-                    solutionFound: false
+                    maze: mazeGrid.map(r => [...r]),
+                    visited: visited.map(r => [...r]),
+                    currentPos: { row, col }, path: [...path],
+                    explanation: `Dead end at (${row}, ${col}) — backtracking to (${path[path.length - 1].row}, ${path[path.length - 1].col})`,
+                    depth, action: 'backtrack', direction: null, backtracking: true, solutionFound: false
                 });
             }
-
             return false;
         };
 
-        // Initial step
-        steps.push({
-            maze: mazeGrid.map(row => [...row]),
-            visited: visited.map(row => [...row]),
-            currentPos: null,
-            path: [],
-            explanation: `🗺️ Generated ${size}×${size} maze. Starting maze solving from (${start.row}, ${start.col}) to (${end.row}, ${end.col})`,
-            depth: 0,
-            action: 'start',
-            direction: null,
-            backtracking: false,
-            solutionFound: false
-        });
-
         solveMaze(start.row, start.col);
         setSolutionFound(foundSolution);
-
         return steps;
     };
 
@@ -193,26 +159,15 @@ const MazeSolverVisualizer = () => {
     useEffect(() => {
         let interval;
         if (isPlaying && currentStep < stepHistory.length - 1) {
-            interval = setInterval(() => {
-                setCurrentStep(prev => prev + 1);
-            }, speed);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-        }
+            interval = setInterval(() => setCurrentStep(p => p + 1), speed);
+        } else if (currentStep >= stepHistory.length - 1) setIsPlaying(false);
         return () => clearInterval(interval);
     }, [isPlaying, currentStep, stepHistory.length, speed]);
 
-    const handlePlay = () => {
-        if (currentStep >= stepHistory.length - 1) {
-            setCurrentStep(0);
-        }
-        setIsPlaying(!isPlaying);
-    };
-
-    const handleReset = () => {
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
+    const handlePlay = () => { if (currentStep >= stepHistory.length - 1) setCurrentStep(0); setIsPlaying(!isPlaying); };
+    const handleReset = () => { setIsPlaying(false); setCurrentStep(0); };
+    const stepForward = () => { if (currentStep < stepHistory.length - 1) setCurrentStep(p => p + 1); };
+    const stepBackward = () => { if (currentStep > 0) setCurrentStep(p => p - 1); };
 
     const handleNewMaze = () => {
         setIsPlaying(false);
@@ -225,154 +180,91 @@ const MazeSolverVisualizer = () => {
 
     const currentState = stepHistory[currentStep] || {
         maze: maze,
-        visited: Array(mazeSize).fill().map(() => Array(mazeSize).fill(false)),
-        currentPos: null,
-        path: [],
-        explanation: 'Click Start to begin solving the maze',
-        depth: 0,
-        action: 'start',
-        direction: null,
-        backtracking: false,
-        solutionFound: false
+        visited: Array(mazeSize).fill(null).map(() => Array(mazeSize).fill(false)),
+        currentPos: null, path: [], explanation: 'Click Play to begin solving the maze.',
+        depth: 0, action: 'start', direction: null, backtracking: false, solutionFound: false
     };
 
     const getCellClass = (row, col) => {
-        const isWall = currentState.maze[row] && currentState.maze[row][col] === 1;
+        if (!currentState.maze[row]) return '';
+        const isWall = currentState.maze[row][col] === 1;
         const isStart = row === 1 && col === 1;
         const isEnd = row === mazeSize - 2 && col === mazeSize - 2;
-        const isCurrent = currentState.currentPos && currentState.currentPos.row === row && currentState.currentPos.col === col;
+        const isCurrent = currentState.currentPos?.row === row && currentState.currentPos?.col === col;
         const isInPath = currentState.path.some(p => p.row === row && p.col === col);
-        const isVisited = currentState.visited[row] && currentState.visited[row][col];
-        const isNextPos = currentState.nextPos && currentState.nextPos.row === row && currentState.nextPos.col === col;
+        const isVisited = currentState.visited[row]?.[col];
+        const isNextPos = currentState.nextPos?.row === row && currentState.nextPos?.col === col;
 
-        if (isWall) return 'bg-gray-800 border-gray-900';
-        if (isStart) return 'bg-green-500 border-green-600';
-        if (isEnd) return 'bg-red-500 border-red-600';
-        if (isCurrent) return currentState.backtracking
-            ? 'bg-orange-400 border-orange-500 animate-pulse'
-            : 'bg-blue-400 border-blue-500 animate-pulse';
-        if (isNextPos) return 'bg-yellow-300 border-yellow-400 animate-bounce';
+        if (isWall) return 'bg-slate-800 border-slate-900';
+        if (isStart) return 'bg-green-500 border-green-400';
+        if (isEnd) return 'bg-red-500 border-red-400';
+        if (isCurrent) return currentState.backtracking ? 'bg-orange-400 border-orange-300 animate-pulse' : 'bg-blue-400 border-blue-300 animate-pulse';
+        if (isNextPos) return 'bg-yellow-400 border-yellow-300 animate-bounce';
         if (currentState.solutionFound && isInPath) return 'bg-green-300 border-green-400';
-        if (isInPath) return 'bg-blue-200 border-blue-300';
-        if (isVisited) return 'bg-gray-300 border-gray-400';
-
-        return 'bg-white border-slate-700';
+        if (isInPath) return 'bg-blue-300 border-blue-400';
+        if (isVisited) return 'bg-slate-600 border-slate-500';
+        return 'bg-slate-700 border-slate-600';
     };
 
-    const getActionColor = (action) => {
+    const getActionStyle = (action) => {
         switch (action) {
-            case 'start': return 'bg-gray-100 text-slate-100';
-            case 'explore': return 'bg-blue-500/15 text-blue-400';
-            case 'move': return 'bg-green-500/15 text-green-400';
-            case 'backtrack': return 'bg-orange-500/15 text-orange-400';
-            case 'solution': return 'bg-emerald-100 text-emerald-800';
-            default: return 'bg-gray-100 text-slate-100';
+            case 'explore': return 'bg-blue-500/15 text-blue-400 border border-blue-500/30';
+            case 'move': return 'bg-green-500/15 text-green-400 border border-green-500/30';
+            case 'backtrack': return 'bg-orange-500/15 text-orange-400 border border-orange-500/30';
+            case 'solution': return 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+            default: return 'bg-slate-700/50 text-slate-400';
         }
     };
 
+    const handleQuizAnswer = (idx) => { if (quizState.answered) return; setQuizState({ answered: true, selected: idx, correct: idx === quizQuestions[currentQuestion].correct }); };
+    const nextQuestion = () => { setCurrentQuestion(p => (p + 1) % quizQuestions.length); setQuizState({ answered: false, selected: null, correct: false }); };
+
     const codeExample = `def solve_maze(maze, row, col, end_row, end_col, visited, path):
-    # Mark current cell as visited
     visited[row][col] = True
     path.append((row, col))
-    
-    # Check if we reached the goal
+
     if row == end_row and col == end_col:
-        return True  # Solution found!
-    
-    # Try all four directions: right, down, left, up
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    for dr, dc in directions:
+        return True              # Solution found
+
+    # Try all 4 directions: right, down, left, up
+    for dr, dc in [(0,1), (1,0), (0,-1), (-1,0)]:
         new_row, new_col = row + dr, col + dc
-        
-        # Check if new position is valid
-        if (is_valid(new_row, new_col, maze, visited)):
-            # Recursive call
-            if solve_maze(maze, new_row, new_col, end_row, end_col, visited, path):
+        if is_valid(new_row, new_col, maze, visited):
+            if solve_maze(maze, new_row, new_col,
+                          end_row, end_col, visited, path):
                 return True
-    
-    # Backtrack: remove current cell from path
+
+    # Backtrack: undo this cell
     path.pop()
     visited[row][col] = False
     return False
 
 def is_valid(row, col, maze, visited):
-    return (0 <= row < len(maze) and 
-            0 <= col < len(maze[0]) and 
-            maze[row][col] == 0 and 
-            not visited[row][col])
+    return (0 <= row < len(maze) and
+            0 <= col < len(maze[0]) and
+            maze[row][col] == 0 and
+            not visited[row][col])`;
 
-# Solve ${mazeSize}×${mazeSize} maze
-path = []
-visited = [[False] * ${mazeSize} for _ in range(${mazeSize})]
-solution_exists = solve_maze(maze, 1, 1, ${mazeSize - 2}, ${mazeSize - 2}, visited, path)`;
-
-    const javaScriptCode = `function solveMaze(maze, row, col, endRow, endCol, visited, path) {
-    visited[row][col] = true;
-    path.push([row, col]);
-    
-    // Check if we reached the goal
-    if (row === endRow && col === endCol) {
-        return true;
-    }
-    
-    // Try all directions
-    const directions = [[0,1], [1,0], [0,-1], [-1,0]];
-    
-    for (let [dr, dc] of directions) {
-        const newRow = row + dr;
-        const newCol = col + dc;
-        
-        if (isValid(newRow, newCol, maze, visited)) {
-            if (solveMaze(maze, newRow, newCol, endRow, endCol, visited, path)) {
-                return true;
-            }
-        }
-    }
-    
-    // Backtrack
-    path.pop();
-    visited[row][col] = false;
-    return false;
-}
-
-function isValid(row, col, maze, visited) {
-    return row >= 0 && row < maze.length && 
-           col >= 0 && col < maze[0].length && 
-           maze[row][col] === 0 && !visited[row][col];
-}`;
+    const q = quizQuestions[currentQuestion];
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+            <div className="bg-gradient-to-r from-green-600 to-emerald-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center mb-6">
-                        <Link href="/recursion" className="flex items-center text-white hover:text-green-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Recursion
+                        <Link href="/recursion" className="flex items-center text-white/80 hover:text-white transition-colors text-sm">
+                            <ArrowLeft className="h-4 w-4 mr-1" /> Back to Recursion
                         </Link>
                     </div>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Maze Solver - Backtracking
-                        </h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Maze Solver — Backtracking</h1>
                         <p className="text-xl text-green-100 mb-6 max-w-3xl mx-auto">
-                            Watch recursive backtracking explore the maze, hit dead ends, and intelligently backtrack to find the solution path.
+                            Watch recursive backtracking explore every path, intelligently retreat from dead ends, and find the solution.
                         </p>
-                        <div className="flex justify-center items-center gap-4 text-sm">
-                            <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
-                                <Map className="h-4 w-4" />
-                                Backtracking Algorithm
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
-                                <Clock className="h-4 w-4" />
-                                O(4^(m×n)) Time
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
-                                <Navigation className="h-4 w-4" />
-                                Path Finding
-                            </div>
+                        <div className="flex flex-wrap justify-center gap-4 text-sm">
+                            <div className="flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full"><Map className="h-4 w-4" /> Backtracking DFS</div>
+                            <div className="flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full"><Clock className="h-4 w-4" /> O(4^(m×n))</div>
+                            <div className="flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full"><Navigation className="h-4 w-4" /> Path Finding</div>
                         </div>
                     </div>
                 </div>
@@ -380,286 +272,238 @@ function isValid(row, col, maze, visited) {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Control Panel */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                    {/* Controls */}
+                    <div className="lg:col-span-1 space-y-4">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <h3 className="text-xl font-bold text-white mb-4">Controls</h3>
-
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                                        Maze Size: {mazeSize}×{mazeSize}
-                                    </label>
-                                    <input
-                                        type="range"
-                                        min="5"
-                                        max="11"
-                                        step="2"
-                                        value={mazeSize}
-                                        onChange={(e) => setMazeSize(parseInt(e.target.value))}
-                                        className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
-                                        disabled={isPlaying}
-                                    />
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">Maze Size: {mazeSize}×{mazeSize}</label>
+                                    <input type="range" min="5" max="11" step="2" value={mazeSize}
+                                        onChange={(e) => { setMazeSize(parseInt(e.target.value)); setIsPlaying(false); }}
+                                        className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-500"
+                                        disabled={isPlaying} />
                                 </div>
-
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                                        Speed: {speed}ms
-                                    </label>
-                                    <input
-                                        type="range"
-                                        min="200"
-                                        max="1200"
-                                        step="100"
-                                        value={speed}
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">Speed: {speed}ms</label>
+                                    <input type="range" min="100" max="1200" step="100" value={speed}
                                         onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                        className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
-                                    />
+                                        className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-500" />
                                 </div>
-
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={handlePlay}
-                                        className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center"
-                                    >
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button onClick={handlePlay}
+                                        className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
                                         {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-                                        {isPlaying ? 'Pause' : 'Start'}
+                                        {isPlaying ? 'Pause' : 'Play'}
                                     </button>
-                                    <button
-                                        onClick={handleReset}
-                                        className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors flex items-center justify-center"
-                                    >
-                                        <RotateCcw className="h-4 w-4 mr-2" />
-                                        Reset
+                                    <button onClick={handleReset}
+                                        className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center">
+                                        <RotateCcw className="h-4 w-4 mr-2" /> Reset
                                     </button>
                                 </div>
-
-                                <button
-                                    onClick={handleNewMaze}
-                                    disabled={isPlaying}
-                                    className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center"
-                                >
-                                    <Map className="h-4 w-4 mr-2" />
-                                    New Maze
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button onClick={stepBackward} disabled={currentStep === 0 || isPlaying}
+                                        className="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm disabled:opacity-40">
+                                        <ArrowUp className="h-4 w-4 mr-1" /> Prev
+                                    </button>
+                                    <button onClick={stepForward} disabled={currentStep === stepHistory.length - 1 || isPlaying}
+                                        className="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm disabled:opacity-40">
+                                        Next <ArrowDown className="h-4 w-4 ml-1" />
+                                    </button>
+                                </div>
+                                <button onClick={handleNewMaze} disabled={isPlaying}
+                                    className="w-full bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center disabled:opacity-40">
+                                    <RefreshCw className="h-4 w-4 mr-2" /> New Maze
                                 </button>
                             </div>
                         </div>
 
                         {/* Legend */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
-                            <h3 className="text-xl font-bold text-white mb-4">Legend</h3>
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 bg-green-500 border border-green-600 rounded"></div>
-                                    <span className="text-sm text-slate-300">Start Position</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 bg-red-500 border border-red-600 rounded"></div>
-                                    <span className="text-sm text-slate-300">Goal Position</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 bg-blue-400 border border-blue-500 rounded"></div>
-                                    <span className="text-sm text-slate-300">Current Position</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 bg-blue-200 border border-blue-300 rounded"></div>
-                                    <span className="text-sm text-slate-300">Current Path</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 bg-orange-400 border border-orange-500 rounded"></div>
-                                    <span className="text-sm text-slate-300">Backtracking</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 bg-gray-300 border border-gray-400 rounded"></div>
-                                    <span className="text-sm text-slate-300">Visited Cell</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 bg-gray-800 border border-gray-900 rounded"></div>
-                                    <span className="text-sm text-slate-300">Wall</span>
-                                </div>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-5">
+                            <h3 className="text-base font-bold text-white mb-3">Color Legend</h3>
+                            <div className="space-y-2">
+                                {[
+                                    ['bg-green-500 border-green-400', 'Start (S)'],
+                                    ['bg-red-500 border-red-400', 'Goal (E)'],
+                                    ['bg-blue-400 border-blue-300', 'Exploring'],
+                                    ['bg-orange-400 border-orange-300', 'Backtracking'],
+                                    ['bg-yellow-400 border-yellow-300', 'Next cell'],
+                                    ['bg-blue-300 border-blue-400', 'Current path'],
+                                    ['bg-green-300 border-green-400', 'Solution path'],
+                                    ['bg-slate-600 border-slate-500', 'Visited (dead end)'],
+                                    ['bg-slate-800 border-slate-900', 'Wall'],
+                                ].map(([cls, label]) => (
+                                    <div key={label} className="flex items-center gap-3">
+                                        <div className={`w-5 h-5 rounded border-2 flex-shrink-0 ${cls}`}></div>
+                                        <span className="text-sm text-slate-300">{label}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Algorithm Info */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                                <AlertCircle className="h-5 w-5 mr-2 text-green-600" />
-                                Algorithm Status
+                        {/* Algorithm Status */}
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-5">
+                            <h3 className="text-base font-bold text-white mb-3 flex items-center">
+                                <AlertCircle className="h-5 w-5 mr-2 text-green-400" /> Algorithm Status
                             </h3>
                             <div className="space-y-3">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-slate-300">Recursion Depth:</span>
-                                    <span className="text-lg font-bold text-green-300">
-                                        {currentState.depth}
-                                    </span>
+                                <div>
+                                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>Progress</span><span>{currentStep + 1}/{stepHistory.length}</span>
+                                    </div>
+                                    <div className="w-full bg-slate-700 rounded-full h-1.5">
+                                        <div className="bg-green-500 h-1.5 rounded-full transition-all"
+                                            style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }} />
+                                    </div>
                                 </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-slate-300">Path Length:</span>
-                                    <span className="text-lg font-bold text-blue-700">
-                                        {currentState.path.length}
-                                    </span>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-400">Depth:</span>
+                                    <span className="text-green-300 font-bold">{currentState.depth}</span>
                                 </div>
-                                <div className="text-sm">
-                                    <span className="font-medium text-slate-300">Action: </span>
-                                    <span className={`px-2 py-1 rounded text-xs font-medium ${getActionColor(currentState.action)}`}>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-400">Path length:</span>
+                                    <span className="text-blue-300 font-bold">{currentState.path.length}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-400">Action:</span>
+                                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${getActionStyle(currentState.action)}`}>
                                         {currentState.action.toUpperCase()}
                                     </span>
                                 </div>
                                 {currentState.direction && (
-                                    <div className="text-sm">
-                                        <span className="font-medium text-slate-300">Moving: </span>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-400">Moving:</span>
                                         <span className="text-green-300 font-medium">{currentState.direction}</span>
                                     </div>
                                 )}
-                                <div className="text-sm">
-                                    <span className="font-medium text-slate-300">Solution: </span>
-                                    <span className={`font-medium ${solutionFound ? 'text-green-300' : 'text-orange-700'}`}>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-400">Solution:</span>
+                                    <span className={`font-medium ${solutionFound ? 'text-green-300' : 'text-orange-400'}`}>
                                         {solutionFound ? 'Found!' : 'Searching...'}
                                     </span>
+                                </div>
+                                <div className={`rounded-lg p-3 ${currentState.backtracking ? 'bg-orange-500/10 border border-orange-500/20' : currentState.solutionFound ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-blue-500/10 border border-blue-500/20'}`}>
+                                    <div className="flex items-start gap-2">
+                                        <Info className={`h-4 w-4 flex-shrink-0 mt-0.5 ${currentState.backtracking ? 'text-orange-400' : currentState.solutionFound ? 'text-emerald-400' : 'text-blue-400'}`} />
+                                        <p className="text-slate-200 text-xs leading-relaxed">{currentState.explanation}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Current Step */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
-                            <h3 className="text-xl font-bold text-white mb-4">Current Step</h3>
-                            <div className="space-y-3">
-                                <div className="text-sm text-slate-400">
-                                    Step {currentStep + 1} of {stepHistory.length}
-                                </div>
-                                <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                    <p className="text-green-300 text-sm">
-                                        {currentState.explanation}
-                                    </p>
-                                </div>
+                        {/* Quiz */}
+                        <div className="bg-slate-900/70 rounded-xl border border-green-500/30 shadow-xl p-5">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Brain className="h-5 w-5 text-green-400" />
+                                <h3 className="text-base font-bold text-white">Test Yourself</h3>
+                                <span className="ml-auto text-xs text-slate-500">Q{currentQuestion + 1}/{quizQuestions.length}</span>
                             </div>
+                            <p className="text-slate-200 text-sm font-medium mb-3 leading-relaxed">{q.question}</p>
+                            <div className="space-y-1.5 mb-3">
+                                {q.options.map((opt, idx) => {
+                                    let cls = 'bg-slate-800 border-slate-600 text-slate-300 hover:border-green-500';
+                                    if (quizState.answered) {
+                                        if (idx === q.correct) cls = 'bg-green-500/20 border-green-400 text-green-300';
+                                        else if (idx === quizState.selected) cls = 'bg-red-500/20 border-red-400 text-red-300';
+                                        else cls = 'bg-slate-800 border-slate-700 text-slate-500 opacity-50';
+                                    }
+                                    return (
+                                        <button key={idx} onClick={() => handleQuizAnswer(idx)} disabled={quizState.answered}
+                                            className={`w-full text-left px-3 py-2 rounded-lg border text-xs transition-all ${cls}`}>
+                                            <span className="font-mono opacity-60 mr-2">{String.fromCharCode(65 + idx)}.</span>{opt}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {quizState.answered && (
+                                <div className={`rounded-lg p-3 mb-2 ${quizState.correct ? 'bg-green-500/15 border border-green-500/30' : 'bg-red-500/15 border border-red-500/30'}`}>
+                                    <div className="flex items-center gap-1.5 mb-1">
+                                        {quizState.correct ? <CheckCircle className="h-4 w-4 text-green-400" /> : <XCircle className="h-4 w-4 text-red-400" />}
+                                        <span className={`text-xs font-semibold ${quizState.correct ? 'text-green-300' : 'text-red-300'}`}>{quizState.correct ? 'Correct!' : 'Not quite.'}</span>
+                                    </div>
+                                    <p className="text-slate-300 text-xs leading-relaxed">{q.explanation}</p>
+                                </div>
+                            )}
+                            {quizState.answered && (
+                                <button onClick={nextQuestion} className="w-full bg-green-700 hover:bg-green-600 text-white py-1.5 rounded-lg text-xs font-medium transition-colors">Next Question</button>
+                            )}
                         </div>
                     </div>
 
                     {/* Maze Visualization */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-                                <Target className="h-5 w-5 mr-2 text-green-600" />
-                                Maze Visualization
+                                <Target className="h-5 w-5 mr-2 text-green-400" /> Maze Visualization
                             </h3>
-
-                            {/* Maze Grid */}
-                            <div className="flex justify-center mb-6">
-                                <div
-                                    className="grid gap-1 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60"
-                                    style={{
-                                        gridTemplateColumns: `repeat(${mazeSize}, minmax(0, 1fr))`,
-                                        maxWidth: '500px'
-                                    }}
-                                >
+                            <div className="flex justify-center mb-4">
+                                <div className="grid gap-0.5 p-3 bg-slate-900 rounded-xl border border-slate-700"
+                                    style={{ gridTemplateColumns: `repeat(${mazeSize}, minmax(0, 1fr))`, maxWidth: '500px', width: '100%' }}>
                                     {currentState.maze.map((row, rowIndex) =>
                                         row.map((cell, colIndex) => (
-                                            <div
-                                                key={`${rowIndex}-${colIndex}`}
-                                                className={`aspect-square border-2 transition-all duration-300 ${getCellClass(rowIndex, colIndex)}`}
-                                                style={{ minWidth: '20px', minHeight: '20px' }}
-                                            >
-                                                {/* Show start/end markers */}
+                                            <div key={`${rowIndex}-${colIndex}`}
+                                                className={`aspect-square border transition-all duration-200 flex items-center justify-center rounded-sm ${getCellClass(rowIndex, colIndex)}`}
+                                                style={{ minWidth: '18px', minHeight: '18px' }}>
                                                 {rowIndex === 1 && colIndex === 1 && (
-                                                    <div className="w-full h-full flex items-center justify-center text-white font-bold text-xs">
-                                                        S
-                                                    </div>
+                                                    <span className="text-white font-bold text-xs leading-none">S</span>
                                                 )}
                                                 {rowIndex === mazeSize - 2 && colIndex === mazeSize - 2 && (
-                                                    <div className="w-full h-full flex items-center justify-center text-white font-bold text-xs">
-                                                        E
-                                                    </div>
+                                                    <span className="text-white font-bold text-xs leading-none">E</span>
                                                 )}
                                             </div>
                                         ))
                                     ).flat()}
                                 </div>
                             </div>
-
-                            {/* Progress Info */}
-                            <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700/50/50">
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <span className="font-medium text-slate-300">Algorithm: </span>
-                                        <span className="text-green-300">Recursive Backtracking</span>
-                                    </div>
-                                    <div>
-                                        <span className="font-medium text-slate-300">Strategy: </span>
-                                        <span className="text-green-300">Depth-First Search</span>
-                                    </div>
+                            <div className="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
+                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                    <div><span className="text-slate-400 text-xs">Algorithm: </span><span className="text-green-300">Recursive Backtracking</span></div>
+                                    <div><span className="text-slate-400 text-xs">Strategy: </span><span className="text-green-300">Depth-First Search</span></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* Code Examples */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                            <Code className="h-5 w-5 mr-2 text-green-600" />
-                            Python Implementation
-                        </h3>
-                        <CodeBlock code={codeExample} language="python" />
-                    </div>
-
-                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                            <Code className="h-5 w-5 mr-2 text-green-600" />
-                            JavaScript Implementation
-                        </h3>
-                        <CodeBlock code={javaScriptCode} language="javascript" />
-                    </div>
-                </div>
-
-                {/* Analysis */}
-                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
-                    <h3 className="text-xl font-bold text-white mb-4">Algorithm Analysis</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h4 className="font-bold text-green-300 mb-2">Complexity Analysis</h4>
-                            <ul className="text-slate-400 text-sm space-y-1 mb-4">
-                                <li>• <strong>Time Complexity:</strong> O(4^(m×n)) worst case</li>
-                                <li>• <strong>Space Complexity:</strong> O(m×n) for recursion stack</li>
-                                <li>• <strong>Strategy:</strong> Depth-First Search with backtracking</li>
-                                <li>• <strong>Optimization:</strong> Early termination when solution found</li>
-                                <li>• <strong>Memory:</strong> Visited array prevents cycles</li>
-                            </ul>
-
-                            <h4 className="font-bold text-green-300 mb-2">Backtracking Pattern</h4>
-                            <ul className="text-slate-400 text-sm space-y-1">
-                                <li>• Explore: Try a path</li>
-                                <li>• Mark: Record current state</li>
-                                <li>• Recurse: Go deeper</li>
-                                <li>• Backtrack: Undo if failed</li>
-                                <li>• Systematic: Try all possibilities</li>
-                            </ul>
+                        {/* Analysis */}
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Algorithm Analysis</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-3">
+                                    <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                                        <h4 className="font-bold text-green-400 text-sm mb-2">Complexity</h4>
+                                        <ul className="text-slate-400 text-xs space-y-1">
+                                            <li className="flex items-center gap-2"><ChevronRight className="h-3 w-3 text-green-400" /> Time: O(4^(m×n)) worst case</li>
+                                            <li className="flex items-center gap-2"><ChevronRight className="h-3 w-3 text-green-400" /> Space: O(m×n) for visited + stack</li>
+                                            <li className="flex items-center gap-2"><ChevronRight className="h-3 w-3 text-green-400" /> Visited array prevents cycles</li>
+                                            <li className="flex items-center gap-2"><ChevronRight className="h-3 w-3 text-green-400" /> Early exit when goal found</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                                        <h4 className="font-bold text-green-400 text-sm mb-2">Backtracking Pattern</h4>
+                                        <ul className="text-slate-400 text-xs space-y-1">
+                                            {['Explore: try a direction', 'Mark: record visited + path', 'Recurse: go deeper', 'Backtrack: undo if failed', 'Repeat: try next direction'].map(s => (
+                                                <li key={s} className="flex items-center gap-2"><ChevronRight className="h-3 w-3 text-green-400" />{s}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                                    <h4 className="font-bold text-green-400 text-sm mb-3">Applications</h4>
+                                    <ul className="text-slate-400 text-xs space-y-1.5">
+                                        {['Robotics path planning', 'Game AI NPC navigation', 'GPS route finding', 'Network packet routing', 'Puzzle game solvers', 'Circuit board wire routing', 'A* and Dijkstra variations'].map(a => (
+                                            <li key={a} className="flex items-center gap-2"><ChevronRight className="h-3 w-3 text-green-400 flex-shrink-0" />{a}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h4 className="font-bold text-green-300 mb-2">Real-World Applications</h4>
-                            <ul className="text-slate-400 text-sm space-y-1 mb-4">
-                                <li>• <strong>Robotics:</strong> Path planning and navigation</li>
-                                <li>• <strong>Game AI:</strong> NPC movement and pathfinding</li>
-                                <li>• <strong>GPS Systems:</strong> Route finding algorithms</li>
-                                <li>• <strong>Network Routing:</strong> Packet path selection</li>
-                                <li>• <strong>Puzzle Games:</strong> Solution verification</li>
-                                <li>• <strong>Circuit Design:</strong> Wire routing on PCBs</li>
-                            </ul>
 
-                            <h4 className="font-bold text-green-300 mb-2">Algorithm Variations</h4>
-                            <ul className="text-slate-400 text-sm space-y-1">
-                                <li>• A* Search: Uses heuristics for efficiency</li>
-                                <li>• Dijkstra&apos;s: Finds shortest weighted paths</li>
-                                <li>• BFS: Finds shortest unweighted paths</li>
-                                <li>• Wall Follower: Simple maze solving rule</li>
-                            </ul>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center"><Code className="h-5 w-5 mr-2 text-green-400" /> Python Implementation</h3>
+                            <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export default MazeSolverVisualizer;
+}
