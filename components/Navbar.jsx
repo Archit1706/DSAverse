@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { algorithmCategories } from '../data/algorithmCategories';
 import {
@@ -48,6 +48,113 @@ const CAT_META = {
     'Dynamic Programming':       { icon: <Brain     className="w-3.5 h-3.5" />, grad: 'from-rose-500   to-pink-600'  },
     'Graph Algorithms':          { icon: <GitBranch className="w-3.5 h-3.5" />, grad: 'from-cyan-500   to-sky-600'   },
 };
+
+/* ── Animated brand name ─────────────────────────────── */
+const GLYPHS = '01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz[]{}()<>#$';
+const BRAND  = 'DSAverse';
+const DSA_LEN = 3; // first 3 chars get white, rest get gradient
+
+function AnimatedBrand() {
+    // all locked on first render → shows final styled version immediately,
+    // then scramble fires on mount
+    const [locked, setLocked]   = useState(BRAND.length);
+    const [glyphs, setGlyphs]   = useState(() => BRAND.split(''));
+    const timerRef  = useRef(null);
+    const running   = useRef(false);
+
+    const runScramble = useCallback(() => {
+        if (running.current) return;
+        running.current = true;
+        clearTimeout(timerRef.current);
+        setLocked(0);
+
+        let frame = 0;
+        const tick = () => {
+            frame++;
+            // scramble freely for first 6 frames, then lock one char per 2 frames
+            const newLocked = Math.max(0, Math.floor((frame - 6) / 2));
+
+            setGlyphs(
+                BRAND.split('').map((c, i) =>
+                    i < newLocked
+                        ? c
+                        : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
+                )
+            );
+            setLocked(newLocked);
+
+            if (newLocked < BRAND.length) {
+                timerRef.current = setTimeout(tick, 55);
+            } else {
+                running.current = false;
+            }
+        };
+        tick();
+    }, []);
+
+    // auto-run once after mount
+    useEffect(() => {
+        const t = setTimeout(runScramble, 600);
+        return () => clearTimeout(t);
+    }, [runScramble]);
+
+    useEffect(() => () => clearTimeout(timerRef.current), []);
+
+    const allLocked = locked >= BRAND.length;
+
+    return (
+        <Link
+            href="/"
+            onMouseEnter={runScramble}
+            className="group flex items-center flex-shrink-0"
+        >
+            <DSAverseLogo />
+            <span className="font-mono flex items-center leading-none select-none">
+                {/* < */}
+                <span className="text-indigo-400/50 text-sm font-light
+                               group-hover:text-indigo-400 transition-colors duration-300">
+                    &lt;
+                </span>
+
+                {/* Main brand text */}
+                {allLocked ? (
+                    /* ── Resolved: full styled version ── */
+                    <>
+                        <span className="text-white font-bold text-[17px] tracking-tight">
+                            DSA
+                        </span>
+                        <span
+                            className="font-bold text-[17px] tracking-tight gradient-text animate-gradient"
+                            style={{ backgroundImage: 'linear-gradient(135deg,#818cf8,#c084fc,#f472b6,#818cf8)' }}
+                        >
+                            verse
+                        </span>
+                    </>
+                ) : (
+                    /* ── Scrambling: char-by-char with lock-in ── */
+                    glyphs.map((char, i) => (
+                        <span
+                            key={i}
+                            className={`font-bold text-[17px] tracking-tight transition-colors duration-75 ${
+                                i < locked
+                                    ? i < DSA_LEN ? 'text-white' : 'text-violet-400'
+                                    : 'text-indigo-300/50'
+                            }`}
+                        >
+                            {char}
+                        </span>
+                    ))
+                )}
+
+                {/* /> */}
+                <span className="text-pink-400/40 text-sm font-light ml-0.5
+                               group-hover:text-pink-400/80 transition-colors duration-300">
+                    &thinsp;/&gt;
+                </span>
+            </span>
+        </Link>
+    );
+}
 
 /* Filter to categories that actually have pages */
 const PAGES_EXIST = new Set([
@@ -193,32 +300,7 @@ export default function Navbar() {
                 <div className="flex justify-between h-16 items-center">
 
                     {/* Logo */}
-                    <Link href="/" className="group flex items-center flex-shrink-0">
-                        <DSAverseLogo />
-                        <span className="font-mono flex items-center leading-none select-none">
-                            {/* opening bracket */}
-                            <span className="text-indigo-400/60 text-sm font-normal
-                                           group-hover:text-indigo-400 transition-colors duration-300">
-                                &lt;
-                            </span>
-                            {/* DSA — hard white, heavy */}
-                            <span className="text-white font-bold text-[17px] tracking-tight">
-                                DSA
-                            </span>
-                            {/* verse — slow animated gradient */}
-                            <span
-                                className="font-bold text-[17px] tracking-tight gradient-text animate-gradient"
-                                style={{ backgroundImage: 'linear-gradient(135deg,#818cf8,#c084fc,#f472b6,#818cf8)' }}
-                            >
-                                verse
-                            </span>
-                            {/* closing bracket */}
-                            <span className="text-pink-400/50 text-sm font-normal ml-0.5
-                                           group-hover:text-pink-400/80 transition-colors duration-300">
-                                &nbsp;/&gt;
-                            </span>
-                        </span>
-                    </Link>
+                    <AnimatedBrand />
 
                     {/* Desktop nav */}
                     <div className="hidden md:flex items-center gap-1">
