@@ -210,7 +210,7 @@ const SelectionSortPage = () => {
     return arr`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -241,7 +241,7 @@ const SelectionSortPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -296,7 +296,7 @@ const SelectionSortPage = () => {
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Animation Speed: {speed}ms
                                 </label>
                                 <input
@@ -307,7 +307,7 @@ const SelectionSortPage = () => {
                                     onChange={(e) => setSpeed(Number(e.target.value))}
                                     className="w-full max-w-md accent-orange-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>Fast (200ms)</span>
                                     <span>Slow (2000ms)</span>
                                 </div>
@@ -316,14 +316,14 @@ const SelectionSortPage = () => {
                             {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-medium text-slate-300">
                                         Progress: Step {currentStep + 1} of {stepHistory.length}
                                     </span>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         Pass {currentState.currentPass} of {currentState.totalPasses}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                     <div
                                         className="bg-orange-500 h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -333,7 +333,7 @@ const SelectionSortPage = () => {
 
                             {/* Array Visualization */}
                             <div className="mb-6">
-                                <div className="flex items-end justify-center gap-2 h-64 p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+                                <div className="flex items-end justify-center gap-2 h-64 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {currentState.array.map((value, index) => (
                                         <div key={index} className="flex flex-col items-center">
                                             <div
@@ -342,8 +342,8 @@ const SelectionSortPage = () => {
                                                     height: `${(value / maxValue) * 200}px`,
                                                 }}
                                             />
-                                            <span className="text-sm mt-2 font-medium text-gray-700">{value}</span>
-                                            <span className="text-xs text-gray-500">{index}</span>
+                                            <span className="text-sm mt-2 font-medium text-slate-300">{value}</span>
+                                            <span className="text-xs text-slate-500">{index}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -378,12 +378,12 @@ const SelectionSortPage = () => {
                             </div>
 
                             {/* Current Step Explanation */}
-                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                            <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Lightbulb className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-orange-800 mb-2">Current Step:</h3>
-                                        <p className="text-orange-700 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-orange-300 mb-2">Current Step:</h3>
+                                        <p className="text-orange-300 leading-relaxed">{currentState.explanation}</p>
                                     </div>
                                 </div>
                             </div>
@@ -393,43 +393,43 @@ const SelectionSortPage = () => {
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <Clock className="h-5 w-5 text-orange-600" />
-                                <h3 className="font-bold text-gray-900">Algorithm Details</h3>
+                                <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Best Case:</span>
-                                    <code className="bg-red-100 text-red-800 px-2 py-1 rounded">O(n²)</code>
+                                    <span className="font-medium text-slate-300">Best Case:</span>
+                                    <code className="bg-red-500/15 text-red-400 px-2 py-1 rounded">O(n²)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Average Case:</span>
-                                    <code className="bg-red-100 text-red-800 px-2 py-1 rounded">O(n²)</code>
+                                    <span className="font-medium text-slate-300">Average Case:</span>
+                                    <code className="bg-red-500/15 text-red-400 px-2 py-1 rounded">O(n²)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Worst Case:</span>
-                                    <code className="bg-red-100 text-red-800 px-2 py-1 rounded">O(n²)</code>
+                                    <span className="font-medium text-slate-300">Worst Case:</span>
+                                    <code className="bg-red-500/15 text-red-400 px-2 py-1 rounded">O(n²)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space:</span>
-                                    <code className="bg-blue-100 text-blue-800 px-2 py-1 rounded">O(1)</code>
+                                    <span className="font-medium text-slate-300">Space:</span>
+                                    <code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(1)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Stable:</span>
-                                    <span className="bg-red-100 text-red-800 px-2 py-1 rounded">No</span>
+                                    <span className="font-medium text-slate-300">Stable:</span>
+                                    <span className="bg-red-500/15 text-red-400 px-2 py-1 rounded">No</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">In-place:</span>
-                                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded">Yes</span>
+                                    <span className="font-medium text-slate-300">In-place:</span>
+                                    <span className="bg-green-500/15 text-green-400 px-2 py-1 rounded">Yes</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* When to Use */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">When to Use Selection Sort</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">When to Use Selection Sort</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
                                     <span>Small datasets where simplicity matters</span>
@@ -454,9 +454,9 @@ const SelectionSortPage = () => {
                         </div>
 
                         {/* Key Characteristics */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Key Characteristics</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Key Characteristics</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
                                     <span>Always performs exactly n-1 swaps</span>
@@ -477,7 +477,7 @@ const SelectionSortPage = () => {
                         </div>
 
                         {/* Code Toggle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <button
                                 onClick={() => setShowCode(!showCode)}
                                 className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium"

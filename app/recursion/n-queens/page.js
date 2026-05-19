@@ -199,7 +199,7 @@ const NQueensVisualizer = () => {
             return `${baseClass} bg-red-100 border border-red-300`;
         }
 
-        return `${baseClass} border border-gray-300`;
+        return `${baseClass} border border-slate-700`;
     };
 
     const codeExample = `def solve_nqueens(n):
@@ -230,7 +230,7 @@ const NQueensVisualizer = () => {
 # Example: ${n}-Queens has ${solutionCount} solution${solutionCount !== 1 ? 's' : ''}`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -269,12 +269,12 @@ const NQueensVisualizer = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Control Panel */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Controls</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-4">Controls</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Board Size (N): {n}×{n}
                                     </label>
                                     <input
@@ -286,13 +286,13 @@ const NQueensVisualizer = () => {
                                         className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
                                         disabled={isPlaying}
                                     />
-                                    <div className="text-sm text-gray-500 mt-1">
+                                    <div className="text-sm text-slate-500 mt-1">
                                         {solutionCount} solution{solutionCount !== 1 ? 's' : ''} exist{solutionCount === 1 ? 's' : ''}
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Speed: {speed}ms
                                     </label>
                                     <input
@@ -326,51 +326,51 @@ const NQueensVisualizer = () => {
                         </div>
 
                         {/* Legend */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Legend</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Legend</h3>
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-green-300 border-2 border-green-500 rounded flex items-center justify-center">
-                                        <Crown className="h-4 w-4 text-green-700" />
+                                        <Crown className="h-4 w-4 text-green-300" />
                                     </div>
-                                    <span className="text-sm text-gray-700">Placed Queen</span>
+                                    <span className="text-sm text-slate-300">Placed Queen</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-blue-300 border-2 border-blue-500 rounded"></div>
-                                    <span className="text-sm text-gray-700">Safe Position</span>
+                                    <span className="text-sm text-slate-300">Safe Position</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-red-300 border-2 border-red-500 rounded"></div>
-                                    <span className="text-sm text-gray-700">Unsafe Position</span>
+                                    <span className="text-sm text-slate-300">Unsafe Position</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-red-100 border border-red-300 rounded"></div>
-                                    <span className="text-sm text-gray-700">Under Attack</span>
+                                    <span className="text-sm text-slate-300">Under Attack</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Step Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Current Step</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Current Step</h3>
                             <div className="space-y-3">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     Step {currentStep + 1} of {stepHistory.length}
                                 </div>
                                 <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                    <p className="text-green-800 text-sm">
+                                    <p className="text-green-300 text-sm">
                                         {currentState.explanation}
                                     </p>
                                 </div>
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Action: </span>
+                                    <span className="font-medium text-slate-300">Action: </span>
                                     <span className={`px-2 py-1 rounded text-xs font-medium ${currentState.action === 'place' || currentState.action === 'placed'
-                                            ? 'bg-green-100 text-green-800'
+                                            ? 'bg-green-500/15 text-green-400'
                                             : currentState.action === 'backtrack'
-                                                ? 'bg-red-100 text-red-800'
+                                                ? 'bg-red-500/15 text-red-400'
                                                 : currentState.action === 'solution'
-                                                    ? 'bg-purple-100 text-purple-800'
-                                                    : 'bg-blue-100 text-blue-800'
+                                                    ? 'bg-purple-500/15 text-purple-400'
+                                                    : 'bg-blue-500/15 text-blue-400'
                                         }`}>
                                         {currentState.action.charAt(0).toUpperCase() + currentState.action.slice(1)}
                                     </span>
@@ -381,8 +381,8 @@ const NQueensVisualizer = () => {
 
                     {/* Chessboard */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
                                 <Crown className="h-5 w-5 mr-2 text-green-600" />
                                 {n}×{n} Chessboard
                             </h3>
@@ -404,7 +404,7 @@ const NQueensVisualizer = () => {
                                                 style={{ minWidth: '40px' }}
                                             >
                                                 {currentState.board[row] === col && (
-                                                    <Crown className="h-6 w-6 text-green-700" />
+                                                    <Crown className="h-6 w-6 text-green-300" />
                                                 )}
                                             </div>
                                         ))
@@ -413,15 +413,15 @@ const NQueensVisualizer = () => {
                             </div>
 
                             {/* Progress Info */}
-                            <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                            <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700/50">
                                 <div className="grid grid-cols-2 gap-4 text-sm">
                                     <div>
-                                        <span className="font-medium text-gray-700">Current Row: </span>
-                                        <span className="text-amber-700">{currentState.currentRow}</span>
+                                        <span className="font-medium text-slate-300">Current Row: </span>
+                                        <span className="text-orange-300">{currentState.currentRow}</span>
                                     </div>
                                     <div>
-                                        <span className="font-medium text-gray-700">Queens Placed: </span>
-                                        <span className="text-amber-700">
+                                        <span className="font-medium text-slate-300">Queens Placed: </span>
+                                        <span className="text-orange-300">
                                             {currentState.board.filter(pos => pos !== -1).length}
                                         </span>
                                     </div>
@@ -432,8 +432,8 @@ const NQueensVisualizer = () => {
                 </div>
 
                 {/* Algorithm Code */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
+                    <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                         <Code className="h-5 w-5 mr-2 text-green-600" />
                         Backtracking Algorithm
                     </h3>
@@ -441,22 +441,22 @@ const NQueensVisualizer = () => {
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Algorithm Analysis</h3>
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
+                    <h3 className="text-xl font-bold text-white mb-4">Algorithm Analysis</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Time Complexity: O(N!)</h4>
-                            <p className="text-gray-600 text-sm mb-4">
+                            <h4 className="font-bold text-green-300 mb-2">Time Complexity: O(N!)</h4>
+                            <p className="text-slate-400 text-sm mb-4">
                                 In the worst case, we try all possible arrangements of N queens, which is approximately N! possibilities.
                             </p>
-                            <h4 className="font-bold text-green-700 mb-2">Space Complexity: O(N²)</h4>
-                            <p className="text-gray-600 text-sm">
+                            <h4 className="font-bold text-green-300 mb-2">Space Complexity: O(N²)</h4>
+                            <p className="text-slate-400 text-sm">
                                 We need space for the board (N×N) and the recursion stack depth is at most N.
                             </p>
                         </div>
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Real-World Applications</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">Real-World Applications</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• Constraint satisfaction problems</li>
                                 <li>• Resource allocation optimization</li>
                                 <li>• Scheduling conflicts resolution</li>

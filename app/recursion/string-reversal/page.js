@@ -142,7 +142,7 @@ result = reverse_string("${inputString}")  # Returns "${reverseString(inputStrin
 const result = reverseString("${inputString}"); // Returns "${reverseString(inputString)}"`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -177,29 +177,29 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Control Panel */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Controls</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-4">Controls</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Input String
                                     </label>
                                     <input
                                         type="text"
                                         value={inputString}
                                         onChange={(e) => setInputString(e.target.value.toUpperCase().substring(0, 10))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                         disabled={isPlaying}
                                         placeholder="Enter text (max 10 chars)"
                                     />
-                                    <div className="text-sm text-gray-500 mt-1">
+                                    <div className="text-sm text-slate-500 mt-1">
                                         Reversed: &ldquo;{reverseString(inputString)}&rdquo;
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Speed: {speed}ms
                                     </label>
                                     <input
@@ -234,30 +234,30 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                         </div>
 
                         {/* Step Explanation */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Current Step</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Current Step</h3>
                             <div className="space-y-3">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     Step {currentStep + 1} of {stepHistory.length}
                                 </div>
                                 <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                    <p className="text-green-800 text-sm">
+                                    <p className="text-green-300 text-sm">
                                         {currentState.explanation}
                                     </p>
                                 </div>
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Phase: </span>
+                                    <span className="font-medium text-slate-300">Phase: </span>
                                     <span className={`px-2 py-1 rounded text-xs font-medium ${currentState.phase === 'forward'
-                                        ? 'bg-blue-100 text-blue-800'
-                                        : 'bg-purple-100 text-purple-800'
+                                        ? 'bg-blue-500/15 text-blue-400'
+                                        : 'bg-purple-500/15 text-purple-400'
                                         }`}>
                                         {currentState.phase === 'forward' ? 'Going Deeper' : 'Building Result'}
                                     </span>
                                 </div>
                                 {currentState.result && (
                                     <div className="text-sm">
-                                        <span className="font-medium text-gray-700">Current Result: </span>
-                                        <span className="font-mono text-green-700">&ldquo;{currentState.result}&rdquo;</span>
+                                        <span className="font-medium text-slate-300">Current Result: </span>
+                                        <span className="font-mono text-green-300">&ldquo;{currentState.result}&rdquo;</span>
                                     </div>
                                 )}
                             </div>
@@ -266,15 +266,15 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
 
                     {/* String Processing Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
                                 <Type className="h-5 w-5 mr-2 text-green-600" />
                                 String Processing Visualization
                             </h3>
 
                             {/* Character visualization */}
                             <div className="mb-8">
-                                <h4 className="text-lg font-semibold text-gray-800 mb-4">Original String</h4>
+                                <h4 className="text-lg font-semibold text-slate-100 mb-4">Original String</h4>
                                 <div className="flex justify-center items-center space-x-2 mb-6">
                                     {inputString.split('').map((char, index) => (
                                         <div
@@ -282,7 +282,7 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                                             className={`w-12 h-12 border-2 rounded-lg flex items-center justify-center font-mono text-lg font-bold transition-all duration-500 ${currentState.currentIndex === index
                                                 ? 'bg-yellow-100 border-yellow-400 animate-pulse'
                                                 : currentState.currentIndex > index
-                                                    ? 'bg-gray-100 border-gray-300 opacity-50'
+                                                    ? 'bg-gray-100 border-slate-700 opacity-50'
                                                     : 'bg-blue-50 border-blue-300'
                                                 }`}
                                         >
@@ -294,14 +294,14 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                                 {currentState.currentChar && (
                                     <div className="flex justify-center items-center mb-6">
                                         <div className="bg-yellow-100 border-2 border-yellow-400 rounded-lg p-3">
-                                            <span className="text-sm text-gray-600">Processing: </span>
+                                            <span className="text-sm text-slate-400">Processing: </span>
                                             <span className="font-mono text-lg font-bold text-yellow-800">
                                                 &ldquo;{currentState.currentChar}&rdquo;
                                             </span>
                                         </div>
-                                        <ChevronRight className="h-6 w-6 text-gray-400 mx-4" />
+                                        <ChevronRight className="h-6 w-6 text-slate-500 mx-4" />
                                         <div className="bg-green-100 border-2 border-green-400 rounded-lg p-3">
-                                            <span className="text-sm text-gray-600">Will be added to end</span>
+                                            <span className="text-sm text-slate-400">Will be added to end</span>
                                         </div>
                                     </div>
                                 )}
@@ -309,10 +309,10 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
 
                             {/* Call Stack Visualization */}
                             <div className="mb-8">
-                                <h4 className="text-lg font-semibold text-gray-800 mb-4">Recursive Calls</h4>
+                                <h4 className="text-lg font-semibold text-slate-100 mb-4">Recursive Calls</h4>
                                 <div className="space-y-3">
                                     {currentState.callStack.length === 0 ? (
-                                        <div className="text-gray-500 text-center py-4">
+                                        <div className="text-slate-500 text-center py-4">
                                             No active calls
                                         </div>
                                     ) : (
@@ -342,9 +342,9 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                             {/* Result */}
                             {currentState.result && (
                                 <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
-                                    <h4 className="text-lg font-semibold text-green-800 mb-2">Current Result</h4>
+                                    <h4 className="text-lg font-semibold text-green-300 mb-2">Current Result</h4>
                                     <div className="flex justify-center">
-                                        <div className="font-mono text-2xl font-bold text-green-700">
+                                        <div className="font-mono text-2xl font-bold text-green-300">
                                             &ldquo;{currentState.result}&rdquo;
                                         </div>
                                     </div>
@@ -356,16 +356,16 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
 
                 {/* Code Examples */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             Python Implementation
                         </h3>
                         <CodeBlock code={codeExample} language="python" />
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             JavaScript Implementation
                         </h3>
@@ -374,22 +374,22 @@ const result = reverseString("${inputString}"); // Returns "${reverseString(inpu
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Algorithm Analysis</h3>
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
+                    <h3 className="text-xl font-bold text-white mb-4">Algorithm Analysis</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Time Complexity: O(n)</h4>
-                            <p className="text-gray-600 text-sm mb-4">
+                            <h4 className="font-bold text-green-300 mb-2">Time Complexity: O(n)</h4>
+                            <p className="text-slate-400 text-sm mb-4">
                                 Each character is processed exactly once, requiring n recursive calls for a string of length n.
                             </p>
-                            <h4 className="font-bold text-green-700 mb-2">Space Complexity: O(n)</h4>
-                            <p className="text-gray-600 text-sm">
+                            <h4 className="font-bold text-green-300 mb-2">Space Complexity: O(n)</h4>
+                            <p className="text-slate-400 text-sm">
                                 The recursion depth equals the string length, creating n stack frames. Each frame stores constant data.
                             </p>
                         </div>
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Real-World Applications</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">Real-World Applications</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• Palindrome checking algorithms</li>
                                 <li>• Text processing and manipulation</li>
                                 <li>• Undo functionality in text editors</li>

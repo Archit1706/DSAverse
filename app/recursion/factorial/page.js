@@ -186,7 +186,7 @@ result = factorial(${n})  # Returns ${factorial(n)}`;
 const result = factorial(${n}); // Returns ${factorial(n)}`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -225,12 +225,12 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Enhanced Control Panel */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Controls</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-4">Controls</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Number (n): {n}
                                     </label>
                                     <input
@@ -242,14 +242,14 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                         className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
                                         disabled={isPlaying}
                                     />
-                                    <div className="text-sm text-gray-500 mt-1 bg-green-50 p-2 rounded border">
+                                    <div className="text-sm text-slate-400 mt-1 bg-green-500/10 p-2 rounded border border-green-500/20">
                                         <div className="font-medium">factorial({n}) = {factorial(n)}</div>
                                         <div className="text-xs mt-1">Calls needed: {n}</div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Speed: {speed}ms
                                     </label>
                                     <input
@@ -261,7 +261,7 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                         onChange={(e) => setSpeed(parseInt(e.target.value))}
                                         className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
                                     />
-                                    <div className="text-xs text-gray-500 mt-1">
+                                    <div className="text-xs text-slate-500 mt-1">
                                         {speed < 1000 ? 'Fast' : speed < 1500 ? 'Medium' : 'Slow'}
                                     </div>
                                 </div>
@@ -310,22 +310,22 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                             onChange={(e) => setShowTrace(e.target.checked)}
                                             className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                                         />
-                                        <span className="text-sm text-gray-700">Show execution trace</span>
+                                        <span className="text-sm text-slate-300">Show execution trace</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
 
                         {/* Enhanced Step Information */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-4">
-                            <h3 className="text-lg font-bold text-gray-900 mb-3">Step Information</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-4">
+                            <h3 className="text-lg font-bold text-white mb-3">Step Information</h3>
                             <div className="space-y-3">
                                 <div className="text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Progress:</span>
+                                        <span className="text-slate-400">Progress:</span>
                                         <span className="font-medium">{currentStep + 1} / {stepHistory.length}</span>
                                     </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                    <div className="w-full bg-slate-700 rounded-full h-2 mt-1">
                                         <div
                                             className="bg-green-500 h-2 rounded-full transition-all duration-300"
                                             style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -335,10 +335,10 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
 
                                 <div className="text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Phase:</span>
+                                        <span className="text-slate-400">Phase:</span>
                                         <span className={`px-2 py-1 rounded text-xs font-medium ${currentState.phase === 'forward'
-                                            ? 'bg-blue-100 text-blue-800'
-                                            : 'bg-purple-100 text-purple-800'
+                                            ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400'
+                                            : 'bg-purple-500/10 border border-purple-500/20 text-purple-400'
                                             }`}>
                                             {currentState.phase === 'forward' ? '📞 Making Calls' : '🔙 Returning Values'}
                                         </span>
@@ -348,7 +348,7 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                 {currentState.pendingCalculations !== undefined && (
                                     <div className="text-sm">
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Pending:</span>
+                                            <span className="text-slate-400">Pending:</span>
                                             <span className="font-medium text-orange-600">
                                                 {currentState.pendingCalculations} calls waiting
                                             </span>
@@ -356,8 +356,8 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                     </div>
                                 )}
 
-                                <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                    <p className="text-green-800 text-sm leading-relaxed">
+                                <div className="bg-green-500/10 p-3 rounded-lg border border-green-500/20">
+                                    <p className="text-green-300 text-sm leading-relaxed">
                                         {currentState.explanation}
                                     </p>
                                 </div>
@@ -367,9 +367,9 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
 
                     {/* Enhanced Call Stack Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                                <h3 className="text-xl font-bold text-white flex items-center">
                                     <Layers className="h-5 w-5 mr-2 text-green-600" />
                                     Call Stack Visualization
                                 </h3>
@@ -380,11 +380,11 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                         ) : (
                                             <ArrowUp className="h-4 w-4 text-purple-500" />
                                         )}
-                                        <span className="text-gray-600">
+                                        <span className="text-slate-400">
                                             {currentState.phase === 'forward' ? 'Calling' : 'Returning'}
                                         </span>
                                     </div>
-                                    <div className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                    <div className="bg-slate-800/60 px-2 py-1 rounded text-xs text-slate-300">
                                         Stack size: {callStack.length}
                                     </div>
                                 </div>
@@ -395,7 +395,7 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                 style={{ minHeight: getCallStackHeight() }}
                             >
                                 {callStack.length === 0 ? (
-                                    <div className="text-gray-500 text-center py-12">
+                                    <div className="text-slate-500 text-center py-12">
                                         <Layers className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                                         <p>Click Start to see the call stack in action</p>
                                     </div>
@@ -409,10 +409,10 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                                 <div
                                                     key={call.id}
                                                     className={`relative p-4 rounded-lg border-2 transition-all duration-500 transform ${call.state === 'calling'
-                                                        ? 'bg-blue-50 border-blue-300 shadow-md'
+                                                        ? 'bg-blue-500/10 border-blue-500/20 shadow-md'
                                                         : call.state === 'resolved'
-                                                            ? 'bg-green-50 border-green-300 shadow-lg'
-                                                            : 'bg-gray-50 border-gray-300'
+                                                            ? 'bg-green-500/10 border-green-500/20 shadow-lg'
+                                                            : 'bg-slate-800/60 border-slate-700/60'
                                                         } ${isActive ? 'ring-2 ring-emerald-400 ring-opacity-50 scale-105' : ''
                                                         }`}
                                                     style={{
@@ -427,10 +427,10 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                                     </div>
 
                                                     <div className="text-center">
-                                                        <div className="font-mono text-lg font-bold text-gray-900 mb-1">
+                                                        <div className="font-mono text-lg font-bold text-white mb-1">
                                                             {call.call}
                                                         </div>
-                                                        <div className="text-sm text-gray-600 bg-white rounded px-2 py-1 border">
+                                                        <div className="text-sm text-slate-300 bg-slate-800/60 rounded px-2 py-1 border border-slate-700/50">
                                                             {call.calculation}
                                                         </div>
                                                         {call.waiting && (
@@ -456,8 +456,8 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                     {/* Execution Trace */}
                     <div className="lg:col-span-1">
                         {showTrace && (
-                            <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                            <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                                <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                                     <TrendingUp className="h-5 w-5 mr-2 text-green-600" />
                                     Execution Trace
                                 </h3>
@@ -467,16 +467,16 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                                             <div
                                                 key={index}
                                                 className={`text-xs p-2 rounded transition-all duration-300 ${index === currentState.trace.length - 1
-                                                    ? 'bg-emerald-100 border border-emerald-300 font-medium'
-                                                    : 'bg-gray-50 border border-gray-200 text-gray-600'
+                                                    ? 'bg-green-500/10 border border-green-500/20 font-medium text-green-300'
+                                                    : 'bg-slate-800/60 border border-slate-700/50 text-slate-400'
                                                     }`}
                                             >
-                                                <span className="text-gray-500 mr-2">{index + 1}.</span>
+                                                <span className="text-slate-500 mr-2">{index + 1}.</span>
                                                 {traceItem}
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="text-gray-500 text-center py-4 text-sm">
+                                        <div className="text-slate-500 text-center py-4 text-sm">
                                             Execution trace will appear here
                                         </div>
                                     )}
@@ -485,15 +485,15 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                         )}
 
                         {/* Legend */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-4">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Legend</h3>
-                            <div className="space-y-2 text-sm">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-4">
+                            <h3 className="text-lg font-bold text-white mb-4">Legend</h3>
+                            <div className="space-y-2 text-sm text-slate-300">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-4 h-4 bg-blue-50 border-2 border-blue-300 rounded"></div>
+                                    <div className="w-4 h-4 bg-blue-500/10 border-2 border-blue-500/20 rounded"></div>
                                     <span>Making function call</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-4 h-4 bg-green-50 border-2 border-green-300 rounded"></div>
+                                    <div className="w-4 h-4 bg-green-500/10 border-2 border-green-500/20 rounded"></div>
                                     <span>Returning value</span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -511,16 +511,16 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
 
                 {/* Code Examples */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             Python Implementation
                         </h3>
                         <CodeBlock code={codeExample} language="python" />
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             JavaScript Implementation
                         </h3>
@@ -529,41 +529,41 @@ const result = factorial(${n}); // Returns ${factorial(n)}`;
                 </div>
 
                 {/* Enhanced Analysis */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-6">Complexity Analysis & Key Insights</h3>
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
+                    <h3 className="text-xl font-bold text-white mb-6">Complexity Analysis & Key Insights</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <h4 className="font-bold text-green-700 mb-3 flex items-center">
+                            <h4 className="font-bold text-green-400 mb-3 flex items-center">
                                 <Clock className="h-4 w-4 mr-1" />
                                 Time Complexity: O(n)
                             </h4>
-                            <p className="text-gray-600 text-sm mb-4">
+                            <p className="text-slate-400 text-sm mb-4">
                                 The function makes exactly n recursive calls. Each call performs constant time operations
                                 (comparison and multiplication), so total time is proportional to n.
                             </p>
-                            <div className="bg-green-50 p-3 rounded border text-xs">
+                            <div className="bg-green-500/10 p-3 rounded border border-green-500/20 text-xs text-green-300">
                                 <strong>For n={n}:</strong> {n} function calls needed
                             </div>
                         </div>
                         <div>
-                            <h4 className="font-bold text-green-700 mb-3 flex items-center">
+                            <h4 className="font-bold text-green-400 mb-3 flex items-center">
                                 <Layers className="h-4 w-4 mr-1" />
                                 Space Complexity: O(n)
                             </h4>
-                            <p className="text-gray-600 text-sm mb-4">
+                            <p className="text-slate-400 text-sm mb-4">
                                 The recursion depth equals n, meaning the call stack grows to size n. Each stack frame
                                 stores the parameter and return address.
                             </p>
-                            <div className="bg-green-50 p-3 rounded border text-xs">
+                            <div className="bg-green-500/10 p-3 rounded border border-green-500/20 text-xs text-green-300">
                                 <strong>Max stack depth:</strong> {n} frames
                             </div>
                         </div>
                         <div>
-                            <h4 className="font-bold text-green-700 mb-3 flex items-center">
+                            <h4 className="font-bold text-green-400 mb-3 flex items-center">
                                 <Calculator className="h-4 w-4 mr-1" />
                                 Key Patterns
                             </h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• 🎯 Base case: factorial(1) = 1</li>
                                 <li>• 🔄 Recursive: n × factorial(n-1)</li>
                                 <li>• 📞 Stack grows during calls</li>

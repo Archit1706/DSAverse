@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Pause, Square, RotateCcw, ArrowLeft, ChevronLeft, ChevronRight, Search, Clock, Code, Target, Zap, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
@@ -243,7 +243,7 @@ const InterpolationSearchPage = () => {
     return -1`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-red-600 to-rose-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -274,7 +274,7 @@ const InterpolationSearchPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -318,7 +318,7 @@ const InterpolationSearchPage = () => {
 
                             {/* Target Input */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
                                     Target Value: {target}
                                 </label>
                                 <div className="flex gap-2">
@@ -326,14 +326,14 @@ const InterpolationSearchPage = () => {
                                         type="number"
                                         value={target}
                                         onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
                                         min="0"
                                         max="50"
                                     />
                                     <select
                                         value={target}
                                         onChange={(e) => setTarget(parseInt(e.target.value))}
-                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
                                     >
                                         {array.map(val => (
                                             <option key={val} value={val}>{val}</option>
@@ -344,17 +344,17 @@ const InterpolationSearchPage = () => {
 
                             {/* Interpolation Formula */}
                             {currentState.calculation && (
-                                <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                    <h4 className="font-semibold text-blue-800 mb-2">Interpolation Calculation:</h4>
-                                    <div className="text-sm text-blue-700 font-mono bg-blue-100 p-2 rounded">
+                                <div className="mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                                    <h4 className="font-semibold text-blue-300 mb-2">Interpolation Calculation:</h4>
+                                    <div className="text-sm text-blue-300 font-mono bg-slate-800 p-2 rounded">
                                         {currentState.calculation}
                                     </div>
                                 </div>
                             )}
 
                             {/* Algorithm Info */}
-                            <div className="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-4">
-                                <div className="text-sm text-purple-800">
+                            <div className="mb-6 bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
+                                <div className="text-sm text-purple-300">
                                     <span className="font-semibold">Search Range:</span> [{currentState.left}, {currentState.right}] |
                                     {currentState.pos >= 0 && (
                                         <span> <span className="font-semibold">Interpolated Position:</span> {currentState.pos} |</span>
@@ -365,7 +365,7 @@ const InterpolationSearchPage = () => {
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
                                     Animation Speed: {speed === 1000 ? 'Fast' : speed === 1500 ? 'Normal' : 'Slow'}
                                 </label>
                                 <input
@@ -375,12 +375,12 @@ const InterpolationSearchPage = () => {
                                     step="500"
                                     value={speed}
                                     onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
                                 />
                             </div>
 
                             {/* Array Visualization */}
-                            <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
                                 <div className="flex items-center justify-center mb-4">
                                     <div className="flex items-end gap-1 overflow-x-auto pb-2">
                                         {currentState.array.map((value, index) => (
@@ -407,7 +407,7 @@ const InterpolationSearchPage = () => {
 
                                 {/* Search Info */}
                                 <div className="text-center mt-4">
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-slate-400">
                                         <span className="font-semibold">Target:</span> {target} |
                                         <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
                                     </div>
@@ -415,9 +415,9 @@ const InterpolationSearchPage = () => {
                             </div>
 
                             {/* Step Explanation */}
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-800 mb-2">Current Step:</h3>
-                                <p className="text-red-700">{currentState.explanation}</p>
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
+                                <p className="text-red-300">{currentState.explanation}</p>
                             </div>
                         </div>
                     </div>
@@ -425,34 +425,34 @@ const InterpolationSearchPage = () => {
                     {/* Side Panel */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                                 <TrendingUp className="h-5 w-5 mr-2 text-red-500" />
                                 Interpolation Search
                             </h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Time Complexity:</span>
+                                    <span className="text-slate-400">Time Complexity:</span>
                                     <span className="font-semibold">O(log log n)</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Space Complexity:</span>
+                                    <span className="text-slate-400">Space Complexity:</span>
                                     <span className="font-semibold">O(1)</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Worst Case:</span>
+                                    <span className="text-slate-400">Worst Case:</span>
                                     <span className="font-semibold">O(n)</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Best For:</span>
+                                    <span className="text-slate-400">Best For:</span>
                                     <span className="font-semibold">Uniform Data</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Color Legend */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Color Legend</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
                             <div className="space-y-2">
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
@@ -478,43 +478,43 @@ const InterpolationSearchPage = () => {
                         </div>
 
                         {/* Formula Explanation */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Interpolation Formula</h3>
-                            <div className="text-sm text-gray-700">
-                                <div className="bg-gray-100 p-3 rounded font-mono text-xs mb-3">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4">Interpolation Formula</h3>
+                            <div className="text-sm text-slate-300">
+                                <div className="bg-slate-800 p-3 rounded font-mono text-xs mb-3">
                                     pos = left + [(target - arr[left]) × (right - left)] / (arr[right] - arr[left])
                                 </div>
                                 <p className="mb-2">This formula estimates where the target should be based on its value relative to the range.</p>
-                                <p className="text-xs text-gray-600">Works best when data is uniformly distributed.</p>
+                                <p className="text-xs text-slate-400">Works best when data is uniformly distributed.</p>
                             </div>
                         </div>
 
                         {/* Algorithm Steps */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">How It Works</h3>
-                            <ol className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4">How It Works</h3>
+                            <ol className="space-y-2 text-sm text-slate-300">
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
                                     <span>Calculate interpolated position</span>
                                 </li>
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
                                     <span>Check element at calculated position</span>
                                 </li>
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
                                     <span>Adjust search range based on comparison</span>
                                 </li>
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
                                     <span>Repeat until found or exhausted</span>
                                 </li>
                             </ol>
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
@@ -522,12 +522,12 @@ const InterpolationSearchPage = () => {
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                                 <Target className="h-5 w-5 mr-2 text-red-500" />
                                 Real-world Applications
                             </h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li>• Searching in phone directories</li>
                                 <li>• Database indexing for numeric ranges</li>
                                 <li>• Time-series data analysis</li>
@@ -544,3 +544,5 @@ const InterpolationSearchPage = () => {
 };
 
 export default InterpolationSearchPage;
+
+

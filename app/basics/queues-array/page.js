@@ -296,7 +296,7 @@ export default function QueueArrayPage() {
         return self.size`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -337,8 +337,8 @@ export default function QueueArrayPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                     {/* Visualization Panel */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Queue Visualization</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-slate-100 mb-6">Queue Visualization</h2>
 
                         {/* Controls */}
                         <div className="mb-6 space-y-4">
@@ -348,7 +348,7 @@ export default function QueueArrayPage() {
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Enter value"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    className="px-3 py-2 border border-slate-700 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 />
                                 <button
                                     onClick={handleEnqueue}
@@ -394,24 +394,24 @@ export default function QueueArrayPage() {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <label className="text-sm font-medium text-gray-700">Speed:</label>
+                                <label className="text-sm font-medium text-slate-300">Speed:</label>
                                 <select
                                     value={speed}
                                     onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                    className="px-2 py-1 border border-slate-700 rounded text-sm"
                                 >
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
                                     <option value={500}>Fast</option>
                                 </select>
-                                <label className="text-sm font-medium text-gray-700">Max Size:</label>
+                                <label className="text-sm font-medium text-slate-300">Max Size:</label>
                                 <input
                                     type="number"
                                     value={maxSize}
                                     onChange={(e) => setMaxSize(Math.max(1, Math.min(10, parseInt(e.target.value) || 8)))}
                                     min="1"
                                     max="10"
-                                    className="w-16 px-2 py-1 border border-gray-300 rounded text-sm"
+                                    className="w-16 px-2 py-1 border border-slate-700 rounded text-sm"
                                 />
                             </div>
                         </div>
@@ -421,9 +421,9 @@ export default function QueueArrayPage() {
                             <div className="flex justify-center">
                                 <div className="relative">
                                     {/* Queue container */}
-                                    <div className="flex items-center min-w-96 h-24 bg-gray-100 border-2 border-gray-300 rounded-lg p-2">
+                                    <div className="flex items-center min-w-96 h-24 bg-gray-100 border-2 border-slate-700 rounded-lg p-2">
                                         {currentState.queue.length === 0 ? (
-                                            <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
+                                            <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
                                                 Empty Queue
                                             </div>
                                         ) : (
@@ -445,7 +445,7 @@ export default function QueueArrayPage() {
                                         {Array.from({ length: maxSize - currentState.queue.length }).map((_, index) => (
                                             <div
                                                 key={`empty-${index}`}
-                                                className="w-16 h-16 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 rounded-md mr-2"
+                                                className="w-16 h-16 flex items-center justify-center text-slate-500 border-2 border-dashed border-slate-700 rounded-md mr-2"
                                             >
                                                 -
                                             </div>
@@ -472,7 +472,7 @@ export default function QueueArrayPage() {
 
                                     {/* Flow direction arrow */}
                                     {currentState.queue.length > 1 && (
-                                        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex items-center text-xs text-gray-600">
+                                        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex items-center text-xs text-slate-400">
                                             <span>FIFO Direction</span>
                                             <ArrowRight className="h-4 w-4 ml-2" />
                                         </div>
@@ -482,17 +482,17 @@ export default function QueueArrayPage() {
 
                             {/* Queue info */}
                             <div className="text-center mt-8 space-y-2">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Size:</span> {currentState.queue.length} / {maxSize}
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Status:</span> {
                                         currentState.queue.length === 0 ? 'Empty' :
                                             currentState.queue.length === maxSize ? 'Full' : 'Available'
                                     }
                                 </div>
                                 {currentState.queue.length > 0 && (
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-slate-400">
                                         <span className="font-semibold">Front:</span> {currentState.front},
                                         <span className="font-semibold ml-2">Rear:</span> {currentState.rear}
                                     </div>
@@ -501,9 +501,9 @@ export default function QueueArrayPage() {
                         </div>
 
                         {/* Step Explanation */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <h3 className="font-semibold text-blue-800 mb-2">Current Step:</h3>
-                            <p className="text-blue-700">{currentState.explanation}</p>
+                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                            <h3 className="font-semibold text-blue-300 mb-2">Current Step:</h3>
+                            <p className="text-blue-300">{currentState.explanation}</p>
                             {stepHistory.length > 0 && (
                                 <div className="mt-2 text-sm text-blue-600">
                                     Step {currentStep + 1} of {stepHistory.length}
@@ -515,56 +515,56 @@ export default function QueueArrayPage() {
                     {/* Information Panel */}
                     <div className="space-y-6">
                         {/* Complexity Analysis */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Complexity Analysis</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Complexity Analysis</h2>
                             <div className="space-y-4">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Enqueue</div>
+                                        <div className="text-sm text-slate-400">Enqueue</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-orange-600">O(n)</div>
-                                        <div className="text-sm text-gray-600">Dequeue*</div>
+                                        <div className="text-sm text-slate-400">Dequeue*</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Peek</div>
+                                        <div className="text-sm text-slate-400">Peek</div>
                                     </div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-lg font-bold text-blue-600">O(n) Space</div>
-                                    <div className="text-sm text-gray-600">Fixed array allocation</div>
+                                    <div className="text-sm text-slate-400">Fixed array allocation</div>
                                 </div>
-                                <div className="text-xs text-gray-500 text-center">
+                                <div className="text-xs text-slate-500 text-center">
                                     *O(n) due to shifting elements. Circular array implementation achieves O(1).
                                 </div>
                             </div>
                         </div>
 
                         {/* Operations Guide */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Queue Operations</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Queue Operations</h2>
                             <div className="space-y-4">
                                 <div className="border-l-4 border-blue-500 pl-4">
-                                    <h3 className="font-semibold text-blue-800">Enqueue</h3>
-                                    <p className="text-gray-600 text-sm">Add element to the rear of queue</p>
+                                    <h3 className="font-semibold text-blue-300">Enqueue</h3>
+                                    <p className="text-slate-400 text-sm">Add element to the rear of queue</p>
                                 </div>
                                 <div className="border-l-4 border-red-500 pl-4">
                                     <h3 className="font-semibold text-red-800">Dequeue</h3>
-                                    <p className="text-gray-600 text-sm">Remove and return front element</p>
+                                    <p className="text-slate-400 text-sm">Remove and return front element</p>
                                 </div>
                                 <div className="border-l-4 border-green-500 pl-4">
                                     <h3 className="font-semibold text-green-800">Peek/Front</h3>
-                                    <p className="text-gray-600 text-sm">View front element without removing</p>
+                                    <p className="text-slate-400 text-sm">View front element without removing</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* FIFO Principle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">FIFO Principle</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">FIFO Principle</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>First In:</strong> Elements added at the rear</div>
                                 <div>• <strong>First Out:</strong> Elements removed from the front</div>
                                 <div>• <strong>Order Preservation:</strong> Maintains insertion order</div>
@@ -573,9 +573,9 @@ export default function QueueArrayPage() {
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Applications</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Applications</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>Task Scheduling:</strong> OS process scheduling</div>
                                 <div>• <strong>BFS Algorithms:</strong> Graph traversal</div>
                                 <div>• <strong>Print Queue:</strong> Document printing order</div>
@@ -585,8 +585,8 @@ export default function QueueArrayPage() {
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Implementation</h2>
                             <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>

@@ -316,7 +316,7 @@ export default function HeapsPage() {
     const renderHeapTree = () => {
         if (currentState.heap.length === 0) {
             return (
-                <div className="flex items-center justify-center h-64 text-gray-400">
+                <div className="flex items-center justify-center h-64 text-slate-500">
                     <div className="text-center">
                         <div className="text-4xl mb-2">🌳</div>
                         <div>Empty Heap</div>
@@ -391,7 +391,7 @@ export default function HeapsPage() {
                                 y={pos.y}
                                 textAnchor="middle"
                                 dominantBaseline="middle"
-                                className="text-sm font-bold fill-gray-800"
+                                className="text-sm font-bold fill-slate-200"
                             >
                                 {value}
                             </text>
@@ -399,7 +399,7 @@ export default function HeapsPage() {
                                 x={pos.x}
                                 y={pos.y + nodeRadius + 12}
                                 textAnchor="middle"
-                                className="text-xs fill-gray-600"
+                                className="text-xs fill-slate-500"
                             >
                                 [{index}]
                             </text>
@@ -493,7 +493,7 @@ export default function HeapsPage() {
         return len(self.heap)`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -518,12 +518,12 @@ export default function HeapsPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Visualization Panel */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-gray-800">Heap Visualization</h2>
+                            <h2 className="text-2xl font-bold text-slate-100">Heap Visualization</h2>
                             <div className="flex gap-2">
-                                <button onClick={() => { setHeapType('max'); reset(); }} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'max' ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Max Heap</button>
-                                <button onClick={() => { setHeapType('min'); reset(); }} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'min' ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Min Heap</button>
+                                <button onClick={() => { setHeapType('max'); reset(); }} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'max' ? 'bg-amber-500 text-white' : 'bg-gray-200 text-slate-300'}`}>Max Heap</button>
+                                <button onClick={() => { setHeapType('min'); reset(); }} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${heapType === 'min' ? 'bg-amber-500 text-white' : 'bg-gray-200 text-slate-300'}`}>Min Heap</button>
                             </div>
                         </div>
 
@@ -535,7 +535,7 @@ export default function HeapsPage() {
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Enter value"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
+                                    className="px-3 py-2 bg-slate-800/80 border border-slate-700 text-slate-200 rounded-md focus:ring-amber-500 focus:border-amber-500 placeholder-slate-500"
                                     onKeyDown={(e) => e.key === 'Enter' && handleInsert()}
                                 />
                                 <button onClick={handleInsert} disabled={isPlaying} className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"><Plus className="h-4 w-4" /> Insert</button>
@@ -549,8 +549,8 @@ export default function HeapsPage() {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <label className="text-sm font-medium text-gray-700">Speed:</label>
-                                <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="px-2 py-1 border border-gray-300 rounded text-sm">
+                                <label className="text-sm font-medium text-slate-300">Speed:</label>
+                                <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="px-2 py-1 bg-slate-800/80 border border-slate-700 text-slate-200 rounded text-sm">
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
                                     <option value={500}>Fast</option>
@@ -559,27 +559,27 @@ export default function HeapsPage() {
                         </div>
 
                         {/* Tree Visualization */}
-                        <div className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 overflow-x-auto">
+                        <div className="mb-6 bg-slate-800/60 rounded-lg p-4 overflow-x-auto">
                             {renderHeapTree()}
                         </div>
 
                         {/* Array Representation */}
                         <div className="mb-6">
-                            <h3 className="text-sm font-semibold text-gray-700 mb-2">Array Representation:</h3>
+                            <h3 className="text-sm font-semibold text-slate-300 mb-2">Array Representation:</h3>
                             <div className="flex flex-wrap gap-2">
                                 {currentState.heap.map((value, index) => (
-                                    <div key={index} className={`w-12 h-12 flex flex-col items-center justify-center rounded border-2 transition-all duration-300 ${currentState.highlightIndices.includes(index) ? 'bg-amber-400 border-amber-600 scale-110 shadow-lg' : 'bg-amber-100 border-amber-300'}`}>
-                                        <div className="text-sm font-bold text-gray-800">{value}</div>
-                                        <div className="text-xs text-gray-600">[{index}]</div>
+                                    <div key={index} className={`w-12 h-12 flex flex-col items-center justify-center rounded border-2 transition-all duration-300 ${currentState.highlightIndices.includes(index) ? 'bg-amber-400 border-amber-600 scale-110 shadow-lg' : 'bg-amber-500/20 border-amber-500/40'}`}>
+                                        <div className="text-sm font-bold text-slate-100">{value}</div>
+                                        <div className="text-xs text-slate-400">[{index}]</div>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
                         {/* Step Explanation */}
-                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                            <h3 className="font-semibold text-amber-800 mb-2">Current Step:</h3>
-                            <p className="text-amber-700">{currentState.explanation}</p>
+                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+                            <h3 className="font-semibold text-amber-300 mb-2">Current Step:</h3>
+                            <p className="text-amber-300">{currentState.explanation}</p>
                             {stepHistory.length > 0 && (
                                 <div className="mt-2 text-sm text-amber-600">
                                     Step {currentStep + 1} of {stepHistory.length}
@@ -591,34 +591,34 @@ export default function HeapsPage() {
                     {/* Information Panel */}
                     <div className="space-y-6">
                         {/* Complexity Analysis */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Complexity Analysis</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Complexity Analysis</h2>
                             <div className="space-y-4">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-center">
                                         <div className="text-xl font-bold text-green-600">O(log n)</div>
-                                        <div className="text-sm text-gray-600">Insert</div>
+                                        <div className="text-sm text-slate-400">Insert</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-xl font-bold text-green-600">O(log n)</div>
-                                        <div className="text-sm text-gray-600">Extract</div>
+                                        <div className="text-sm text-slate-400">Extract</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Peek</div>
+                                        <div className="text-sm text-slate-400">Peek</div>
                                     </div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-lg font-bold text-amber-600">O(n) Space</div>
-                                    <div className="text-sm text-gray-600">Array-based storage</div>
+                                    <div className="text-sm text-slate-400">Array-based storage</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Heap Properties */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Heap Properties</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Heap Properties</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>Complete Binary Tree:</strong> All levels filled except possibly the last</div>
                                 <div>• <strong>Heap Property:</strong> {heapType === 'max' ? 'Parent ≥ Children' : 'Parent ≤ Children'}</div>
                                 <div>• <strong>Array Implementation:</strong> Left child at 2i+1, Right child at 2i+2</div>
@@ -628,9 +628,9 @@ export default function HeapsPage() {
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Applications</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Applications</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>Priority Queues:</strong> Task scheduling with priorities</div>
                                 <div>• <strong>Heap Sort:</strong> Efficient O(n log n) sorting algorithm</div>
                                 <div>• <strong>Dijkstra's Algorithm:</strong> Finding shortest paths in graphs</div>
@@ -640,8 +640,8 @@ export default function HeapsPage() {
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Implementation</h2>
                             <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>

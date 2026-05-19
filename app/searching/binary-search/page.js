@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Pause, Square, RotateCcw, ArrowLeft, ChevronLeft, ChevronRight, Search, Clock, Code, Target, Zap } from 'lucide-react';
 import Link from 'next/link';
@@ -195,7 +195,7 @@ const BinarySearchPage = () => {
     return -1  # Target not found`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-red-500 to-rose-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -226,7 +226,7 @@ const BinarySearchPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -270,7 +270,7 @@ const BinarySearchPage = () => {
 
                             {/* Target Input */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
                                     Target Value: {target}
                                 </label>
                                 <div className="flex gap-2">
@@ -278,14 +278,14 @@ const BinarySearchPage = () => {
                                         type="number"
                                         value={target}
                                         onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
                                         min="0"
                                         max="100"
                                     />
                                     <select
                                         value={target}
                                         onChange={(e) => setTarget(parseInt(e.target.value))}
-                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
                                     >
                                         {array.map(val => (
                                             <option key={val} value={val}>{val}</option>
@@ -296,7 +296,7 @@ const BinarySearchPage = () => {
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
                                     Animation Speed: {speed === 500 ? 'Fast' : speed === 1000 ? 'Normal' : 'Slow'}
                                 </label>
                                 <input
@@ -306,12 +306,12 @@ const BinarySearchPage = () => {
                                     step="500"
                                     value={speed}
                                     onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
                                 />
                             </div>
 
                             {/* Array Visualization */}
-                            <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
                                 <div className="flex items-center justify-center mb-4">
                                     <div className="flex items-end gap-2 overflow-x-auto pb-2">
                                         {currentState.array.map((value, index) => (
@@ -338,7 +338,7 @@ const BinarySearchPage = () => {
 
                                 {/* Search Info */}
                                 <div className="text-center mt-4">
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-slate-400">
                                         <span className="font-semibold">Target:</span> {target} |
                                         <span className="font-semibold"> Comparisons:</span> {currentState.comparisons} |
                                         <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
@@ -347,9 +347,9 @@ const BinarySearchPage = () => {
                             </div>
 
                             {/* Step Explanation */}
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-800 mb-2">Current Step:</h3>
-                                <p className="text-red-700">{currentState.explanation}</p>
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
+                                <p className="text-red-300">{currentState.explanation}</p>
                             </div>
                         </div>
                     </div>
@@ -357,57 +357,57 @@ const BinarySearchPage = () => {
                     {/* Side Panel */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                                 <Search className="h-5 w-5 mr-2 text-red-500" />
                                 Binary Search
                             </h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Time Complexity:</span>
+                                    <span className="text-slate-400">Time Complexity:</span>
                                     <span className="font-semibold">O(log n)</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Space Complexity:</span>
+                                    <span className="text-slate-400">Space Complexity:</span>
                                     <span className="font-semibold">O(1)</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Requirement:</span>
+                                    <span className="text-slate-400">Requirement:</span>
                                     <span className="font-semibold">Sorted Array</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Type:</span>
+                                    <span className="text-slate-400">Type:</span>
                                     <span className="font-semibold">Divide & Conquer</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Color Legend */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Color Legend</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
                             <div className="space-y-2">
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
-                                    <span className="text-sm">Currently Checking</span>
+                                    <span className="text-sm text-slate-300">Currently Checking</span>
                                 </div>
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 bg-red-400 border border-red-500 rounded mr-3"></div>
-                                    <span className="text-sm">Search Boundaries</span>
+                                    <span className="text-sm text-slate-300">Search Boundaries</span>
                                 </div>
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 bg-green-500 border border-green-600 rounded mr-3"></div>
-                                    <span className="text-sm">Target Found</span>
+                                    <span className="text-sm text-slate-300">Target Found</span>
                                 </div>
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 bg-gray-400 border border-gray-500 rounded mr-3 opacity-50"></div>
-                                    <span className="text-sm">Out of Search Range</span>
+                                    <span className="text-sm text-slate-300">Out of Search Range</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
@@ -415,12 +415,12 @@ const BinarySearchPage = () => {
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                                 <Target className="h-5 w-5 mr-2 text-red-500" />
                                 Real-world Applications
                             </h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li>• Database indexing and query optimization</li>
                                 <li>• Finding elements in sorted collections</li>
                                 <li>• Debugging with breakpoints in IDEs</li>
@@ -437,3 +437,4 @@ const BinarySearchPage = () => {
 };
 
 export default BinarySearchPage;
+

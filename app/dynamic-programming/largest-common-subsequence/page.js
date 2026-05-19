@@ -279,10 +279,10 @@ const LCSPage = () => {
 
         if (isInPath) return 'bg-purple-300 text-purple-800 border-purple-400';
 
-        if (i === 0 || j === 0) return 'bg-gray-300 text-gray-700 border-gray-400';
-        if (value === 0) return 'bg-gray-100 text-gray-500 border-gray-300';
-        if (value <= 2) return 'bg-rose-200 text-rose-800 border-rose-300';
-        if (value <= 4) return 'bg-rose-300 text-rose-800 border-rose-400';
+        if (i === 0 || j === 0) return 'bg-gray-300 text-slate-300 border-gray-400';
+        if (value === 0) return 'bg-gray-100 text-slate-500 border-slate-700';
+        if (value <= 2) return 'bg-rose-200 text-rose-300 border-rose-300';
+        if (value <= 4) return 'bg-rose-300 text-rose-300 border-rose-400';
         return 'bg-rose-400 text-white border-rose-500';
     };
 
@@ -344,7 +344,7 @@ def lcs_with_reconstruction(str1, str2):
 # Space Complexity: O(m × n)`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -376,7 +376,7 @@ def lcs_with_reconstruction(str1, str2):
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -432,26 +432,26 @@ def lcs_with_reconstruction(str1, str2):
                             {/* String Input Controls */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                                    <label className="block text-sm font-medium mb-2 text-slate-300">
                                         String 1: {string1}
                                     </label>
                                     <input
                                         type="text"
                                         value={string1}
                                         onChange={(e) => setString1(e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 10))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                        className="w-full px-3 py-2 border border-slate-700 rounded-lg"
                                         placeholder="ABCDGH"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                                    <label className="block text-sm font-medium mb-2 text-slate-300">
                                         String 2: {string2}
                                     </label>
                                     <input
                                         type="text"
                                         value={string2}
                                         onChange={(e) => setString2(e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 10))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                        className="w-full px-3 py-2 border border-slate-700 rounded-lg"
                                         placeholder="AEDFHR"
                                     />
                                 </div>
@@ -461,19 +461,19 @@ def lcs_with_reconstruction(str1, str2):
                             <div className="flex flex-wrap gap-2 mb-6">
                                 <button
                                     onClick={() => setPresetExample('dna')}
-                                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm hover:bg-blue-200"
+                                    className="px-3 py-1 bg-blue-500/15 text-blue-400 rounded text-sm hover:bg-blue-200"
                                 >
                                     DNA Example
                                 </button>
                                 <button
                                     onClick={() => setPresetExample('words')}
-                                    className="px-3 py-1 bg-green-100 text-green-800 rounded text-sm hover:bg-green-200"
+                                    className="px-3 py-1 bg-green-500/15 text-green-400 rounded text-sm hover:bg-green-200"
                                 >
                                     Word Example
                                 </button>
                                 <button
                                     onClick={() => setPresetExample('simple')}
-                                    className="px-3 py-1 bg-purple-100 text-purple-800 rounded text-sm hover:bg-purple-200"
+                                    className="px-3 py-1 bg-purple-500/15 text-purple-400 rounded text-sm hover:bg-purple-200"
                                 >
                                     Simple Example
                                 </button>
@@ -481,7 +481,7 @@ def lcs_with_reconstruction(str1, str2):
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Animation Speed: {speed}ms
                                 </label>
                                 <input
@@ -492,7 +492,7 @@ def lcs_with_reconstruction(str1, str2):
                                     onChange={(e) => setSpeed(Number(e.target.value))}
                                     className="w-full max-w-md accent-rose-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>Fast (300ms)</span>
                                     <span>Slow (2000ms)</span>
                                 </div>
@@ -501,14 +501,14 @@ def lcs_with_reconstruction(str1, str2):
                             {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-medium text-slate-300">
                                         Progress: Step {currentStep + 1} of {stepHistory.length}
                                     </span>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         Phase: {currentState.phase}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                     <div
                                         className="bg-rose-500 h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -518,10 +518,10 @@ def lcs_with_reconstruction(str1, str2):
 
                             {/* String Visualization */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Strings Being Compared</h3>
-                                <div className="space-y-3 p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">Strings Being Compared</h3>
+                                <div className="space-y-3 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-medium text-gray-700 w-16">String 1:</span>
+                                        <span className="text-sm font-medium text-slate-300 w-16">String 1:</span>
                                         <div className="flex gap-1">
                                             {string1.split('').map((char, index) => (
                                                 <div
@@ -534,7 +534,7 @@ def lcs_with_reconstruction(str1, str2):
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-medium text-gray-700 w-16">String 2:</span>
+                                        <span className="text-sm font-medium text-slate-300 w-16">String 2:</span>
                                         <div className="flex gap-1">
                                             {string2.split('').map((char, index) => (
                                                 <div
@@ -548,7 +548,7 @@ def lcs_with_reconstruction(str1, str2):
                                     </div>
                                     {currentState.lcs && (
                                         <div className="flex items-center gap-2">
-                                            <span className="text-sm font-medium text-gray-700 w-16">LCS:</span>
+                                            <span className="text-sm font-medium text-slate-300 w-16">LCS:</span>
                                             <div className="flex gap-1">
                                                 {currentState.lcs.split('').map((char, index) => (
                                                     <div
@@ -569,24 +569,24 @@ def lcs_with_reconstruction(str1, str2):
 
                             {/* DP Table */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">DP Table</h3>
-                                <div className="overflow-auto p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">DP Table</h3>
+                                <div className="overflow-auto p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {currentState.dp.length > 0 && (
                                         <div className="inline-block">
                                             <table className="border-collapse">
                                                 <thead>
                                                     <tr>
                                                         <th className="w-8 h-8 text-xs"></th>
-                                                        <th className="w-8 h-8 text-xs text-gray-600">ε</th>
+                                                        <th className="w-8 h-8 text-xs text-slate-400">ε</th>
                                                         {string2.split('').map((char, index) => (
-                                                            <th key={index} className="w-8 h-8 text-xs text-gray-600">{char}</th>
+                                                            <th key={index} className="w-8 h-8 text-xs text-slate-400">{char}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {currentState.dp.map((row, i) => (
                                                         <tr key={i}>
-                                                            <th className="w-8 h-8 text-xs text-gray-600">
+                                                            <th className="w-8 h-8 text-xs text-slate-400">
                                                                 {i === 0 ? 'ε' : string1[i - 1]}
                                                             </th>
                                                             {row.map((value, j) => (
@@ -607,12 +607,12 @@ def lcs_with_reconstruction(str1, str2):
                             </div>
 
                             {/* Current Step Explanation */}
-                            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4">
+                            <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Lightbulb className="h-5 w-5 text-rose-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-rose-800 mb-2">Current Step:</h3>
-                                        <p className="text-rose-700 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-rose-300 mb-2">Current Step:</h3>
+                                        <p className="text-rose-300 leading-relaxed">{currentState.explanation}</p>
                                     </div>
                                 </div>
                             </div>
@@ -622,35 +622,35 @@ def lcs_with_reconstruction(str1, str2):
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <Clock className="h-5 w-5 text-rose-600" />
-                                <h3 className="font-bold text-gray-900">Algorithm Details</h3>
+                                <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Time Complexity:</span>
-                                    <code className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">O(m × n)</code>
+                                    <span className="font-medium text-slate-300">Time Complexity:</span>
+                                    <code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O(m × n)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space Complexity:</span>
-                                    <code className="bg-blue-100 text-blue-800 px-2 py-1 rounded">O(m × n)</code>
+                                    <span className="font-medium text-slate-300">Space Complexity:</span>
+                                    <code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(m × n)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Type:</span>
-                                    <span className="bg-rose-100 text-rose-800 px-2 py-1 rounded">2D DP</span>
+                                    <span className="font-medium text-slate-300">Type:</span>
+                                    <span className="bg-rose-100 text-rose-300 px-2 py-1 rounded">2D DP</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space Optimized:</span>
-                                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded">O(min(m,n))</span>
+                                    <span className="font-medium text-slate-300">Space Optimized:</span>
+                                    <span className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(min(m,n))</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Real-world Applications</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-rose-600 mt-1">•</span>
                                     <span>DNA sequence alignment in bioinformatics</span>
@@ -679,9 +679,9 @@ def lcs_with_reconstruction(str1, str2):
                         </div>
 
                         {/* Key Concepts */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Key DP Concepts</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Key DP Concepts</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
                                     <span><strong>2D Table:</strong> dp[i][j] = LCS length of first i and j characters</span>
@@ -702,9 +702,9 @@ def lcs_with_reconstruction(str1, str2):
                         </div>
 
                         {/* Related Problems */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Related DP Problems</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Related DP Problems</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
                                     <span>Longest Common Substring</span>
@@ -729,10 +729,10 @@ def lcs_with_reconstruction(str1, str2):
                         </div>
 
                         {/* Code Toggle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <button
                                 onClick={() => setShowCode(!showCode)}
-                                className="flex items-center gap-2 text-rose-600 hover:text-rose-700 font-medium"
+                                className="flex items-center gap-2 text-rose-600 hover:text-rose-300 font-medium"
                             >
                                 <Code2 className="h-5 w-5" />
                                 {showCode ? 'Hide' : 'Show'} Python Code

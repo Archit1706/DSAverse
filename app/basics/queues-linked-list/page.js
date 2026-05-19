@@ -306,7 +306,7 @@ class QueueLinkedList:
         return elements`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -347,8 +347,8 @@ class QueueLinkedList:
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                     {/* Visualization Panel */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Queue Visualization</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-slate-100 mb-6">Queue Visualization</h2>
 
                         {/* Controls */}
                         <div className="mb-6 space-y-4">
@@ -358,7 +358,7 @@ class QueueLinkedList:
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Enter value"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    className="px-3 py-2 border border-slate-700 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 />
                                 <button
                                     onClick={handleEnqueue}
@@ -404,11 +404,11 @@ class QueueLinkedList:
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <label className="text-sm font-medium text-gray-700">Speed:</label>
+                                <label className="text-sm font-medium text-slate-300">Speed:</label>
                                 <select
                                     value={speed}
                                     onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                    className="px-2 py-1 border border-slate-700 rounded text-sm"
                                 >
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
@@ -424,7 +424,7 @@ class QueueLinkedList:
                                     {/* Front and Rear pointers */}
                                     <div className="flex justify-between mb-4">
                                         <div className="flex flex-col items-center">
-                                            <div className="bg-gray-200 border-2 border-gray-400 rounded-lg px-3 py-2 text-sm font-semibold">
+                                            <div className="bg-slate-700 border-2 border-slate-500 rounded-lg px-3 py-2 text-sm font-semibold">
                                                 FRONT
                                             </div>
                                             {currentState.queue.length > 0 && (
@@ -432,7 +432,7 @@ class QueueLinkedList:
                                             )}
                                         </div>
                                         <div className="flex flex-col items-center">
-                                            <div className="bg-gray-200 border-2 border-gray-400 rounded-lg px-3 py-2 text-sm font-semibold">
+                                            <div className="bg-slate-700 border-2 border-slate-500 rounded-lg px-3 py-2 text-sm font-semibold">
                                                 REAR
                                             </div>
                                             {currentState.queue.length > 0 && (
@@ -447,7 +447,7 @@ class QueueLinkedList:
                                             <div className="animate-bounce">
                                                 <div className="bg-yellow-300 border-2 border-yellow-500 rounded-lg p-3 flex items-center">
                                                     <div className="text-center mr-3">
-                                                        <div className="text-xs text-gray-600 mb-1">Node {currentState.newNode.id}</div>
+                                                        <div className="text-xs text-slate-400 mb-1">Node {currentState.newNode.id}</div>
                                                         <div className="font-bold">{currentState.newNode.value}</div>
                                                     </div>
                                                     <div className="w-4 h-4 bg-yellow-200 rounded-full flex items-center justify-center">
@@ -461,8 +461,8 @@ class QueueLinkedList:
                                     {/* Queue nodes */}
                                     <div className="flex items-center justify-center min-h-20">
                                         {currentState.queue.length === 0 ? (
-                                            <div className="text-gray-400 text-center py-8">
-                                                <div className="w-32 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                                            <div className="text-slate-500 text-center py-8">
+                                                <div className="w-32 h-16 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center">
                                                     Empty Queue
                                                 </div>
                                             </div>
@@ -491,14 +491,14 @@ class QueueLinkedList:
 
                                                         {/* Arrow to next node */}
                                                         {index < currentState.queue.length - 1 && (
-                                                            <ArrowRight className="h-4 w-4 text-gray-500 mx-1" />
+                                                            <ArrowRight className="h-4 w-4 text-slate-500 mx-1" />
                                                         )}
 
                                                         {/* NULL pointer for last node */}
                                                         {index === currentState.queue.length - 1 && (
                                                             <div className="flex items-center ml-2">
-                                                                <ArrowRight className="h-4 w-4 text-gray-500" />
-                                                                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded ml-1">
+                                                                <ArrowRight className="h-4 w-4 text-slate-500" />
+                                                                <div className="text-xs text-slate-500 bg-gray-100 px-2 py-1 rounded ml-1">
                                                                     NULL
                                                                 </div>
                                                             </div>
@@ -512,7 +512,7 @@ class QueueLinkedList:
                                     {/* FIFO Direction indicator */}
                                     {currentState.queue.length > 0 && (
                                         <div className="text-center mt-4">
-                                            <div className="inline-flex items-center text-xs text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                                            <div className="inline-flex items-center text-xs text-slate-400 bg-gray-100 px-3 py-1 rounded-full">
                                                 <span className="mr-2">FIFO Direction</span>
                                                 <ArrowRight className="h-3 w-3" />
                                             </div>
@@ -523,13 +523,13 @@ class QueueLinkedList:
 
                             {/* Queue info */}
                             <div className="text-center mt-4 space-y-2">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Size:</span> {currentState.queue.length}
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Memory:</span> Dynamic allocation
                                 </div>
-                                <div className="text-sm text-gray-600 space-x-4">
+                                <div className="text-sm text-slate-400 space-x-4">
                                     <span>
                                         <span className="font-semibold">Front:</span> {
                                             currentState.queue.length > 0 ?
@@ -549,9 +549,9 @@ class QueueLinkedList:
                         </div>
 
                         {/* Step Explanation */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <h3 className="font-semibold text-blue-800 mb-2">Current Step:</h3>
-                            <p className="text-blue-700">{currentState.explanation}</p>
+                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                            <h3 className="font-semibold text-blue-300 mb-2">Current Step:</h3>
+                            <p className="text-blue-300">{currentState.explanation}</p>
                             {stepHistory.length > 0 && (
                                 <div className="mt-2 text-sm text-blue-600">
                                     Step {currentStep + 1} of {stepHistory.length}
@@ -563,34 +563,34 @@ class QueueLinkedList:
                     {/* Information Panel */}
                     <div className="space-y-6">
                         {/* Complexity Analysis */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Complexity Analysis</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Complexity Analysis</h2>
                             <div className="space-y-4">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Enqueue</div>
+                                        <div className="text-sm text-slate-400">Enqueue</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Dequeue</div>
+                                        <div className="text-sm text-slate-400">Dequeue</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Peek</div>
+                                        <div className="text-sm text-slate-400">Peek</div>
                                     </div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-lg font-bold text-blue-600">O(n) Space</div>
-                                    <div className="text-sm text-gray-600">Dynamic allocation + pointer overhead</div>
+                                    <div className="text-sm text-slate-400">Dynamic allocation + pointer overhead</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Advantages over Array */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Advantages over Array</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Advantages over Array</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div className="flex items-start">
                                     <span className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-2"></span>
                                     <div>
@@ -619,28 +619,28 @@ class QueueLinkedList:
                         </div>
 
                         {/* Operations Guide */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Operations</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Operations</h2>
                             <div className="space-y-4">
                                 <div className="border-l-4 border-blue-500 pl-4">
-                                    <h3 className="font-semibold text-blue-800">Enqueue</h3>
-                                    <p className="text-gray-600 text-sm">Create node, link to rear, update rear pointer</p>
+                                    <h3 className="font-semibold text-blue-300">Enqueue</h3>
+                                    <p className="text-slate-400 text-sm">Create node, link to rear, update rear pointer</p>
                                 </div>
                                 <div className="border-l-4 border-red-500 pl-4">
                                     <h3 className="font-semibold text-red-800">Dequeue</h3>
-                                    <p className="text-gray-600 text-sm">Store front value, move front pointer, deallocate</p>
+                                    <p className="text-slate-400 text-sm">Store front value, move front pointer, deallocate</p>
                                 </div>
                                 <div className="border-l-4 border-green-500 pl-4">
                                     <h3 className="font-semibold text-green-800">Peek</h3>
-                                    <p className="text-gray-600 text-sm">Return front node value without modification</p>
+                                    <p className="text-slate-400 text-sm">Return front node value without modification</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Pointer Management */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Two-Pointer Approach</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Two-Pointer Approach</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>Front Pointer:</strong> Points to first node (dequeue end)</div>
                                 <div>• <strong>Rear Pointer:</strong> Points to last node (enqueue end)</div>
                                 <div>• <strong>Empty Queue:</strong> Both pointers are NULL</div>
@@ -650,9 +650,9 @@ class QueueLinkedList:
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Applications</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Applications</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>Process Scheduling:</strong> OS task management</div>
                                 <div>• <strong>Network Buffers:</strong> Packet handling in routers</div>
                                 <div>• <strong>Print Spooling:</strong> Document queue management</div>
@@ -662,8 +662,8 @@ class QueueLinkedList:
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Implementation</h2>
                             <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>

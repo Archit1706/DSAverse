@@ -75,15 +75,15 @@ export default function HeapLikeDataStructuresPage() {
 
     const getDifficultyColor = (difficulty) => {
         switch (difficulty) {
-            case 'Beginner': return 'bg-green-100 text-green-800';
-            case 'Intermediate': return 'bg-yellow-100 text-yellow-800';
-            case 'Advanced': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'Beginner': return 'bg-green-500/15 text-green-400';
+            case 'Intermediate': return 'bg-yellow-500/15 text-yellow-400';
+            case 'Advanced': return 'bg-red-500/15 text-red-400';
+            default: return 'bg-slate-700 text-slate-300';
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -118,7 +118,7 @@ export default function HeapLikeDataStructuresPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {heapDataStructures.map((structure, index) => (
                         <Link key={index} href={`/heap-like-data-structures/${structure.slug}`}>
-                            <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer h-full">
+                            <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 hover:border-amber-500/50 shadow-xl hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer h-full">
                                 {/* Header */}
                                 <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-6 text-white">
                                     <div className="flex items-center justify-between mb-4">
@@ -142,20 +142,20 @@ export default function HeapLikeDataStructuresPage() {
                                     <div className="grid grid-cols-2 gap-4 mb-6">
                                         <div className="text-center">
                                             <div className="text-lg font-bold text-amber-600">{structure.timeComplexity}</div>
-                                            <div className="text-xs text-gray-600">Time Complexity</div>
+                                            <div className="text-xs text-slate-400">Time Complexity</div>
                                         </div>
                                         <div className="text-center">
                                             <div className="text-lg font-bold text-amber-600">{structure.spaceComplexity}</div>
-                                            <div className="text-xs text-gray-600">Space Complexity</div>
+                                            <div className="text-xs text-slate-400">Space Complexity</div>
                                         </div>
                                     </div>
 
                                     {/* Operations */}
                                     <div className="mb-4">
-                                        <h4 className="text-sm font-semibold text-gray-800 mb-2">Key Operations:</h4>
+                                        <h4 className="text-sm font-semibold text-slate-100 mb-2">Key Operations:</h4>
                                         <div className="space-y-1">
                                             {structure.operations.map((op, idx) => (
-                                                <div key={idx} className="text-xs text-gray-600 flex items-center">
+                                                <div key={idx} className="text-xs text-slate-400 flex items-center">
                                                     <span className="w-1.5 h-1.5 bg-amber-400 rounded-full mr-2"></span>
                                                     {op}
                                                 </div>
@@ -165,10 +165,10 @@ export default function HeapLikeDataStructuresPage() {
 
                                     {/* Applications */}
                                     <div className="mb-4">
-                                        <h4 className="text-sm font-semibold text-gray-800 mb-2">Common Applications:</h4>
+                                        <h4 className="text-sm font-semibold text-slate-100 mb-2">Common Applications:</h4>
                                         <div className="space-y-1">
                                             {structure.applications.map((app, idx) => (
-                                                <div key={idx} className="text-xs text-gray-600 flex items-center">
+                                                <div key={idx} className="text-xs text-slate-400 flex items-center">
                                                     <span className="w-1.5 h-1.5 bg-amber-400 rounded-full mr-2"></span>
                                                     {app}
                                                 </div>
@@ -177,7 +177,7 @@ export default function HeapLikeDataStructuresPage() {
                                     </div>
 
                                     {/* Action Button */}
-                                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                                    <div className="flex items-center justify-between pt-4 border-t border-slate-700/50">
                                         <span className="text-sm font-medium text-amber-600 group-hover:text-amber-800 transition-colors">
                                             Explore Visualization →
                                         </span>
@@ -194,9 +194,9 @@ export default function HeapLikeDataStructuresPage() {
                 {/* Information Sections */}
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Why Learn Heap Structures? */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Why Learn Heap Structures?</h2>
-                        <div className="space-y-4 text-gray-600">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-white mb-4">Why Learn Heap Structures?</h2>
+                        <div className="space-y-4 text-slate-400">
                             <p className="text-sm leading-relaxed">
                                 Heap-like structures are essential for priority-based operations and are fundamental
                                 to many graph algorithms and scheduling systems.
@@ -219,46 +219,46 @@ export default function HeapLikeDataStructuresPage() {
                     </div>
 
                     {/* Learning Path */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Recommended Learning Path</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-white mb-4">Recommended Learning Path</h2>
                         <div className="space-y-3">
-                            <div className="flex items-center text-sm text-gray-600">
-                                <span className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">1</span>
+                            <div className="flex items-center text-sm text-slate-400">
+                                <span className="w-6 h-6 bg-amber-500/15 text-amber-400 rounded-full flex items-center justify-center text-xs font-bold mr-3">1</span>
                                 Start with Binary Heaps
                             </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                                <span className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">2</span>
+                            <div className="flex items-center text-sm text-slate-400">
+                                <span className="w-6 h-6 bg-amber-500/15 text-amber-400 rounded-full flex items-center justify-center text-xs font-bold mr-3">2</span>
                                 Understand Binomial Queues
                             </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                                <span className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">3</span>
+                            <div className="flex items-center text-sm text-slate-400">
+                                <span className="w-6 h-6 bg-amber-500/15 text-amber-400 rounded-full flex items-center justify-center text-xs font-bold mr-3">3</span>
                                 Explore Leftist Heaps
                             </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                                <span className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">4</span>
+                            <div className="flex items-center text-sm text-slate-400">
+                                <span className="w-6 h-6 bg-amber-500/15 text-amber-400 rounded-full flex items-center justify-center text-xs font-bold mr-3">4</span>
                                 Study Skew Heaps
                             </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                                <span className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">5</span>
+                            <div className="flex items-center text-sm text-slate-400">
+                                <span className="w-6 h-6 bg-amber-500/15 text-amber-400 rounded-full flex items-center justify-center text-xs font-bold mr-3">5</span>
                                 Master Fibonacci Heaps
                             </div>
                         </div>
                     </div>
 
                     {/* Key Concepts */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Key Concepts</h2>
-                        <div className="space-y-4 text-gray-600">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-white mb-4">Key Concepts</h2>
+                        <div className="space-y-4 text-slate-400">
                             <div className="border-l-4 border-amber-400 pl-3">
-                                <h3 className="font-semibold text-gray-800 text-sm">Heap Property</h3>
+                                <h3 className="font-semibold text-slate-100 text-sm">Heap Property</h3>
                                 <p className="text-xs">Parent-child ordering for priority</p>
                             </div>
                             <div className="border-l-4 border-amber-400 pl-3">
-                                <h3 className="font-semibold text-gray-800 text-sm">Merge Operations</h3>
+                                <h3 className="font-semibold text-slate-100 text-sm">Merge Operations</h3>
                                 <p className="text-xs">Combining two heaps efficiently</p>
                             </div>
                             <div className="border-l-4 border-amber-400 pl-3">
-                                <h3 className="font-semibold text-gray-800 text-sm">Amortized Analysis</h3>
+                                <h3 className="font-semibold text-slate-100 text-sm">Amortized Analysis</h3>
                                 <p className="text-xs">Average cost over sequence of operations</p>
                             </div>
                         </div>
@@ -266,42 +266,42 @@ export default function HeapLikeDataStructuresPage() {
                 </div>
 
                 {/* Comparison Table */}
-                <div className="mt-12 bg-white rounded-xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Quick Comparison</h2>
+                <div className="mt-12 bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-8">
+                    <h2 className="text-2xl font-bold text-white mb-6 text-center">Quick Comparison</h2>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="border-b-2 border-gray-200">
-                                    <th className="text-left py-3 px-4 font-semibold text-gray-800">Structure</th>
+                                <tr className="border-b-2 border-slate-700/50">
+                                    <th className="text-left py-3 px-4 font-semibold text-slate-100">Structure</th>
                                     <th className="text-center py-3 px-4 font-semibold text-amber-600">Insert</th>
                                     <th className="text-center py-3 px-4 font-semibold text-amber-600">Extract Min</th>
                                     <th className="text-center py-3 px-4 font-semibold text-amber-600">Merge</th>
                                     <th className="text-center py-3 px-4 font-semibold text-amber-600">Best Use Case</th>
                                 </tr>
                             </thead>
-                            <tbody className="text-gray-600">
-                                <tr className="border-b border-gray-100">
+                            <tbody className="text-slate-400">
+                                <tr className="border-b border-slate-700/50">
                                     <td className="py-3 px-4 font-medium">Binary Heap</td>
                                     <td className="py-3 px-4 text-center">O(log n)</td>
                                     <td className="py-3 px-4 text-center">O(log n)</td>
                                     <td className="py-3 px-4 text-center">O(n)</td>
                                     <td className="py-3 px-4 text-center">Simple priority queues</td>
                                 </tr>
-                                <tr className="border-b border-gray-100">
+                                <tr className="border-b border-slate-700/50">
                                     <td className="py-3 px-4 font-medium">Binomial Queue</td>
                                     <td className="py-3 px-4 text-center">O(1)*</td>
                                     <td className="py-3 px-4 text-center">O(log n)</td>
                                     <td className="py-3 px-4 text-center">O(log n)</td>
                                     <td className="py-3 px-4 text-center">Frequent merging</td>
                                 </tr>
-                                <tr className="border-b border-gray-100">
+                                <tr className="border-b border-slate-700/50">
                                     <td className="py-3 px-4 font-medium">Fibonacci Heap</td>
                                     <td className="py-3 px-4 text-center">O(1)</td>
                                     <td className="py-3 px-4 text-center">O(log n)*</td>
                                     <td className="py-3 px-4 text-center">O(1)</td>
                                     <td className="py-3 px-4 text-center">Graph algorithms</td>
                                 </tr>
-                                <tr className="border-b border-gray-100">
+                                <tr className="border-b border-slate-700/50">
                                     <td className="py-3 px-4 font-medium">Leftist Heap</td>
                                     <td className="py-3 px-4 text-center">O(log n)</td>
                                     <td className="py-3 px-4 text-center">O(log n)</td>
@@ -317,7 +317,7 @@ export default function HeapLikeDataStructuresPage() {
                                 </tr>
                             </tbody>
                         </table>
-                        <div className="mt-4 text-xs text-gray-500 text-center">
+                        <div className="mt-4 text-xs text-slate-500 text-center">
                             * Amortized time complexity
                         </div>
                     </div>

@@ -92,15 +92,15 @@ const SortingPage = () => {
 
     const getDifficultyColor = (difficulty) => {
         switch (difficulty) {
-            case 'Beginner': return 'bg-green-100 text-green-800';
-            case 'Intermediate': return 'bg-yellow-100 text-yellow-800';
-            case 'Advanced': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'Beginner': return 'bg-green-500/15 text-green-400';
+            case 'Intermediate': return 'bg-yellow-500/15 text-yellow-400';
+            case 'Advanced': return 'bg-red-500/15 text-red-400';
+            default: return 'bg-slate-700/60 text-slate-400';
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -135,42 +135,42 @@ const SortingPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {sortingAlgorithms.map((algorithm, index) => (
                         <Link key={index} href={`/sorting/${algorithm.slug}`}>
-                            <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border-2 border-orange-100 hover:border-orange-300 overflow-hidden">
+                            <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:border-orange-500/50 overflow-hidden">
                                 <div className="p-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-xl font-bold text-gray-900">{algorithm.name}</h3>
+                                        <h3 className="text-xl font-bold text-white">{algorithm.name}</h3>
                                         <ArrowRight className="h-5 w-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
 
-                                    <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                                    <p className="text-slate-400 mb-4 text-sm leading-relaxed">
                                         {algorithm.description}
                                     </p>
 
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm font-medium text-gray-700">Time Complexity:</span>
-                                            <code className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-sm">
+                                            <span className="text-sm font-medium text-slate-300">Time Complexity:</span>
+                                            <code className="bg-orange-500/15 text-orange-400 px-2 py-1 rounded text-sm">
                                                 {algorithm.timeComplexity}
                                             </code>
                                         </div>
 
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm font-medium text-gray-700">Space Complexity:</span>
-                                            <code className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-sm">
+                                            <span className="text-sm font-medium text-slate-300">Space Complexity:</span>
+                                            <code className="bg-orange-500/15 text-orange-400 px-2 py-1 rounded text-sm">
                                                 {algorithm.spaceComplexity}
                                             </code>
                                         </div>
 
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm font-medium text-gray-700">Difficulty:</span>
+                                            <span className="text-sm font-medium text-slate-300">Difficulty:</span>
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(algorithm.difficulty)}`}>
                                                 {algorithm.difficulty}
                                             </span>
                                         </div>
 
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm font-medium text-gray-700">Stable:</span>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${algorithm.stable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                            <span className="text-sm font-medium text-slate-300">Stable:</span>
+                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${algorithm.stable ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'
                                                 }`}>
                                                 {algorithm.stable ? 'Yes' : 'No'}
                                             </span>
@@ -191,13 +191,13 @@ const SortingPage = () => {
             </div>
 
             {/* Info Section */}
-            <div className="bg-white border-t border-orange-200">
+            <div className="bg-slate-900/70 border-t border-slate-700/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                        <h2 className="text-3xl font-bold text-white mb-4">
                             Why Learn Sorting Algorithms?
                         </h2>
-                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        <p className="text-xl text-slate-400 max-w-3xl mx-auto">
                             Sorting algorithms are fundamental to computer science and form the foundation
                             for understanding more complex algorithms and data structures.
                         </p>
@@ -205,31 +205,31 @@ const SortingPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="text-center p-6">
-                            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-orange-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Code className="h-8 w-8 text-orange-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 text-gray-900">Algorithm Design</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-2 text-white">Algorithm Design</h3>
+                            <p className="text-slate-400">
                                 Learn different algorithmic paradigms like divide-and-conquer and greedy approaches
                             </p>
                         </div>
 
                         <div className="text-center p-6">
-                            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-orange-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Clock className="h-8 w-8 text-orange-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 text-gray-900">Time Complexity</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-2 text-white">Time Complexity</h3>
+                            <p className="text-slate-400">
                                 Understand Big O notation and how to analyze algorithm performance
                             </p>
                         </div>
 
                         <div className="text-center p-6">
-                            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-orange-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Play className="h-8 w-8 text-orange-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 text-gray-900">Practical Applications</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-2 text-white">Practical Applications</h3>
+                            <p className="text-slate-400">
                                 Apply sorting in real-world scenarios like databases, search engines, and data processing
                             </p>
                         </div>

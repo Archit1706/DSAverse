@@ -271,7 +271,7 @@ function fibonacciMemo(n, memo = {}) {
 // Example: fib(${n}) = ${fibResult(n)}`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -310,12 +310,12 @@ function fibonacciMemo(n, memo = {}) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Control Panel */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Controls</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-4">Controls</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Fibonacci Number (n): {n}
                                     </label>
                                     <input
@@ -327,14 +327,14 @@ function fibonacciMemo(n, memo = {}) {
                                         className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
                                         disabled={isPlaying}
                                     />
-                                    <div className="text-sm text-gray-500 mt-1">
+                                    <div className="text-sm text-slate-500 mt-1">
                                         fib({n}) = {fibResult(n)}
                                     </div>
                                 </div>
 
                                 <div className="border-2 border-green-200 rounded-lg p-4">
                                     <div className="flex items-center justify-between mb-3">
-                                        <span className="text-sm font-medium text-gray-700">Algorithm Mode:</span>
+                                        <span className="text-sm font-medium text-slate-300">Algorithm Mode:</span>
                                         <button
                                             onClick={handleModeToggle}
                                             disabled={isPlaying}
@@ -346,7 +346,7 @@ function fibonacciMemo(n, memo = {}) {
                                             {useMemoization ? 'Memoized' : 'Naive'}
                                         </button>
                                     </div>
-                                    <div className="text-xs text-gray-600">
+                                    <div className="text-xs text-slate-400">
                                         {useMemoization
                                             ? '💾 Using cache to avoid repeated calculations'
                                             : '🔥 Recalculating everything from scratch'
@@ -355,7 +355,7 @@ function fibonacciMemo(n, memo = {}) {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Speed: {speed}ms
                                     </label>
                                     <input
@@ -389,32 +389,32 @@ function fibonacciMemo(n, memo = {}) {
                         </div>
 
                         {/* Performance Stats */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                                 <Hash className="h-5 w-5 mr-2 text-green-600" />
                                 Performance Stats
                             </h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Current calls:</span>
-                                    <span className="text-lg font-bold text-green-700">
+                                    <span className="text-sm font-medium text-slate-300">Current calls:</span>
+                                    <span className="text-lg font-bold text-green-300">
                                         {currentState.totalCalls}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Naive total:</span>
+                                    <span className="text-sm font-medium text-slate-300">Naive total:</span>
                                     <span className="text-lg font-bold text-red-600">
                                         {naiveCallCount(n)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Memoized total:</span>
+                                    <span className="text-sm font-medium text-slate-300">Memoized total:</span>
                                     <span className="text-lg font-bold text-green-600">
                                         {n + 1}
                                     </span>
                                 </div>
-                                <div className="pt-2 border-t border-gray-200">
-                                    <div className="text-sm text-gray-600">
+                                <div className="pt-2 border-t border-slate-700/50">
+                                    <div className="text-sm text-slate-400">
                                         <span className="font-semibold">Speedup:</span> {Math.round(naiveCallCount(n) / (n + 1))}x faster with memoization!
                                     </div>
                                 </div>
@@ -422,25 +422,25 @@ function fibonacciMemo(n, memo = {}) {
                         </div>
 
                         {/* Step Explanation */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Current Step</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Current Step</h3>
                             <div className="space-y-3">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     Step {currentStep + 1} of {stepHistory.length}
                                 </div>
                                 <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                    <p className="text-green-800 text-sm">
+                                    <p className="text-green-300 text-sm">
                                         {currentState.explanation}
                                     </p>
                                 </div>
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Current Call: </span>
-                                    <span className="font-mono text-green-700">{currentState.currentCall}</span>
+                                    <span className="font-medium text-slate-300">Current Call: </span>
+                                    <span className="font-mono text-green-300">{currentState.currentCall}</span>
                                 </div>
                                 {currentState.result !== null && (
                                     <div className="text-sm">
-                                        <span className="font-medium text-gray-700">Result: </span>
-                                        <span className="font-bold text-green-700">{currentState.result}</span>
+                                        <span className="font-medium text-slate-300">Result: </span>
+                                        <span className="font-bold text-green-300">{currentState.result}</span>
                                     </div>
                                 )}
                             </div>
@@ -449,11 +449,11 @@ function fibonacciMemo(n, memo = {}) {
 
                     {/* Call Tree Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
                                 <TrendingUp className="h-5 w-5 mr-2 text-green-600" />
                                 Call Tree Visualization
-                                <span className={`ml-4 px-3 py-1 rounded-full text-xs font-medium ${useMemoization ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                <span className={`ml-4 px-3 py-1 rounded-full text-xs font-medium ${useMemoization ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'
                                     }`}>
                                     {useMemoization ? 'MEMOIZED' : 'NAIVE'}
                                 </span>
@@ -461,9 +461,9 @@ function fibonacciMemo(n, memo = {}) {
 
                             {/* Call Tree Display */}
                             <div className="mb-6">
-                                <div className="max-h-96 overflow-y-auto bg-gray-50 p-4 rounded-lg border">
+                                <div className="max-h-96 overflow-y-auto bg-slate-800/60 p-4 rounded-lg border">
                                     {currentState.callTree.length === 0 ? (
-                                        <div className="text-gray-500 text-center py-8">
+                                        <div className="text-slate-500 text-center py-8">
                                             Click Start to see the call tree in action
                                         </div>
                                     ) : (
@@ -477,13 +477,13 @@ function fibonacciMemo(n, memo = {}) {
                                                             : currentState.phase === 'forward'
                                                                 ? 'bg-yellow-100 border-2 border-yellow-400 animate-pulse'
                                                                 : 'bg-green-100 border-2 border-green-400'
-                                                        : 'bg-gray-100 border border-gray-300'
+                                                        : 'bg-gray-100 border border-slate-700'
                                                         }`}
                                                     style={{ marginLeft: `${index * 20}px` }}
                                                 >
                                                     <span className="font-bold">{call}</span>
                                                     {index === currentState.callTree.length - 1 && currentState.result !== null && (
-                                                        <span className="ml-4 text-green-700">
+                                                        <span className="ml-4 text-green-300">
                                                             → {currentState.result}
                                                         </span>
                                                     )}
@@ -499,8 +499,8 @@ function fibonacciMemo(n, memo = {}) {
 
                             {/* Memoization Table */}
                             {useMemoization && Object.keys(currentState.memoTable || {}).length > 0 && (
-                                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
-                                    <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center">
+                                <div className="bg-blue-500/10 border-2 border-blue-500/20 rounded-lg p-4">
+                                    <h4 className="text-lg font-semibold text-blue-300 mb-3 flex items-center">
                                         💾 Memoization Cache
                                     </h4>
                                     <div className="grid grid-cols-4 gap-2">
@@ -519,16 +519,16 @@ function fibonacciMemo(n, memo = {}) {
 
                 {/* Code Examples */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             Python Implementation
                         </h3>
                         <CodeBlock code={codeExample} language="python" />
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             JavaScript Implementation
                         </h3>
@@ -537,12 +537,12 @@ function fibonacciMemo(n, memo = {}) {
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Algorithm Analysis</h3>
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
+                    <h3 className="text-xl font-bold text-white mb-4">Algorithm Analysis</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Naive Recursion</h4>
-                            <ul className="text-gray-600 text-sm space-y-1 mb-4">
+                            <h4 className="font-bold text-green-300 mb-2">Naive Recursion</h4>
+                            <ul className="text-slate-400 text-sm space-y-1 mb-4">
                                 <li>• <strong>Time:</strong> O(2^n) - exponential growth</li>
                                 <li>• <strong>Space:</strong> O(n) - recursion depth</li>
                                 <li>• <strong>Calls:</strong> {naiveCallCount(n)} for fib({n})</li>
@@ -550,8 +550,8 @@ function fibonacciMemo(n, memo = {}) {
                                 <li>• Becomes unusably slow for n &gt; 35</li>
                             </ul>
 
-                            <h4 className="font-bold text-green-700 mb-2">With Memoization</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">With Memoization</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• <strong>Time:</strong> O(n) - linear time</li>
                                 <li>• <strong>Space:</strong> O(n) - cache + recursion</li>
                                 <li>• <strong>Calls:</strong> {n + 1} for fib({n})</li>
@@ -560,8 +560,8 @@ function fibonacciMemo(n, memo = {}) {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Real-World Applications</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">Real-World Applications</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• <strong>Nature:</strong> Flower petals, spiral shells, bee genealogy</li>
                                 <li>• <strong>Finance:</strong> Elliott wave theory, market analysis</li>
                                 <li>• <strong>Computer Science:</strong> Algorithm analysis, golden ratio</li>

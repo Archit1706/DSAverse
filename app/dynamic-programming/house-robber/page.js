@@ -254,9 +254,9 @@ const HouseRobberPage = () => {
         const isCurrentCell = index === currentState.currentHouse;
 
         if (isCurrentCell) return 'bg-rose-500 text-white border-rose-600 transform scale-110';
-        if (value === 0) return 'bg-gray-200 text-gray-500 border-gray-300';
-        if (value <= 5) return 'bg-rose-200 text-rose-800 border-rose-300';
-        if (value <= 10) return 'bg-rose-300 text-rose-800 border-rose-400';
+        if (value === 0) return 'bg-slate-700/50 text-slate-500 border-slate-600';
+        if (value <= 5) return 'bg-rose-200 text-rose-300 border-rose-300';
+        if (value <= 10) return 'bg-rose-300 text-rose-300 border-rose-400';
         if (value <= 15) return 'bg-rose-400 text-white border-rose-500';
         return 'bg-rose-500 text-white border-rose-600';
     };
@@ -326,7 +326,7 @@ def rob_with_houses(nums):
 # Space Complexity: O(1) optimized, O(n) with reconstruction`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -358,7 +358,7 @@ def rob_with_houses(nums):
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -413,7 +413,7 @@ def rob_with_houses(nums):
 
                             {/* House Values Input */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     House Values (comma-separated):
                                 </label>
                                 <input
@@ -425,14 +425,14 @@ def rob_with_houses(nums):
                                             setHouses(values);
                                         }
                                     }}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="w-full px-3 py-2 border border-slate-700 rounded-lg"
                                     placeholder="2, 7, 9, 3, 1"
                                 />
                             </div>
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Animation Speed: {speed}ms
                                 </label>
                                 <input
@@ -443,7 +443,7 @@ def rob_with_houses(nums):
                                     onChange={(e) => setSpeed(Number(e.target.value))}
                                     className="w-full max-w-md accent-rose-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>Fast (300ms)</span>
                                     <span>Slow (2000ms)</span>
                                 </div>
@@ -452,14 +452,14 @@ def rob_with_houses(nums):
                             {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-medium text-slate-300">
                                         Progress: Step {currentStep + 1} of {stepHistory.length}
                                     </span>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         Phase: {currentState.phase}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                     <div
                                         className="bg-rose-500 h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -469,10 +469,10 @@ def rob_with_houses(nums):
 
                             {/* Neighborhood Visualization */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">
                                     Neighborhood ({currentState.robbedHouses.length > 0 ? `Robbed: $${currentState.maxMoney}` : 'Planning...'})
                                 </h3>
-                                <div className="p-6 bg-gradient-to-b from-blue-100 to-blue-200 rounded-lg border-2 border-blue-300 relative">
+                                <div className="p-6 bg-slate-800/60 rounded-lg border-2 border-slate-700/60 relative">
                                     {/* Street */}
                                     <div className="absolute bottom-0 left-0 right-0 h-8 bg-gray-400 rounded-b-lg"></div>
 
@@ -503,7 +503,7 @@ def rob_with_houses(nums):
                                                 </div>
 
                                                 {/* House Number */}
-                                                <div className="mt-2 text-sm text-gray-600">House {index}</div>
+                                                <div className="mt-2 text-sm text-slate-400">House {index}</div>
                                             </div>
                                         ))}
                                     </div>
@@ -511,7 +511,7 @@ def rob_with_houses(nums):
                                     {/* Adjacent House Warning */}
                                     {currentState.phase === 'complete' && (
                                         <div className="mt-4 text-center">
-                                            <div className="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                                            <div className="inline-flex items-center bg-green-500/15 text-green-400 px-3 py-1 rounded-full text-sm">
                                                 <Shield className="w-4 h-4 mr-1" />
                                                 No adjacent houses robbed!
                                             </div>
@@ -523,20 +523,20 @@ def rob_with_houses(nums):
                             {/* Decision Comparison */}
                             {currentState.comparing && (
                                 <div className="mb-6">
-                                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Decision Analysis</h3>
-                                    <div className="grid grid-cols-2 gap-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                        <div className={`p-3 rounded border-2 transition-all ${currentState.comparing.chosen === 'rob' ? 'border-green-500 bg-green-100' : 'border-gray-300 bg-white'}`}>
+                                    <h3 className="text-lg font-semibold text-slate-100 mb-4">Decision Analysis</h3>
+                                    <div className="grid grid-cols-2 gap-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                                        <div className={`p-3 rounded border-2 transition-all ${currentState.comparing.chosen === 'rob' ? 'border-green-500 bg-green-100' : 'border-slate-700 bg-white'}`}>
                                             <div className="text-center">
-                                                <div className="font-semibold text-gray-800">Rob Current</div>
+                                                <div className="font-semibold text-slate-100">Rob Current</div>
                                                 <div className="text-2xl font-bold text-green-600">${currentState.comparing.option1}</div>
-                                                <div className="text-sm text-gray-600">{currentState.comparing.robCurrent}</div>
+                                                <div className="text-sm text-slate-400">{currentState.comparing.robCurrent}</div>
                                             </div>
                                         </div>
-                                        <div className={`p-3 rounded border-2 transition-all ${currentState.comparing.chosen === 'skip' ? 'border-green-500 bg-green-100' : 'border-gray-300 bg-white'}`}>
+                                        <div className={`p-3 rounded border-2 transition-all ${currentState.comparing.chosen === 'skip' ? 'border-green-500 bg-green-100' : 'border-slate-700 bg-white'}`}>
                                             <div className="text-center">
-                                                <div className="font-semibold text-gray-800">Skip Current</div>
+                                                <div className="font-semibold text-slate-100">Skip Current</div>
                                                 <div className="text-2xl font-bold text-orange-600">${currentState.comparing.option2}</div>
-                                                <div className="text-sm text-gray-600">{currentState.comparing.skipCurrent}</div>
+                                                <div className="text-sm text-slate-400">{currentState.comparing.skipCurrent}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -545,14 +545,14 @@ def rob_with_houses(nums):
 
                             {/* DP Array */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">DP Array (Maximum Money Up To Each House)</h3>
-                                <div className="p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">DP Array (Maximum Money Up To Each House)</h3>
+                                <div className="p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     <div className="grid grid-cols-1 gap-3">
                                         {/* DP Values */}
                                         <div className="flex justify-center gap-2">
                                             {currentState.dp.map((value, index) => (
                                                 <div key={index} className="text-center">
-                                                    <div className="text-xs text-gray-600 mb-1">dp[{index}]</div>
+                                                    <div className="text-xs text-slate-400 mb-1">dp[{index}]</div>
                                                     <div
                                                         className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center font-bold text-sm transition-all duration-500 ${getDpCellColor(index, value)}`}
                                                     >
@@ -568,7 +568,7 @@ def rob_with_houses(nums):
                                                 <div key={index} className="text-center w-16">
                                                     <div className={`px-2 py-1 rounded text-xs font-medium ${decision === 'rob' ? 'bg-green-200 text-green-800' :
                                                             decision === 'skip' ? 'bg-orange-200 text-orange-800' :
-                                                                'bg-gray-200 text-gray-600'
+                                                                'bg-gray-200 text-slate-400'
                                                         }`}>
                                                         {decision || '-'}
                                                     </div>
@@ -580,12 +580,12 @@ def rob_with_houses(nums):
                             </div>
 
                             {/* Current Step Explanation */}
-                            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4">
+                            <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Lightbulb className="h-5 w-5 text-rose-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-rose-800 mb-2">Current Step:</h3>
-                                        <p className="text-rose-700 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-rose-300 mb-2">Current Step:</h3>
+                                        <p className="text-rose-300 leading-relaxed">{currentState.explanation}</p>
                                         {currentState.phase === 'complete' && (
                                             <div className="mt-3 p-3 bg-green-100 rounded border border-green-200">
                                                 <div className="text-green-800 font-semibold">
@@ -602,35 +602,35 @@ def rob_with_houses(nums):
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <Clock className="h-5 w-5 text-rose-600" />
-                                <h3 className="font-bold text-gray-900">Algorithm Details</h3>
+                                <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Time Complexity:</span>
-                                    <code className="bg-green-100 text-green-800 px-2 py-1 rounded">O(n)</code>
+                                    <span className="font-medium text-slate-300">Time Complexity:</span>
+                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space Complexity:</span>
-                                    <code className="bg-green-100 text-green-800 px-2 py-1 rounded">O(1)</code>
+                                    <span className="font-medium text-slate-300">Space Complexity:</span>
+                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(1)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">With Reconstruction:</span>
-                                    <code className="bg-blue-100 text-blue-800 px-2 py-1 rounded">O(n)</code>
+                                    <span className="font-medium text-slate-300">With Reconstruction:</span>
+                                    <code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(n)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Type:</span>
-                                    <span className="bg-rose-100 text-rose-800 px-2 py-1 rounded">1D DP Array</span>
+                                    <span className="font-medium text-slate-300">Type:</span>
+                                    <span className="bg-rose-100 text-rose-300 px-2 py-1 rounded">1D DP Array</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Real-world Applications</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-rose-600 mt-1">•</span>
                                     <span>Job scheduling with conflicts</span>
@@ -659,9 +659,9 @@ def rob_with_houses(nums):
                         </div>
 
                         {/* Key Concepts */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Key DP Concepts</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Key DP Concepts</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
                                     <span><strong>Constraint:</strong> Cannot rob adjacent houses</span>
@@ -682,9 +682,9 @@ def rob_with_houses(nums):
                         </div>
 
                         {/* Problem Variants */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Problem Variants</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Problem Variants</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
                                     <span>House Robber II (circular array)</span>
@@ -705,10 +705,10 @@ def rob_with_houses(nums):
                         </div>
 
                         {/* Code Toggle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <button
                                 onClick={() => setShowCode(!showCode)}
-                                className="flex items-center gap-2 text-rose-600 hover:text-rose-700 font-medium"
+                                className="flex items-center gap-2 text-rose-600 hover:text-rose-300 font-medium"
                             >
                                 <Code2 className="h-5 w-5" />
                                 {showCode ? 'Hide' : 'Show'} Python Code

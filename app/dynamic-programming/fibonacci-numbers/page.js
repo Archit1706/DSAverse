@@ -193,14 +193,14 @@ const FibonacciPage = () => {
     };
 
     const getSequenceColor = (index, value) => {
-        if (value === null) return 'bg-gray-200 text-gray-500';
+        if (value === null) return 'bg-gray-200 text-slate-500';
         if (index === currentState.currentCall) return 'bg-rose-500 text-white border-rose-600 transform scale-110';
         if (currentState.computed[index] !== undefined) return 'bg-rose-400 text-white border-rose-500';
-        return 'bg-rose-200 text-rose-800 border-rose-300';
+        return 'bg-rose-200 text-rose-300 border-rose-300';
     };
 
     const getMemoColor = (index, value) => {
-        if (value === undefined) return 'bg-gray-100 text-gray-400';
+        if (value === undefined) return 'bg-gray-100 text-slate-500';
         if (index === currentState.currentCall) return 'bg-rose-600 text-white';
         return 'bg-rose-500 text-white';
     };
@@ -235,7 +235,7 @@ def fibonacci_iterative(n):
     return dp[n]`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -266,7 +266,7 @@ def fibonacci_iterative(n):
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -321,7 +321,7 @@ def fibonacci_iterative(n):
 
                             {/* Input Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Calculate Fibonacci of: {n}
                                 </label>
                                 <input
@@ -332,7 +332,7 @@ def fibonacci_iterative(n):
                                     onChange={(e) => setN(Number(e.target.value))}
                                     className="w-full max-w-md accent-rose-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>F(3)</span>
                                     <span>F(12)</span>
                                 </div>
@@ -340,7 +340,7 @@ def fibonacci_iterative(n):
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Animation Speed: {speed}ms
                                 </label>
                                 <input
@@ -351,7 +351,7 @@ def fibonacci_iterative(n):
                                     onChange={(e) => setSpeed(Number(e.target.value))}
                                     className="w-full max-w-md accent-rose-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>Fast (300ms)</span>
                                     <span>Slow (2000ms)</span>
                                 </div>
@@ -360,14 +360,14 @@ def fibonacci_iterative(n):
                             {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-medium text-slate-300">
                                         Progress: Step {currentStep + 1} of {stepHistory.length}
                                     </span>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         Phase: {currentState.phase}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                     <div
                                         className="bg-rose-500 h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -377,11 +377,11 @@ def fibonacci_iterative(n):
 
                             {/* Fibonacci Sequence Visualization */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Fibonacci Sequence</h3>
-                                <div className="flex flex-wrap gap-2 p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">Fibonacci Sequence</h3>
+                                <div className="flex flex-wrap gap-2 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {currentState.sequence.map((value, index) => (
                                         <div key={index} className="flex flex-col items-center">
-                                            <div className="text-xs text-gray-600 mb-1">F({index})</div>
+                                            <div className="text-xs text-slate-400 mb-1">F({index})</div>
                                             <div
                                                 className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center font-bold text-sm transition-all duration-500 ${getSequenceColor(index, value)}`}
                                             >
@@ -394,19 +394,19 @@ def fibonacci_iterative(n):
 
                             {/* Call Stack */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Call Stack</h3>
-                                <div className="bg-rose-50 rounded-lg p-4 border-2 border-rose-200 min-h-[120px]">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">Call Stack</h3>
+                                <div className="bg-slate-800/60 rounded-lg p-4 border-2 border-slate-700/60 min-h-[120px]">
                                     {currentState.callStack.length === 0 ? (
-                                        <div className="text-gray-500 text-center py-8">Call stack is empty</div>
+                                        <div className="text-slate-500 text-center py-8">Call stack is empty</div>
                                     ) : (
                                         <div className="space-y-2">
                                             {currentState.callStack.slice().reverse().map((call, index) => (
                                                 <div
                                                     key={call.id}
-                                                    className="bg-white p-3 rounded border-l-4 border-rose-400 shadow-sm"
+                                                    className="bg-slate-800/60 p-3 rounded border-l-4 border-rose-400 shadow-sm"
                                                     style={{ marginLeft: `${call.depth * 15}px` }}
                                                 >
-                                                    <div className="font-mono text-rose-700 font-semibold">fibonacci({call.n})</div>
+                                                    <div className="font-mono text-rose-300 font-semibold">fibonacci({call.n})</div>
                                                     <div className="text-sm text-rose-500">Depth: {call.depth}</div>
                                                 </div>
                                             ))}
@@ -417,11 +417,11 @@ def fibonacci_iterative(n):
 
                             {/* Memoization Table */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Memoization Table</h3>
-                                <div className="grid grid-cols-4 md:grid-cols-6 gap-2 p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">Memoization Table</h3>
+                                <div className="grid grid-cols-4 md:grid-cols-6 gap-2 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {Array.from({ length: n + 1 }, (_, i) => i).map((i) => (
                                         <div key={i} className="text-center">
-                                            <div className="text-xs text-gray-600 mb-1">memo[{i}]</div>
+                                            <div className="text-xs text-slate-400 mb-1">memo[{i}]</div>
                                             <div className={`w-full h-12 rounded border flex items-center justify-center text-sm font-bold transition-all duration-500 ${getMemoColor(i, currentState.memo[i])}`}>
                                                 {currentState.memo[i] !== undefined ? currentState.memo[i] : '-'}
                                             </div>
@@ -431,14 +431,14 @@ def fibonacci_iterative(n):
                             </div>
 
                             {/* Current Step Explanation */}
-                            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4">
+                            <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Lightbulb className="h-5 w-5 text-rose-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-rose-800 mb-2">Current Step:</h3>
-                                        <p className="text-rose-700 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-rose-300 mb-2">Current Step:</h3>
+                                        <p className="text-rose-300 leading-relaxed">{currentState.explanation}</p>
                                         {currentState.result !== null && (
-                                            <div className="mt-2 p-2 bg-rose-100 rounded text-rose-800 font-medium">
+                                            <div className="mt-2 p-2 bg-rose-100 rounded text-rose-300 font-medium">
                                                 Result: F({n}) = {currentState.result}
                                             </div>
                                         )}
@@ -451,35 +451,35 @@ def fibonacci_iterative(n):
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <Clock className="h-5 w-5 text-rose-600" />
-                                <h3 className="font-bold text-gray-900">Algorithm Details</h3>
+                                <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">With Memoization:</span>
-                                    <code className="bg-green-100 text-green-800 px-2 py-1 rounded">O(n)</code>
+                                    <span className="font-medium text-slate-300">With Memoization:</span>
+                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Without Memoization:</span>
-                                    <code className="bg-red-100 text-red-800 px-2 py-1 rounded">O(2^n)</code>
+                                    <span className="font-medium text-slate-300">Without Memoization:</span>
+                                    <code className="bg-red-500/15 text-red-400 px-2 py-1 rounded">O(2^n)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space:</span>
-                                    <code className="bg-blue-100 text-blue-800 px-2 py-1 rounded">O(n)</code>
+                                    <span className="font-medium text-slate-300">Space:</span>
+                                    <code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(n)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Type:</span>
-                                    <span className="bg-rose-100 text-rose-800 px-2 py-1 rounded">Top-down DP</span>
+                                    <span className="font-medium text-slate-300">Type:</span>
+                                    <span className="bg-rose-100 text-rose-300 px-2 py-1 rounded">Top-down DP</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Real-world Applications</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-rose-600 mt-1">•</span>
                                     <span>Financial modeling and compound interest</span>
@@ -504,9 +504,9 @@ def fibonacci_iterative(n):
                         </div>
 
                         {/* Optimization Insights */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Memoization Benefits</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Memoization Benefits</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
                                     <span>Eliminates redundant calculations</span>
@@ -531,10 +531,10 @@ def fibonacci_iterative(n):
                         </div>
 
                         {/* Code Toggle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <button
                                 onClick={() => setShowCode(!showCode)}
-                                className="flex items-center gap-2 text-rose-600 hover:text-rose-700 font-medium"
+                                className="flex items-center gap-2 text-rose-600 hover:text-rose-300 font-medium"
                             >
                                 <Code2 className="h-5 w-5" />
                                 {showCode ? 'Hide' : 'Show'} Python Code

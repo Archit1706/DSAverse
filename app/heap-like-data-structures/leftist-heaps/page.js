@@ -265,7 +265,7 @@ export default function LeftistHeapsPage() {
         elements.push(
             <g key={`n-${node.id}`}>
                 <circle cx={x} cy={y} r={radius} className={`${colorClass} stroke-2 transition-all`} />
-                <text x={x} y={y - 3} textAnchor="middle" dominantBaseline="middle" className="text-sm font-bold fill-gray-800">{node.value}</text>
+                <text x={x} y={y - 3} textAnchor="middle" dominantBaseline="middle" className="text-sm font-bold fill-slate-200">{node.value}</text>
                 <text x={x} y={y + 12} textAnchor="middle" className="text-[10px] fill-gray-700">npl={node.npl}</text>
             </g>
         );
@@ -275,7 +275,7 @@ export default function LeftistHeapsPage() {
 
     const renderVisualization = () => {
         if (!currentState.heap && !currentState.heap2) {
-            return <div className="h-72 flex items-center justify-center text-gray-500">Empty Leftist Heaps</div>;
+            return <div className="h-72 flex items-center justify-center text-slate-500">Empty Leftist Heaps</div>;
         }
 
         const width = currentState.heap2 ? 1050 : 650;
@@ -298,7 +298,7 @@ export default function LeftistHeapsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+        <div className="min-h-screen bg-slate-950">
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <a href="/heap-like-data-structures" className="inline-flex items-center text-amber-100 hover:text-white mb-5">
@@ -310,17 +310,17 @@ export default function LeftistHeapsPage() {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white rounded-xl shadow-lg p-6">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-5">Heap Visualization</h2>
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                    <h2 className="text-2xl font-bold text-slate-100 mb-5">Heap Visualization</h2>
 
                     <div className="space-y-4 mb-6">
                         <div className="flex flex-wrap gap-2">
-                            <input value={inputMain} onChange={(e) => setInputMain(e.target.value)} type="number" placeholder="Value for Heap A" className="px-3 py-2 border rounded" />
+                            <input value={inputMain} onChange={(e) => setInputMain(e.target.value)} type="number" placeholder="Value for Heap A" className="px-3 py-2 bg-slate-800/80 border border-slate-700 text-slate-200 rounded" />
                             <button onClick={() => { if (inputMain !== '') { startOperation('insertMain', Number(inputMain)); setInputMain(''); setNodeIdCounter((v) => v + 1); } }} className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded flex items-center gap-2"><Plus className="h-4 w-4" />Insert A</button>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                            <input value={inputSecond} onChange={(e) => setInputSecond(e.target.value)} type="number" placeholder="Value for Heap B" className="px-3 py-2 border rounded" />
+                            <input value={inputSecond} onChange={(e) => setInputSecond(e.target.value)} type="number" placeholder="Value for Heap B" className="px-3 py-2 bg-slate-800/80 border border-slate-700 text-slate-200 rounded" />
                             <button onClick={() => { if (inputSecond !== '') { startOperation('insertSecond', Number(inputSecond)); setInputSecond(''); setNodeIdCounter((v) => v + 1); } }} className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded flex items-center gap-2"><Plus className="h-4 w-4" />Insert B</button>
                         </div>
 
@@ -335,7 +335,7 @@ export default function LeftistHeapsPage() {
                                 {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />} {isPlaying ? 'Pause' : 'Play'}
                             </button>
                             <button onClick={reset} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded flex items-center gap-2"><RotateCcw className="h-4 w-4" />Reset</button>
-                            <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="border rounded px-2 py-2 text-sm">
+                            <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="bg-slate-800/80 border border-slate-700 text-slate-200 rounded px-2 py-2 text-sm">
                                 <option value={1800}>Slow</option>
                                 <option value={1200}>Normal</option>
                                 <option value={700}>Fast</option>
@@ -345,31 +345,31 @@ export default function LeftistHeapsPage() {
 
                     <div className="overflow-x-auto">{renderVisualization()}</div>
 
-                    <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4">
-                        <h3 className="font-semibold text-amber-800 mb-1">Current Step</h3>
-                        <p className="text-amber-700 text-sm">{currentState.explanation}</p>
+                    <div className="mt-4 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+                        <h3 className="font-semibold text-amber-300 mb-1">Current Step</h3>
+                        <p className="text-amber-300 text-sm">{currentState.explanation}</p>
                         {stepHistory.length > 0 && <p className="text-xs text-amber-600 mt-2">Step {currentStep + 1} of {stepHistory.length}</p>}
                     </div>
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Complexity Analysis</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-slate-100 mb-4">Complexity Analysis</h2>
                         <div className="grid grid-cols-3 gap-3 text-center">
-                            <div><div className="text-green-600 font-bold">O(log n)</div><div className="text-xs text-gray-600">Merge</div></div>
-                            <div><div className="text-green-600 font-bold">O(log n)</div><div className="text-xs text-gray-600">Insert</div></div>
-                            <div><div className="text-green-600 font-bold">O(log n)</div><div className="text-xs text-gray-600">Extract Min</div></div>
+                            <div><div className="text-green-600 font-bold">O(log n)</div><div className="text-xs text-slate-400">Merge</div></div>
+                            <div><div className="text-green-600 font-bold">O(log n)</div><div className="text-xs text-slate-400">Insert</div></div>
+                            <div><div className="text-green-600 font-bold">O(log n)</div><div className="text-xs text-slate-400">Extract Min</div></div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Heap Stats (Current View)</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-slate-100 mb-4">Heap Stats (Current View)</h2>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-amber-50 rounded p-3 text-center"><div className="text-lg font-bold text-amber-700">{countNodes(currentState.heap)}</div><div className="text-xs text-gray-600">Nodes in Heap A</div></div>
-                            <div className="bg-amber-50 rounded p-3 text-center"><div className="text-lg font-bold text-amber-700">{heapHeight(currentState.heap)}</div><div className="text-xs text-gray-600">Height of Heap A</div></div>
+                            <div className="bg-slate-800/60 rounded p-3 text-center"><div className="text-lg font-bold text-amber-300">{countNodes(currentState.heap)}</div><div className="text-xs text-slate-400">Nodes in Heap A</div></div>
+                            <div className="bg-slate-800/60 rounded p-3 text-center"><div className="text-lg font-bold text-amber-300">{heapHeight(currentState.heap)}</div><div className="text-xs text-slate-400">Height of Heap A</div></div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl shadow-lg p-6 text-sm text-gray-700 space-y-2">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Key Properties</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 text-sm text-slate-300 space-y-2">
+                        <h2 className="text-2xl font-bold text-slate-100 mb-2">Key Properties</h2>
                         <p>• Min-heap order: root stores the smallest key.</p>
                         <p>• Leftist rule: npl(left) ≥ npl(right) at every node.</p>
                         <p>• Merge is the fundamental primitive used by insert and extract-min.</p>

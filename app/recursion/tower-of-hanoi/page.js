@@ -200,13 +200,13 @@ const TowerHanoiVisualizer = () => {
 
     const getPhaseColor = (phase) => {
         switch (phase) {
-            case 'start': return 'bg-gray-100 text-gray-800';
-            case 'step1': return 'bg-blue-100 text-blue-800';
-            case 'step2': return 'bg-green-100 text-green-800';
-            case 'step3': return 'bg-purple-100 text-purple-800';
-            case 'base': return 'bg-yellow-100 text-yellow-800';
+            case 'start': return 'bg-gray-100 text-slate-100';
+            case 'step1': return 'bg-blue-500/15 text-blue-400';
+            case 'step2': return 'bg-green-500/15 text-green-400';
+            case 'step3': return 'bg-purple-500/15 text-purple-400';
+            case 'base': return 'bg-yellow-500/15 text-yellow-400';
             case 'complete': return 'bg-emerald-100 text-emerald-800';
-            default: return 'bg-gray-100 text-gray-800';
+            default: return 'bg-gray-100 text-slate-100';
         }
     };
 
@@ -251,7 +251,7 @@ tower_of_hanoi(${n}, 'A', 'C', 'B')
 towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -290,12 +290,12 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Control Panel */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Controls</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-4">Controls</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Number of Disks: {n}
                                     </label>
                                     <input
@@ -307,13 +307,13 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                                         className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
                                         disabled={isPlaying}
                                     />
-                                    <div className="text-sm text-gray-500 mt-1">
+                                    <div className="text-sm text-slate-500 mt-1">
                                         Minimum moves: {minMoves}
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Speed: {speed}ms
                                     </label>
                                     <input
@@ -347,34 +347,34 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                         </div>
 
                         {/* Move Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                                 <Move className="h-5 w-5 mr-2 text-green-600" />
                                 Move Information
                             </h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Current Move:</span>
-                                    <span className="text-lg font-bold text-green-700">
+                                    <span className="text-sm font-medium text-slate-300">Current Move:</span>
+                                    <span className="text-lg font-bold text-green-300">
                                         {currentState.moveCount}/{minMoves}
                                     </span>
                                 </div>
 
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Phase: </span>
+                                    <span className="font-medium text-slate-300">Phase: </span>
                                     <span className={`px-2 py-1 rounded text-xs font-medium ${getPhaseColor(currentState.phase)}`}>
                                         {currentState.phase.toUpperCase()}
                                     </span>
                                 </div>
 
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Recursion Depth: </span>
-                                    <span className="text-green-700 font-mono">{currentState.depth}</span>
+                                    <span className="font-medium text-slate-300">Recursion Depth: </span>
+                                    <span className="text-green-300 font-mono">{currentState.depth}</span>
                                 </div>
 
                                 {currentState.currentMove && (
                                     <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                                        <div className="text-sm font-semibold text-blue-800">
+                                        <div className="text-sm font-semibold text-blue-300">
                                             Move #{currentState.currentMove.moveNumber}
                                         </div>
                                         <div className="text-blue-700">
@@ -386,24 +386,24 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                         </div>
 
                         {/* Current Step */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Current Step</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Current Step</h3>
                             <div className="space-y-3">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     Step {currentStep + 1} of {stepHistory.length}
                                 </div>
                                 <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                    <p className="text-green-800 text-sm">
+                                    <p className="text-green-300 text-sm">
                                         {currentState.explanation}
                                     </p>
                                 </div>
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Subproblem: </span>
-                                    <span className="text-green-700">{currentState.subproblem}</span>
+                                    <span className="font-medium text-slate-300">Subproblem: </span>
+                                    <span className="text-green-300">{currentState.subproblem}</span>
                                 </div>
                                 <div className="text-xs">
-                                    <span className="font-medium text-gray-700">Call: </span>
-                                    <code className="bg-gray-100 px-2 py-1 rounded text-green-700">
+                                    <span className="font-medium text-slate-300">Call: </span>
+                                    <code className="bg-gray-100 px-2 py-1 rounded text-green-300">
                                         {currentState.recursiveCall}
                                     </code>
                                 </div>
@@ -413,8 +413,8 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
 
                     {/* Tower Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
                                 <Layers className="h-5 w-5 mr-2 text-green-600" />
                                 Tower of Hanoi Puzzle
                             </h3>
@@ -424,7 +424,7 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                                 {towers.map((tower, towerIndex) => (
                                     <div key={towerIndex} className="flex flex-col items-center">
                                         {/* Tower Label */}
-                                        <div className="mb-2 text-sm font-semibold text-gray-700">
+                                        <div className="mb-2 text-sm font-semibold text-slate-300">
                                             {getTowerLabel(towerIndex)}
                                         </div>
 
@@ -465,9 +465,9 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                             </div>
 
                             {/* Rules */}
-                            <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4">
-                                <h4 className="text-lg font-semibold text-amber-800 mb-2">Rules</h4>
-                                <ul className="text-amber-700 text-sm space-y-1">
+                            <div className="bg-orange-500/10 border-2 border-orange-500/20 rounded-lg p-4">
+                                <h4 className="text-lg font-semibold text-orange-300 mb-2">Rules</h4>
+                                <ul className="text-orange-300 text-sm space-y-1">
                                     <li>• Move all disks from Tower A to Tower C</li>
                                     <li>• Only move one disk at a time</li>
                                     <li>• Never place a larger disk on a smaller disk</li>
@@ -480,16 +480,16 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
 
                 {/* Code Examples */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             Python Implementation
                         </h3>
                         <CodeBlock code={codeExample} language="python" />
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             JavaScript Implementation
                         </h3>
@@ -498,12 +498,12 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Algorithm Analysis</h3>
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
+                    <h3 className="text-xl font-bold text-white mb-4">Algorithm Analysis</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Complexity Analysis</h4>
-                            <ul className="text-gray-600 text-sm space-y-1 mb-4">
+                            <h4 className="font-bold text-green-300 mb-2">Complexity Analysis</h4>
+                            <ul className="text-slate-400 text-sm space-y-1 mb-4">
                                 <li>• <strong>Time Complexity:</strong> O(2^n)</li>
                                 <li>• <strong>Space Complexity:</strong> O(n) recursion depth</li>
                                 <li>• <strong>Moves Required:</strong> 2^n - 1 (optimal)</li>
@@ -511,8 +511,8 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                                 <li>• <strong>Legend:</strong> 64 disks would take 584 billion years!</li>
                             </ul>
 
-                            <h4 className="font-bold text-green-700 mb-2">Mathematical Properties</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">Mathematical Properties</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• Recurrence: T(n) = 2T(n-1) + 1</li>
                                 <li>• Base case: T(1) = 1</li>
                                 <li>• Solution: T(n) = 2^n - 1</li>
@@ -520,8 +520,8 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Real-World Applications</h4>
-                            <ul className="text-gray-600 text-sm space-y-1 mb-4">
+                            <h4 className="font-bold text-green-300 mb-2">Real-World Applications</h4>
+                            <ul className="text-slate-400 text-sm space-y-1 mb-4">
                                 <li>• <strong>Backup Systems:</strong> Tape rotation strategies</li>
                                 <li>• <strong>Computer Science:</strong> Recursive algorithm teaching</li>
                                 <li>• <strong>Game Development:</strong> Puzzle game mechanics</li>
@@ -529,8 +529,8 @@ towerOfHanoi(${n}, 'A', 'C', 'B'); // ${minMoves} moves`;
                                 <li>• <strong>Problem Solving:</strong> Divide & conquer methodology</li>
                             </ul>
 
-                            <h4 className="font-bold text-green-700 mb-2">Historical Context</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">Historical Context</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• Ancient puzzle from Indian temples</li>
                                 <li>• Popularized by mathematician Édouard Lucas (1883)</li>
                                 <li>• Classic introduction to recursion concepts</li>

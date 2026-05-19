@@ -256,17 +256,17 @@ const MazeSolverVisualizer = () => {
         if (isInPath) return 'bg-blue-200 border-blue-300';
         if (isVisited) return 'bg-gray-300 border-gray-400';
 
-        return 'bg-white border-gray-300';
+        return 'bg-white border-slate-700';
     };
 
     const getActionColor = (action) => {
         switch (action) {
-            case 'start': return 'bg-gray-100 text-gray-800';
-            case 'explore': return 'bg-blue-100 text-blue-800';
-            case 'move': return 'bg-green-100 text-green-800';
-            case 'backtrack': return 'bg-orange-100 text-orange-800';
+            case 'start': return 'bg-gray-100 text-slate-100';
+            case 'explore': return 'bg-blue-500/15 text-blue-400';
+            case 'move': return 'bg-green-500/15 text-green-400';
+            case 'backtrack': return 'bg-orange-500/15 text-orange-400';
             case 'solution': return 'bg-emerald-100 text-emerald-800';
-            default: return 'bg-gray-100 text-gray-800';
+            default: return 'bg-gray-100 text-slate-100';
         }
     };
 
@@ -343,7 +343,7 @@ function isValid(row, col, maze, visited) {
 }`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -382,12 +382,12 @@ function isValid(row, col, maze, visited) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Control Panel */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Controls</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-4">Controls</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Maze Size: {mazeSize}×{mazeSize}
                                     </label>
                                     <input
@@ -403,7 +403,7 @@ function isValid(row, col, maze, visited) {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">
                                         Speed: {speed}ms
                                     </label>
                                     <input
@@ -446,74 +446,74 @@ function isValid(row, col, maze, visited) {
                         </div>
 
                         {/* Legend */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Legend</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Legend</h3>
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-green-500 border border-green-600 rounded"></div>
-                                    <span className="text-sm text-gray-700">Start Position</span>
+                                    <span className="text-sm text-slate-300">Start Position</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-red-500 border border-red-600 rounded"></div>
-                                    <span className="text-sm text-gray-700">Goal Position</span>
+                                    <span className="text-sm text-slate-300">Goal Position</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-blue-400 border border-blue-500 rounded"></div>
-                                    <span className="text-sm text-gray-700">Current Position</span>
+                                    <span className="text-sm text-slate-300">Current Position</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-blue-200 border border-blue-300 rounded"></div>
-                                    <span className="text-sm text-gray-700">Current Path</span>
+                                    <span className="text-sm text-slate-300">Current Path</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-orange-400 border border-orange-500 rounded"></div>
-                                    <span className="text-sm text-gray-700">Backtracking</span>
+                                    <span className="text-sm text-slate-300">Backtracking</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-gray-300 border border-gray-400 rounded"></div>
-                                    <span className="text-sm text-gray-700">Visited Cell</span>
+                                    <span className="text-sm text-slate-300">Visited Cell</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-6 h-6 bg-gray-800 border border-gray-900 rounded"></div>
-                                    <span className="text-sm text-gray-700">Wall</span>
+                                    <span className="text-sm text-slate-300">Wall</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                                 <AlertCircle className="h-5 w-5 mr-2 text-green-600" />
                                 Algorithm Status
                             </h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Recursion Depth:</span>
-                                    <span className="text-lg font-bold text-green-700">
+                                    <span className="text-sm font-medium text-slate-300">Recursion Depth:</span>
+                                    <span className="text-lg font-bold text-green-300">
                                         {currentState.depth}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Path Length:</span>
+                                    <span className="text-sm font-medium text-slate-300">Path Length:</span>
                                     <span className="text-lg font-bold text-blue-700">
                                         {currentState.path.length}
                                     </span>
                                 </div>
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Action: </span>
+                                    <span className="font-medium text-slate-300">Action: </span>
                                     <span className={`px-2 py-1 rounded text-xs font-medium ${getActionColor(currentState.action)}`}>
                                         {currentState.action.toUpperCase()}
                                     </span>
                                 </div>
                                 {currentState.direction && (
                                     <div className="text-sm">
-                                        <span className="font-medium text-gray-700">Moving: </span>
-                                        <span className="text-green-700 font-medium">{currentState.direction}</span>
+                                        <span className="font-medium text-slate-300">Moving: </span>
+                                        <span className="text-green-300 font-medium">{currentState.direction}</span>
                                     </div>
                                 )}
                                 <div className="text-sm">
-                                    <span className="font-medium text-gray-700">Solution: </span>
-                                    <span className={`font-medium ${solutionFound ? 'text-green-700' : 'text-orange-700'}`}>
+                                    <span className="font-medium text-slate-300">Solution: </span>
+                                    <span className={`font-medium ${solutionFound ? 'text-green-300' : 'text-orange-700'}`}>
                                         {solutionFound ? 'Found!' : 'Searching...'}
                                     </span>
                                 </div>
@@ -521,14 +521,14 @@ function isValid(row, col, maze, visited) {
                         </div>
 
                         {/* Current Step */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">Current Step</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Current Step</h3>
                             <div className="space-y-3">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     Step {currentStep + 1} of {stepHistory.length}
                                 </div>
                                 <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                    <p className="text-green-800 text-sm">
+                                    <p className="text-green-300 text-sm">
                                         {currentState.explanation}
                                     </p>
                                 </div>
@@ -538,8 +538,8 @@ function isValid(row, col, maze, visited) {
 
                     {/* Maze Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
                                 <Target className="h-5 w-5 mr-2 text-green-600" />
                                 Maze Visualization
                             </h3>
@@ -547,7 +547,7 @@ function isValid(row, col, maze, visited) {
                             {/* Maze Grid */}
                             <div className="flex justify-center mb-6">
                                 <div
-                                    className="grid gap-1 p-4 bg-gray-100 rounded-lg border-2 border-gray-300"
+                                    className="grid gap-1 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60"
                                     style={{
                                         gridTemplateColumns: `repeat(${mazeSize}, minmax(0, 1fr))`,
                                         maxWidth: '500px'
@@ -578,15 +578,15 @@ function isValid(row, col, maze, visited) {
                             </div>
 
                             {/* Progress Info */}
-                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700/50/50">
                                 <div className="grid grid-cols-2 gap-4 text-sm">
                                     <div>
-                                        <span className="font-medium text-gray-700">Algorithm: </span>
-                                        <span className="text-green-700">Recursive Backtracking</span>
+                                        <span className="font-medium text-slate-300">Algorithm: </span>
+                                        <span className="text-green-300">Recursive Backtracking</span>
                                     </div>
                                     <div>
-                                        <span className="font-medium text-gray-700">Strategy: </span>
-                                        <span className="text-green-700">Depth-First Search</span>
+                                        <span className="font-medium text-slate-300">Strategy: </span>
+                                        <span className="text-green-300">Depth-First Search</span>
                                     </div>
                                 </div>
                             </div>
@@ -596,16 +596,16 @@ function isValid(row, col, maze, visited) {
 
                 {/* Code Examples */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             Python Implementation
                         </h3>
                         <CodeBlock code={codeExample} language="python" />
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                             <Code className="h-5 w-5 mr-2 text-green-600" />
                             JavaScript Implementation
                         </h3>
@@ -614,12 +614,12 @@ function isValid(row, col, maze, visited) {
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-100 mt-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Algorithm Analysis</h3>
+                <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-2 mt-8">
+                    <h3 className="text-xl font-bold text-white mb-4">Algorithm Analysis</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Complexity Analysis</h4>
-                            <ul className="text-gray-600 text-sm space-y-1 mb-4">
+                            <h4 className="font-bold text-green-300 mb-2">Complexity Analysis</h4>
+                            <ul className="text-slate-400 text-sm space-y-1 mb-4">
                                 <li>• <strong>Time Complexity:</strong> O(4^(m×n)) worst case</li>
                                 <li>• <strong>Space Complexity:</strong> O(m×n) for recursion stack</li>
                                 <li>• <strong>Strategy:</strong> Depth-First Search with backtracking</li>
@@ -627,8 +627,8 @@ function isValid(row, col, maze, visited) {
                                 <li>• <strong>Memory:</strong> Visited array prevents cycles</li>
                             </ul>
 
-                            <h4 className="font-bold text-green-700 mb-2">Backtracking Pattern</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">Backtracking Pattern</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• Explore: Try a path</li>
                                 <li>• Mark: Record current state</li>
                                 <li>• Recurse: Go deeper</li>
@@ -637,8 +637,8 @@ function isValid(row, col, maze, visited) {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-green-700 mb-2">Real-World Applications</h4>
-                            <ul className="text-gray-600 text-sm space-y-1 mb-4">
+                            <h4 className="font-bold text-green-300 mb-2">Real-World Applications</h4>
+                            <ul className="text-slate-400 text-sm space-y-1 mb-4">
                                 <li>• <strong>Robotics:</strong> Path planning and navigation</li>
                                 <li>• <strong>Game AI:</strong> NPC movement and pathfinding</li>
                                 <li>• <strong>GPS Systems:</strong> Route finding algorithms</li>
@@ -647,8 +647,8 @@ function isValid(row, col, maze, visited) {
                                 <li>• <strong>Circuit Design:</strong> Wire routing on PCBs</li>
                             </ul>
 
-                            <h4 className="font-bold text-green-700 mb-2">Algorithm Variations</h4>
-                            <ul className="text-gray-600 text-sm space-y-1">
+                            <h4 className="font-bold text-green-300 mb-2">Algorithm Variations</h4>
+                            <ul className="text-slate-400 text-sm space-y-1">
                                 <li>• A* Search: Uses heuristics for efficiency</li>
                                 <li>• Dijkstra&apos;s: Finds shortest weighted paths</li>
                                 <li>• BFS: Finds shortest unweighted paths</li>

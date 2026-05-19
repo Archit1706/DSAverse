@@ -315,10 +315,10 @@ const KnapsackPage = () => {
             return 'bg-rose-500 text-white border-rose-600 transform scale-110';
         }
 
-        if (i === 0 || j === 0) return 'bg-gray-300 text-gray-700 border-gray-400';
-        if (value === 0) return 'bg-gray-100 text-gray-500 border-gray-300';
-        if (value <= 5) return 'bg-rose-200 text-rose-800 border-rose-300';
-        if (value <= 10) return 'bg-rose-300 text-rose-800 border-rose-400';
+        if (i === 0 || j === 0) return 'bg-gray-300 text-slate-300 border-gray-400';
+        if (value === 0) return 'bg-gray-100 text-slate-500 border-slate-700';
+        if (value <= 5) return 'bg-rose-200 text-rose-300 border-rose-300';
+        if (value <= 10) return 'bg-rose-300 text-rose-300 border-rose-400';
         if (value <= 15) return 'bg-rose-400 text-white border-rose-500';
         return 'bg-rose-500 text-white border-rose-600';
     };
@@ -380,7 +380,7 @@ def knapsack_with_items(weights, values, capacity):
 # Space Complexity: O(n × capacity)`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -412,7 +412,7 @@ def knapsack_with_items(weights, values, capacity):
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -467,7 +467,7 @@ def knapsack_with_items(weights, values, capacity):
 
                             {/* Capacity Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Knapsack Capacity: {capacity}
                                 </label>
                                 <input
@@ -482,7 +482,7 @@ def knapsack_with_items(weights, values, capacity):
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Animation Speed: {speed}ms
                                 </label>
                                 <input
@@ -493,7 +493,7 @@ def knapsack_with_items(weights, values, capacity):
                                     onChange={(e) => setSpeed(Number(e.target.value))}
                                     className="w-full max-w-md accent-rose-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>Fast (300ms)</span>
                                     <span>Slow (2000ms)</span>
                                 </div>
@@ -502,14 +502,14 @@ def knapsack_with_items(weights, values, capacity):
                             {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-medium text-slate-300">
                                         Progress: Step {currentStep + 1} of {stepHistory.length}
                                     </span>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         Phase: {currentState.phase}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                     <div
                                         className="bg-rose-500 h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -519,11 +519,11 @@ def knapsack_with_items(weights, values, capacity):
 
                             {/* Items and Knapsack Visualization */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Items & Knapsack</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">Items & Knapsack</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {/* Available Items */}
                                     <div>
-                                        <h4 className="font-medium text-gray-700 mb-3">Available Items</h4>
+                                        <h4 className="font-medium text-slate-300 mb-3">Available Items</h4>
                                         <div className="space-y-2">
                                             {items.map((item, index) => (
                                                 <div
@@ -550,10 +550,10 @@ def knapsack_with_items(weights, values, capacity):
 
                                     {/* Knapsack */}
                                     <div>
-                                        <h4 className="font-medium text-gray-700 mb-3">
+                                        <h4 className="font-medium text-slate-300 mb-3">
                                             Knapsack ({currentState.knapsackWeight}/{capacity})
                                         </h4>
-                                        <div className="bg-white rounded-lg border-2 border-gray-300 p-4 min-h-[200px]">
+                                        <div className="bg-slate-800/60 rounded-lg border-2 border-slate-700 p-4 min-h-[200px]">
                                             {/* Knapsack Visual */}
                                             <div className="relative">
                                                 <div className="w-full bg-gray-200 rounded-lg h-4 mb-4">
@@ -576,14 +576,14 @@ def knapsack_with_items(weights, values, capacity):
                                                     ))}
 
                                                     {currentState.selectedItems.length === 0 && (
-                                                        <div className="text-gray-500 text-center py-8">
+                                                        <div className="text-slate-500 text-center py-8">
                                                             Empty knapsack
                                                         </div>
                                                     )}
                                                 </div>
 
                                                 {/* Stats */}
-                                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                                <div className="mt-4 pt-4 border-t border-slate-700/50">
                                                     <div className="flex justify-between text-sm">
                                                         <span>Total Weight: <strong>{currentState.knapsackWeight}</strong></span>
                                                         <span>Total Value: <strong>{currentState.knapsackValue}</strong></span>
@@ -596,8 +596,8 @@ def knapsack_with_items(weights, values, capacity):
 
                                 {/* Comparison Display */}
                                 {currentState.comparing && (
-                                    <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                        <div className="text-sm text-yellow-800">
+                                    <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                                        <div className="text-sm text-yellow-300">
                                             <strong>Decision Analysis:</strong> Include = {currentState.comparing.include},
                                             Exclude = {currentState.comparing.exclude}
                                             <span className={`ml-2 font-semibold ${currentState.comparing.better === 'include' ? 'text-green-600' : 'text-orange-600'}`}>
@@ -610,8 +610,8 @@ def knapsack_with_items(weights, values, capacity):
 
                             {/* DP Table */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">DP Table (Max Value)</h3>
-                                <div className="overflow-auto p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">DP Table (Max Value)</h3>
+                                <div className="overflow-auto p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {currentState.dp.length > 0 && (
                                         <div className="inline-block">
                                             <table className="border-collapse">
@@ -647,12 +647,12 @@ def knapsack_with_items(weights, values, capacity):
                             </div>
 
                             {/* Current Step Explanation */}
-                            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4">
+                            <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Lightbulb className="h-5 w-5 text-rose-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-rose-800 mb-2">Current Step:</h3>
-                                        <p className="text-rose-700 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-rose-300 mb-2">Current Step:</h3>
+                                        <p className="text-rose-300 leading-relaxed">{currentState.explanation}</p>
                                     </div>
                                 </div>
                             </div>
@@ -662,35 +662,35 @@ def knapsack_with_items(weights, values, capacity):
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <Clock className="h-5 w-5 text-rose-600" />
-                                <h3 className="font-bold text-gray-900">Algorithm Details</h3>
+                                <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Time Complexity:</span>
-                                    <code className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">O(n × W)</code>
+                                    <span className="font-medium text-slate-300">Time Complexity:</span>
+                                    <code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O(n × W)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space Complexity:</span>
-                                    <code className="bg-blue-100 text-blue-800 px-2 py-1 rounded">O(n × W)</code>
+                                    <span className="font-medium text-slate-300">Space Complexity:</span>
+                                    <code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(n × W)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space Optimized:</span>
-                                    <code className="bg-green-100 text-green-800 px-2 py-1 rounded">O(W)</code>
+                                    <span className="font-medium text-slate-300">Space Optimized:</span>
+                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(W)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Type:</span>
-                                    <span className="bg-rose-100 text-rose-800 px-2 py-1 rounded">2D DP Table</span>
+                                    <span className="font-medium text-slate-300">Type:</span>
+                                    <span className="bg-rose-100 text-rose-300 px-2 py-1 rounded">2D DP Table</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Real-world Applications</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-rose-600 mt-1">•</span>
                                     <span>Portfolio optimization in finance</span>
@@ -719,9 +719,9 @@ def knapsack_with_items(weights, values, capacity):
                         </div>
 
                         {/* Key Concepts */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Key DP Concepts</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Key DP Concepts</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
                                     <span><strong>0/1 Constraint:</strong> Each item can be taken at most once</span>
@@ -742,9 +742,9 @@ def knapsack_with_items(weights, values, capacity):
                         </div>
 
                         {/* Optimization Tips */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Optimization Tips</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Optimization Tips</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
                                     <span>Use 1D array for space optimization: O(W)</span>
@@ -765,10 +765,10 @@ def knapsack_with_items(weights, values, capacity):
                         </div>
 
                         {/* Code Toggle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <button
                                 onClick={() => setShowCode(!showCode)}
-                                className="flex items-center gap-2 text-rose-600 hover:text-rose-700 font-medium"
+                                className="flex items-center gap-2 text-rose-600 hover:text-rose-300 font-medium"
                             >
                                 <Code2 className="h-5 w-5" />
                                 {showCode ? 'Hide' : 'Show'} Python Code

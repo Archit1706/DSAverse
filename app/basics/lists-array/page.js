@@ -429,7 +429,7 @@ export default function ListArrayPage() {
         return self.capacity`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -470,8 +470,8 @@ export default function ListArrayPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                     {/* Visualization Panel */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Dynamic Array Visualization</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-slate-100 mb-6">Dynamic Array Visualization</h2>
 
                         {/* Controls */}
                         <div className="mb-6 space-y-4">
@@ -481,14 +481,14 @@ export default function ListArrayPage() {
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Value"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    className="px-3 py-2 border border-slate-700 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 />
                                 <input
                                     type="number"
                                     value={indexValue}
                                     onChange={(e) => setIndexValue(e.target.value)}
                                     placeholder="Index (optional)"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    className="px-3 py-2 border border-slate-700 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 />
                             </div>
 
@@ -524,7 +524,7 @@ export default function ListArrayPage() {
                                     value={searchValue}
                                     onChange={(e) => setSearchValue(e.target.value)}
                                     placeholder="Search value"
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    className="flex-1 px-3 py-2 border border-slate-700 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 />
                                 <button
                                     onClick={handleSearch}
@@ -555,11 +555,11 @@ export default function ListArrayPage() {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <label className="text-sm font-medium text-gray-700">Speed:</label>
+                                <label className="text-sm font-medium text-slate-300">Speed:</label>
                                 <select
                                     value={speed}
                                     onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                    className="px-2 py-1 border border-slate-700 rounded text-sm"
                                 >
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
@@ -582,7 +582,7 @@ export default function ListArrayPage() {
                                                     transition-all duration-300 transform
                                                     ${index < currentState.list.length ?
                                                         getElementColor(index) :
-                                                        'bg-gray-100 border-gray-300 border-dashed'
+                                                        'bg-gray-100 border-slate-700 border-dashed'
                                                     }
                                                 `}
                                             >
@@ -596,7 +596,7 @@ export default function ListArrayPage() {
                                                         </div>
                                                     </>
                                                 ) : (
-                                                    <div className="text-xs text-gray-400">
+                                                    <div className="text-xs text-slate-500">
                                                         [{index}]
                                                     </div>
                                                 )}
@@ -626,27 +626,27 @@ export default function ListArrayPage() {
 
                             {/* Array info */}
                             <div className="text-center mt-4 space-y-2">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Size:</span> {currentState.list.length} /
                                     <span className="font-semibold"> Capacity:</span> {currentState.capacity}
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Load Factor:</span> {
                                         currentState.capacity > 0 ?
                                             `${((currentState.list.length / currentState.capacity) * 100).toFixed(1)}%` :
                                             '0%'
                                     }
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Memory:</span> {currentState.capacity * 4} bytes (assuming 4 bytes per integer)
                                 </div>
                             </div>
                         </div>
 
                         {/* Step Explanation */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <h3 className="font-semibold text-blue-800 mb-2">Current Step:</h3>
-                            <p className="text-blue-700">{currentState.explanation}</p>
+                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                            <h3 className="font-semibold text-blue-300 mb-2">Current Step:</h3>
+                            <p className="text-blue-300">{currentState.explanation}</p>
                             {stepHistory.length > 0 && (
                                 <div className="mt-2 text-sm text-blue-600">
                                     Step {currentStep + 1} of {stepHistory.length}
@@ -658,64 +658,64 @@ export default function ListArrayPage() {
                     {/* Information Panel */}
                     <div className="space-y-6">
                         {/* Complexity Analysis */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Complexity Analysis</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Complexity Analysis</h2>
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="text-center">
                                         <div className="text-xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Access</div>
+                                        <div className="text-sm text-slate-400">Access</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-xl font-bold text-orange-600">O(n)</div>
-                                        <div className="text-sm text-gray-600">Insert/Delete</div>
+                                        <div className="text-sm text-slate-400">Insert/Delete</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-xl font-bold text-orange-600">O(n)</div>
-                                        <div className="text-sm text-gray-600">Search</div>
+                                        <div className="text-sm text-slate-400">Search</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-xl font-bold text-orange-600">O(n)*</div>
-                                        <div className="text-sm text-gray-600">Append*</div>
+                                        <div className="text-sm text-slate-400">Append*</div>
                                     </div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-lg font-bold text-blue-600">O(n) Space</div>
-                                    <div className="text-sm text-gray-600">Dynamic allocation with capacity buffer</div>
+                                    <div className="text-sm text-slate-400">Dynamic allocation with capacity buffer</div>
                                 </div>
-                                <div className="text-xs text-gray-500 text-center">
+                                <div className="text-xs text-slate-500 text-center">
                                     *Append is O(1) amortized due to doubling strategy
                                 </div>
                             </div>
                         </div>
 
                         {/* Operations Guide */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Operations</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Operations</h2>
                             <div className="space-y-4">
                                 <div className="border-l-4 border-blue-500 pl-4">
-                                    <h3 className="font-semibold text-blue-800">Insert</h3>
-                                    <p className="text-gray-600 text-sm">Add element at specific index, shift others right</p>
+                                    <h3 className="font-semibold text-blue-300">Insert</h3>
+                                    <p className="text-slate-400 text-sm">Add element at specific index, shift others right</p>
                                 </div>
                                 <div className="border-l-4 border-red-500 pl-4">
                                     <h3 className="font-semibold text-red-800">Delete</h3>
-                                    <p className="text-gray-600 text-sm">Remove element at index, shift others left</p>
+                                    <p className="text-slate-400 text-sm">Remove element at index, shift others left</p>
                                 </div>
                                 <div className="border-l-4 border-green-500 pl-4">
                                     <h3 className="font-semibold text-green-800">Access</h3>
-                                    <p className="text-gray-600 text-sm">Direct access by index calculation</p>
+                                    <p className="text-slate-400 text-sm">Direct access by index calculation</p>
                                 </div>
                                 <div className="border-l-4 border-purple-500 pl-4">
                                     <h3 className="font-semibold text-purple-800">Search</h3>
-                                    <p className="text-gray-600 text-sm">Linear scan through elements</p>
+                                    <p className="text-slate-400 text-sm">Linear scan through elements</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Resizing Strategy */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Dynamic Resizing</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Dynamic Resizing</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>Growth Factor:</strong> Double capacity when full</div>
                                 <div>• <strong>Amortized Cost:</strong> O(1) for append operations</div>
                                 <div>• <strong>Memory Trade-off:</strong> Some wasted space for performance</div>
@@ -725,12 +725,12 @@ export default function ListArrayPage() {
                         </div>
 
                         {/* Advantages/Disadvantages */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Pros & Cons</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Pros & Cons</h2>
                             <div className="space-y-4">
                                 <div>
                                     <h3 className="font-semibold text-green-800 mb-2">Advantages</h3>
-                                    <div className="space-y-1 text-sm text-gray-600">
+                                    <div className="space-y-1 text-sm text-slate-400">
                                         <div>• O(1) random access by index</div>
                                         <div>• Cache-friendly memory layout</div>
                                         <div>• Dynamic size without manual management</div>
@@ -738,7 +738,7 @@ export default function ListArrayPage() {
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-red-800 mb-2">Disadvantages</h3>
-                                    <div className="space-y-1 text-sm text-gray-600">
+                                    <div className="space-y-1 text-sm text-slate-400">
                                         <div>• Expensive insertion/deletion in middle</div>
                                         <div>• Memory reallocation overhead</div>
                                         <div>• Wasted space when not at capacity</div>
@@ -748,9 +748,9 @@ export default function ListArrayPage() {
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Applications</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Applications</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>ArrayList (Java):</strong> Resizable arrays</div>
                                 <div>• <strong>Python Lists:</strong> Dynamic arrays with extra features</div>
                                 <div>• <strong>JavaScript Arrays:</strong> Dynamic and sparse</div>
@@ -760,8 +760,8 @@ export default function ListArrayPage() {
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Implementation</h2>
                             <CodeBlock code={codeExample} language="python" />
                         </div>
                     </div>

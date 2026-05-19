@@ -269,7 +269,7 @@ class StackLinkedList:
         return elements`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -310,8 +310,8 @@ class StackLinkedList:
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                     {/* Visualization Panel */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Stack Visualization</h2>
+                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                        <h2 className="text-2xl font-bold text-slate-100 mb-6">Stack Visualization</h2>
 
                         {/* Controls */}
                         <div className="mb-6 space-y-4">
@@ -321,7 +321,7 @@ class StackLinkedList:
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Enter value"
-                                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-blue-800 placeholder:text-gray-700"
+                                    className="px-3 py-2 border border-slate-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-blue-300 placeholder:text-slate-300"
                                 />
                                 <button
                                     onClick={handlePush}
@@ -368,11 +368,11 @@ class StackLinkedList:
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <label className="text-sm font-medium text-gray-700">Speed:</label>
+                                <label className="text-sm font-medium text-slate-300">Speed:</label>
                                 <select
                                     value={speed}
                                     onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="px-2 py-1 border border-gray-300 rounded text-sm text-gray-700"
+                                    className="px-2 py-1 border border-slate-700 rounded text-sm text-slate-300"
                                 >
                                     <option value={2000}>Slow</option>
                                     <option value={1000}>Normal</option>
@@ -387,11 +387,11 @@ class StackLinkedList:
                                 <div className="relative min-h-96 flex flex-col items-center">
                                     {/* Head pointer */}
                                     <div className="mb-4 flex flex-col items-center">
-                                        <div className="bg-gray-200 border-2 border-gray-400 rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 text-center">
+                                        <div className="bg-gray-200 border-2 border-gray-400 rounded-lg px-3 py-2 text-sm font-semibold text-slate-300 text-center">
                                             HEAD
                                         </div>
                                         {currentState.stack.length > 0 && (
-                                            <ArrowDown className="h-6 w-6 text-gray-600" />
+                                            <ArrowDown className="h-6 w-6 text-slate-400" />
                                         )}
                                     </div>
 
@@ -400,10 +400,10 @@ class StackLinkedList:
                                         <div className="mb-4 animate-bounce mt-4">
                                             <div className="bg-yellow-300 border-2 border-yellow-500 rounded-lg p-4 flex items-center">
                                                 <div className="text-center">
-                                                    <div className="text-xs text-gray-600 mb-1">Node {currentState.newNode.id}</div>
-                                                    <div className="font-bold text-gray-700">{currentState.newNode.value}</div>
+                                                    <div className="text-xs text-slate-400 mb-1">Node {currentState.newNode.id}</div>
+                                                    <div className="font-bold text-slate-300">{currentState.newNode.value}</div>
                                                 </div>
-                                                <div className="ml-4 text-xs text-gray-600">
+                                                <div className="ml-4 text-xs text-slate-400">
                                                     next: {currentState.newNode.next ? `Node ${currentState.newNode.next}` : 'NULL'}
                                                 </div>
                                             </div>
@@ -413,8 +413,8 @@ class StackLinkedList:
                                     {/* Stack nodes */}
                                     <div className="space-y-2">
                                         {currentState.stack.length === 0 ? (
-                                            <div className="text-gray-400 text-center py-8">
-                                                <div className="w-24 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                                            <div className="text-slate-500 text-center py-8">
+                                                <div className="w-24 h-16 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center">
                                                     NULL
                                                 </div>
                                             </div>
@@ -443,15 +443,15 @@ class StackLinkedList:
                                                     {/* Arrow to next node */}
                                                     {index < currentState.stack.length - 1 && (
                                                         <div className="my-1">
-                                                            <ArrowDown className="h-5 w-5 text-gray-500" />
+                                                            <ArrowDown className="h-5 w-5 text-slate-500" />
                                                         </div>
                                                     )}
 
                                                     {/* NULL pointer for last node */}
                                                     {index === currentState.stack.length - 1 && (
                                                         <div className="my-1 flex flex-col items-center">
-                                                            <ArrowDown className="h-5 w-5 text-gray-500" />
-                                                            <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                                            <ArrowDown className="h-5 w-5 text-slate-500" />
+                                                            <div className="text-xs text-slate-500 bg-gray-100 px-2 py-1 rounded">
                                                                 NULL
                                                             </div>
                                                         </div>
@@ -465,13 +465,13 @@ class StackLinkedList:
 
                             {/* Stack info */}
                             <div className="text-center mt-4 space-y-2">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Size:</span> {currentState.stack.length}
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Memory:</span> Dynamic allocation
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-slate-400">
                                     <span className="font-semibold">Head:</span> {
                                         currentState.stack.length > 0 ?
                                             `Node ${currentState.stack[0].id} (${currentState.stack[0].value})` :
@@ -482,9 +482,9 @@ class StackLinkedList:
                         </div>
 
                         {/* Step Explanation */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <h3 className="font-semibold text-blue-800 mb-2">Current Step:</h3>
-                            <p className="text-blue-700">{currentState.explanation}</p>
+                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                            <h3 className="font-semibold text-blue-300 mb-2">Current Step:</h3>
+                            <p className="text-blue-300">{currentState.explanation}</p>
                             {stepHistory.length > 0 && (
                                 <div className="mt-2 text-sm text-blue-600">
                                     Step {currentStep + 1} of {stepHistory.length}
@@ -496,34 +496,34 @@ class StackLinkedList:
                     {/* Information Panel */}
                     <div className="space-y-6">
                         {/* Complexity Analysis */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Complexity Analysis</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Complexity Analysis</h2>
                             <div className="space-y-4">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Push</div>
+                                        <div className="text-sm text-slate-400">Push</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Pop</div>
+                                        <div className="text-sm text-slate-400">Pop</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-gray-600">Peek</div>
+                                        <div className="text-sm text-slate-400">Peek</div>
                                     </div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-lg font-bold text-blue-600">O(n) Space</div>
-                                    <div className="text-sm text-gray-600">Dynamic allocation + pointer overhead</div>
+                                    <div className="text-sm text-slate-400">Dynamic allocation + pointer overhead</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Advantages vs Array */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Advantages over Array</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Advantages over Array</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div className="flex items-start">
                                     <span className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-2"></span>
                                     <div>
@@ -552,28 +552,28 @@ class StackLinkedList:
                         </div>
 
                         {/* Operations Guide */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Operations</h2>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Operations</h2>
                             <div className="space-y-4">
                                 <div className="border-l-4 border-blue-500 pl-4">
-                                    <h3 className="font-semibold text-blue-800">Push</h3>
-                                    <p className="text-gray-600 text-sm">Create new node, link to current head, update head pointer</p>
+                                    <h3 className="font-semibold text-blue-300">Push</h3>
+                                    <p className="text-slate-400 text-sm">Create new node, link to current head, update head pointer</p>
                                 </div>
                                 <div className="border-l-4 border-red-500 pl-4">
                                     <h3 className="font-semibold text-red-800">Pop</h3>
-                                    <p className="text-gray-600 text-sm">Store head value, move head to next, deallocate old head</p>
+                                    <p className="text-slate-400 text-sm">Store head value, move head to next, deallocate old head</p>
                                 </div>
                                 <div className="border-l-4 border-green-500 pl-4">
                                     <h3 className="font-semibold text-green-800">Peek</h3>
-                                    <p className="text-gray-600 text-sm">Return head node value without modification</p>
+                                    <p className="text-slate-400 text-sm">Return head node value without modification</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Memory Management */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Memory Management</h2>
-                            <div className="space-y-3 text-sm text-gray-600">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Memory Management</h2>
+                            <div className="space-y-3 text-sm text-slate-400">
                                 <div>• <strong>Dynamic Allocation:</strong> Nodes created on-demand</div>
                                 <div>• <strong>Garbage Collection:</strong> Automatic in Java/Python/JS</div>
                                 <div>• <strong>Manual Management:</strong> Required in C/C++</div>
@@ -583,11 +583,11 @@ class StackLinkedList:
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Implementation</h2>
-                            <div className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Implementation</h2>
+                            <div className="bg-slate-800/60 p-4 rounded-lg text-xs overflow-x-auto text-slate-300">
                                 <div className="flex justify-between items-center mb-2">
-                                    <div className="text-sm font-semibold text-gray-600 mb-2">Python</div>
+                                    <div className="text-sm font-semibold text-slate-400 mb-2">Python</div>
                                     <button onClick={() => navigator.clipboard.writeText(codeExample)} className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md flex items-center gap-2">
                                         <Copy className="h-4 w-4" />
                                         Copy

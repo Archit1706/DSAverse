@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap } from 'lucide-react';
@@ -275,7 +275,7 @@ def block_search(arr, target):
     return -1`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-red-700 to-rose-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -306,7 +306,7 @@ def block_search(arr, target):
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -350,7 +350,7 @@ def block_search(arr, target):
 
                             {/* Target Input */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
                                     Target Value: {target}
                                 </label>
                                 <div className="flex gap-2">
@@ -358,14 +358,14 @@ def block_search(arr, target):
                                         type="number"
                                         value={target}
                                         onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
                                         min="0"
                                         max="50"
                                     />
                                     <select
                                         value={target}
                                         onChange={(e) => setTarget(parseInt(e.target.value))}
-                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
                                     >
                                         {array.map(val => (
                                             <option key={val} value={val}>{val}</option>
@@ -375,8 +375,8 @@ def block_search(arr, target):
                             </div>
 
                             {/* Algorithm Info */}
-                            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <div className="text-sm text-blue-800">
+                            <div className="mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                                <div className="text-sm text-blue-300">
                                     <span className="font-semibold">Block Size:</span> √{array.length} = {currentState.blockSize} |
                                     <span className="font-semibold"> Phase:</span> {currentState.phase.replace('_', ' ').toUpperCase()} |
                                     <span className="font-semibold"> Comparisons:</span> {currentState.comparisons}
@@ -388,7 +388,7 @@ def block_search(arr, target):
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
                                     Animation Speed: {speed === 800 ? 'Fast' : speed === 1200 ? 'Normal' : 'Slow'}
                                 </label>
                                 <input
@@ -398,12 +398,12 @@ def block_search(arr, target):
                                     step="400"
                                     value={speed}
                                     onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
                                 />
                             </div>
 
                             {/* Array Visualization */}
-                            <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
                                 <div className="flex items-center justify-center mb-4">
                                     <div className="flex items-end gap-1 overflow-x-auto pb-2">
                                         {currentState.array.map((value, index) => (
@@ -439,7 +439,7 @@ def block_search(arr, target):
 
                                 {/* Search Info */}
                                 <div className="text-center mt-4">
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-slate-400">
                                         <span className="font-semibold">Target:</span> {target} |
                                         <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
                                     </div>
@@ -447,9 +447,9 @@ def block_search(arr, target):
                             </div>
 
                             {/* Step Explanation */}
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-800 mb-2">Current Step:</h3>
-                                <p className="text-red-700">{currentState.explanation}</p>
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
+                                <p className="text-red-300">{currentState.explanation}</p>
                             </div>
                         </div>
                     </div>
@@ -457,34 +457,34 @@ def block_search(arr, target):
                     {/* Side Panel */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
                                 <Zap className="h-5 w-5 mr-2 text-red-500" />
                                 Block Search
                             </h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Time Complexity:</span>
+                                    <span className="text-slate-400">Time Complexity:</span>
                                     <span className="font-semibold">O(√n)</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Space Complexity:</span>
+                                    <span className="text-slate-400">Space Complexity:</span>
                                     <span className="font-semibold">O(1)</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Block Size:</span>
+                                    <span className="text-slate-400">Block Size:</span>
                                     <span className="font-semibold">√n</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Type:</span>
+                                    <span className="text-slate-400">Type:</span>
                                     <span className="font-semibold">Hybrid</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Color Legend */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Color Legend</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
                             <div className="space-y-2">
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
@@ -506,53 +506,53 @@ def block_search(arr, target):
                         </div>
 
                         {/* Comparison with Jump Search */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">vs Jump Search</h3>
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4">vs Jump Search</h3>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Block Search:</span>
+                                    <span className="text-slate-400">Block Search:</span>
                                     <span className="font-semibold">Fixed block size</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Jump Search:</span>
+                                    <span className="text-slate-400">Jump Search:</span>
                                     <span className="font-semibold">Variable jump size</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Both:</span>
+                                    <span className="text-slate-400">Both:</span>
                                     <span className="font-semibold">O(√n) complexity</span>
                                 </div>
-                                <p className="text-xs text-gray-600 mt-2">
+                                <p className="text-xs text-slate-400 mt-2">
                                     Block search is conceptually simpler and easier to implement than jump search.
                                 </p>
                             </div>
                         </div>
 
                         {/* Algorithm Steps */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">How It Works</h3>
-                            <ol className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4">How It Works</h3>
+                            <ol className="space-y-2 text-sm text-slate-300">
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
                                     <span>Divide array into blocks of size √n</span>
                                 </li>
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
                                     <span>Find block containing the target</span>
                                 </li>
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
                                     <span>Perform linear search within block</span>
                                 </li>
                                 <li className="flex">
-                                    <span className="bg-red-100 text-red-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
+                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
                                     <span>Return index if found, -1 otherwise</span>
                                 </li>
                             </ol>
                         </div>
 
                         {/* Code Example */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                                 <Code className="h-5 w-5 mr-2 text-red-500" />
                                 Python Implementation
                             </h3>
@@ -560,12 +560,12 @@ def block_search(arr, target):
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                                 <Target className="h-5 w-5 mr-2 text-red-500" />
                                 Real-world Applications
                             </h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li>• Simple alternative to jump search</li>
                                 <li>• Educational purposes for algorithm study</li>
                                 <li>• Memory block organization</li>
@@ -582,3 +582,5 @@ def block_search(arr, target):
 };
 
 export default BlockSearchPage;
+
+

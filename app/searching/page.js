@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 export const metadata = {
     title: "Searching Algorithms – Visualizer & Complexity Guide",
@@ -100,15 +100,15 @@ const SearchingPage = () => {
 
     const getDifficultyColor = (difficulty) => {
         switch (difficulty) {
-            case 'Beginner': return 'bg-green-100 text-green-800 border-green-200';
-            case 'Intermediate': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-            case 'Advanced': return 'bg-red-100 text-red-800 border-red-200';
-            default: return 'bg-gray-100 text-gray-800 border-gray-200';
+            case 'Beginner': return 'bg-green-500/15 text-green-400 border-green-500/20';
+            case 'Intermediate': return 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20';
+            case 'Advanced': return 'bg-red-500/15 text-red-400 border-red-500/20';
+            default: return 'bg-slate-700/60 text-slate-400 border-slate-600';
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-red-500 to-rose-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -144,35 +144,35 @@ const SearchingPage = () => {
 
             {/* Introduction */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+                <div className="bg-slate-900/70 rounded-2xl border border-slate-700/50 shadow-xl p-8 mb-12">
+                    <h2 className="text-3xl font-bold text-white mb-6 text-center">
                         Why Learn Search Algorithms?
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="text-center">
-                            <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <div className="bg-red-500/15 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                                 <Search className="h-8 w-8 text-red-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-3">Fundamental Skill</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-3 text-slate-100">Fundamental Skill</h3>
+                            <p className="text-slate-400">
                                 Searching is one of the most common operations in programming. Understanding different approaches helps you choose the right tool for each situation.
                             </p>
                         </div>
                         <div className="text-center">
-                            <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <div className="bg-red-500/15 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                                 <Zap className="h-8 w-8 text-red-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-3">Performance Optimization</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-3 text-slate-100">Performance Optimization</h3>
+                            <p className="text-slate-400">
                                 From O(n) to O(log n) - learn how algorithm choice dramatically impacts performance, especially with large datasets.
                             </p>
                         </div>
                         <div className="text-center">
-                            <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <div className="bg-red-500/15 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                                 <Target className="h-8 w-8 text-red-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-3">Real-world Applications</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-3 text-slate-100">Real-world Applications</h3>
+                            <p className="text-slate-400">
                                 From database queries to web search engines, these algorithms power the technology we use every day.
                             </p>
                         </div>
@@ -181,38 +181,38 @@ const SearchingPage = () => {
 
                 {/* Algorithm Categories */}
                 <div className="mb-12">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+                    <h2 className="text-3xl font-bold text-white mb-8 text-center">
                         Algorithm Categories
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-l-4 border-green-500">
                             <h3 className="text-xl font-bold text-green-700 mb-3">Basic Algorithms</h3>
-                            <p className="text-gray-600 mb-4">
+                            <p className="text-slate-400 mb-4">
                                 Simple, intuitive approaches that work on any data structure.
                             </p>
-                            <ul className="text-sm text-gray-700 space-y-1">
+                            <ul className="text-sm text-slate-300 space-y-1">
                                 <li>• Linear Search</li>
                                 <li>• No prerequisites</li>
                                 <li>• Easy to understand</li>
                             </ul>
                         </div>
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-l-4 border-yellow-500">
                             <h3 className="text-xl font-bold text-yellow-700 mb-3">Sorted Array Algorithms</h3>
-                            <p className="text-gray-600 mb-4">
+                            <p className="text-slate-400 mb-4">
                                 Efficient algorithms that require sorted input data.
                             </p>
-                            <ul className="text-sm text-gray-700 space-y-1">
+                            <ul className="text-sm text-slate-300 space-y-1">
                                 <li>• Binary, Jump, Exponential</li>
                                 <li>• Logarithmic time complexity</li>
                                 <li>• Divide and conquer</li>
                             </ul>
                         </div>
-                        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 border-l-4 border-red-500">
                             <h3 className="text-xl font-bold text-red-700 mb-3">Specialized Algorithms</h3>
-                            <p className="text-gray-600 mb-4">
+                            <p className="text-slate-400 mb-4">
                                 Advanced techniques for specific data distributions.
                             </p>
-                            <ul className="text-sm text-gray-700 space-y-1">
+                            <ul className="text-sm text-slate-300 space-y-1">
                                 <li>• Fibonacci, Ternary</li>
                                 <li>• Interpolation Search</li>
                                 <li>• Mathematical optimizations</li>
@@ -227,18 +227,18 @@ const SearchingPage = () => {
                         <Link
                             key={index}
                             href={`/searching/${algorithm.slug}`}
-                            className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+                            className="group bg-slate-900/70 rounded-xl border border-slate-700/50 hover:border-red-500/50 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
                         >
                             <div className="p-6">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center">
-                                        <div className="bg-red-100 rounded-lg p-3 mr-4 group-hover:bg-red-200 transition-colors">
+                                        <div className="bg-red-500/15 rounded-lg p-3 mr-4 group-hover:bg-red-500/25 transition-colors">
                                             <div className="text-red-600">
                                                 {algorithm.icon}
                                             </div>
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                                            <h3 className="text-xl font-bold text-white group-hover:text-red-600 transition-colors">
                                                 {algorithm.name}
                                             </h3>
                                             <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(algorithm.difficulty)}`}>
@@ -246,34 +246,34 @@ const SearchingPage = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-red-500 transform group-hover:translate-x-1 transition-all" />
+                                    <ArrowRight className="h-5 w-5 text-slate-500 group-hover:text-red-500 transform group-hover:translate-x-1 transition-all" />
                                 </div>
 
-                                <p className="text-gray-600 mb-4 line-clamp-2">
+                                <p className="text-slate-400 mb-4 line-clamp-2">
                                     {algorithm.description}
                                 </p>
 
                                 <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <div className="bg-gray-50 rounded-lg p-3">
+                                    <div className="bg-slate-800/60 rounded-lg p-3">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Time</span>
-                                            <Clock className="h-4 w-4 text-gray-400" />
+                                            <span className="text-sm text-slate-400">Time</span>
+                                            <Clock className="h-4 w-4 text-slate-500" />
                                         </div>
-                                        <span className="font-semibold text-gray-900">{algorithm.timeComplexity}</span>
+                                        <span className="font-semibold text-white">{algorithm.timeComplexity}</span>
                                     </div>
-                                    <div className="bg-gray-50 rounded-lg p-3">
+                                    <div className="bg-slate-800/60 rounded-lg p-3">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Space</span>
-                                            <Target className="h-4 w-4 text-gray-400" />
+                                            <span className="text-sm text-slate-400">Space</span>
+                                            <Target className="h-4 w-4 text-slate-500" />
                                         </div>
-                                        <span className="font-semibold text-gray-900">{algorithm.spaceComplexity}</span>
+                                        <span className="font-semibold text-white">{algorithm.spaceComplexity}</span>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center">
-                                        <span className="text-sm text-gray-600 mr-2">Requirement:</span>
-                                        <span className="text-sm font-medium text-gray-900">{algorithm.requirement}</span>
+                                        <span className="text-sm text-slate-400 mr-2">Requirement:</span>
+                                        <span className="text-sm font-medium text-white">{algorithm.requirement}</span>
                                     </div>
                                     <div className="flex items-center text-red-600 group-hover:text-red-700">
                                         <Play className="h-4 w-4 mr-1" />
@@ -286,65 +286,65 @@ const SearchingPage = () => {
                 </div>
 
                 {/* Complexity Comparison */}
-                <div className="mt-12 bg-white rounded-2xl shadow-xl p-8">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+                <div className="mt-12 bg-slate-900/70 rounded-2xl border border-slate-700/50 shadow-xl p-8">
+                    <h2 className="text-3xl font-bold text-white mb-6 text-center">
                         Time Complexity Comparison
                     </h2>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="border-b-2 border-gray-200">
-                                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Algorithm</th>
-                                    <th className="text-center py-3 px-4 font-semibold text-gray-700">Best Case</th>
-                                    <th className="text-center py-3 px-4 font-semibold text-gray-700">Average Case</th>
-                                    <th className="text-center py-3 px-4 font-semibold text-gray-700">Worst Case</th>
-                                    <th className="text-center py-3 px-4 font-semibold text-gray-700">Space</th>
+                                <tr className="border-b-2 border-slate-700/50">
+                                    <th className="text-left py-3 px-4 font-semibold text-slate-300">Algorithm</th>
+                                    <th className="text-center py-3 px-4 font-semibold text-slate-300">Best Case</th>
+                                    <th className="text-center py-3 px-4 font-semibold text-slate-300">Average Case</th>
+                                    <th className="text-center py-3 px-4 font-semibold text-slate-300">Worst Case</th>
+                                    <th className="text-center py-3 px-4 font-semibold text-slate-300">Space</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200">
-                                <tr className="hover:bg-gray-50">
+                            <tbody className="divide-y divide-slate-700/50">
+                                <tr className="hover:bg-slate-800/40">
                                     <td className="py-3 px-4 font-medium">Linear Search</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                     <td className="py-3 px-4 text-center text-yellow-600 font-medium">O(n)</td>
                                     <td className="py-3 px-4 text-center text-red-600 font-medium">O(n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                 </tr>
-                                <tr className="hover:bg-gray-50">
+                                <tr className="hover:bg-slate-800/40">
                                     <td className="py-3 px-4 font-medium">Binary Search</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                 </tr>
-                                <tr className="hover:bg-gray-50">
+                                <tr className="hover:bg-slate-800/40">
                                     <td className="py-3 px-4 font-medium">Jump Search</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                     <td className="py-3 px-4 text-center text-yellow-600 font-medium">O(√n)</td>
                                     <td className="py-3 px-4 text-center text-yellow-600 font-medium">O(√n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                 </tr>
-                                <tr className="hover:bg-gray-50">
+                                <tr className="hover:bg-slate-800/40">
                                     <td className="py-3 px-4 font-medium">Interpolation Search</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log log n)</td>
                                     <td className="py-3 px-4 text-center text-red-600 font-medium">O(n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                 </tr>
-                                <tr className="hover:bg-gray-50">
+                                <tr className="hover:bg-slate-800/40">
                                     <td className="py-3 px-4 font-medium">Exponential Search</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                 </tr>
-                                <tr className="hover:bg-gray-50">
+                                <tr className="hover:bg-slate-800/40">
                                     <td className="py-3 px-4 font-medium">Fibonacci Search</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log n)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                 </tr>
-                                <tr className="hover:bg-gray-50">
+                                <tr className="hover:bg-slate-800/40">
                                     <td className="py-3 px-4 font-medium">Ternary Search</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(1)</td>
                                     <td className="py-3 px-4 text-center text-green-600 font-medium">O(log₃ n)</td>
@@ -354,7 +354,7 @@ const SearchingPage = () => {
                             </tbody>
                         </table>
                     </div>
-                    <p className="text-sm text-gray-600 mt-4 text-center">
+                    <p className="text-sm text-slate-400 mt-4 text-center">
                         * Interpolation Search requires uniformly distributed sorted data for optimal performance
                     </p>
                 </div>

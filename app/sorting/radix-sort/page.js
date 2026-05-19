@@ -248,8 +248,8 @@ const RadixSortPage = () => {
     };
 
     const getBucketColor = (bucketIndex) => {
-        if (currentState.bucketHighlight === bucketIndex) return 'bg-blue-100 border-blue-300 shadow-lg';
-        return 'bg-gray-50 border-gray-200';
+        if (currentState.bucketHighlight === bucketIndex) return 'bg-blue-500/15 border-blue-500/40 shadow-lg';
+        return 'bg-slate-800/60 border-slate-700/50';
     };
 
     const maxValue = Math.max(...currentState.array);
@@ -307,7 +307,7 @@ def counting_sort_by_digit(arr, exp):
         arr[i] = output[i]`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -338,7 +338,7 @@ def counting_sort_by_digit(arr, exp):
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -393,7 +393,7 @@ def counting_sort_by_digit(arr, exp):
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Animation Speed: {speed}ms
                                 </label>
                                 <input
@@ -404,7 +404,7 @@ def counting_sort_by_digit(arr, exp):
                                     onChange={(e) => setSpeed(Number(e.target.value))}
                                     className="w-full max-w-md accent-orange-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>Fast (600ms)</span>
                                     <span>Slow (3000ms)</span>
                                 </div>
@@ -413,14 +413,14 @@ def counting_sort_by_digit(arr, exp):
                             {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-medium text-slate-300">
                                         Progress: Step {currentStep + 1} of {stepHistory.length}
                                     </span>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         Pass {currentState.currentPass} of {currentState.totalPasses} | Digit: {currentState.digitPosition}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                     <div
                                         className="bg-orange-500 h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -430,10 +430,10 @@ def counting_sort_by_digit(arr, exp):
 
                             {/* Array Visualization */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                                <h3 className="text-lg font-semibold mb-3 text-slate-100">
                                     Current Array {currentState.digitPosition !== 'complete' && currentState.digitPosition !== 'units' && `(Sorted by ${currentState.digitPosition} digit)`}
                                 </h3>
-                                <div className="flex items-end justify-center gap-2 h-48 p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+                                <div className="flex items-end justify-center gap-2 h-48 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {currentState.array.map((value, index) => (
                                         <div key={index} className="flex flex-col items-center">
                                             <div
@@ -449,7 +449,7 @@ def counting_sort_by_digit(arr, exp):
                                                     }
                                                 </span>
                                             </div>
-                                            <span className="text-xs text-gray-500 mt-1">{index}</span>
+                                            <span className="text-xs text-slate-500 mt-1">{index}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -457,11 +457,11 @@ def counting_sort_by_digit(arr, exp):
 
                             {/* Buckets Visualization */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold mb-3 text-gray-800">Buckets (0-9)</h3>
+                                <h3 className="text-lg font-semibold mb-3 text-slate-100">Buckets (0-9)</h3>
                                 <div className="grid grid-cols-5 gap-2">
                                     {currentState.buckets.map((bucket, bucketIndex) => (
                                         <div key={bucketIndex} className={`${getBucketColor(bucketIndex)} border-2 rounded-lg p-2 min-h-24 transition-all duration-300`}>
-                                            <div className="text-center font-bold text-gray-700 mb-2">
+                                            <div className="text-center font-bold text-slate-300 mb-2">
                                                 Bucket {bucketIndex}
                                             </div>
                                             <div className="flex flex-col gap-1">
@@ -490,7 +490,7 @@ def counting_sort_by_digit(arr, exp):
                                     <span>Currently Processing</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
+                                    <div className="w-4 h-4 bg-blue-500/15 border border-blue-500/40 rounded"></div>
                                     <span>Active Bucket</span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -500,12 +500,12 @@ def counting_sort_by_digit(arr, exp):
                             </div>
 
                             {/* Current Step Explanation */}
-                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                            <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Lightbulb className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-orange-800 mb-2">Current Step:</h3>
-                                        <p className="text-orange-700 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-orange-300 mb-2">Current Step:</h3>
+                                        <p className="text-orange-300 leading-relaxed">{currentState.explanation}</p>
                                     </div>
                                 </div>
                             </div>
@@ -515,34 +515,34 @@ def counting_sort_by_digit(arr, exp):
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <Clock className="h-5 w-5 text-orange-600" />
-                                <h3 className="font-bold text-gray-900">Algorithm Details</h3>
+                                <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Time:</span>
-                                    <code className="bg-green-100 text-green-800 px-2 py-1 rounded">O(d×(n+k))</code>
+                                    <span className="font-medium text-slate-300">Time:</span>
+                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(d×(n+k))</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space:</span>
-                                    <code className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">O(n + k)</code>
+                                    <span className="font-medium text-slate-300">Space:</span>
+                                    <code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O(n + k)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Stable:</span>
-                                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded">Yes</span>
+                                    <span className="font-medium text-slate-300">Stable:</span>
+                                    <span className="bg-green-500/15 text-green-400 px-2 py-1 rounded">Yes</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">In-place:</span>
-                                    <span className="bg-red-100 text-red-800 px-2 py-1 rounded">No</span>
+                                    <span className="font-medium text-slate-300">In-place:</span>
+                                    <span className="bg-red-500/15 text-red-400 px-2 py-1 rounded">No</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Type:</span>
-                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">Non-comparison</span>
+                                    <span className="font-medium text-slate-300">Type:</span>
+                                    <span className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">Non-comparison</span>
                                 </div>
                             </div>
-                            <div className="mt-3 text-xs text-gray-600">
+                            <div className="mt-3 text-xs text-slate-400">
                                 <p><strong>d</strong> = number of digits</p>
                                 <p><strong>n</strong> = number of elements</p>
                                 <p><strong>k</strong> = range of input (10 for decimal)</p>
@@ -550,9 +550,9 @@ def counting_sort_by_digit(arr, exp):
                         </div>
 
                         {/* When to Use */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">When to Use Radix Sort</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">When to Use Radix Sort</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
                                     <span>Sorting integers with fixed number of digits</span>
@@ -585,9 +585,9 @@ def counting_sort_by_digit(arr, exp):
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Real-world Applications</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
                                     <span>Sorting large datasets of integers</span>
@@ -612,9 +612,9 @@ def counting_sort_by_digit(arr, exp):
                         </div>
 
                         {/* Key Characteristics */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Key Characteristics</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Key Characteristics</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
                                     <span>Non-comparison based algorithm</span>
@@ -635,7 +635,7 @@ def counting_sort_by_digit(arr, exp):
                         </div>
 
                         {/* Code Toggle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <button
                                 onClick={() => setShowCode(!showCode)}
                                 className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium"

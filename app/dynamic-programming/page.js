@@ -103,29 +103,29 @@ const DynamicProgrammingPage = () => {
 
     const getDifficultyColor = (difficulty) => {
         switch (difficulty) {
-            case 'Beginner': return 'bg-green-100 text-green-800';
-            case 'Intermediate': return 'bg-yellow-100 text-yellow-800';
-            case 'Advanced': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'Beginner': return 'bg-green-500/15 text-green-400';
+            case 'Intermediate': return 'bg-yellow-500/15 text-yellow-400';
+            case 'Advanced': return 'bg-red-500/15 text-red-400';
+            default: return 'bg-slate-700 text-slate-300';
         }
     };
 
     const getPatternColor = (pattern) => {
         const colors = {
-            'Memoization': 'bg-purple-100 text-purple-800',
-            'Unbounded Knapsack': 'bg-blue-100 text-blue-800',
-            'String Matching': 'bg-rose-100 text-rose-800',
-            'Optimization': 'bg-amber-100 text-amber-800',
-            'Subsequence': 'bg-cyan-100 text-cyan-800',
-            'String Transformation': 'bg-pink-100 text-pink-800',
-            'Subarray': 'bg-indigo-100 text-indigo-800',
-            'Decision Making': 'bg-emerald-100 text-emerald-800'
+            'Memoization': 'bg-purple-500/15 text-purple-400',
+            'Unbounded Knapsack': 'bg-blue-500/15 text-blue-400',
+            'String Matching': 'bg-rose-500/15 text-rose-400',
+            'Optimization': 'bg-orange-500/15 text-orange-400',
+            'Subsequence': 'bg-blue-500/15 text-blue-400',
+            'String Transformation': 'bg-purple-500/15 text-purple-400',
+            'Subarray': 'bg-blue-500/15 text-blue-400',
+            'Decision Making': 'bg-green-500/15 text-green-400'
         };
-        return colors[pattern] || 'bg-gray-100 text-gray-800';
+        return colors[pattern] || 'bg-slate-700 text-slate-300';
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -163,32 +163,32 @@ const DynamicProgrammingPage = () => {
             {/* DP Concepts Overview */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-100">
-                        <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="bg-slate-900/70 rounded-xl shadow-lg p-6 border-2 border-slate-700/50">
+                        <div className="w-16 h-16 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Brain className="h-8 w-8 text-rose-600" />
                         </div>
-                        <h3 className="text-xl font-semibold mb-3 text-gray-900 text-center">Optimal Substructure</h3>
-                        <p className="text-gray-600 text-center">
+                        <h3 className="text-xl font-semibold mb-3 text-white text-center">Optimal Substructure</h3>
+                        <p className="text-slate-400 text-center">
                             Solutions to larger problems depend on solutions to smaller subproblems
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-100">
-                        <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="bg-slate-900/70 rounded-xl shadow-lg p-6 border-2 border-slate-700/50">
+                        <div className="w-16 h-16 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Target className="h-8 w-8 text-rose-600" />
                         </div>
-                        <h3 className="text-xl font-semibold mb-3 text-gray-900 text-center">Overlapping Subproblems</h3>
-                        <p className="text-gray-600 text-center">
+                        <h3 className="text-xl font-semibold mb-3 text-white text-center">Overlapping Subproblems</h3>
+                        <p className="text-slate-400 text-center">
                             Same subproblems are solved multiple times, making memoization valuable
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-100">
-                        <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="bg-slate-900/70 rounded-xl shadow-lg p-6 border-2 border-slate-700/50">
+                        <div className="w-16 h-16 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Zap className="h-8 w-8 text-rose-600" />
                         </div>
-                        <h3 className="text-xl font-semibold mb-3 text-gray-900 text-center">Memoization</h3>
-                        <p className="text-gray-600 text-center">
+                        <h3 className="text-xl font-semibold mb-3 text-white text-center">Memoization</h3>
+                        <p className="text-slate-400 text-center">
                             Store computed results to avoid redundant calculations and improve efficiency
                         </p>
                     </div>
@@ -198,10 +198,10 @@ const DynamicProgrammingPage = () => {
             {/* Algorithms Grid */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-3xl font-bold text-white mb-4">
                         Interactive DP Visualizations
                     </h2>
-                    <p className="text-xl text-gray-600">
+                    <p className="text-xl text-slate-400">
                         Explore classic dynamic programming problems with step-by-step visualizations
                     </p>
                 </div>
@@ -210,43 +210,43 @@ const DynamicProgrammingPage = () => {
                     {dpAlgorithms.map((algorithm, index) => (
                         <div key={index} className="group relative">
                             {algorithm.comingSoon ? (
-                                <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-gray-200 opacity-75 overflow-hidden">
+                                <div className="bg-slate-900/70 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-slate-700/50 opacity-75 overflow-hidden">
                                     <div className="absolute top-4 right-4 bg-gray-500 text-white px-3 py-1 rounded-full text-xs font-medium">
                                         Coming Soon
                                     </div>
                                     <div className="p-6">
                                         <div className="flex items-center justify-between mb-4">
-                                            <h3 className="text-xl font-bold text-gray-600">{algorithm.name}</h3>
+                                            <h3 className="text-xl font-bold text-slate-400">{algorithm.name}</h3>
                                         </div>
 
-                                        <p className="text-gray-500 mb-4 text-sm leading-relaxed">
+                                        <p className="text-slate-500 mb-4 text-sm leading-relaxed">
                                             {algorithm.description}
                                         </p>
 
                                         <div className="space-y-3">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm font-medium text-gray-600">Time Complexity:</span>
-                                                <code className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">
+                                                <span className="text-sm font-medium text-slate-400">Time Complexity:</span>
+                                                <code className="bg-slate-800/60 text-slate-400 px-2 py-1 rounded text-sm">
                                                     {algorithm.timeComplexity}
                                                 </code>
                                             </div>
 
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm font-medium text-gray-600">Space Complexity:</span>
-                                                <code className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">
+                                                <span className="text-sm font-medium text-slate-400">Space Complexity:</span>
+                                                <code className="bg-slate-800/60 text-slate-400 px-2 py-1 rounded text-sm">
                                                     {algorithm.spaceComplexity}
                                                 </code>
                                             </div>
 
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm font-medium text-gray-600">Difficulty:</span>
+                                                <span className="text-sm font-medium text-slate-400">Difficulty:</span>
                                                 <span className={`px-2 py-1 rounded-full text-xs font-medium opacity-75 ${getDifficultyColor(algorithm.difficulty)}`}>
                                                     {algorithm.difficulty}
                                                 </span>
                                             </div>
 
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm font-medium text-gray-600">Pattern:</span>
+                                                <span className="text-sm font-medium text-slate-400">Pattern:</span>
                                                 <span className={`px-2 py-1 rounded-full text-xs font-medium opacity-75 ${getPatternColor(algorithm.pattern)}`}>
                                                     {algorithm.pattern}
                                                 </span>
@@ -262,48 +262,48 @@ const DynamicProgrammingPage = () => {
                                 </div>
                             ) : (
                                 <Link href={`/dynamic-programming/${algorithm.slug}`}>
-                                    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border-2 border-rose-100 hover:border-rose-300 overflow-hidden">
+                                    <div className="bg-slate-900/70 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border-2 border-slate-700/50 hover:border-rose-500/50 overflow-hidden">
                                         <div className="p-6">
                                             <div className="flex items-center justify-between mb-4">
-                                                <h3 className="text-xl font-bold text-gray-900">{algorithm.name}</h3>
+                                                <h3 className="text-xl font-bold text-white">{algorithm.name}</h3>
                                                 <ArrowRight className="h-5 w-5 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                             </div>
 
-                                            <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                                            <p className="text-slate-400 mb-4 text-sm leading-relaxed">
                                                 {algorithm.description}
                                             </p>
 
                                             <div className="space-y-3">
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-sm font-medium text-gray-700">Time Complexity:</span>
-                                                    <code className="bg-rose-100 text-rose-700 px-2 py-1 rounded text-sm">
+                                                    <span className="text-sm font-medium text-slate-300">Time Complexity:</span>
+                                                    <code className="bg-rose-500/15 text-rose-400 px-2 py-1 rounded text-sm">
                                                         {algorithm.timeComplexity}
                                                     </code>
                                                 </div>
 
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-sm font-medium text-gray-700">Space Complexity:</span>
-                                                    <code className="bg-rose-100 text-rose-700 px-2 py-1 rounded text-sm">
+                                                    <span className="text-sm font-medium text-slate-300">Space Complexity:</span>
+                                                    <code className="bg-rose-500/15 text-rose-400 px-2 py-1 rounded text-sm">
                                                         {algorithm.spaceComplexity}
                                                     </code>
                                                 </div>
 
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-sm font-medium text-gray-700">Difficulty:</span>
+                                                    <span className="text-sm font-medium text-slate-300">Difficulty:</span>
                                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(algorithm.difficulty)}`}>
                                                         {algorithm.difficulty}
                                                     </span>
                                                 </div>
 
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-sm font-medium text-gray-700">Type:</span>
-                                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                                                    <span className="text-sm font-medium text-slate-300">Type:</span>
+                                                    <span className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded-full text-xs font-medium">
                                                         {algorithm.type}
                                                     </span>
                                                 </div>
 
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-sm font-medium text-gray-700">Pattern:</span>
+                                                    <span className="text-sm font-medium text-slate-300">Pattern:</span>
                                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPatternColor(algorithm.pattern)}`}>
                                                         {algorithm.pattern}
                                                     </span>
@@ -326,82 +326,82 @@ const DynamicProgrammingPage = () => {
             </div>
 
             {/* DP Approaches Section */}
-            <div className="bg-white border-t-2 border-rose-200">
+            <div className="bg-slate-900/70 border-t-2 border-slate-700/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                        <h2 className="text-3xl font-bold text-white mb-4">
                             Dynamic Programming Approaches
                         </h2>
-                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        <p className="text-xl text-slate-400 max-w-3xl mx-auto">
                             Learn the two main paradigms of dynamic programming and when to use each approach
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         {/* Top-down (Memoization) */}
-                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-8 border-2 border-purple-200">
+                        <div className="bg-purple-500/10 rounded-xl p-8 border-2 border-purple-500/20">
                             <div className="flex items-center mb-6">
                                 <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-4">
                                     <Brain className="h-6 w-6 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl font-bold text-purple-900">Top-down Approach</h3>
-                                    <p className="text-purple-700">Memoization</p>
+                                    <h3 className="text-2xl font-bold text-purple-300">Top-down Approach</h3>
+                                    <p className="text-purple-300">Memoization</p>
                                 </div>
                             </div>
 
                             <div className="space-y-4 mb-6">
-                                <div className="bg-white p-4 rounded-lg border border-purple-200">
-                                    <h4 className="font-semibold text-purple-900 mb-2">How it works:</h4>
-                                    <p className="text-purple-800 text-sm">Start with the original problem and recursively break it down, storing results to avoid recomputation.</p>
+                                <div className="bg-slate-800/60 p-4 rounded-lg border border-purple-500/20">
+                                    <h4 className="font-semibold text-purple-300 mb-2">How it works:</h4>
+                                    <p className="text-purple-300 text-sm">Start with the original problem and recursively break it down, storing results to avoid recomputation.</p>
                                 </div>
 
-                                <div className="bg-white p-4 rounded-lg border border-purple-200">
-                                    <h4 className="font-semibold text-purple-900 mb-2">Best for:</h4>
-                                    <ul className="text-purple-800 text-sm space-y-1">
+                                <div className="bg-slate-800/60 p-4 rounded-lg border border-purple-500/20">
+                                    <h4 className="font-semibold text-purple-300 mb-2">Best for:</h4>
+                                    <ul className="text-purple-300 text-sm space-y-1">
                                         <li>• Natural recursive problems</li>
                                         <li>• When you don't need all subproblems</li>
                                         <li>• Tree-like recursion patterns</li>
                                     </ul>
                                 </div>
 
-                                <div className="bg-white p-4 rounded-lg border border-purple-200">
-                                    <h4 className="font-semibold text-purple-900 mb-2">Examples:</h4>
-                                    <p className="text-purple-800 text-sm">Fibonacci, Tree DP, Some optimization problems</p>
+                                <div className="bg-slate-800/60 p-4 rounded-lg border border-purple-500/20">
+                                    <h4 className="font-semibold text-purple-300 mb-2">Examples:</h4>
+                                    <p className="text-purple-300 text-sm">Fibonacci, Tree DP, Some optimization problems</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Bottom-up (Tabulation) */}
-                        <div className="bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl p-8 border-2 border-rose-200">
+                        <div className="bg-rose-500/10 rounded-xl p-8 border-2 border-rose-500/20">
                             <div className="flex items-center mb-6">
                                 <div className="w-12 h-12 bg-rose-500 rounded-lg flex items-center justify-center mr-4">
                                     <Target className="h-6 w-6 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl font-bold text-rose-900">Bottom-up Approach</h3>
-                                    <p className="text-rose-700">Tabulation</p>
+                                    <h3 className="text-2xl font-bold text-rose-300">Bottom-up Approach</h3>
+                                    <p className="text-rose-300">Tabulation</p>
                                 </div>
                             </div>
 
                             <div className="space-y-4 mb-6">
-                                <div className="bg-white p-4 rounded-lg border border-rose-200">
-                                    <h4 className="font-semibold text-rose-900 mb-2">How it works:</h4>
-                                    <p className="text-rose-800 text-sm">Start with base cases and iteratively build up solutions to larger problems using a table.</p>
+                                <div className="bg-slate-800/60 p-4 rounded-lg border border-rose-500/20">
+                                    <h4 className="font-semibold text-rose-300 mb-2">How it works:</h4>
+                                    <p className="text-rose-300 text-sm">Start with base cases and iteratively build up solutions to larger problems using a table.</p>
                                 </div>
 
-                                <div className="bg-white p-4 rounded-lg border border-rose-200">
-                                    <h4 className="font-semibold text-rose-900 mb-2">Best for:</h4>
-                                    <ul className="text-rose-800 text-sm space-y-1">
+                                <div className="bg-slate-800/60 p-4 rounded-lg border border-rose-500/20">
+                                    <h4 className="font-semibold text-rose-300 mb-2">Best for:</h4>
+                                    <ul className="text-rose-300 text-sm space-y-1">
                                         <li>• When you need all subproblems</li>
                                         <li>• Better space optimization</li>
                                         <li>• Iterative problem patterns</li>
                                     </ul>
                                 </div>
 
-                                <div className="bg-white p-4 rounded-lg border border-rose-200">
-                                    <h4 className="font-semibold text-rose-900 mb-2">Examples:</h4>
-                                    <p className="text-rose-800 text-sm">Coin Change, LCS, Knapsack, Edit Distance</p>
+                                <div className="bg-slate-800/60 p-4 rounded-lg border border-rose-500/20">
+                                    <h4 className="font-semibold text-rose-300 mb-2">Examples:</h4>
+                                    <p className="text-rose-300 text-sm">Coin Change, LCS, Knapsack, Edit Distance</p>
                                 </div>
                             </div>
                         </div>
@@ -410,13 +410,13 @@ const DynamicProgrammingPage = () => {
             </div>
 
             {/* Why Learn DP Section */}
-            <div className="bg-gradient-to-br from-rose-50 to-pink-50">
+            <div className="bg-slate-950">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                        <h2 className="text-3xl font-bold text-white mb-4">
                             Why Learn Dynamic Programming?
                         </h2>
-                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        <p className="text-xl text-slate-400 max-w-3xl mx-auto">
                             Dynamic programming is essential for solving optimization problems efficiently
                             and is frequently tested in technical interviews.
                         </p>
@@ -424,31 +424,31 @@ const DynamicProgrammingPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="text-center p-6">
-                            <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Zap className="h-8 w-8 text-rose-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 text-gray-900">Optimization</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-2 text-white">Optimization</h3>
+                            <p className="text-slate-400">
                                 Transform exponential algorithms into polynomial time solutions through intelligent caching
                             </p>
                         </div>
 
                         <div className="text-center p-6">
-                            <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Brain className="h-8 w-8 text-rose-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 text-gray-900">Problem Solving</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-2 text-white">Problem Solving</h3>
+                            <p className="text-slate-400">
                                 Develop systematic thinking for breaking complex problems into manageable subproblems
                             </p>
                         </div>
 
                         <div className="text-center p-6">
-                            <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Target className="h-8 w-8 text-rose-600" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 text-gray-900">Interview Success</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-semibold mb-2 text-white">Interview Success</h3>
+                            <p className="text-slate-400">
                                 Master one of the most important topics in technical interviews at top companies
                             </p>
                         </div>

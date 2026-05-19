@@ -266,10 +266,10 @@ const CoinChangePage = () => {
             if (currentState.phase === 'updated') return 'bg-rose-600 text-white border-rose-700 transform scale-105';
             return 'bg-rose-500 text-white border-rose-600';
         }
-        if (value === Infinity) return 'bg-gray-200 text-gray-500';
+        if (value === Infinity) return 'bg-gray-200 text-slate-500';
         if (value <= 3) return 'bg-rose-400 text-white';
-        if (value <= 6) return 'bg-rose-300 text-rose-800';
-        return 'bg-rose-200 text-rose-700';
+        if (value <= 6) return 'bg-rose-300 text-rose-300';
+        return 'bg-rose-200 text-rose-300';
     };
 
     const getCoinColor = (coin) => {
@@ -324,7 +324,7 @@ def coin_change_with_solution(amount, coins):
 # Space Complexity: O(amount)`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50">
+        <div className="min-h-screen bg-slate-950">
             {/* Header */}
             <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -356,7 +356,7 @@ def coin_change_with_solution(amount, coins):
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Visualization */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
                             {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button
@@ -412,7 +412,7 @@ def coin_change_with_solution(amount, coins):
                             {/* Input Controls */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                                    <label className="block text-sm font-medium mb-2 text-slate-300">
                                         Target Amount: {amount}
                                     </label>
                                     <input
@@ -425,14 +425,14 @@ def coin_change_with_solution(amount, coins):
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                                    <label className="block text-sm font-medium mb-2 text-slate-300">
                                         Available Coins
                                     </label>
                                     <input
                                         type="text"
                                         value={coins.join(', ')}
                                         onChange={(e) => updateCoins(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                        className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm"
                                         placeholder="1, 4, 5"
                                     />
                                 </div>
@@ -440,7 +440,7 @@ def coin_change_with_solution(amount, coins):
 
                             {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-gray-700">
+                                <label className="block text-sm font-medium mb-2 text-slate-300">
                                     Animation Speed: {speed}ms
                                 </label>
                                 <input
@@ -451,7 +451,7 @@ def coin_change_with_solution(amount, coins):
                                     onChange={(e) => setSpeed(Number(e.target.value))}
                                     className="w-full max-w-md accent-rose-500"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 max-w-md mt-1">
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
                                     <span>Fast (300ms)</span>
                                     <span>Slow (2000ms)</span>
                                 </div>
@@ -460,14 +460,14 @@ def coin_change_with_solution(amount, coins):
                             {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-medium text-slate-300">
                                         Progress: Step {currentStep + 1} of {stepHistory.length}
                                     </span>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         Phase: {currentState.phase}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div className="w-full bg-slate-700 rounded-full h-2">
                                     <div
                                         className="bg-rose-500 h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
@@ -477,8 +477,8 @@ def coin_change_with_solution(amount, coins):
 
                             {/* Available Coins */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Available Coins</h3>
-                                <div className="flex flex-wrap gap-3 p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">Available Coins</h3>
+                                <div className="flex flex-wrap gap-3 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {currentState.coins.map((coin, index) => (
                                         <div
                                             key={index}
@@ -489,8 +489,8 @@ def coin_change_with_solution(amount, coins):
                                     ))}
                                 </div>
                                 {currentState.comparison && (
-                                    <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                        <div className="text-sm text-yellow-800">
+                                    <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                                        <div className="text-sm text-yellow-300">
                                             <strong>Comparison:</strong> Current = {currentState.comparison.current === Infinity ? '∞' : currentState.comparison.current},
                                             New option = {currentState.comparison.newOption === Infinity ? '∞' : currentState.comparison.newOption}
                                             {currentState.comparison.better && <span className="text-green-600 font-semibold"> → Better!</span>}
@@ -501,18 +501,18 @@ def coin_change_with_solution(amount, coins):
 
                             {/* DP Table */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">DP Table (Minimum Coins Needed)</h3>
+                                <h3 className="text-lg font-semibold text-slate-100 mb-4">DP Table (Minimum Coins Needed)</h3>
                                 <div className="overflow-x-auto">
-                                    <div className="inline-flex gap-1 p-4 bg-rose-50 rounded-lg border-2 border-rose-200 min-w-full">
+                                    <div className="inline-flex gap-1 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60 min-w-full">
                                         {currentState.dp.map((value, index) => (
                                             <div key={index} className="text-center min-w-[60px]">
-                                                <div className="text-xs text-gray-600 mb-1">dp[{index}]</div>
+                                                <div className="text-xs text-slate-400 mb-1">dp[{index}]</div>
                                                 <div
                                                     className={`w-14 h-14 rounded border-2 flex items-center justify-center text-sm font-bold transition-all duration-500 ${getDpCellColor(index, value)}`}
                                                 >
                                                     {value === Infinity ? '∞' : value}
                                                 </div>
-                                                <div className="text-xs text-gray-500 mt-1">amt:{index}</div>
+                                                <div className="text-xs text-slate-500 mt-1">amt:{index}</div>
                                             </div>
                                         ))}
                                     </div>
@@ -522,7 +522,7 @@ def coin_change_with_solution(amount, coins):
                             {/* Solution Visualization */}
                             {currentState.solution.length > 0 && (
                                 <div className="mb-6">
-                                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Optimal Solution</h3>
+                                    <h3 className="text-lg font-semibold text-slate-100 mb-4">Optimal Solution</h3>
                                     <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200">
                                         <div className="flex items-center justify-center space-x-2 mb-3">
                                             <span className="text-green-700 font-medium">Coins used:</span>
@@ -543,12 +543,12 @@ def coin_change_with_solution(amount, coins):
                             )}
 
                             {/* Current Step Explanation */}
-                            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4">
+                            <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Lightbulb className="h-5 w-5 text-rose-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-rose-800 mb-2">Current Step:</h3>
-                                        <p className="text-rose-700 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-rose-300 mb-2">Current Step:</h3>
+                                        <p className="text-rose-300 leading-relaxed">{currentState.explanation}</p>
                                     </div>
                                 </div>
                             </div>
@@ -558,35 +558,35 @@ def coin_change_with_solution(amount, coins):
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Algorithm Info */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <Clock className="h-5 w-5 text-rose-600" />
-                                <h3 className="font-bold text-gray-900">Algorithm Details</h3>
+                                <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Time Complexity:</span>
-                                    <code className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">O(amount × coins)</code>
+                                    <span className="font-medium text-slate-300">Time Complexity:</span>
+                                    <code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O(amount × coins)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Space Complexity:</span>
-                                    <code className="bg-blue-100 text-blue-800 px-2 py-1 rounded">O(amount)</code>
+                                    <span className="font-medium text-slate-300">Space Complexity:</span>
+                                    <code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(amount)</code>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Type:</span>
-                                    <span className="bg-rose-100 text-rose-800 px-2 py-1 rounded">Bottom-up DP</span>
+                                    <span className="font-medium text-slate-300">Type:</span>
+                                    <span className="bg-rose-100 text-rose-300 px-2 py-1 rounded">Bottom-up DP</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="font-medium text-gray-700">Pattern:</span>
-                                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded">Unbounded Knapsack</span>
+                                    <span className="font-medium text-slate-300">Pattern:</span>
+                                    <span className="bg-purple-500/15 text-purple-400 px-2 py-1 rounded">Unbounded Knapsack</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Real-world Applications */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Real-world Applications</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-rose-600 mt-1">•</span>
                                     <span>Cashier systems and vending machines</span>
@@ -611,9 +611,9 @@ def coin_change_with_solution(amount, coins):
                         </div>
 
                         {/* Key Concepts */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Key DP Concepts</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Key DP Concepts</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-600 mt-1">✓</span>
                                     <span><strong>Optimal Substructure:</strong> Optimal solution contains optimal subsolutions</span>
@@ -634,9 +634,9 @@ def coin_change_with_solution(amount, coins):
                         </div>
 
                         {/* Variants */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="font-bold text-gray-900 mb-4">Problem Variants</h3>
-                            <ul className="space-y-2 text-sm text-gray-700">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h3 className="font-bold text-white mb-4">Problem Variants</h3>
+                            <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-blue-600 mt-1">•</span>
                                     <span>Count number of ways to make change</span>
@@ -657,10 +657,10 @@ def coin_change_with_solution(amount, coins):
                         </div>
 
                         {/* Code Toggle */}
-                        <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <button
                                 onClick={() => setShowCode(!showCode)}
-                                className="flex items-center gap-2 text-rose-600 hover:text-rose-700 font-medium"
+                                className="flex items-center gap-2 text-rose-600 hover:text-rose-300 font-medium"
                             >
                                 <Code2 className="h-5 w-5" />
                                 {showCode ? 'Hide' : 'Show'} Python Code
