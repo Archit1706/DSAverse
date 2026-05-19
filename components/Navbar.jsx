@@ -193,11 +193,30 @@ export default function Navbar() {
                 <div className="flex justify-between h-16 items-center">
 
                     {/* Logo */}
-                    <Link href="/" className="flex items-center flex-shrink-0">
+                    <Link href="/" className="group flex items-center flex-shrink-0">
                         <DSAverseLogo />
-                        <span className="text-xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
-                                       bg-clip-text text-transparent tracking-tight">
-                            DSAverse
+                        <span className="font-mono flex items-center leading-none select-none">
+                            {/* opening bracket */}
+                            <span className="text-indigo-400/60 text-sm font-normal
+                                           group-hover:text-indigo-400 transition-colors duration-300">
+                                &lt;
+                            </span>
+                            {/* DSA — hard white, heavy */}
+                            <span className="text-white font-bold text-[17px] tracking-tight">
+                                DSA
+                            </span>
+                            {/* verse — slow animated gradient */}
+                            <span
+                                className="font-bold text-[17px] tracking-tight gradient-text animate-gradient"
+                                style={{ backgroundImage: 'linear-gradient(135deg,#818cf8,#c084fc,#f472b6,#818cf8)' }}
+                            >
+                                verse
+                            </span>
+                            {/* closing bracket */}
+                            <span className="text-pink-400/50 text-sm font-normal ml-0.5
+                                           group-hover:text-pink-400/80 transition-colors duration-300">
+                                &nbsp;/&gt;
+                            </span>
                         </span>
                     </Link>
 
