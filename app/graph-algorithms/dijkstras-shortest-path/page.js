@@ -2,54 +2,48 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Settings2 } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { GraphCustomizer, layoutNodes } from '@/components/GraphCustomizer';
 
 const quizQuestions = [
     {
         question: "What data structure makes Dijkstra's efficient?",
         options: ["Regular Queue", "Stack", "Min-Priority Queue (Min-Heap)", "Hash Map"],
         correct: 2,
-        explanation: "A min-priority queue (min-heap) lets Dijkstra's always process the unvisited node with the smallest known distance in O(log V) time, giving the overall O((V+E) log V) complexity."
+        explanation: "A min-priority queue (min-heap) lets Dijkstra's always process the unvisited node with the smallest known distance in O(log V) time."
     },
     {
         question: "Can Dijkstra's algorithm handle negative edge weights?",
         options: ["Yes, always", "No — it may give wrong results", "Only if there are no negative cycles", "Yes, with a special flag"],
         correct: 1,
-        explanation: "Dijkstra's greedy assumption breaks with negative edges — once a node is settled it's never revisited, so a later negative edge could have given a shorter path. Use Bellman-Ford for negative weights."
+        explanation: "Dijkstra's greedy assumption breaks with negative edges. Once a node is settled it's never revisited, so a later negative edge could yield a shorter path. Use Bellman-Ford instead."
     },
     {
         question: "What does Dijkstra's guarantee at termination?",
-        options: ["A minimum spanning tree", "The shortest path from source to all reachable nodes", "Topological order", "Detection of negative cycles"],
+        options: ["A minimum spanning tree", "Shortest path from source to all reachable nodes", "Topological order", "Detection of negative cycles"],
         correct: 1,
-        explanation: "When Dijkstra's finishes, the distance table holds the shortest path length from the source to every reachable node. Following the predecessor pointers gives the actual path."
+        explanation: "When finished, the distance table holds the shortest path length from the source to every reachable node. Follow predecessor pointers to reconstruct the actual path."
     }
 ];
 
-// Weighted graph
-const NODES = [
-    { id: 0, x: 80, y: 180 },
-    { id: 1, x: 210, y: 90 },
-    { id: 2, x: 210, y: 270 },
-    { id: 3, x: 340, y: 40 },
-    { id: 4, x: 340, y: 180 },
-    { id: 5, x: 340, y: 320 },
+// Default weighted graph
+const DEFAULT_NODES = [
+    { id: 0, x: 80, y: 180 }, { id: 1, x: 210, y: 90 },
+    { id: 2, x: 210, y: 270 }, { id: 3, x: 340, y: 40 },
+    { id: 4, x: 340, y: 180 }, { id: 5, x: 340, y: 320 },
     { id: 6, x: 460, y: 180 },
 ];
+const DEFAULT_WEIGHTED_EDGES = [[0,1,4],[0,2,2],[1,3,5],[1,4,10],[2,4,3],[2,5,8],[3,6,2],[4,6,7],[5,6,6]];
+function buildDefaultWAdj() {
+    const adj = {};
+    for (let i = 0; i < 7; i++) adj[i] = [];
+    for (const [a,b,w] of DEFAULT_WEIGHTED_EDGES) { adj[a].push([b,w]); adj[b].push([a,w]); }
+    return adj;
+}
+const DEFAULT_WADJ = buildDefaultWAdj();
 
-// Weighted edges [a, b, weight]
-const WEIGHTED_EDGES = [
-    [0,1,4],[0,2,2],[1,3,5],[1,4,10],[2,4,3],
-    [2,5,8],[3,6,2],[4,6,7],[5,6,6]
-];
-
-// Build weighted adjacency list: { node: [[neighbor, weight], ...] }
-const WADJ = {};
-NODES.forEach(n => { WADJ[n.id] = []; });
-WEIGHTED_EDGES.forEach(([a, b, w]) => {
-    WADJ[a].push([b, w]);
-    WADJ[b].push([a, w]);
-});
+const INF = Infinity;
 
 const NODE_COLORS = {
     unvisited: { fill: '#334155', stroke: '#64748b', text: '#94a3b8' },
@@ -58,116 +52,77 @@ const NODE_COLORS = {
     settled:   { fill: '#15803d', stroke: '#22c55e', text: '#f0fdf4' },
 };
 
-const INF = Infinity;
-
-const generateDijkstraSteps = (startNode) => {
+function generateDijkstraSteps(startNode, nodes, weightedEdges, wadj) {
     const steps = [];
-    const ns = {};
-    NODES.forEach(n => { ns[n.id] = 'unvisited'; });
-    const dist = {};
-    const prev = {};
-    NODES.forEach(n => { dist[n.id] = INF; prev[n.id] = -1; });
+    const ns = Object.fromEntries(nodes.map(n => [n.id, 'unvisited']));
+    const dist = Object.fromEntries(nodes.map(n => [n.id, INF]));
+    const prev = Object.fromEntries(nodes.map(n => [n.id, -1]));
     dist[startNode] = 0;
 
-    steps.push({
-        nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-        pq: [], currentNode: -1, settledEdges: [],
-        explanation: `Starting Dijkstra's from node ${startNode}. Initialize all distances to ∞, source distance to 0.`
-    });
+    steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [], currentNode: -1,
+        explanation: `Starting Dijkstra's from node ${startNode}. Initialize all distances to ∞, source to 0.` });
 
-    // Simple min-heap simulation using sorted array
     const pq = [{ node: startNode, d: 0 }];
     const settled = new Set();
-    const settledEdges = [];
     ns[startNode] = 'inQueue';
 
-    steps.push({
-        nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-        pq: [...pq], currentNode: -1, settledEdges: [...settledEdges],
-        explanation: `Added node ${startNode} to the priority queue with distance 0. Priority queue: [(${startNode}, d=0)]`
-    });
+    steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [...pq], currentNode: -1,
+        explanation: `Added node ${startNode} to the priority queue with distance 0.` });
 
     while (pq.length > 0) {
-        // Extract min
         pq.sort((a, b) => a.d - b.d);
         const { node: u, d: du } = pq.shift();
 
         if (settled.has(u)) {
-            steps.push({
-                nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-                pq: [...pq], currentNode: -1, settledEdges: [...settledEdges],
-                explanation: `Popped node ${u} but it's already settled with a shorter distance — skip.`
-            });
+            steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [...pq], currentNode: -1,
+                explanation: `Popped node ${u} — already settled with a shorter distance. Skip.` });
             continue;
         }
 
         settled.add(u);
         ns[u] = 'current';
-        steps.push({
-            nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-            pq: [...pq], currentNode: u, settledEdges: [...settledEdges],
-            explanation: `Settled node ${u} with shortest distance ${dist[u]}. Exploring neighbors.`
-        });
+        steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [...pq], currentNode: u,
+            explanation: `Settled node ${u} with shortest distance ${dist[u]}. Exploring neighbors.` });
 
-        for (const [v, w] of WADJ[u]) {
+        for (const [v, w] of (wadj[u] || [])) {
             if (settled.has(v)) continue;
             const newDist = dist[u] + w;
-            steps.push({
-                nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-                pq: [...pq], currentNode: u, settledEdges: [...settledEdges],
-                explanation: `Edge ${u}→${v} (weight ${w}): current dist[${v}] = ${dist[v] === INF ? '∞' : dist[v]}, new path = ${dist[u]} + ${w} = ${newDist}. ${newDist < dist[v] ? 'Update!' : 'No improvement.'}`
-            });
+            steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [...pq], currentNode: u,
+                explanation: `Edge ${u}→${v} (weight ${w}): current dist[${v}] = ${dist[v] === INF ? '∞' : dist[v]}, new = ${dist[u]} + ${w} = ${newDist}. ${newDist < dist[v] ? 'Update!' : 'No improvement.'}` });
 
             if (newDist < dist[v]) {
                 dist[v] = newDist;
                 prev[v] = u;
                 if (ns[v] === 'unvisited') ns[v] = 'inQueue';
                 pq.push({ node: v, d: newDist });
-
-                steps.push({
-                    nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-                    pq: [...pq], currentNode: u, settledEdges: [...settledEdges],
-                    explanation: `Updated dist[${v}] = ${newDist}, predecessor = ${u}. Added (${v}, d=${newDist}) to priority queue.`
-                });
+                steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [...pq], currentNode: u,
+                    explanation: `Updated dist[${v}] = ${newDist}, predecessor = ${u}. Added (${v}, d=${newDist}) to priority queue.` });
             }
         }
 
         ns[u] = 'settled';
-        settledEdges.push(u);
-        steps.push({
-            nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-            pq: [...pq], currentNode: -1, settledEdges: [...settledEdges],
-            explanation: `Node ${u} finalized. Shortest distance from ${startNode} to ${u} = ${dist[u]}.`
-        });
+        steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [...pq], currentNode: -1,
+            explanation: `Node ${u} finalized. Shortest distance from ${startNode} to ${u} = ${dist[u]}.` });
     }
 
-    steps.push({
-        nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev },
-        pq: [], currentNode: -1, settledEdges: [...settledEdges],
-        explanation: `Dijkstra's complete! Shortest distances from node ${startNode}: ${NODES.map(n => `${n.id}:${dist[n.id] === INF ? '∞' : dist[n.id]}`).join(', ')}`
-    });
+    steps.push({ nodeStates: { ...ns }, dist: { ...dist }, prev: { ...prev }, pq: [], currentNode: -1,
+        explanation: `Dijkstra's complete! Shortest distances from node ${startNode}: ${nodes.map(n => `${n.id}:${dist[n.id] === INF ? '∞' : dist[n.id]}`).join(', ')}.` });
 
     return steps;
-};
+}
 
 const codeExample = `import heapq
 
 def dijkstra(graph, start):
-    # dist[node] = shortest distance from start
     dist = {node: float('inf') for node in graph}
     dist[start] = 0
     prev = {node: None for node in graph}
-
-    # Min-heap: (distance, node)
     heap = [(0, start)]
 
     while heap:
         d, u = heapq.heappop(heap)
-
-        # Skip if we already found a shorter path
         if d > dist[u]:
             continue
-
         for v, weight in graph[u]:
             new_dist = dist[u] + weight
             if new_dist < dist[v]:
@@ -175,18 +130,16 @@ def dijkstra(graph, start):
                 prev[v] = u
                 heapq.heappush(heap, (new_dist, v))
 
-    return dist, prev
-
-# Reconstruct path from start to target
-def get_path(prev, target):
-    path = []
-    node = target
-    while node is not None:
-        path.append(node)
-        node = prev[node]
-    return list(reversed(path))`;
+    return dist, prev`;
 
 export default function DijkstraPage() {
+    const [customGraph, setCustomGraph] = useState(null);
+    const [showCustomizer, setShowCustomizer] = useState(false);
+
+    const nodes        = customGraph ? layoutNodes(customGraph.nodeCount) : DEFAULT_NODES;
+    const weightedEdges = customGraph ? customGraph.edges : DEFAULT_WEIGHTED_EDGES;
+    const wadj         = customGraph ? customGraph.adj   : DEFAULT_WADJ;
+
     const [startNode, setStartNode] = useState(0);
     const [stepHistory, setStepHistory] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
@@ -196,10 +149,15 @@ export default function DijkstraPage() {
     const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
 
     useEffect(() => {
-        setStepHistory(generateDijkstraSteps(startNode));
+        setStartNode(prev => Math.min(prev, nodes.length - 1));
+    }, [nodes.length]);
+
+    useEffect(() => {
+        const safeStart = Math.min(startNode, nodes.length - 1);
+        setStepHistory(generateDijkstraSteps(safeStart, nodes, weightedEdges, wadj));
         setCurrentStep(0);
         setIsPlaying(false);
-    }, [startNode]);
+    }, [startNode, customGraph]);
 
     useEffect(() => {
         if (isPlaying && currentStep < stepHistory.length - 1) {
@@ -208,22 +166,29 @@ export default function DijkstraPage() {
         } else if (currentStep >= stepHistory.length - 1) setIsPlaying(false);
     }, [isPlaying, currentStep, stepHistory, speed]);
 
-    const state = stepHistory[currentStep] || { nodeStates: {}, dist: {}, prev: {}, pq: [], currentNode: -1, settledEdges: [], explanation: '' };
-
-    const handleQuizAnswer = (i) => {
-        if (quizState.answered) return;
-        setQuizState(p => ({ ...p, selected: i, answered: true, score: i === quizQuestions[p.current].correct ? p.score + 1 : p.score }));
-    };
-    const nextQuestion = () => {
-        if (quizState.current < quizQuestions.length - 1) setQuizState(p => ({ ...p, current: p.current + 1, selected: null, answered: false }));
-        else setQuizState(p => ({ ...p, complete: true }));
-    };
-    const resetQuiz = () => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+    const state = stepHistory[currentStep] || { nodeStates: {}, dist: {}, prev: {}, pq: [], currentNode: -1, explanation: '' };
 
     const isTreeEdge = (a, b) => state.prev[b] === a || state.prev[a] === b;
 
+    const handleAnswer = (i) => {
+        if (quizState.answered) return;
+        setQuizState(p => ({ ...p, selected: i, answered: true, score: i === quizQuestions[p.current].correct ? p.score + 1 : p.score }));
+    };
+    const nextQ = () => {
+        if (quizState.current < quizQuestions.length - 1) setQuizState(p => ({ ...p, current: p.current + 1, selected: null, answered: false }));
+        else setQuizState(p => ({ ...p, complete: true }));
+    };
+
+    const handleApplyGraph = (result) => {
+        setCustomGraph(result);
+        setStartNode(0);
+    };
+
     return (
         <div className="min-h-screen bg-slate-950">
+            <GraphCustomizer open={showCustomizer} onClose={() => setShowCustomizer(false)}
+                onApply={handleApplyGraph} weighted={true} />
+
             <div className="bg-gradient-to-r from-cyan-600 to-sky-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center mb-6">
@@ -250,16 +215,31 @@ export default function DijkstraPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <div className="flex flex-wrap items-center gap-3 mb-6">
-                                <span className="text-sm font-medium text-slate-300">Start Node:</span>
-                                {NODES.map(n => (
-                                    <button key={n.id} onClick={() => setStartNode(n.id)}
-                                        className={`w-9 h-9 rounded-full text-sm font-bold transition-all ${startNode === n.id ? 'bg-cyan-500 text-white scale-110' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>
-                                        {n.id}
+                            {/* Graph selector bar */}
+                            <div className="flex flex-wrap items-center gap-3 mb-5 pb-5 border-b border-slate-700/50">
+                                <div className="flex items-center gap-2 mr-2">
+                                    <span className="text-sm font-medium text-slate-300">Start Node:</span>
+                                    {nodes.map(n => (
+                                        <button key={n.id} onClick={() => setStartNode(n.id)}
+                                            className={`w-8 h-8 rounded-full text-xs font-bold transition-all ${startNode === n.id ? 'bg-cyan-500 text-white scale-110' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>
+                                            {n.id}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button onClick={() => setShowCustomizer(true)}
+                                    className={`ml-auto flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium border transition-all ${customGraph ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300' : 'border-slate-600 bg-slate-800/50 text-slate-400 hover:border-cyan-500 hover:text-cyan-300'}`}>
+                                    <Settings2 className="h-4 w-4" />
+                                    {customGraph ? 'Custom Graph' : 'Customize Graph'}
+                                </button>
+                                {customGraph && (
+                                    <button onClick={() => { setCustomGraph(null); setStartNode(0); }}
+                                        className="text-xs text-slate-500 hover:text-slate-300 transition-colors underline underline-offset-2">
+                                        Reset to default
                                     </button>
-                                ))}
+                                )}
                             </div>
 
+                            {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
                                 <button onClick={() => isPlaying ? setIsPlaying(false) : setIsPlaying(true)}
                                     className="flex items-center gap-2 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors font-medium"
@@ -284,7 +264,8 @@ export default function DijkstraPage() {
 
                             <div className="mb-6">
                                 <label className="block text-sm font-medium mb-2 text-slate-300">Speed: {speed}ms</label>
-                                <input type="range" min="400" max="2500" value={speed} onChange={e => setSpeed(Number(e.target.value))} className="w-full max-w-xs accent-cyan-500" />
+                                <input type="range" min="400" max="2500" value={speed}
+                                    onChange={e => setSpeed(Number(e.target.value))} className="w-full max-w-xs accent-cyan-500" />
                             </div>
 
                             <div className="mb-6">
@@ -292,20 +273,22 @@ export default function DijkstraPage() {
                                     <span>Step {currentStep + 1} of {stepHistory.length}</span>
                                 </div>
                                 <div className="w-full bg-slate-700 rounded-full h-2">
-                                    <div className="bg-cyan-500 h-2 rounded-full transition-all duration-300" style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }} />
+                                    <div className="bg-cyan-500 h-2 rounded-full transition-all duration-300"
+                                        style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }} />
                                 </div>
                             </div>
 
-                            {/* Weighted Graph SVG */}
+                            {/* Graph SVG — weighted */}
                             <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4 mb-6">
                                 <svg viewBox="0 0 540 360" className="w-full" style={{ maxHeight: '320px' }}>
-                                    {/* Edges with weights */}
-                                    {WEIGHTED_EDGES.map(([a, b, w]) => {
-                                        const na = NODES[a], nb = NODES[b];
+                                    {weightedEdges.map(([a, b, w], idx) => {
+                                        const na = nodes.find(n => n.id === a);
+                                        const nb = nodes.find(n => n.id === b);
+                                        if (!na || !nb) return null;
                                         const tree = isTreeEdge(a, b);
                                         const mx = (na.x + nb.x) / 2, my = (na.y + nb.y) / 2;
                                         return (
-                                            <g key={`${a}-${b}`}>
+                                            <g key={idx}>
                                                 <line x1={na.x} y1={na.y} x2={nb.x} y2={nb.y}
                                                     stroke={tree ? '#22c55e' : '#475569'}
                                                     strokeWidth={tree ? 2.5 : 1.5}
@@ -316,11 +299,10 @@ export default function DijkstraPage() {
                                             </g>
                                         );
                                     })}
-                                    {/* Nodes */}
-                                    {NODES.map(n => {
+                                    {nodes.map(n => {
                                         const st = state.nodeStates[n.id] || 'unvisited';
-                                        const c = NODE_COLORS[st];
-                                        const d = state.dist?.[n.id];
+                                        const c  = NODE_COLORS[st];
+                                        const d  = state.dist?.[n.id];
                                         return (
                                             <g key={n.id} transform={`translate(${n.x},${n.y})`}>
                                                 <circle r={n.id === state.currentNode ? 26 : 22}
@@ -338,10 +320,10 @@ export default function DijkstraPage() {
                                     })}
                                 </svg>
                                 <div className="flex flex-wrap justify-center gap-4 mt-3 text-xs text-slate-400">
-                                    {[['#334155','#64748b','Unvisited'], ['#a16207','#eab308','In Heap'], ['#c2410c','#f97316','Current'], ['#15803d','#22c55e','Settled']].map(([fill, stroke, label]) => (
-                                        <div key={label} className="flex items-center gap-1.5">
-                                            <svg width="14" height="14"><circle cx="7" cy="7" r="6" fill={fill} stroke={stroke} strokeWidth="1.5" /></svg>
-                                            <span>{label}</span>
+                                    {[['#334155','#64748b','Unvisited'],['#a16207','#eab308','In Heap'],['#c2410c','#f97316','Current'],['#15803d','#22c55e','Settled']].map(([f,s,l]) => (
+                                        <div key={l} className="flex items-center gap-1.5">
+                                            <svg width="14" height="14"><circle cx="7" cy="7" r="6" fill={f} stroke={s} strokeWidth="1.5" /></svg>
+                                            <span>{l}</span>
                                         </div>
                                     ))}
                                     <div className="flex items-center gap-1.5">
@@ -351,34 +333,29 @@ export default function DijkstraPage() {
                                 </div>
                             </div>
 
-                            {/* Distance table */}
+                            {/* Distance / predecessor table */}
                             <div className="mb-6 overflow-x-auto">
                                 <table className="w-full text-sm text-center">
                                     <thead>
                                         <tr className="border-b border-slate-700">
                                             <td className="py-2 px-3 text-slate-400 text-left">Node</td>
-                                            {NODES.map(n => <td key={n.id} className={`py-2 px-3 font-bold ${n.id === state.currentNode ? 'text-orange-400' : 'text-slate-300'}`}>{n.id}</td>)}
+                                            {nodes.map(n => <td key={n.id} className={`py-2 px-3 font-bold ${n.id === state.currentNode ? 'text-orange-400' : 'text-slate-300'}`}>{n.id}</td>)}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr className="border-b border-slate-800">
                                             <td className="py-2 px-3 text-slate-400 text-left">dist</td>
-                                            {NODES.map(n => {
+                                            {nodes.map(n => {
                                                 const d = state.dist?.[n.id];
                                                 const st = state.nodeStates?.[n.id];
-                                                return (
-                                                    <td key={n.id} className={`py-2 px-3 font-mono font-bold ${st === 'settled' ? 'text-green-400' : st === 'current' ? 'text-orange-400' : st === 'inQueue' ? 'text-yellow-400' : 'text-slate-500'}`}>
-                                                        {d === undefined || d === INF ? '∞' : d}
-                                                    </td>
-                                                );
+                                                return <td key={n.id} className={`py-2 px-3 font-mono font-bold ${st === 'settled' ? 'text-green-400' : st === 'current' ? 'text-orange-400' : st === 'inQueue' ? 'text-yellow-400' : 'text-slate-500'}`}>
+                                                    {d === undefined || d === INF ? '∞' : d}
+                                                </td>;
                                             })}
                                         </tr>
                                         <tr>
                                             <td className="py-2 px-3 text-slate-400 text-left">prev</td>
-                                            {NODES.map(n => {
-                                                const p = state.prev?.[n.id];
-                                                return <td key={n.id} className="py-2 px-3 text-slate-500 font-mono">{p === -1 || p === undefined ? '—' : p}</td>;
-                                            })}
+                                            {nodes.map(n => <td key={n.id} className="py-2 px-3 text-slate-500 font-mono">{state.prev?.[n.id] === -1 || state.prev?.[n.id] === undefined ? '—' : state.prev[n.id]}</td>)}
                                         </tr>
                                     </tbody>
                                 </table>
@@ -399,17 +376,19 @@ export default function DijkstraPage() {
                     {/* Sidebar */}
                     <div className="space-y-6">
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Clock className="h-5 w-5 text-cyan-500" />
-                                <h3 className="font-bold text-white">Algorithm Details</h3>
-                            </div>
+                            <div className="flex items-center gap-2 mb-4"><Clock className="h-5 w-5 text-cyan-500" /><h3 className="font-bold text-white">Algorithm Details</h3></div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between"><span className="text-slate-300">Time:</span><code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O((V+E) log V)</code></div>
                                 <div className="flex justify-between"><span className="text-slate-300">Space:</span><code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O(V)</code></div>
                                 <div className="flex justify-between"><span className="text-slate-300">Data Structure:</span><span className="bg-cyan-500/15 text-cyan-400 px-2 py-1 rounded">Min-Heap</span></div>
                                 <div className="flex justify-between"><span className="text-slate-300">Negative weights:</span><span className="bg-red-500/15 text-red-400 px-2 py-1 rounded">No</span></div>
-                                <div className="flex justify-between"><span className="text-slate-300">Greedy:</span><span className="bg-green-500/15 text-green-400 px-2 py-1 rounded">Yes</span></div>
                             </div>
+                            {customGraph && (
+                                <div className="mt-4 pt-4 border-t border-slate-700/50 text-xs text-slate-400">
+                                    <span className="text-cyan-400 font-medium">Custom graph: </span>
+                                    {customGraph.nodeCount} nodes, {customGraph.edges.length} edges
+                                </div>
+                            )}
                         </div>
 
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
@@ -417,10 +396,8 @@ export default function DijkstraPage() {
                             <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Single-source shortest path</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>GPS navigation and routing</span></li>
-                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Network packet routing</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Non-negative weighted graphs</span></li>
                                 <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Graphs with negative edges (use Bellman-Ford)</span></li>
-                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>All-pairs shortest paths (use Floyd-Warshall)</span></li>
                             </ul>
                         </div>
 
@@ -430,7 +407,8 @@ export default function DijkstraPage() {
                                 <div className="text-center">
                                     <p className="text-2xl font-bold text-white mb-2">{quizState.score}/{quizQuestions.length}</p>
                                     <p className="text-slate-400 mb-4">{quizState.score === quizQuestions.length ? 'Perfect!' : 'Keep practicing!'}</p>
-                                    <button onClick={resetQuiz} className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors text-sm font-medium">Try Again</button>
+                                    <button onClick={() => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false })}
+                                        className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 text-sm font-medium">Try Again</button>
                                 </div>
                             ) : (
                                 <div>
@@ -443,13 +421,13 @@ export default function DijkstraPage() {
                                             else if (i === quizQuestions[quizState.current].correct) cls += 'border-green-500 bg-green-500/10 text-green-300';
                                             else if (i === quizState.selected) cls += 'border-red-500 bg-red-500/10 text-red-300';
                                             else cls += 'border-slate-700 text-slate-500 bg-slate-800/30';
-                                            return <button key={i} onClick={() => handleQuizAnswer(i)} className={cls}>{opt}</button>;
+                                            return <button key={i} onClick={() => handleAnswer(i)} className={cls}>{opt}</button>;
                                         })}
                                     </div>
                                     {quizState.answered && (
                                         <div className="mt-3">
                                             <p className="text-xs text-slate-400 mb-3">{quizQuestions[quizState.current].explanation}</p>
-                                            <button onClick={nextQuestion} className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors text-sm font-medium">
+                                            <button onClick={nextQ} className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 text-sm font-medium">
                                                 {quizState.current < quizQuestions.length - 1 ? 'Next Question' : 'See Results'}
                                             </button>
                                         </div>
