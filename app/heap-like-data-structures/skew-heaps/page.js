@@ -2,8 +2,39 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, Pause, RotateCcw, ArrowLeft, Plus, Minus, Eye, Shuffle } from 'lucide-react';
+import { Play, Pause, RotateCcw, ArrowLeft, Plus, Minus, Eye, SkipBack, SkipForward, Info, GitMerge, CheckCircle, XCircle, Code } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+
+const quizQuestions = [
+    {
+        question: "What makes skew heaps 'self-adjusting' and different from leftist heaps?",
+        options: [
+            "Skew heaps maintain null path length at every node",
+            "Skew heaps unconditionally swap left and right children during every merge step",
+            "Skew heaps use a separate balance counter per node",
+            "Skew heaps only allow insertion, not extraction"
+        ],
+        correct: 1,
+        explanation: "In skew heaps, after recursively merging the right subtree, the children are always unconditionally swapped — no condition checked, no npl stored. This simple rule provides amortized O(log n) performance without any bookkeeping."
+    },
+    {
+        question: "What is the amortized time complexity of merging two skew heaps of sizes m and n?",
+        options: ["O(1)", "O(m + n)", "O(log(m + n))", "O(m × n)"],
+        correct: 2,
+        explanation: "Merge runs in O(log(m+n)) amortized time. Individual operations can be O(n) worst case, but the unconditional swap self-balances the heap over a sequence of operations, giving the O(log n) amortized guarantee."
+    },
+    {
+        question: "Skew heap differs from leftist heap in that skew heap:",
+        options: [
+            "Stores npl but conditionally skips the swap",
+            "Requires no extra metadata per node and always swaps children",
+            "Uses a rank field instead of npl",
+            "Only works as a max-heap, not min-heap"
+        ],
+        correct: 1,
+        explanation: "Skew heap stores no extra per-node metadata (no npl, no rank) and always swaps children after every merge step. Leftist heap stores npl and only swaps when npl(left) < npl(right). Skew is simpler to implement."
+    }
+];
 
 export default function SkewHeapsPage() {
     const [heap, setHeap] = useState(null);
@@ -11,699 +42,534 @@ export default function SkewHeapsPage() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [stepHistory, setStepHistory] = useState([]);
-    const [speed, setSpeed] = useState(1500);
+    const [speed, setSpeed] = useState(1000);
     const [inputValue, setInputValue] = useState('');
     const [mergeValue, setMergeValue] = useState('');
-    const [nodeIdCounter, setNodeIdCounter] = useState(1);
+    const [idSeq, setIdSeq] = useState(1);
     const [totalSwaps, setTotalSwaps] = useState(0);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+    const [showCode, setShowCode] = useState(false);
 
-    useEffect(() => {
-        reset();
-    }, []);
+    const clone = (n) => n ? JSON.parse(JSON.stringify(n)) : null;
 
-    const createNode = (value) => ({
-        value,
-        left: null,
-        right: null,
-        id: nodeIdCounter + Math.random()
-    });
-
-    // Merge two skew heaps - core operation
-    const mergeHeaps = (h1, h2, steps = []) => {
+    // Merge with step recording
+    const mergeWithSteps = (h1, h2, steps) => {
         if (!h1) return h2;
         if (!h2) return h1;
 
-        // Ensure h1 has smaller root
-        if (h1.value > h2.value) {
-            [h1, h2] = [h2, h1];
-        }
+        if (h1.value > h2.value) [h1, h2] = [h2, h1];
 
         steps.push({
-            heap: JSON.parse(JSON.stringify(h1)),
-            heap2: JSON.parse(JSON.stringify(h2)),
-            highlightNodes: [h1.id, h2.id],
-            explanation: `🔄 Merge: Compare roots ${h1.value} and ${h2.value}. Keep ${h1.value} as root.`,
+            heap: clone(h1), heap2: clone(h2),
+            highlightIds: [h1.id, h2.id],
+            explanation: `Compare roots ${h1.value} and ${h2.value}. Keep ${h1.value} as root (smaller). Recursively merge ${h2.value}'s subtree with ${h1.value}'s right child.`,
             phase: 'compare',
-            swapHappened: false
+            swapped: false
         });
 
-        // Recursively merge h2 with right subtree of h1
-        h1.right = mergeHeaps(h2, h1.right, steps);
+        h1.right = mergeWithSteps(h2, h1.right, steps);
 
         steps.push({
-            heap: JSON.parse(JSON.stringify(h1)),
-            heap2: null,
-            highlightNodes: [h1.id],
-            explanation: `🔗 Merged right subtree of ${h1.value}. Now SKEW (swap children).`,
-            phase: 'merge',
-            swapHappened: false
+            heap: clone(h1), heap2: null,
+            highlightIds: [h1.id],
+            explanation: `Right subtree of ${h1.value} is set. Now apply the SKEW operation: unconditionally swap left and right children of ${h1.value}.`,
+            phase: 'pre-swap',
+            swapped: false
         });
 
-        // SWAP: Always swap left and right children (the "skew" part)
         [h1.left, h1.right] = [h1.right, h1.left];
 
         steps.push({
-            heap: JSON.parse(JSON.stringify(h1)),
-            heap2: null,
-            highlightNodes: [h1.id],
-            explanation: `↔️ SKEW: Swapped left and right children of ${h1.value}`,
+            heap: clone(h1), heap2: null,
+            highlightIds: [h1.id],
+            explanation: `SKEW: Swapped children of ${h1.value}. This self-adjusts the tree without any balance bookkeeping.`,
             phase: 'swap',
-            swapHappened: true
+            swapped: true
         });
 
         return h1;
     };
 
+    // Silent merge (no steps) for building second heap from CSV
+    const silentMerge = (a, b) => {
+        if (!a) return b;
+        if (!b) return a;
+        if (a.value > b.value) [a, b] = [b, a];
+        a.right = silentMerge(b, a.right);
+        [a.left, a.right] = [a.right, a.left];
+        return a;
+    };
+
     const generateSteps = (operation, value = null, mergeHeap = null) => {
         const steps = [];
-        let currentHeap = heap ? JSON.parse(JSON.stringify(heap)) : null;
+        let h = clone(heap);
 
         if (operation === 'insert') {
-            const newNode = createNode(value);
-
-            if (!currentHeap) {
-                currentHeap = newNode;
-                steps.push({
-                    heap: currentHeap,
-                    heap2: null,
-                    highlightNodes: [newNode.id],
-                    explanation: `✅ First node! Heap initialized with ${value}`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
+            const node = { id: idSeq + Math.random(), value, left: null, right: null };
+            if (!h) {
+                h = node;
+                steps.push({ heap: clone(h), heap2: null, highlightIds: [node.id], explanation: `First node inserted. Heap initialised with ${value}.`, phase: 'complete', swapped: false });
             } else {
-                steps.push({
-                    heap: currentHeap,
-                    heap2: newNode,
-                    highlightNodes: [newNode.id],
-                    explanation: `➕ Create new node ${value} and merge with main heap`,
-                    phase: 'prepare',
-                    swapHappened: false
-                });
-
-                currentHeap = mergeHeaps(currentHeap, newNode, steps);
-
-                steps.push({
-                    heap: currentHeap,
-                    heap2: null,
-                    highlightNodes: [],
-                    explanation: `✅ Insert complete! Node ${value} merged into heap`,
-                    phase: 'complete',
-                    swapHappened: false
-                });
+                steps.push({ heap: clone(h), heap2: clone(node), highlightIds: [node.id], explanation: `Create node ${value} as a singleton heap. Begin merging with main heap.`, phase: 'prepare', swapped: false });
+                h = mergeWithSteps(h, node, steps);
+                steps.push({ heap: clone(h), heap2: null, highlightIds: [], explanation: `Insert complete. Node ${value} is now part of the heap.`, phase: 'complete', swapped: false });
             }
 
         } else if (operation === 'extractMin') {
-            if (!currentHeap) {
-                steps.push({
-                    heap: null,
-                    highlightNodes: [],
-                    explanation: `❌ Heap is empty! Cannot extract minimum.`,
-                    phase: 'error'
-                });
+            if (!h) {
+                steps.push({ heap: null, heap2: null, highlightIds: [], explanation: 'Heap is empty — nothing to extract.', phase: 'error', swapped: false });
                 return steps;
             }
+            const minVal = h.value;
+            steps.push({ heap: clone(h), heap2: null, highlightIds: [h.id], explanation: `Minimum is root ${minVal}. Remove it and merge its left and right subtrees.`, phase: 'identify', swapped: false });
 
-            const minValue = currentHeap.value;
-
-            steps.push({
-                heap: currentHeap,
-                highlightNodes: [currentHeap.id],
-                explanation: `🎯 Extract minimum: ${minValue} (root node)`,
-                phase: 'identify'
-            });
-
-            const leftSubtree = currentHeap.left;
-            const rightSubtree = currentHeap.right;
-
-            if (!leftSubtree && !rightSubtree) {
-                currentHeap = null;
+            const left = h.left, right = h.right;
+            if (!left && !right) {
+                h = null;
+                steps.push({ heap: null, heap2: null, highlightIds: [], explanation: `Removed ${minVal}. Heap is now empty.`, phase: 'complete', swapped: false });
             } else {
-                steps.push({
-                    heap: leftSubtree,
-                    heap2: rightSubtree,
-                    highlightNodes: [],
-                    explanation: `🔀 Merge left and right subtrees of removed root`,
-                    phase: 'merging'
-                });
-                currentHeap = mergeHeaps(leftSubtree, rightSubtree, steps);
+                if (left && right) {
+                    steps.push({ heap: clone(left), heap2: clone(right), highlightIds: [], explanation: `Merge left subtree (root ${left.value}) with right subtree (root ${right.value}).`, phase: 'merging', swapped: false });
+                }
+                h = mergeWithSteps(left, right, steps);
+                steps.push({ heap: clone(h), heap2: null, highlightIds: [], explanation: `Extract-min complete. Removed ${minVal}. Heap restructured via merge.`, phase: 'complete', swapped: false });
             }
 
-            steps.push({
-                heap: currentHeap,
-                highlightNodes: [],
-                explanation: `✅ Extracted ${minValue}. Heap property maintained.`,
-                phase: 'complete'
-            });
-
         } else if (operation === 'merge') {
-            if (!currentHeap && !mergeHeap) return steps;
-
-            steps.push({
-                heap: currentHeap,
-                heap2: mergeHeap,
-                highlightNodes: [],
-                explanation: `🔀 Begin merging two skew heaps`,
-                phase: 'prepare'
-            });
-
-            currentHeap = mergeHeaps(currentHeap, mergeHeap, steps);
-
-            steps.push({
-                heap: currentHeap,
-                heap2: null,
-                highlightNodes: [],
-                explanation: `✅ Merge complete! All nodes combined into single heap`,
-                phase: 'complete'
-            });
+            if (!h && !mergeHeap) return steps;
+            steps.push({ heap: clone(h), heap2: clone(mergeHeap), highlightIds: [], explanation: 'Merging two skew heaps by following their right spines and applying unconditional swaps.', phase: 'prepare', swapped: false });
+            h = mergeWithSteps(h, mergeHeap, steps);
+            steps.push({ heap: clone(h), heap2: null, highlightIds: [], explanation: 'Merge complete. All nodes combined into a single skew heap.', phase: 'complete', swapped: false });
 
         } else if (operation === 'findMin') {
-            if (currentHeap) {
-                steps.push({
-                    heap: currentHeap,
-                    highlightNodes: [currentHeap.id],
-                    explanation: `👀 Minimum value: ${currentHeap.value} (at root)`,
-                    phase: 'complete'
-                });
+            if (!h) {
+                steps.push({ heap: null, heap2: null, highlightIds: [], explanation: 'Heap is empty.', phase: 'error', swapped: false });
+            } else {
+                steps.push({ heap: clone(h), heap2: null, highlightIds: [h.id], explanation: `Minimum value is ${h.value} (always at root). Find-min is O(1).`, phase: 'complete', swapped: false });
             }
         }
 
         return steps;
     };
 
-    const handleInsert = () => {
-        if (!inputValue || isNaN(inputValue)) return;
-        setNodeIdCounter(p => p + 1);
-        const steps = generateSteps('insert', parseInt(inputValue));
+    const runOperation = (op, val = null, mergeHeap = null) => {
+        const steps = generateSteps(op, val, mergeHeap);
+        if (!steps.length) return;
         setStepHistory(steps);
         setCurrentStep(0);
         setIsPlaying(true);
+    };
+
+    useEffect(() => {
+        if (!isPlaying || !stepHistory.length) return;
+        if (currentStep >= stepHistory.length - 1) {
+            const final = stepHistory[stepHistory.length - 1];
+            setHeap(final.heap);
+            setHeap2(final.heap2 ?? null);
+            setIsPlaying(false);
+            return;
+        }
+        const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+        return () => clearTimeout(t);
+    }, [isPlaying, currentStep, stepHistory, speed]);
+
+    useEffect(() => {
+        setTotalSwaps(stepHistory.filter(s => s.swapped).length);
+    }, [stepHistory]);
+
+    const reset = () => { setHeap(null); setHeap2(null); setStepHistory([]); setCurrentStep(0); setIsPlaying(false); setTotalSwaps(0); };
+
+    const handleInsert = () => {
+        if (!inputValue || isNaN(inputValue)) return;
+        setIdSeq(v => v + 1);
+        runOperation('insert', parseInt(inputValue));
         setInputValue('');
     };
 
-    const handleExtractMin = () => {
-        const steps = generateSteps('extractMin');
-        setStepHistory(steps);
-        setCurrentStep(0);
-        setIsPlaying(true);
-    };
-
     const handleMerge = () => {
-        if (!mergeValue) return;
-        const values = mergeValue.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
-        if (values.length === 0) return;
+        if (!mergeValue.trim()) return;
+        const vals = mergeValue.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+        if (!vals.length) return;
 
         let newHeap = null;
-        for (const val of values) {
-            const node = {
-                value: val,
-                left: null,
-                right: null,
-                id: nodeIdCounter + Math.random()
-            };
-            // Locally merge to build the second heap
-            if (!newHeap) newHeap = node;
-            else {
-                // We need a local merge function that doesn't track steps for building the input heap
-                const localMerge = (a, b) => {
-                    if (!a) return b; if (!b) return a;
-                    if (a.value > b.value) [a, b] = [b, a];
-                    a.right = localMerge(b, a.right);
-                    [a.left, a.right] = [a.right, a.left];
-                    return a;
-                };
-                newHeap = localMerge(newHeap, node);
-            }
-        }
-        setNodeIdCounter(prev => prev + values.length);
-
-        const steps = generateSteps('merge', null, newHeap);
-        setStepHistory(steps);
-        setCurrentStep(0);
-        setIsPlaying(true);
+        vals.forEach(val => {
+            const node = { id: idSeq + Math.random(), value: val, left: null, right: null };
+            newHeap = silentMerge(newHeap, node);
+        });
+        setIdSeq(v => v + vals.length);
+        runOperation('merge', null, newHeap);
         setMergeValue('');
     };
 
-    const handleFindMin = () => {
-        const steps = generateSteps('findMin');
-        setStepHistory(steps);
-        setCurrentStep(0);
+    const handleQuizAnswer = (idx) => {
+        if (quizState.answered) return;
+        const correct = idx === quizQuestions[quizState.current].correct;
+        setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
     };
-
-    const playAnimation = () => setIsPlaying(true);
-    const pauseAnimation = () => setIsPlaying(false);
-    const reset = () => {
-        setHeap(null);
-        setHeap2(null);
-        setStepHistory([]);
-        setCurrentStep(0);
-        setIsPlaying(false);
-        setTotalSwaps(0);
+    const nextQuestion = () => {
+        if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+        else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
     };
-
-    useEffect(() => {
-        let interval;
-        if (isPlaying && currentStep < stepHistory.length - 1) {
-            interval = setInterval(() => {
-                setCurrentStep(prev => prev + 1);
-            }, speed);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-            if (stepHistory[stepHistory.length - 1]) {
-                setHeap(stepHistory[stepHistory.length - 1].heap);
-            }
-        }
-        return () => clearInterval(interval);
-    }, [isPlaying, currentStep, stepHistory, speed]);
-
-    // Count swaps
-    useEffect(() => {
-        const swapCount = stepHistory.filter(step => step.swapHappened).length;
-        setTotalSwaps(swapCount);
-    }, [stepHistory]);
 
     const currentState = stepHistory[currentStep] || {
-        heap: heap,
-        heap2: heap2,
-        highlightNodes: [],
-        explanation: 'Select an operation to begin visualization',
+        heap, heap2: null,
+        highlightIds: [],
+        explanation: 'Insert values to build the heap. Notice the unconditional child swap on every merge step.',
         phase: '',
-        swapHappened: false
+        swapped: false
     };
 
-    const renderSkewHeap = (node, x, y, level = 0) => {
-        if (!node) return [];
+    const countNodes = (n) => !n ? 0 : 1 + countNodes(n.left) + countNodes(n.right);
+    const getHeight = (n) => !n ? 0 : 1 + Math.max(getHeight(n.left), getHeight(n.right));
 
-        const elements = [];
-        const nodeRadius = 20;
-        // Improved spacing logic to prevent overlap in deep trees
-        const minSpacing = 60;
-        const horizontalSpacing = Math.max(300 / Math.pow(1.8, level), minSpacing);
-        const verticalSpacing = 70;
-
-        const isHighlighted = currentState.highlightNodes.includes(node.id);
-        const nodeColor = isHighlighted
-            ? 'fill-yellow-400 stroke-yellow-600 animate-pulse'
-            : 'fill-amber-400 stroke-amber-600';
+    const drawSkewTree = (node, x, y, level, elems, isSecond = false) => {
+        if (!node) return;
+        const hSpacing = Math.max(180 / Math.pow(1.9, level), 26);
+        const vSpacing = 66;
+        const R = 20;
+        const isHL = currentState.highlightIds.includes(node.id);
+        const fill = isHL ? '#eab308' : isSecond ? '#ea580c' : '#b45309';
+        const stroke = isHL ? '#ca8a04' : isSecond ? '#c2410c' : '#92400e';
 
         if (node.left) {
-            elements.push(
-                <line
-                    key={`edge-left-${node.id}`}
-                    x1={x} y1={y + nodeRadius}
-                    x2={x - horizontalSpacing} y2={y + verticalSpacing - nodeRadius}
-                    className="stroke-amber-400 stroke-2"
-                />
-            );
-            elements.push(...renderSkewHeap(node.left, x - horizontalSpacing, y + verticalSpacing, level + 1));
+            const lx = x - hSpacing, ly = y + vSpacing;
+            elems.push(<line key={`le-${node.id}`} x1={x} y1={y + R} x2={lx} y2={ly - R} stroke="#78350f" strokeWidth="1.5" />);
+            drawSkewTree(node.left, lx, ly, level + 1, elems, isSecond);
         }
-
         if (node.right) {
-            elements.push(
-                <line
-                    key={`edge-right-${node.id}`}
-                    x1={x} y1={y + nodeRadius}
-                    x2={x + horizontalSpacing} y2={y + verticalSpacing - nodeRadius}
-                    className="stroke-amber-400 stroke-2"
-                />
-            );
-            elements.push(...renderSkewHeap(node.right, x + horizontalSpacing, y + verticalSpacing, level + 1));
+            const rx = x + hSpacing, ry = y + vSpacing;
+            elems.push(<line key={`re-${node.id}`} x1={x} y1={y + R} x2={rx} y2={ry - R} stroke="#78350f" strokeWidth="1.5" strokeDasharray="4,2" />);
+            drawSkewTree(node.right, rx, ry, level + 1, elems, isSecond);
         }
 
-        elements.push(
-            <g key={`node-${node.id}`}>
-                <circle
-                    cx={x} cy={y} r={nodeRadius}
-                    className={`${nodeColor} stroke-2 transition-all duration-300`}
-                />
-                <text
-                    x={x} y={y}
-                    textAnchor="middle" dominantBaseline="middle"
-                    className="text-sm font-bold fill-slate-200"
-                >
-                    {node.value}
-                </text>
+        elems.push(
+            <g key={`nd-${node.id}`}>
+                <circle cx={x} cy={y} r={R} fill={fill} stroke={stroke} strokeWidth="2" />
+                <text x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight="bold" fill="#fef3c7">{node.value}</text>
             </g>
         );
-
-        return elements;
     };
 
-    const countNodes = (node) => !node ? 0 : 1 + countNodes(node.left) + countNodes(node.right);
-    const getHeight = (node) => !node ? 0 : 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    const renderVisualization = () => {
+        const h = currentState.heap;
+        const h2 = currentState.heap2;
 
-    const codeExample = `class SkewHeapNode:
+        if (!h && !h2) {
+            return <div className="flex items-center justify-center h-44 text-slate-500 text-sm">Empty heap — insert values to begin</div>;
+        }
+
+        const svgW = 560;
+        const svgH = 300;
+        const elems = [];
+
+        if (h && h2) {
+            elems.push(<text key="la" x={140} y={22} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#d97706">Heap 1</text>);
+            elems.push(<text key="lb" x={420} y={22} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#ea580c">Heap 2</text>);
+            elems.push(<line key="div" x1={280} y1={10} x2={280} y2={svgH - 10} stroke="#334155" strokeWidth="1" strokeDasharray="4,3" />);
+            drawSkewTree(h, 140, 46, 0, elems, false);
+            drawSkewTree(h2, 420, 46, 0, elems, true);
+        } else if (h) {
+            drawSkewTree(h, 280, 46, 0, elems, false);
+        } else if (h2) {
+            drawSkewTree(h2, 280, 46, 0, elems, true);
+        }
+
+        return (
+            <svg viewBox={`0 0 ${svgW} ${svgH}`} width="100%" className="block">
+                {elems}
+            </svg>
+        );
+    };
+
+    const codeExample = `class SkewNode:
     def __init__(self, value):
         self.value = value
         self.left = None
         self.right = None
+        # No extra fields needed! (unlike leftist heap's npl)
 
 class SkewHeap:
     def __init__(self):
         self.root = None
-    
+
     def merge(self, h1, h2):
         """
-        Merge two skew heaps - O(log n) amortized
-        Key: Always swap left and right children after merge
+        Core operation — O(log n) amortized.
+        Key: ALWAYS swap children after merging right subtree.
         """
-        # Base cases
-        if h1 is None:
-            return h2
-        if h2 is None:
-            return h1
-        
-        # Ensure h1 has smaller root (min-heap property)
+        if h1 is None: return h2
+        if h2 is None: return h1
+
+        # Min-heap: keep smaller root on top
         if h1.value > h2.value:
             h1, h2 = h2, h1
-        
-        # Recursively merge h2 with right subtree of h1
+
+        # Recursively merge h2 with h1's right child
         h1.right = self.merge(h2, h1.right)
-        
-        # SKEW: Always swap left and right children
-        # This is what makes it "skew" and self-adjusting!
+
+        # SKEW: unconditionally swap left and right
+        # This is the ONLY difference from leftist heaps!
         h1.left, h1.right = h1.right, h1.left
-        
+
         return h1
-    
+
     def insert(self, value):
-        """Insert a value - O(log n) amortized"""
-        new_node = SkewHeapNode(value)
-        self.root = self.merge(self.root, new_node)
-    
-    def extract_min(self):
-        """Remove and return minimum - O(log n) amortized"""
-        if self.root is None:
-            return None
-        
-        # Save minimum value
-        min_value = self.root.value
-        
-        # Merge left and right subtrees
-        self.root = self.merge(self.root.left, self.root.right)
-        
-        return min_value
-    
+        """O(log n) amortized"""
+        node = SkewNode(value)
+        self.root = self.merge(self.root, node)
+
     def find_min(self):
-        """Find minimum value - O(1)"""
+        """O(1)"""
         return self.root.value if self.root else None
-    
-    def is_empty(self):
-        return self.root is None
-    
-    def merge_with(self, other_heap):
-        """Merge with another skew heap - O(log n) amortized"""
-        self.root = self.merge(self.root, other_heap.root)
-        other_heap.root = None  # Other heap becomes empty
 
-# Example usage demonstrating the simplicity
-heap = SkewHeap()
+    def extract_min(self):
+        """O(log n) amortized"""
+        if not self.root: return None
+        min_val = self.root.value
+        # Merge the two subtrees of the root
+        self.root = self.merge(self.root.left, self.root.right)
+        return min_val
 
-# Insert elements
-for value in [15, 10, 20, 8, 25]:
-    heap.insert(value)
+    def merge_with(self, other):
+        """O(log n) amortized"""
+        self.root = self.merge(self.root, other.root)
+        other.root = None  # other becomes empty
 
-# Extract minimum
-min_val = heap.extract_min()  # Returns 8
-
-# Merge two heaps
-heap2 = SkewHeap()
-heap2.insert(5)
-heap2.insert(12)
-heap.merge_with(heap2)  # Combine heaps`;
+# Comparison: leftist vs skew
+# Leftist: if npl(left) < npl(right): swap  ← conditional
+# Skew:    always swap                        ← unconditional`;
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-amber-600 to-orange-700 text-white">
+            <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center mb-6">
-                        <Link href="/heap-like-data-structures" className="flex items-center text-white hover:text-amber-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Heap Data Structures
-                        </Link>
-                    </div>
+                    <Link href="/heap-like-data-structures" className="inline-flex items-center text-amber-100 hover:text-white mb-5 transition-colors">
+                        <ArrowLeft className="h-5 w-5 mr-2" /> Back to Heap Data Structures
+                    </Link>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Skew Heap Visualization
-                        </h1>
-                        <p className="text-xl text-amber-100 mb-6 max-w-3xl mx-auto">
-                            Self-adjusting binary heap that unconditionally swaps children during merge.
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Skew Heap</h1>
+                        <p className="text-xl text-amber-100 max-w-3xl mx-auto">
+                            A self-adjusting merge-based heap that unconditionally swaps children on every
+                            merge step — no bookkeeping needed, yet O(log n) amortized performance is guaranteed.
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Visualization Panel */}
-                    <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                        <h2 className="text-2xl font-bold text-slate-100 mb-6">Skew Heap Visualization</h2>
 
-                        {/* Controls */}
-                        <div className="mb-6 space-y-4">
-                            <div className="flex flex-wrap gap-2">
-                                <input
-                                    type="number"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    placeholder="Enter value"
-                                    className="px-3 py-2 bg-slate-800/80 border border-slate-700 text-slate-200 rounded-md focus:ring-amber-500 focus:border-amber-500 placeholder-slate-500"
-                                />
-                                <button
-                                    onClick={handleInsert}
-                                    disabled={isPlaying}
-                                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Plus className="h-4 w-4" /> Insert
-                                </button>
-                                <button
-                                    onClick={handleExtractMin}
-                                    disabled={isPlaying}
-                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Minus className="h-4 w-4" /> Extract Min
-                                </button>
-                            </div>
+                    {/* ── Left: Visualization ── */}
+                    <div className="space-y-4">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-xl font-bold text-slate-100 mb-5">Heap Visualization</h2>
+                            <p className="text-xs text-slate-400 mb-4">Watch the highlighted node swap its children (SKEW) after each recursive merge call.</p>
 
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={mergeValue}
-                                    onChange={(e) => setMergeValue(e.target.value)}
-                                    placeholder="Values to merge (e.g., 5,12,8)"
-                                    className="flex-1 px-3 py-2 bg-slate-800/80 border border-slate-700 text-slate-200 rounded-md focus:ring-amber-500 focus:border-amber-500 placeholder-slate-500"
-                                />
-                                <button
-                                    onClick={handleMerge}
-                                    disabled={isPlaying}
-                                    className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Shuffle className="h-4 w-4" /> Merge
-                                </button>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2">
-                                <button
-                                    onClick={isPlaying ? pauseAnimation : playAnimation}
-                                    disabled={stepHistory.length === 0}
-                                    className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                                    {isPlaying ? 'Pause' : 'Play'}
-                                </button>
-                                <button
-                                    onClick={reset}
-                                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
-                                >
-                                    <RotateCcw className="h-4 w-4" /> Reset
-                                </button>
-                                <div className="flex items-center gap-2 ml-auto">
-                                    <label className="text-sm font-medium text-slate-300">Speed:</label>
-                                    <select
-                                        value={speed}
-                                        onChange={(e) => setSpeed(Number(e.target.value))}
-                                        className="px-2 py-1 border border-slate-700 rounded text-sm"
-                                    >
-                                        <option value={2500}>Slow</option>
-                                        <option value={1500}>Normal</option>
-                                        <option value={800}>Fast</option>
-                                    </select>
+                            <div className="space-y-3 mb-5">
+                                {/* Insert */}
+                                <div className="flex flex-wrap gap-2">
+                                    <input type="number" value={inputValue}
+                                        onChange={e => setInputValue(e.target.value)}
+                                        onKeyDown={e => e.key === 'Enter' && handleInsert()}
+                                        placeholder="Enter value"
+                                        className="w-36 px-3 py-2 bg-slate-800 border border-slate-600 text-slate-100 rounded-lg text-sm placeholder-slate-500 focus:outline-none focus:border-amber-500" />
+                                    <button onClick={handleInsert} disabled={isPlaying}
+                                        className="bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+                                        <Plus className="h-4 w-4" /> Insert
+                                    </button>
+                                    <button onClick={() => runOperation('extractMin')} disabled={isPlaying || !heap}
+                                        className="bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+                                        <Minus className="h-4 w-4" /> Extract Min
+                                    </button>
+                                    <button onClick={() => runOperation('findMin')} disabled={isPlaying || !heap}
+                                        className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+                                        <Eye className="h-4 w-4" /> Find Min
+                                    </button>
+                                </div>
+                                {/* Merge */}
+                                <div className="flex gap-2">
+                                    <input type="text" value={mergeValue}
+                                        onChange={e => setMergeValue(e.target.value)}
+                                        placeholder="Values to merge (e.g. 5,12,3)"
+                                        className="flex-1 px-3 py-2 bg-slate-800 border border-slate-600 text-slate-100 rounded-lg text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500" />
+                                    <button onClick={handleMerge} disabled={isPlaying}
+                                        className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+                                        <GitMerge className="h-4 w-4" /> Merge
+                                    </button>
+                                </div>
+                                {/* Playback */}
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <button onClick={() => setCurrentStep(s => Math.max(0, s - 1))}
+                                        disabled={currentStep === 0 || isPlaying || !stepHistory.length}
+                                        className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200">
+                                        <SkipBack className="h-4 w-4" />
+                                    </button>
+                                    <button onClick={() => setIsPlaying(v => !v)} disabled={!stepHistory.length}
+                                        className="bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+                                        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                                        {isPlaying ? 'Pause' : 'Play'}
+                                    </button>
+                                    <button onClick={() => setCurrentStep(s => Math.min(stepHistory.length - 1, s + 1))}
+                                        disabled={currentStep >= stepHistory.length - 1 || isPlaying || !stepHistory.length}
+                                        className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200">
+                                        <SkipForward className="h-4 w-4" />
+                                    </button>
+                                    <button onClick={reset} className="p-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-slate-200">
+                                        <RotateCcw className="h-4 w-4" />
+                                    </button>
+                                    <div className="flex items-center gap-2 ml-auto">
+                                        <span className="text-xs text-slate-400">Speed</span>
+                                        <input type="range" min={200} max={2000} step={100} value={2200 - speed}
+                                            onChange={e => setSpeed(2200 - Number(e.target.value))}
+                                            className="w-20 accent-amber-500" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Tree Visualization with Dynamic Scrolling */}
-                        <div className="mb-6 bg-slate-800/60 rounded-lg p-4 overflow-x-auto">
-                            <div style={{ minWidth: '100%', width: 'fit-content', margin: '0 auto' }}>
-                                <svg width={currentState.heap2 ? 1400 : 2000} height={500} className="mx-auto block">
-                                    {currentState.heap && (
-                                        <>
-                                            <text x={currentState.heap2 ? 400 : 1000} y={30} textAnchor="middle" className="text-sm font-bold fill-amber-700">
-                                                {currentState.heap2 ? 'Heap 1' : 'Main Heap'}
-                                            </text>
-                                            {renderSkewHeap(currentState.heap, currentState.heap2 ? 400 : 1000, 60)}
-                                        </>
-                                    )}
-
-                                    {currentState.heap2 && (
-                                        <>
-                                            <text x={900} y={30} textAnchor="middle" className="text-sm font-bold fill-orange-600">
-                                                Heap 2
-                                            </text>
-                                            {renderSkewHeap(currentState.heap2, 900, 60)}
-
-                                            <g>
-                                                <line x1={500} y1={200} x2={800} y2={200} className="stroke-amber-600 stroke-2 dashed" strokeDasharray="5,5" />
-                                                <text x={650} y={190} textAnchor="middle" className="text-xs fill-amber-700 font-semibold">MERGE</text>
-                                            </g>
-                                        </>
-                                    )}
-                                </svg>
+                            {/* SVG Tree */}
+                            <div className="bg-slate-800/60 rounded-lg p-4 mb-4">
+                                {renderVisualization()}
                             </div>
-                        </div>
 
-                        {/* Stats Panel */}
-                        <div className="mb-6 grid grid-cols-3 gap-4">
-                            <div className="bg-slate-800/60 rounded-lg p-3 text-center">
-                                <div className="text-sm text-slate-400">Nodes</div>
-                                <div className="text-2xl font-bold text-amber-600">{countNodes(currentState.heap)}</div>
-                            </div>
-                            <div className="bg-slate-800/60 rounded-lg p-3 text-center">
-                                <div className="text-sm text-slate-400">Height</div>
-                                <div className="text-2xl font-bold text-amber-600">{getHeight(currentState.heap)}</div>
-                            </div>
-                            <div className="bg-slate-800/60 rounded-lg p-3 text-center">
-                                <div className="text-sm text-slate-400">Swaps</div>
-                                <div className="text-2xl font-bold text-amber-600">{totalSwaps}</div>
-                            </div>
-                        </div>
-
-                        {/* Explanation */}
-                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-                            <h3 className="font-semibold text-amber-300 mb-2">Current Step:</h3>
-                            <p className="text-amber-300">{currentState.explanation}</p>
-                            {currentState.swapHappened && (
-                                <div className="mt-2 text-sm text-orange-600 font-semibold animate-pulse">
-                                    ↔️ Skew Operation: Swapped Left/Right Children
+                            {/* Swap highlight */}
+                            {currentState.swapped && (
+                                <div className="mb-4 px-3 py-2 bg-orange-500/10 border border-orange-500/30 rounded-lg text-xs text-orange-300 font-semibold">
+                                    SKEW applied — children swapped at highlighted node
                                 </div>
                             )}
+
+                            {/* Stats */}
+                            <div className="grid grid-cols-3 gap-3 mb-4">
+                                {[
+                                    ['Nodes', countNodes(currentState.heap)],
+                                    ['Height', getHeight(currentState.heap)],
+                                    ['Swaps (op)', totalSwaps],
+                                ].map(([label, val]) => (
+                                    <div key={label} className="bg-slate-800/60 rounded-lg p-3 text-center">
+                                        <div className="text-lg font-bold text-amber-400">{val}</div>
+                                        <div className="text-xs text-slate-400">{label}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+                                <div className="flex items-start gap-2">
+                                    <Info className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                                    <div>
+                                        <p className="text-amber-300 text-sm leading-relaxed">{currentState.explanation}</p>
+                                        {stepHistory.length > 0 && <p className="text-amber-600 text-xs mt-1.5">Step {currentStep + 1} of {stepHistory.length}</p>}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Information Panel */}
-                    <div className="space-y-6">
-                        {/* Complexity Analysis */}
+                    {/* ── Right: Info ── */}
+                    <div className="space-y-5">
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Complexity Analysis</h2>
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-3 gap-4">
-                                    <div className="text-center">
-                                        <div className="text-xl font-bold text-green-600">O(log n)*</div>
-                                        <div className="text-sm text-slate-400">Insert</div>
+                            <h2 className="text-lg font-bold text-slate-100 mb-4">Complexity (Amortized)</h2>
+                            <div className="grid grid-cols-2 gap-3">
+                                {[['Insert', 'O(log n)*'], ['Extract Min', 'O(log n)*'], ['Find Min', 'O(1)'], ['Merge', 'O(log n)*'], ['Space', 'O(n)'], ['Per-node data', 'None']].map(([op, c]) => (
+                                    <div key={op} className="bg-slate-800/60 rounded-lg p-3 text-center">
+                                        <div className="text-base font-bold text-amber-400">{c}</div>
+                                        <div className="text-xs text-slate-400 mt-1">{op}</div>
                                     </div>
-                                    <div className="text-center">
-                                        <div className="text-xl font-bold text-green-600">O(log n)*</div>
-                                        <div className="text-sm text-slate-400">Extract Min</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="text-xl font-bold text-green-600">O(1)</div>
-                                        <div className="text-sm text-slate-400">Find Min</div>
-                                    </div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-lg font-bold text-green-600">O(log n)* Merge</div>
-                                    <div className="text-sm text-slate-400">Efficient heap union</div>
-                                </div>
-                                <div className="text-xs text-slate-500 text-center">
-                                    *Amortized time complexity
-                                </div>
+                                ))}
+                            </div>
+                            <p className="text-xs text-slate-500 mt-2 text-center">* amortized — worst case can be O(n)</p>
+                        </div>
+
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-lg font-bold text-slate-100 mb-3">The Skewing Process</h2>
+                            <ol className="space-y-2 text-sm text-slate-300">
+                                <li className="flex gap-3 items-start">
+                                    <span className="flex-shrink-0 w-5 h-5 bg-amber-500/20 text-amber-300 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                                    <span>Compare roots — keep the smaller as new root (min-heap property)</span>
+                                </li>
+                                <li className="flex gap-3 items-start">
+                                    <span className="flex-shrink-0 w-5 h-5 bg-amber-500/20 text-amber-300 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                                    <span>Recursively merge the larger root's subtree with the smaller root's right child</span>
+                                </li>
+                                <li className="flex gap-3 items-start">
+                                    <span className="flex-shrink-0 w-5 h-5 bg-orange-500/20 text-orange-300 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                                    <span><strong className="text-orange-300">SKEW</strong> — unconditionally swap left and right children. Always. No condition checked.</span>
+                                </li>
+                            </ol>
+                            <div className="mt-4 p-3 bg-slate-800/60 rounded-lg text-xs text-slate-400">
+                                The unconditional swap distributes "heavy" nodes across the tree over time, ensuring the amortized O(log n) bound without storing any balance information.
                             </div>
                         </div>
 
-                        {/* Skew Heap Properties */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Skew Heap Properties</h2>
-                            <div className="space-y-3 text-sm text-slate-400">
-                                <div>• <strong>Self-Adjusting:</strong> Structure changes with each operation</div>
-                                <div>• <strong>Unconditional Swap:</strong> Always swap left/right during merge</div>
-                                <div>• <strong>No Invariants:</strong> No null path length or rank to maintain</div>
-                                <div>• <strong>Min-Heap Property:</strong> Parent ≤ both children</div>
-                                <div>• <strong>Simpler:</strong> Easier to implement than leftist heaps</div>
-                                <div>• <strong>Amortized Efficiency:</strong> O(log n) for merge operations</div>
+                            <h2 className="text-lg font-bold text-slate-100 mb-3">Skew vs Leftist Heap</h2>
+                            <div className="space-y-2 text-sm">
+                                {[
+                                    ['Extra data per node', 'npl field', 'none', false],
+                                    ['Swap condition', 'npl(left) < npl(right)', 'always swap', false],
+                                    ['Complexity', 'O(log n) worst', 'O(log n) amortized', false],
+                                    ['Implementation', 'slightly complex', 'very simple', true],
+                                ].map(([prop, leftist, skew, skewWins]) => (
+                                    <div key={prop} className="grid grid-cols-3 gap-2 items-start text-xs">
+                                        <span className="text-slate-400 font-semibold pt-1">{prop}</span>
+                                        <span className="bg-slate-800/60 rounded px-2 py-1 text-slate-300">{leftist}</span>
+                                        <span className={`rounded px-2 py-1 ${skewWins ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-800/60 text-slate-300'}`}>{skew}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* The Skewing Process */}
+                        {/* Quiz */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h2 className="text-2xl font-bold text-slate-100 mb-4">The Skewing Process</h2>
-                            <div className="space-y-3 text-sm text-slate-400">
-                                <div className="border-l-4 border-amber-500 pl-3">
-                                    <strong>Step 1:</strong> Compare roots, keep smaller as new root
+                            <h2 className="text-lg font-bold text-slate-100 mb-4">Active Recall Quiz</h2>
+                            {!quizState.complete ? (
+                                <div>
+                                    <p className="text-xs text-slate-400 mb-3">Question {quizState.current + 1} of {quizQuestions.length}</p>
+                                    <p className="text-slate-200 text-sm font-medium mb-3 leading-relaxed">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((opt, idx) => (
+                                            <button key={idx} onClick={() => handleQuizAnswer(idx)}
+                                                className={`w-full text-left px-3 py-2.5 rounded-lg border text-sm transition-all ${
+                                                    !quizState.answered
+                                                        ? 'border-slate-600 bg-slate-800 hover:border-amber-500 hover:bg-amber-500/10 text-slate-200'
+                                                        : idx === quizQuestions[quizState.current].correct
+                                                            ? 'border-green-500 bg-green-500/10 text-green-300'
+                                                            : idx === quizState.selected
+                                                                ? 'border-red-500 bg-red-500/10 text-red-300'
+                                                                : 'border-slate-700 bg-slate-800/50 text-slate-500'
+                                                }`}>
+                                                <span className="font-mono text-xs mr-2">{String.fromCharCode(65 + idx)}.</span>{opt}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className={`mt-3 p-3 rounded-lg text-sm flex items-start gap-2 ${quizState.selected === quizQuestions[quizState.current].correct ? 'bg-green-500/10 border border-green-500/20 text-green-300' : 'bg-red-500/10 border border-red-500/20 text-red-300'}`}>
+                                            {quizState.selected === quizQuestions[quizState.current].correct ? <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" /> : <XCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />}
+                                            <span>{quizQuestions[quizState.current].explanation}</span>
+                                        </div>
+                                    )}
+                                    {quizState.answered && (
+                                        <button onClick={nextQuestion} className="mt-3 text-sm text-amber-400 hover:text-amber-300">
+                                            {quizState.current + 1 < quizQuestions.length ? 'Next question →' : 'See results →'}
+                                        </button>
+                                    )}
                                 </div>
-                                <div className="border-l-4 border-amber-500 pl-3">
-                                    <strong>Step 2:</strong> Recursively merge larger root with right subtree
+                            ) : (
+                                <div className="text-center py-4">
+                                    <div className="text-3xl font-bold text-white mb-1">{quizState.score}/{quizQuestions.length}</div>
+                                    <div className="text-slate-400 text-sm mb-4">{quizState.score === quizQuestions.length ? 'Perfect!' : quizState.score >= 2 ? 'Well done!' : 'Keep practicing!'}</div>
+                                    <button onClick={() => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false })} className="text-sm text-amber-400 hover:text-amber-300">Retry quiz</button>
                                 </div>
-                                <div className="border-l-4 border-orange-500 pl-3">
-                                    <strong>Step 3:</strong> SWAP left and right children (always!)
-                                </div>
-                                <div className="mt-4 p-3 bg-slate-800/60 rounded-lg">
-                                    <p className="text-xs">
-                                        <strong>Key Insight:</strong> The unconditional swapping balances the tree
-                                        over time, ensuring amortized O(log n) performance without maintaining
-                                        explicit balance information.
-                                    </p>
-                                </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* vs Leftist Heaps */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h2 className="text-2xl font-bold text-slate-100 mb-4">vs Leftist Heaps</h2>
-                            <div className="space-y-3 text-sm text-slate-400">
-                                <div className="flex items-start">
-                                    <span className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-2"></span>
-                                    <div>
-                                        <strong>Simpler:</strong> No null path length to maintain
-                                    </div>
-                                </div>
-                                <div className="flex items-start">
-                                    <span className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-2"></span>
-                                    <div>
-                                        <strong>Less Memory:</strong> No extra data per node
-                                    </div>
-                                </div>
-                                <div className="flex items-start">
-                                    <span className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-2"></span>
-                                    <div>
-                                        <strong>Unconditional:</strong> Always swap, no comparisons needed
-                                    </div>
-                                </div>
-                                <div className="flex items-start">
-                                    <span className="w-2 h-2 bg-amber-400 rounded-full mr-3 mt-2"></span>
-                                    <div>
-                                        <strong>Amortized:</strong> Same O(log n) complexity but amortized
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Applications */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Applications</h2>
-                            <div className="space-y-3 text-sm text-slate-400">
-                                <div>• <strong>Simple Priority Queues:</strong> When simplicity matters more than worst-case</div>
-                                <div>• <strong>Educational:</strong> Teaching heap concepts without complexity</div>
-                                <div>• <strong>Mergeable Heaps:</strong> When frequent merging is needed</div>
-                                <div>• <strong>Functional Programming:</strong> Easier to implement functionally</div>
-                            </div>
-                        </div>
-
-                        {/* Code Example */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h2 className="text-2xl font-bold text-slate-100 mb-4">Implementation</h2>
-                            <CodeBlock code={codeExample} language="python" />
+                            <button onClick={() => setShowCode(v => !v)}
+                                className="flex items-center gap-2 text-lg font-bold text-slate-100 w-full mb-3 hover:text-amber-300 transition-colors">
+                                <Code className="h-5 w-5 text-amber-400" />
+                                Implementation
+                                <span className="text-xs text-slate-500 ml-auto">{showCode ? 'hide' : 'show'}</span>
+                            </button>
+                            {showCode && <CodeBlock code={codeExample} language="python" />}
                         </div>
                     </div>
                 </div>
