@@ -160,6 +160,7 @@ function AnimatedBrand() {
 const PAGES_EXIST = new Set([
     'Basics', 'Recursion', 'Sorting', 'Searching',
     'Heap-like Data Structures', 'Dynamic Programming',
+    'Graph Algorithms',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
