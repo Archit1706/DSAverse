@@ -2,8 +2,29 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Lightbulb, Clock, Code2, Home, DollarSign, Shield } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Home, DollarSign, Shield } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+
+const quizQuestions = [
+    {
+        question: "What is the key constraint in the House Robber problem?",
+        options: ["Can only rob every third house", "Cannot rob two adjacent houses", "Must rob at least one house", "Can only rob houses worth more than 5"],
+        correct: 1,
+        explanation: "The robber cannot rob two directly adjacent houses — the alarm would trigger. This forces a skip-at-least-one between any two robbed houses."
+    },
+    {
+        question: "What is the recurrence relation for House Robber?",
+        options: ["dp[i] = dp[i-1] + dp[i-2]", "dp[i] = max(nums[i] + dp[i-2], dp[i-1])", "dp[i] = nums[i] + dp[i-1]", "dp[i] = max(dp[i-1], dp[i-2])"],
+        correct: 1,
+        explanation: "At each house you either rob it (value + best solution 2 houses back) or skip it (best solution from 1 house back). dp[i] = max(nums[i] + dp[i-2], dp[i-1])."
+    },
+    {
+        question: "What is the space-optimized complexity?",
+        options: ["O(n) time, O(n) space", "O(n) time, O(1) space", "O(n²) time, O(1) space", "O(n log n) time, O(1) space"],
+        correct: 1,
+        explanation: "The recurrence only needs dp[i-1] and dp[i-2], so two variables (prev2 and prev1) suffice — reducing space from O(n) to O(1) while keeping O(n) time."
+    }
+];
 
 const HouseRobberPage = () => {
     const [houses, setHouses] = useState([2, 7, 9, 3, 1]);
@@ -13,340 +34,213 @@ const HouseRobberPage = () => {
     const [stepHistory, setStepHistory] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [showCode, setShowCode] = useState(false);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
 
     const generateHouseRobberSteps = (houseValues) => {
         const steps = [];
         const n = houseValues.length;
+        if (n === 0) return steps;
         const dp = new Array(n).fill(0);
         const decisions = new Array(n).fill('');
 
-        if (n === 0) return steps;
-
         steps.push({
-            dp: [...dp],
-            decisions: [...decisions],
-            currentHouse: -1,
-            maxMoney: 0,
+            dp: [...dp], decisions: [...decisions], currentHouse: -1, maxMoney: 0,
             robbedHouses: [],
-            explanation: `🏠 Starting House Robber problem with ${n} houses. Goal: maximize money without robbing adjacent houses.`,
-            phase: 'initialize',
-            comparing: null
+            explanation: `Starting House Robber with ${n} houses [${houseValues.join(', ')}]. Goal: maximize money without robbing adjacent houses.`,
+            phase: 'initialize', comparing: null
         });
 
-        // Base case
         dp[0] = houseValues[0];
         decisions[0] = 'rob';
-
         steps.push({
-            dp: [...dp],
-            decisions: [...decisions],
-            currentHouse: 0,
-            maxMoney: dp[0],
+            dp: [...dp], decisions: [...decisions], currentHouse: 0, maxMoney: dp[0],
             robbedHouses: [0],
-            explanation: `🎯 Base case: Rob first house (index 0) with $${houseValues[0]}. dp[0] = ${dp[0]}`,
-            phase: 'base_case',
-            comparing: null
+            explanation: `Base case: dp[0] = ${houseValues[0]} (rob house 0).`,
+            phase: 'base_case', comparing: null
         });
 
         if (n > 1) {
-            const robFirst = houseValues[0];
-            const robSecond = houseValues[1];
-
+            const r0 = houseValues[0], r1 = houseValues[1];
             steps.push({
-                dp: [...dp],
-                decisions: [...decisions],
-                currentHouse: 1,
-                maxMoney: Math.max(robFirst, robSecond),
-                robbedHouses: robSecond > robFirst ? [1] : [0],
-                explanation: `🔍 House 1: Compare robbing house 0 ($${robFirst}) vs house 1 ($${robSecond}). Choose maximum.`,
-                phase: 'comparing',
-                comparing: { option1: robFirst, option2: robSecond, chosen: robSecond > robFirst ? 'house1' : 'house0' }
+                dp: [...dp], decisions: [...decisions], currentHouse: 1, maxMoney: Math.max(r0, r1),
+                robbedHouses: r1 > r0 ? [1] : [0],
+                explanation: `House 1: compare rob house 0 ($${r0}) vs rob house 1 ($${r1}). Choose max.`,
+                phase: 'comparing', comparing: { option1: r0, option2: r1, chosen: r1 > r0 ? 'house1' : 'house0' }
             });
-
-            dp[1] = Math.max(houseValues[0], houseValues[1]);
-            decisions[1] = houseValues[1] > houseValues[0] ? 'rob' : 'skip';
-
+            dp[1] = Math.max(r0, r1);
+            decisions[1] = r1 > r0 ? 'rob' : 'skip';
             steps.push({
-                dp: [...dp],
-                decisions: [...decisions],
-                currentHouse: 1,
-                maxMoney: dp[1],
-                robbedHouses: houseValues[1] > houseValues[0] ? [1] : [0],
-                explanation: `✅ dp[1] = max(${houseValues[0]}, ${houseValues[1]}) = ${dp[1]}. ${decisions[1] === 'rob' ? 'Rob' : 'Skip'} house 1.`,
-                phase: 'decision_made',
-                comparing: null
+                dp: [...dp], decisions: [...decisions], currentHouse: 1, maxMoney: dp[1],
+                robbedHouses: r1 > r0 ? [1] : [0],
+                explanation: `dp[1] = max(${r0}, ${r1}) = ${dp[1]}. ${decisions[1] === 'rob' ? 'Rob' : 'Skip'} house 1.`,
+                phase: 'decision_made', comparing: null
             });
         }
 
-        // Fill remaining positions
         for (let i = 2; i < n; i++) {
-            const robCurrent = houseValues[i] + dp[i - 2];
-            const skipCurrent = dp[i - 1];
-
+            const robCur = houseValues[i] + dp[i - 2];
+            const skipCur = dp[i - 1];
             steps.push({
-                dp: [...dp],
-                decisions: [...decisions],
-                currentHouse: i,
-                maxMoney: Math.max(robCurrent, skipCurrent),
+                dp: [...dp], decisions: [...decisions], currentHouse: i, maxMoney: Math.max(robCur, skipCur),
                 robbedHouses: [],
-                explanation: `🏠 House ${i} ($${houseValues[i]}): Compare rob current = $${houseValues[i]} + dp[${i - 2}] = $${houseValues[i]} + $${dp[i - 2]} = $${robCurrent} vs skip current = dp[${i - 1}] = $${skipCurrent}`,
-                phase: 'comparing',
-                comparing: {
-                    option1: robCurrent,
-                    option2: skipCurrent,
-                    chosen: robCurrent > skipCurrent ? 'rob' : 'skip',
-                    robCurrent: `$${houseValues[i]} + dp[${i - 2}]`,
-                    skipCurrent: `dp[${i - 1}]`
-                }
+                explanation: `House ${i} ($${houseValues[i]}): rob = $${houseValues[i]} + dp[${i - 2}]=$${dp[i - 2]} = $${robCur}  vs  skip = dp[${i - 1}]=$${skipCur}.`,
+                phase: 'comparing', comparing: { option1: robCur, option2: skipCur, chosen: robCur > skipCur ? 'rob' : 'skip', robCurrent: `$${houseValues[i]} + dp[${i - 2}]`, skipCurrent: `dp[${i - 1}]` }
             });
-
-            if (robCurrent > skipCurrent) {
-                dp[i] = robCurrent;
-                decisions[i] = 'rob';
-            } else {
-                dp[i] = skipCurrent;
-                decisions[i] = 'skip';
-            }
-
+            dp[i] = robCur > skipCur ? robCur : skipCur;
+            decisions[i] = robCur > skipCur ? 'rob' : 'skip';
             steps.push({
-                dp: [...dp],
-                decisions: [...decisions],
-                currentHouse: i,
-                maxMoney: dp[i],
+                dp: [...dp], decisions: [...decisions], currentHouse: i, maxMoney: dp[i],
                 robbedHouses: [],
-                explanation: `✨ dp[${i}] = max($${robCurrent}, $${skipCurrent}) = $${dp[i]}. ${decisions[i] === 'rob' ? 'Rob' : 'Skip'} house ${i}.`,
-                phase: 'decision_made',
-                comparing: null
+                explanation: `dp[${i}] = max($${robCur}, $${skipCur}) = $${dp[i]}. ${decisions[i] === 'rob' ? 'Rob' : 'Skip'} house ${i}.`,
+                phase: 'decision_made', comparing: null
             });
         }
 
-        // Reconstruct solution
         steps.push({
-            dp: [...dp],
-            decisions: [...decisions],
-            currentHouse: -1,
-            maxMoney: dp[n - 1],
+            dp: [...dp], decisions: [...decisions], currentHouse: -1, maxMoney: dp[n - 1],
             robbedHouses: [],
-            explanation: `🔍 Reconstructing optimal solution. Maximum money: $${dp[n - 1]}. Backtracking to find which houses to rob...`,
-            phase: 'reconstruct_start',
-            comparing: null
+            explanation: `DP table complete. Maximum money = $${dp[n - 1]}. Backtracking to find which houses to rob.`,
+            phase: 'reconstruct_start', comparing: null
         });
 
-        const robbedHouses = [];
+        const robbed = [];
         let i = n - 1;
         while (i >= 0) {
             if (i === 0 || (i >= 2 && dp[i] === houseValues[i] + dp[i - 2])) {
-                robbedHouses.unshift(i);
+                robbed.unshift(i);
                 steps.push({
-                    dp: [...dp],
-                    decisions: [...decisions],
-                    currentHouse: i,
-                    maxMoney: dp[n - 1],
-                    robbedHouses: [...robbedHouses],
-                    explanation: `🎯 House ${i} robbed! dp[${i}] includes value from house ${i} ($${houseValues[i]})`,
-                    phase: 'reconstructing',
-                    comparing: null
+                    dp: [...dp], decisions: [...decisions], currentHouse: i, maxMoney: dp[n - 1],
+                    robbedHouses: [...robbed],
+                    explanation: `House ${i} was robbed! dp[${i}] includes $${houseValues[i]} from this house.`,
+                    phase: 'reconstructing', comparing: null
                 });
-                i -= 2; // Skip adjacent house
+                i -= 2;
             } else {
                 steps.push({
-                    dp: [...dp],
-                    decisions: [...decisions],
-                    currentHouse: i,
-                    maxMoney: dp[n - 1],
-                    robbedHouses: [...robbedHouses],
-                    explanation: `⏭️ House ${i} skipped. dp[${i}] = dp[${i - 1}], so house ${i} was not robbed`,
-                    phase: 'reconstructing',
-                    comparing: null
+                    dp: [...dp], decisions: [...decisions], currentHouse: i, maxMoney: dp[n - 1],
+                    robbedHouses: [...robbed],
+                    explanation: `House ${i} was skipped. dp[${i}] = dp[${i - 1}].`,
+                    phase: 'reconstructing', comparing: null
                 });
                 i--;
             }
         }
 
-        const totalMoney = robbedHouses.reduce((sum, index) => sum + houseValues[index], 0);
+        const total = robbed.reduce((s, idx) => s + houseValues[idx], 0);
         steps.push({
-            dp: [...dp],
-            decisions: [...decisions],
-            currentHouse: -1,
-            maxMoney: totalMoney,
-            robbedHouses: [...robbedHouses],
-            explanation: `🎉 Optimal solution found! Rob houses [${robbedHouses.join(', ')}] for maximum money: $${totalMoney}. No adjacent houses robbed!`,
-            phase: 'complete',
-            comparing: null
+            dp: [...dp], decisions: [...decisions], currentHouse: -1, maxMoney: total,
+            robbedHouses: [...robbed],
+            explanation: `Optimal: rob houses [${robbed.join(', ')}] for $${total}. No adjacent houses robbed!`,
+            phase: 'complete', comparing: null
         });
 
         return steps;
     };
 
     useEffect(() => {
-        const steps = generateHouseRobberSteps(houses);
-        setStepHistory(steps);
+        setStepHistory(generateHouseRobberSteps(houses));
         setCurrentStep(0);
     }, [houses]);
 
     useEffect(() => {
         if (isPlaying && currentStep < stepHistory.length - 1) {
-            const timer = setTimeout(() => {
-                setCurrentStep(prev => prev + 1);
-            }, speed);
-            return () => clearTimeout(timer);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-        }
+            const t = setTimeout(() => setCurrentStep(p => p + 1), speed);
+            return () => clearTimeout(t);
+        } else if (currentStep >= stepHistory.length - 1) setIsPlaying(false);
     }, [isPlaying, currentStep, stepHistory, speed]);
 
-    const startVisualization = () => setIsPlaying(true);
-    const pauseVisualization = () => setIsPlaying(false);
-    const resetVisualization = () => {
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const stepForward = () => {
-        if (currentStep < stepHistory.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
-    };
-
-    const stepBackward = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
-    };
-
-    const generateNewHouses = () => {
-        const numHouses = Math.floor(Math.random() * 4) + 4; // 4-7 houses
-        const newHouses = Array.from({ length: numHouses }, () => Math.floor(Math.random() * 15) + 1);
-        setHouses(newHouses);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const resetToOriginal = () => {
-        setHouses([...originalHouses]);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
+    const reset = () => { setIsPlaying(false); setCurrentStep(0); };
 
     const currentState = stepHistory[currentStep] || {
-        dp: Array(houses.length).fill(0),
-        decisions: Array(houses.length).fill(''),
-        currentHouse: -1,
-        maxMoney: 0,
-        robbedHouses: [],
-        explanation: 'Click Start to begin the House Robber visualization',
-        phase: 'start',
-        comparing: null
+        dp: Array(houses.length).fill(0), decisions: Array(houses.length).fill(''),
+        currentHouse: -1, maxMoney: 0, robbedHouses: [],
+        explanation: 'Click Play to begin', phase: 'start', comparing: null
     };
 
     const getHouseColor = (index) => {
-        const isCurrentHouse = index === currentState.currentHouse;
         const isRobbed = currentState.robbedHouses.includes(index);
-        const isAdjacent = currentState.robbedHouses.some(robbedIndex => Math.abs(robbedIndex - index) === 1);
-
-        if (isRobbed) return 'bg-green-500 text-white border-green-600 transform scale-110';
-        if (isCurrentHouse) return 'bg-rose-500 text-white border-rose-600 transform scale-105';
-        if (isAdjacent && currentState.phase === 'complete') return 'bg-red-200 text-red-800 border-red-300';
-        return 'bg-blue-200 text-blue-800 border-blue-300';
+        const isCurrent = index === currentState.currentHouse;
+        const isAdj = currentState.robbedHouses.some(r => Math.abs(r - index) === 1);
+        if (isRobbed) return 'bg-green-600 text-white border-green-400 transform scale-110';
+        if (isCurrent) return 'bg-rose-500 text-white border-rose-300 transform scale-105';
+        if (isAdj && currentState.phase === 'complete') return 'bg-red-900/50 text-red-300 border-red-700';
+        return 'bg-slate-700 text-slate-200 border-slate-500';
     };
 
-    const getDpCellColor = (index, value) => {
-        const isCurrentCell = index === currentState.currentHouse;
+    const getDpColor = (index, val) => {
+        if (index === currentState.currentHouse) return 'bg-rose-500 text-white border-rose-400 transform scale-110';
+        if (val === 0) return 'bg-slate-700 text-slate-500 border-slate-600';
+        const tiers = ['bg-rose-900 text-rose-300 border-rose-800', 'bg-rose-700 text-rose-100 border-rose-600', 'bg-rose-500 text-white border-rose-400'];
+        return tiers[Math.min(Math.floor(val / 6), 2)];
+    };
 
-        if (isCurrentCell) return 'bg-rose-500 text-white border-rose-600 transform scale-110';
-        if (value === 0) return 'bg-slate-700/50 text-slate-500 border-slate-600';
-        if (value <= 5) return 'bg-rose-200 text-rose-300 border-rose-300';
-        if (value <= 10) return 'bg-rose-300 text-rose-300 border-rose-400';
-        if (value <= 15) return 'bg-rose-400 text-white border-rose-500';
-        return 'bg-rose-500 text-white border-rose-600';
+    const handleAnswer = (i) => {
+        if (quizState.answered) return;
+        setQuizState(p => ({ ...p, selected: i, answered: true, score: i === quizQuestions[p.current].correct ? p.score + 1 : p.score }));
+    };
+    const nextQ = () => {
+        if (quizState.current < quizQuestions.length - 1) setQuizState(p => ({ ...p, current: p.current + 1, selected: null, answered: false }));
+        else setQuizState(p => ({ ...p, complete: true }));
     };
 
     const codeExample = `def rob(nums):
-    if not nums:
-        return 0
-    if len(nums) == 1:
-        return nums[0]
-    
-    # dp[i] = maximum money that can be robbed up to house i
+    if not nums: return 0
+    if len(nums) == 1: return nums[0]
+
     dp = [0] * len(nums)
     dp[0] = nums[0]
     dp[1] = max(nums[0], nums[1])
-    
+
     for i in range(2, len(nums)):
-        # Either rob current house + best up to i-2
-        # Or skip current house and take best up to i-1
         dp[i] = max(nums[i] + dp[i-2], dp[i-1])
-    
+
     return dp[-1]
 
-# Space optimized version
+# Space-optimized O(1) space
 def rob_optimized(nums):
-    if not nums:
-        return 0
-    if len(nums) == 1:
-        return nums[0]
-    
-    prev2 = nums[0]  # dp[i-2]
-    prev1 = max(nums[0], nums[1])  # dp[i-1]
-    
-    for i in range(2, len(nums)):
-        current = max(nums[i] + prev2, prev1)
-        prev2 = prev1
-        prev1 = current
-    
+    if not nums: return 0
+    prev2, prev1 = 0, 0
+    for num in nums:
+        prev2, prev1 = prev1, max(num + prev2, prev1)
     return prev1
 
-# With solution reconstruction
+# With reconstruction
 def rob_with_houses(nums):
-    if not nums:
-        return 0, []
-    if len(nums) == 1:
-        return nums[0], [0]
-    
-    dp = [0] * len(nums)
+    n = len(nums)
+    if n == 0: return 0, []
+    dp = [0] * n
     dp[0] = nums[0]
-    dp[1] = max(nums[0], nums[1])
-    
-    for i in range(2, len(nums)):
+    if n > 1: dp[1] = max(nums[0], nums[1])
+    for i in range(2, n):
         dp[i] = max(nums[i] + dp[i-2], dp[i-1])
-    
-    # Reconstruct solution
-    robbed = []
-    i = len(nums) - 1
+
+    robbed, i = [], n - 1
     while i >= 0:
         if i == 0 or (i >= 2 and dp[i] == nums[i] + dp[i-2]):
-            robbed.append(i)
-            i -= 2
+            robbed.append(i); i -= 2
         else:
             i -= 1
-    
-    return dp[-1], robbed[::-1]
-
-# Time Complexity: O(n)
-# Space Complexity: O(1) optimized, O(n) with reconstruction`;
+    return dp[-1], robbed[::-1]`;
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
+            <div className="bg-gradient-to-r from-rose-600 to-pink-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center mb-6">
                         <Link href="/dynamic-programming" className="flex items-center text-white hover:text-rose-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Dynamic Programming
+                            <ArrowLeft className="h-5 w-5 mr-2" />Back to Dynamic Programming
                         </Link>
                     </div>
                     <div className="text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-3">
-                            <Home className="h-12 w-12" />
-                            House Robber Problem
+                            <Home className="h-10 w-10" />House Robber Problem
                         </h1>
                         <p className="text-xl text-rose-100 mb-6 max-w-3xl mx-auto">
-                            Watch how 1D dynamic programming finds the maximum money that can be robbed without hitting adjacent houses.
+                            Watch 1D DP decide at each house whether to rob it or skip it, maximizing money while never touching adjacent houses.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 text-sm">
                             <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(n)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(1)</div>
+                            <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(1) optimized</div>
                             <div className="bg-white/20 px-3 py-1 rounded-full">1D DP Array</div>
                             <div className="bg-white/20 px-3 py-1 rounded-full">Decision Making</div>
                         </div>
@@ -356,188 +250,97 @@ def rob_with_houses(nums):
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Visualization */}
                     <div className="lg:col-span-2">
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
-                            {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
-                                <button
-                                    onClick={isPlaying ? pauseVisualization : startVisualization}
-                                    className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors font-medium"
-                                    disabled={currentStep >= stepHistory.length - 1 && !isPlaying}
-                                >
-                                    {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                                    {isPlaying ? 'Pause' : 'Play'}
+                                <button onClick={() => isPlaying ? setIsPlaying(false) : setIsPlaying(true)} className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors font-medium" disabled={currentStep >= stepHistory.length - 1 && !isPlaying}>
+                                    {isPlaying ? <Pause size={18} /> : <Play size={18} />}{isPlaying ? 'Pause' : 'Play'}
                                 </button>
-
-                                <button
-                                    onClick={stepBackward}
-                                    className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
-                                    disabled={isPlaying || currentStep === 0}
-                                >
-                                    <SkipBack size={18} />
-                                    Step Back
-                                </button>
-
-                                <button
-                                    onClick={stepForward}
-                                    className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-                                    disabled={isPlaying || currentStep >= stepHistory.length - 1}
-                                >
-                                    <SkipForward size={18} />
-                                    Step Forward
-                                </button>
-
-                                <button
-                                    onClick={resetVisualization}
-                                    className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium"
-                                >
-                                    <RotateCcw size={18} />
-                                    Reset
-                                </button>
-
-                                <button
-                                    onClick={generateNewHouses}
-                                    className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
-                                >
-                                    Random Houses
-                                </button>
-
-                                <button
-                                    onClick={resetToOriginal}
-                                    className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium"
-                                >
-                                    Original
-                                </button>
+                                <button onClick={() => { if (currentStep > 0) setCurrentStep(p => p - 1); }} className="flex items-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium" disabled={isPlaying || currentStep === 0}><SkipBack size={18} />Step Back</button>
+                                <button onClick={() => { if (currentStep < stepHistory.length - 1) setCurrentStep(p => p + 1); }} className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium" disabled={isPlaying || currentStep >= stepHistory.length - 1}><SkipForward size={18} />Step Forward</button>
+                                <button onClick={reset} className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium"><RotateCcw size={18} />Reset</button>
+                                <button onClick={() => { setHouses(Array.from({ length: Math.floor(Math.random() * 4) + 4 }, () => Math.floor(Math.random() * 15) + 1)); setIsPlaying(false); setCurrentStep(0); }} className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium">Random</button>
+                                <button onClick={() => { setHouses([...originalHouses]); setIsPlaying(false); setCurrentStep(0); }} className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium">Original</button>
                             </div>
 
-                            {/* House Values Input */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-slate-300">
-                                    House Values (comma-separated):
-                                </label>
-                                <input
-                                    type="text"
-                                    value={houses.join(', ')}
-                                    onChange={(e) => {
-                                        const values = e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v) && v > 0);
-                                        if (values.length > 0) {
-                                            setHouses(values);
-                                        }
-                                    }}
-                                    className="w-full px-3 py-2 border border-slate-700 rounded-lg"
-                                    placeholder="2, 7, 9, 3, 1"
-                                />
+                                <label className="block text-sm font-medium mb-2 text-slate-300">House Values (comma-separated):</label>
+                                <input type="text" value={houses.join(', ')}
+                                    onChange={e => { const v = e.target.value.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x) && x > 0); if (v.length > 0) setHouses(v); }}
+                                    className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 text-sm" placeholder="2, 7, 9, 3, 1" />
                             </div>
 
-                            {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-slate-300">
-                                    Animation Speed: {speed}ms
-                                </label>
-                                <input
-                                    type="range"
-                                    min="300"
-                                    max="2000"
-                                    value={speed}
-                                    onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="w-full max-w-md accent-rose-500"
-                                />
-                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
-                                    <span>Fast (300ms)</span>
-                                    <span>Slow (2000ms)</span>
-                                </div>
+                                <label className="block text-sm font-medium mb-2 text-slate-300">Speed: {speed}ms</label>
+                                <input type="range" min="300" max="2000" value={speed} onChange={e => setSpeed(Number(e.target.value))} className="w-full max-w-md accent-rose-500" />
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1"><span>Fast (300ms)</span><span>Slow (2000ms)</span></div>
                             </div>
 
-                            {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-slate-300">
-                                        Progress: Step {currentStep + 1} of {stepHistory.length}
-                                    </span>
-                                    <span className="text-sm text-slate-500">
-                                        Phase: {currentState.phase}
-                                    </span>
+                                    <span className="text-sm font-medium text-slate-300">Step {currentStep + 1} of {stepHistory.length}</span>
+                                    <span className="text-sm text-slate-500">Phase: {currentState.phase}</span>
                                 </div>
                                 <div className="w-full bg-slate-700 rounded-full h-2">
-                                    <div
-                                        className="bg-rose-500 h-2 rounded-full transition-all duration-300"
-                                        style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
-                                    ></div>
+                                    <div className="bg-rose-500 h-2 rounded-full transition-all duration-300" style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }} />
                                 </div>
                             </div>
 
-                            {/* Neighborhood Visualization */}
+                            {/* Neighbourhood visualization */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-slate-100 mb-4">
-                                    Neighborhood ({currentState.robbedHouses.length > 0 ? `Robbed: $${currentState.maxMoney}` : 'Planning...'})
+                                <h3 className="text-sm font-semibold text-slate-300 mb-3">
+                                    Neighbourhood{currentState.robbedHouses.length > 0 ? ` — Robbed: $${currentState.maxMoney}` : ''}
                                 </h3>
-                                <div className="p-6 bg-slate-800/60 rounded-lg border-2 border-slate-700/60 relative">
-                                    {/* Street */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gray-400 rounded-b-lg"></div>
-
-                                    {/* Houses */}
-                                    <div className="flex justify-center items-end space-x-6 relative z-10">
-                                        {houses.map((money, index) => (
-                                            <div key={index} className="text-center">
-                                                {/* House */}
-                                                <div
-                                                    className={`relative w-20 h-24 transition-all duration-500 ${getHouseColor(index)} rounded-t-lg border-4 flex flex-col items-center justify-center`}
-                                                >
-                                                    {/* Roof */}
-                                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-r-[16px] border-b-[16px] border-l-transparent border-r-transparent border-b-current opacity-80"></div>
-
-                                                    {/* Money Icon */}
-                                                    <DollarSign className="h-6 w-6 mb-1" />
-                                                    <span className="font-bold text-lg">{money}</span>
-
-                                                    {/* Security System */}
-                                                    {currentState.robbedHouses.some(robbedIndex => Math.abs(robbedIndex - index) === 1) && currentState.phase === 'complete' && (
-                                                        <Shield className="absolute -top-2 -right-2 h-4 w-4 text-red-500" />
-                                                    )}
-
-                                                    {/* Robber Icon */}
-                                                    {currentState.robbedHouses.includes(index) && (
-                                                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl">🥷</div>
-                                                    )}
+                                <div className="p-6 bg-slate-800/60 rounded-lg border border-slate-700/60 relative overflow-hidden">
+                                    {/* Road */}
+                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-slate-700 rounded-b-lg border-t border-slate-600" />
+                                    <div className="flex justify-center items-end gap-4 relative z-10 pb-8">
+                                        {houses.map((money, index) => {
+                                            const isRobbed = currentState.robbedHouses.includes(index);
+                                            const isAdj = currentState.robbedHouses.some(r => Math.abs(r - index) === 1);
+                                            return (
+                                                <div key={index} className="text-center">
+                                                    <div className={`relative w-20 h-24 rounded-t-lg border-4 flex flex-col items-center justify-center transition-all duration-500 ${getHouseColor(index)}`}>
+                                                        {/* Roof triangle */}
+                                                        <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[24px] border-r-[24px] border-b-[20px] border-transparent border-b-current opacity-70" />
+                                                        <DollarSign className="h-5 w-5 mb-0.5" />
+                                                        <span className="font-bold text-lg">{money}</span>
+                                                        {isAdj && currentState.phase === 'complete' && (
+                                                            <Shield className="absolute -top-2 -right-2 h-4 w-4 text-red-400" />
+                                                        )}
+                                                        {isRobbed && (
+                                                            <div className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs font-bold text-green-400 bg-slate-900/90 px-1 rounded border border-green-500/50">ROB</div>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-2 text-xs text-slate-500">House {index}</div>
                                                 </div>
-
-                                                {/* House Number */}
-                                                <div className="mt-2 text-sm text-slate-400">House {index}</div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
-
-                                    {/* Adjacent House Warning */}
                                     {currentState.phase === 'complete' && (
-                                        <div className="mt-4 text-center">
-                                            <div className="inline-flex items-center bg-green-500/15 text-green-400 px-3 py-1 rounded-full text-sm">
-                                                <Shield className="w-4 h-4 mr-1" />
-                                                No adjacent houses robbed!
-                                            </div>
+                                        <div className="mt-2 text-center">
+                                            <span className="inline-flex items-center gap-1 bg-green-500/15 text-green-400 px-3 py-1 rounded-full text-sm">
+                                                <Shield className="h-4 w-4" />No adjacent houses robbed!
+                                            </span>
                                         </div>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Decision Comparison */}
+                            {/* Decision analysis */}
                             {currentState.comparing && (
                                 <div className="mb-6">
-                                    <h3 className="text-lg font-semibold text-slate-100 mb-4">Decision Analysis</h3>
+                                    <h3 className="text-sm font-semibold text-slate-300 mb-3">Decision Analysis</h3>
                                     <div className="grid grid-cols-2 gap-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                                        <div className={`p-3 rounded border-2 transition-all ${currentState.comparing.chosen === 'rob' ? 'border-green-500 bg-green-100' : 'border-slate-700 bg-white'}`}>
-                                            <div className="text-center">
-                                                <div className="font-semibold text-slate-100">Rob Current</div>
-                                                <div className="text-2xl font-bold text-green-600">${currentState.comparing.option1}</div>
-                                                <div className="text-sm text-slate-400">{currentState.comparing.robCurrent}</div>
-                                            </div>
+                                        <div className={`p-3 rounded border-2 text-center transition-all ${currentState.comparing.chosen === 'rob' ? 'border-green-500 bg-green-500/10' : 'border-slate-700 bg-slate-800/50'}`}>
+                                            <div className="font-semibold text-sm text-slate-200 mb-1">Rob Current</div>
+                                            <div className="text-2xl font-bold text-green-400">${currentState.comparing.option1}</div>
+                                            {currentState.comparing.robCurrent && <div className="text-xs text-slate-500 mt-1">{currentState.comparing.robCurrent}</div>}
                                         </div>
-                                        <div className={`p-3 rounded border-2 transition-all ${currentState.comparing.chosen === 'skip' ? 'border-green-500 bg-green-100' : 'border-slate-700 bg-white'}`}>
-                                            <div className="text-center">
-                                                <div className="font-semibold text-slate-100">Skip Current</div>
-                                                <div className="text-2xl font-bold text-orange-600">${currentState.comparing.option2}</div>
-                                                <div className="text-sm text-slate-400">{currentState.comparing.skipCurrent}</div>
-                                            </div>
+                                        <div className={`p-3 rounded border-2 text-center transition-all ${currentState.comparing.chosen === 'skip' ? 'border-orange-400 bg-orange-500/10' : 'border-slate-700 bg-slate-800/50'}`}>
+                                            <div className="font-semibold text-sm text-slate-200 mb-1">Skip Current</div>
+                                            <div className="text-2xl font-bold text-orange-400">${currentState.comparing.option2}</div>
+                                            {currentState.comparing.skipCurrent && <div className="text-xs text-slate-500 mt-1">{currentState.comparing.skipCurrent}</div>}
                                         </div>
                                     </div>
                                 </div>
@@ -545,52 +348,39 @@ def rob_with_houses(nums):
 
                             {/* DP Array */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-slate-100 mb-4">DP Array (Maximum Money Up To Each House)</h3>
-                                <div className="p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
-                                    <div className="grid grid-cols-1 gap-3">
-                                        {/* DP Values */}
-                                        <div className="flex justify-center gap-2">
-                                            {currentState.dp.map((value, index) => (
-                                                <div key={index} className="text-center">
-                                                    <div className="text-xs text-slate-400 mb-1">dp[{index}]</div>
-                                                    <div
-                                                        className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center font-bold text-sm transition-all duration-500 ${getDpCellColor(index, value)}`}
-                                                    >
-                                                        {value > 0 ? `$${value}` : '$0'}
-                                                    </div>
+                                <h3 className="text-sm font-semibold text-slate-300 mb-3">DP Array — Max Money Up To Each House</h3>
+                                <div className="p-4 bg-slate-800/60 rounded-lg border border-slate-700/60">
+                                    <div className="flex justify-center gap-2 mb-2">
+                                        {currentState.dp.map((val, idx) => (
+                                            <div key={idx} className="text-center">
+                                                <div className="text-xs text-slate-500 mb-1">dp[{idx}]</div>
+                                                <div className={`w-14 h-14 rounded-lg border-2 flex items-center justify-center font-bold text-sm transition-all duration-500 ${getDpColor(idx, val)}`}>
+                                                    {val > 0 ? `$${val}` : '$0'}
                                                 </div>
-                                            ))}
-                                        </div>
-
-                                        {/* Decisions */}
-                                        <div className="flex justify-center gap-2">
-                                            {currentState.decisions.map((decision, index) => (
-                                                <div key={index} className="text-center w-16">
-                                                    <div className={`px-2 py-1 rounded text-xs font-medium ${decision === 'rob' ? 'bg-green-200 text-green-800' :
-                                                            decision === 'skip' ? 'bg-orange-200 text-orange-800' :
-                                                                'bg-gray-200 text-slate-400'
-                                                        }`}>
-                                                        {decision || '-'}
-                                                    </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="flex justify-center gap-2">
+                                        {currentState.decisions.map((dec, idx) => (
+                                            <div key={idx} className="w-14 text-center">
+                                                <div className={`px-1 py-0.5 rounded text-xs font-medium ${dec === 'rob' ? 'bg-green-500/20 text-green-400' : dec === 'skip' ? 'bg-orange-500/20 text-orange-400' : 'bg-slate-700 text-slate-500'}`}>
+                                                    {dec || '—'}
                                                 </div>
-                                            ))}
-                                        </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Current Step Explanation */}
                             <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
-                                    <Lightbulb className="h-5 w-5 text-rose-600 mt-0.5 flex-shrink-0" />
+                                    <Info className="h-5 w-5 text-rose-400 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-rose-300 mb-2">Current Step:</h3>
-                                        <p className="text-rose-300 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-rose-300 mb-1">Current Step</h3>
+                                        <p className="text-rose-200 text-sm leading-relaxed">{currentState.explanation}</p>
                                         {currentState.phase === 'complete' && (
-                                            <div className="mt-3 p-3 bg-green-100 rounded border border-green-200">
-                                                <div className="text-green-800 font-semibold">
-                                                    🎉 Optimal Strategy: Rob houses [{currentState.robbedHouses.join(', ')}] for ${currentState.maxMoney}
-                                                </div>
+                                            <div className="mt-2 p-2 bg-green-500/10 border border-green-500/20 rounded text-green-300 text-sm font-medium">
+                                                Rob houses [{currentState.robbedHouses.join(', ')}] — Total: ${currentState.maxMoney}
                                             </div>
                                         )}
                                     </div>
@@ -601,124 +391,65 @@ def rob_with_houses(nums):
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        {/* Algorithm Info */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Clock className="h-5 w-5 text-rose-600" />
-                                <h3 className="font-bold text-white">Algorithm Details</h3>
-                            </div>
+                            <div className="flex items-center gap-2 mb-4"><Clock className="h-5 w-5 text-rose-500" /><h3 className="font-bold text-white">Algorithm Details</h3></div>
                             <div className="space-y-3 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Time Complexity:</span>
-                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n)</code>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Space Complexity:</span>
-                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(1)</code>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">With Reconstruction:</span>
-                                    <code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(n)</code>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Type:</span>
-                                    <span className="bg-rose-100 text-rose-300 px-2 py-1 rounded">1D DP Array</span>
-                                </div>
+                                <div className="flex justify-between"><span className="text-slate-300">Time:</span><code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n)</code></div>
+                                <div className="flex justify-between"><span className="text-slate-300">Space (opt):</span><code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(1)</code></div>
+                                <div className="flex justify-between"><span className="text-slate-300">Space (reconstruction):</span><code className="bg-blue-500/15 text-blue-400 px-2 py-1 rounded">O(n)</code></div>
+                                <div className="flex justify-between"><span className="text-slate-300">Type:</span><span className="bg-rose-500/15 text-rose-400 px-2 py-1 rounded">1D DP Array</span></div>
                             </div>
                         </div>
 
-                        {/* Real-world Applications */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
+                            <h3 className="font-bold text-white mb-4">Key Concepts</h3>
                             <ul className="space-y-2 text-sm text-slate-300">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-rose-600 mt-1">•</span>
-                                    <span>Job scheduling with conflicts</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-rose-600 mt-1">•</span>
-                                    <span>Maximum profit from non-adjacent investments</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-rose-600 mt-1">•</span>
-                                    <span>Resource allocation with constraints</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-rose-600 mt-1">•</span>
-                                    <span>Activity selection problems</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-rose-600 mt-1">•</span>
-                                    <span>Maximum sum with no adjacent elements</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-rose-600 mt-1">•</span>
-                                    <span>Stock trading with cooldown periods</span>
-                                </li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Constraint:</strong> no two adjacent houses</span></li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Recurrence:</strong> dp[i] = max(nums[i]+dp[i-2], dp[i-1])</span></li>
+                                <li className="flex items-start gap-2"><Info className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Base cases:</strong> dp[0]=nums[0], dp[1]=max(nums[0],nums[1])</span></li>
+                                <li className="flex items-start gap-2"><Info className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">State:</strong> dp[i] = max money up to house i</span></li>
                             </ul>
                         </div>
 
-                        {/* Key Concepts */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="font-bold text-white mb-4">Key DP Concepts</h3>
-                            <ul className="space-y-2 text-sm text-slate-300">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
-                                    <span><strong>Constraint:</strong> Cannot rob adjacent houses</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
-                                    <span><strong>State:</strong> dp[i] = max money up to house i</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">ℹ</span>
-                                    <span><strong>Recurrence:</strong> dp[i] = max(rob, skip)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">ℹ</span>
-                                    <span><strong>Base Cases:</strong> dp[0] = nums[0], dp[1] = max(nums[0], nums[1])</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        {/* Problem Variants */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="font-bold text-white mb-4">Problem Variants</h3>
-                            <ul className="space-y-2 text-sm text-slate-300">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>House Robber II (circular array)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>House Robber III (binary tree)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>Maximum sum with k distance apart</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>Delete and earn (similar pattern)</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        {/* Code Toggle */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <button
-                                onClick={() => setShowCode(!showCode)}
-                                className="flex items-center gap-2 text-rose-600 hover:text-rose-300 font-medium"
-                            >
-                                <Code2 className="h-5 w-5" />
-                                {showCode ? 'Hide' : 'Show'} Python Code
-                            </button>
-
-                            {showCode && (
-                                <div className="mt-4">
-                                    <CodeBlock code={codeExample} language="python" />
+                            <h3 className="font-bold text-white mb-4">Knowledge Check</h3>
+                            {quizState.complete ? (
+                                <div className="text-center">
+                                    <p className="text-2xl font-bold text-white mb-2">{quizState.score}/{quizQuestions.length}</p>
+                                    <p className="text-slate-400 mb-4">{quizState.score === quizQuestions.length ? 'Perfect!' : 'Keep practicing!'}</p>
+                                    <button onClick={() => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false })} className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 text-sm font-medium">Try Again</button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-2">Question {quizState.current + 1} of {quizQuestions.length}</p>
+                                    <p className="text-sm font-medium text-slate-200 mb-3">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((opt, i) => {
+                                            let cls = 'w-full text-left px-3 py-2 rounded-lg text-sm border transition-colors ';
+                                            if (!quizState.answered) cls += 'border-slate-600 text-slate-300 hover:border-rose-500 hover:text-white bg-slate-800/50';
+                                            else if (i === quizQuestions[quizState.current].correct) cls += 'border-green-500 bg-green-500/10 text-green-300';
+                                            else if (i === quizState.selected) cls += 'border-red-500 bg-red-500/10 text-red-300';
+                                            else cls += 'border-slate-700 text-slate-500 bg-slate-800/30';
+                                            return <button key={i} onClick={() => handleAnswer(i)} className={cls}>{opt}</button>;
+                                        })}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className="mt-3">
+                                            <p className="text-xs text-slate-400 mb-3">{quizQuestions[quizState.current].explanation}</p>
+                                            <button onClick={nextQ} className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 text-sm font-medium">
+                                                {quizState.current < quizQuestions.length - 1 ? 'Next Question' : 'See Results'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
+                        </div>
+
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <button onClick={() => setShowCode(s => !s)} className="flex items-center gap-2 text-rose-400 hover:text-rose-300 font-medium">
+                                <Code2 className="h-5 w-5" />{showCode ? 'Hide' : 'Show'} Python Code
+                            </button>
+                            {showCode && <div className="mt-4"><CodeBlock code={codeExample} language="python" /></div>}
                         </div>
                     </div>
                 </div>
