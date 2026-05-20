@@ -2,8 +2,29 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Lightbulb, Clock, Code2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+
+const quizQuestions = [
+    {
+        question: "What is Merge Sort's space complexity?",
+        options: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+        correct: 2,
+        explanation: "Merge Sort requires O(n) auxiliary space to hold the temporary subarrays during the merge step, making it not in-place unlike Heap or Quick Sort."
+    },
+    {
+        question: "What algorithmic paradigm does Merge Sort use?",
+        options: ["Greedy", "Dynamic Programming", "Divide and Conquer", "Backtracking"],
+        correct: 2,
+        explanation: "Merge Sort uses divide-and-conquer: divide the array in half, recursively sort each half, then merge the two sorted halves back together."
+    },
+    {
+        question: "Is Merge Sort stable?",
+        options: ["No", "Yes, always", "Only for small inputs", "Only with extra memory"],
+        correct: 1,
+        explanation: "Merge Sort is stable because the merge step preserves the relative order of equal elements — when two elements are equal it takes from the left subarray first."
+    }
+];
 
 const MergeSortPage = () => {
     const [array, setArray] = useState([64, 34, 25, 12, 22, 11, 90]);
@@ -13,6 +34,7 @@ const MergeSortPage = () => {
     const [stepHistory, setStepHistory] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [showCode, setShowCode] = useState(false);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
 
     const generateMergeSortSteps = (arr) => {
         const steps = [];
@@ -21,197 +43,137 @@ const MergeSortPage = () => {
 
         steps.push({
             array: [...tempArr],
-            leftSection: [],
-            rightSection: [],
-            merging: [],
-            sorted: [],
-            currentLeft: -1,
-            currentRight: -1,
+            leftSection: [], rightSection: [], merging: [], sorted: [],
+            currentLeft: -1, currentRight: -1,
             phase: 'start',
-            explanation: "🎯 Starting Merge Sort: We'll use divide-and-conquer approach. First divide the array into halves, then merge them back in sorted order.",
-            level: 0,
-            totalLevels: Math.ceil(Math.log2(n))
+            explanation: "Starting Merge Sort: Using divide-and-conquer. First divide the array into halves, then merge them back in sorted order.",
+            level: 0, totalLevels: Math.ceil(Math.log2(n))
         });
 
-        // Helper function to add steps for the divide and merge process
-        function mergeSort(arr, left, right, level = 0, steps) {
+        function mergeSort(arr, left, right, level, steps) {
             if (left >= right) return;
-
             const mid = Math.floor((left + right) / 2);
 
-            // Show the divide step
             steps.push({
                 array: [...tempArr],
                 leftSection: Array.from({ length: mid - left + 1 }, (_, i) => left + i),
                 rightSection: Array.from({ length: right - mid }, (_, i) => mid + 1 + i),
-                merging: [],
-                sorted: [],
-                currentLeft: left,
-                currentRight: right,
+                merging: [], sorted: [],
+                currentLeft: left, currentRight: right,
                 phase: 'divide',
-                explanation: `🔪 Dividing array from index ${left} to ${right}. Split at index ${mid}. Left: [${left}...${mid}], Right: [${mid + 1}...${right}]`,
-                level: level,
-                totalLevels: Math.ceil(Math.log2(n))
+                explanation: `Dividing array from index ${left} to ${right}. Split at index ${mid}. Left: [${left}...${mid}], Right: [${mid + 1}...${right}]`,
+                level, totalLevels: Math.ceil(Math.log2(n))
             });
 
-            // Recursively sort left half
             mergeSort(arr, left, mid, level + 1, steps);
-
-            // Recursively sort right half
             mergeSort(arr, mid + 1, right, level + 1, steps);
-
-            // Merge the two halves
             merge(arr, left, mid, right, level, steps);
         }
 
         function merge(arr, left, mid, right, level, steps) {
             const leftArr = [];
             const rightArr = [];
-
-            // Copy data to temp arrays
-            for (let i = left; i <= mid; i++) {
-                leftArr.push(tempArr[i]);
-            }
-            for (let i = mid + 1; i <= right; i++) {
-                rightArr.push(tempArr[i]);
-            }
+            for (let i = left; i <= mid; i++) leftArr.push(tempArr[i]);
+            for (let i = mid + 1; i <= right; i++) rightArr.push(tempArr[i]);
 
             steps.push({
                 array: [...tempArr],
                 leftSection: Array.from({ length: mid - left + 1 }, (_, i) => left + i),
                 rightSection: Array.from({ length: right - mid }, (_, i) => mid + 1 + i),
                 merging: Array.from({ length: right - left + 1 }, (_, i) => left + i),
-                sorted: [],
-                currentLeft: -1,
-                currentRight: -1,
+                sorted: [], currentLeft: -1, currentRight: -1,
                 phase: 'merge_start',
-                explanation: `🔄 Starting merge of left subarray [${leftArr.join(', ')}] and right subarray [${rightArr.join(', ')}]`,
-                level: level,
-                totalLevels: Math.ceil(Math.log2(n))
+                explanation: `Starting merge of left [${leftArr.join(', ')}] and right [${rightArr.join(', ')}]`,
+                level, totalLevels: Math.ceil(Math.log2(n))
             });
 
             let i = 0, j = 0, k = left;
-
-            // Merge the temp arrays back into arr[left..right]
             while (i < leftArr.length && j < rightArr.length) {
                 steps.push({
                     array: [...tempArr],
                     leftSection: Array.from({ length: mid - left + 1 }, (_, idx) => left + idx),
                     rightSection: Array.from({ length: right - mid }, (_, idx) => mid + 1 + idx),
                     merging: Array.from({ length: right - left + 1 }, (_, idx) => left + idx),
-                    sorted: [],
-                    currentLeft: left + i,
-                    currentRight: mid + 1 + j,
+                    sorted: [], currentLeft: left + i, currentRight: mid + 1 + j,
                     phase: 'merging',
-                    explanation: `🔍 Comparing ${leftArr[i]} (left) with ${rightArr[j]} (right). ${leftArr[i] <= rightArr[j] ? `${leftArr[i]} ≤ ${rightArr[j]}, take from left` : `${leftArr[i]} > ${rightArr[j]}, take from right`}`,
-                    level: level,
-                    totalLevels: Math.ceil(Math.log2(n))
+                    explanation: `Comparing ${leftArr[i]} (left) with ${rightArr[j]} (right). ${leftArr[i] <= rightArr[j] ? `${leftArr[i]} ≤ ${rightArr[j]}, take from left` : `${leftArr[i]} > ${rightArr[j]}, take from right`}`,
+                    level, totalLevels: Math.ceil(Math.log2(n))
                 });
 
-                if (leftArr[i] <= rightArr[j]) {
-                    tempArr[k] = leftArr[i];
-                    i++;
-                } else {
-                    tempArr[k] = rightArr[j];
-                    j++;
-                }
+                if (leftArr[i] <= rightArr[j]) { tempArr[k] = leftArr[i]; i++; }
+                else { tempArr[k] = rightArr[j]; j++; }
 
                 steps.push({
                     array: [...tempArr],
                     leftSection: Array.from({ length: mid - left + 1 }, (_, idx) => left + idx),
                     rightSection: Array.from({ length: right - mid }, (_, idx) => mid + 1 + idx),
                     merging: Array.from({ length: right - left + 1 }, (_, idx) => left + idx),
-                    sorted: [k],
-                    currentLeft: left + i,
-                    currentRight: mid + 1 + j,
+                    sorted: [k], currentLeft: left + i, currentRight: mid + 1 + j,
                     phase: 'placing',
-                    explanation: `✅ Placed ${tempArr[k]} at position ${k}`,
-                    level: level,
-                    totalLevels: Math.ceil(Math.log2(n))
+                    explanation: `Placed ${tempArr[k]} at position ${k}`,
+                    level, totalLevels: Math.ceil(Math.log2(n))
                 });
                 k++;
             }
 
-            // Copy remaining elements of leftArr[], if any
             while (i < leftArr.length) {
                 steps.push({
                     array: [...tempArr],
                     leftSection: Array.from({ length: mid - left + 1 }, (_, idx) => left + idx),
                     rightSection: Array.from({ length: right - mid }, (_, idx) => mid + 1 + idx),
                     merging: Array.from({ length: right - left + 1 }, (_, idx) => left + idx),
-                    sorted: [],
-                    currentLeft: left + i,
-                    currentRight: -1,
+                    sorted: [], currentLeft: left + i, currentRight: -1,
                     phase: 'copying_left',
-                    explanation: `📋 Copying remaining element ${leftArr[i]} from left subarray to position ${k}`,
-                    level: level,
-                    totalLevels: Math.ceil(Math.log2(n))
+                    explanation: `Copying remaining element ${leftArr[i]} from left subarray to position ${k}`,
+                    level, totalLevels: Math.ceil(Math.log2(n))
                 });
-
                 tempArr[k] = leftArr[i];
                 steps.push({
                     array: [...tempArr],
                     leftSection: Array.from({ length: mid - left + 1 }, (_, idx) => left + idx),
                     rightSection: Array.from({ length: right - mid }, (_, idx) => mid + 1 + idx),
                     merging: Array.from({ length: right - left + 1 }, (_, idx) => left + idx),
-                    sorted: [k],
-                    currentLeft: -1,
-                    currentRight: -1,
+                    sorted: [k], currentLeft: -1, currentRight: -1,
                     phase: 'placed',
-                    explanation: `✅ Placed ${tempArr[k]} at position ${k}`,
-                    level: level,
-                    totalLevels: Math.ceil(Math.log2(n))
+                    explanation: `Placed ${tempArr[k]} at position ${k}`,
+                    level, totalLevels: Math.ceil(Math.log2(n))
                 });
-                i++;
-                k++;
+                i++; k++;
             }
 
-            // Copy remaining elements of rightArr[], if any
             while (j < rightArr.length) {
                 steps.push({
                     array: [...tempArr],
                     leftSection: Array.from({ length: mid - left + 1 }, (_, idx) => left + idx),
                     rightSection: Array.from({ length: right - mid }, (_, idx) => mid + 1 + idx),
                     merging: Array.from({ length: right - left + 1 }, (_, idx) => left + idx),
-                    sorted: [],
-                    currentLeft: -1,
-                    currentRight: mid + 1 + j,
+                    sorted: [], currentLeft: -1, currentRight: mid + 1 + j,
                     phase: 'copying_right',
-                    explanation: `📋 Copying remaining element ${rightArr[j]} from right subarray to position ${k}`,
-                    level: level,
-                    totalLevels: Math.ceil(Math.log2(n))
+                    explanation: `Copying remaining element ${rightArr[j]} from right subarray to position ${k}`,
+                    level, totalLevels: Math.ceil(Math.log2(n))
                 });
-
                 tempArr[k] = rightArr[j];
                 steps.push({
                     array: [...tempArr],
                     leftSection: Array.from({ length: mid - left + 1 }, (_, idx) => left + idx),
                     rightSection: Array.from({ length: right - mid }, (_, idx) => mid + 1 + idx),
                     merging: Array.from({ length: right - left + 1 }, (_, idx) => left + idx),
-                    sorted: [k],
-                    currentLeft: -1,
-                    currentRight: -1,
+                    sorted: [k], currentLeft: -1, currentRight: -1,
                     phase: 'placed',
-                    explanation: `✅ Placed ${tempArr[k]} at position ${k}`,
-                    level: level,
-                    totalLevels: Math.ceil(Math.log2(n))
+                    explanation: `Placed ${tempArr[k]} at position ${k}`,
+                    level, totalLevels: Math.ceil(Math.log2(n))
                 });
-                j++;
-                k++;
+                j++; k++;
             }
 
             steps.push({
                 array: [...tempArr],
-                leftSection: [],
-                rightSection: [],
-                merging: [],
+                leftSection: [], rightSection: [], merging: [],
                 sorted: Array.from({ length: right - left + 1 }, (_, idx) => left + idx),
-                currentLeft: -1,
-                currentRight: -1,
+                currentLeft: -1, currentRight: -1,
                 phase: 'merge_complete',
-                explanation: `🎉 Merge complete! Subarray from ${left} to ${right} is now sorted: [${tempArr.slice(left, right + 1).join(', ')}]`,
-                level: level,
-                totalLevels: Math.ceil(Math.log2(n))
+                explanation: `Merge complete! Subarray from ${left} to ${right} is now sorted: [${tempArr.slice(left, right + 1).join(', ')}]`,
+                level, totalLevels: Math.ceil(Math.log2(n))
             });
         }
 
@@ -219,16 +181,12 @@ const MergeSortPage = () => {
 
         steps.push({
             array: [...tempArr],
-            leftSection: [],
-            rightSection: [],
-            merging: [],
+            leftSection: [], rightSection: [], merging: [],
             sorted: Array.from({ length: n }, (_, k) => k),
-            currentLeft: -1,
-            currentRight: -1,
+            currentLeft: -1, currentRight: -1,
             phase: 'complete',
-            explanation: "🎉 Merge Sort Complete! The entire array is now sorted through the divide-and-conquer approach.",
-            level: Math.ceil(Math.log2(n)),
-            totalLevels: Math.ceil(Math.log2(n))
+            explanation: "Merge Sort complete! The entire array is now sorted through the divide-and-conquer approach.",
+            level: Math.ceil(Math.log2(n)), totalLevels: Math.ceil(Math.log2(n))
         });
 
         return steps;
@@ -242,9 +200,7 @@ const MergeSortPage = () => {
 
     useEffect(() => {
         if (isPlaying && currentStep < stepHistory.length - 1) {
-            const timer = setTimeout(() => {
-                setCurrentStep(prev => prev + 1);
-            }, speed);
+            const timer = setTimeout(() => setCurrentStep(prev => prev + 1), speed);
             return () => clearTimeout(timer);
         } else if (currentStep >= stepHistory.length - 1) {
             setIsPlaying(false);
@@ -253,48 +209,18 @@ const MergeSortPage = () => {
 
     const startVisualization = () => setIsPlaying(true);
     const pauseVisualization = () => setIsPlaying(false);
-    const resetVisualization = () => {
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const stepForward = () => {
-        if (currentStep < stepHistory.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
-    };
-
-    const stepBackward = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
-    };
-
-    const generateNewArray = () => {
-        const newArray = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
-        setArray(newArray);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const resetToOriginal = () => {
-        setArray([...originalArray]);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
+    const resetVisualization = () => { setIsPlaying(false); setCurrentStep(0); };
+    const stepForward = () => { if (currentStep < stepHistory.length - 1) setCurrentStep(prev => prev + 1); };
+    const stepBackward = () => { if (currentStep > 0) setCurrentStep(prev => prev - 1); };
+    const generateNewArray = () => { setArray(Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10)); setIsPlaying(false); setCurrentStep(0); };
+    const resetToOriginal = () => { setArray([...originalArray]); setIsPlaying(false); setCurrentStep(0); };
 
     const currentState = stepHistory[currentStep] || {
-        array: array,
-        leftSection: [],
-        rightSection: [],
-        merging: [],
-        sorted: [],
-        currentLeft: -1,
-        currentRight: -1,
+        array, leftSection: [], rightSection: [], merging: [], sorted: [],
+        currentLeft: -1, currentRight: -1,
         phase: 'start',
-        explanation: 'Click Start to begin the Merge Sort visualization',
-        level: 0,
-        totalLevels: 0
+        explanation: 'Click Play to begin the Merge Sort visualization',
+        level: 0, totalLevels: 0
     };
 
     const getBarColor = (index) => {
@@ -309,27 +235,37 @@ const MergeSortPage = () => {
 
     const maxValue = Math.max(...currentState.array);
 
+    const handleQuizAnswer = (optionIndex) => {
+        if (quizState.answered) return;
+        const correct = optionIndex === quizQuestions[quizState.current].correct;
+        setQuizState(prev => ({ ...prev, selected: optionIndex, answered: true, score: correct ? prev.score + 1 : prev.score }));
+    };
+
+    const nextQuestion = () => {
+        if (quizState.current < quizQuestions.length - 1) {
+            setQuizState(prev => ({ ...prev, current: prev.current + 1, selected: null, answered: false }));
+        } else {
+            setQuizState(prev => ({ ...prev, complete: true }));
+        }
+    };
+
+    const resetQuiz = () => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
     const codeExample = `def merge_sort(arr):
     if len(arr) <= 1:
         return arr
-    
+
     # Divide the array into two halves
     mid = len(arr) // 2
-    left_half = arr[:mid]
-    right_half = arr[mid:]
-    
-    # Recursively sort both halves
-    left_sorted = merge_sort(left_half)
-    right_sorted = merge_sort(right_half)
-    
-    # Merge the sorted halves
+    left_sorted = merge_sort(arr[:mid])
+    right_sorted = merge_sort(arr[mid:])
+
     return merge(left_sorted, right_sorted)
 
 def merge(left, right):
     result = []
     i = j = 0
-    
-    # Compare elements and merge in sorted order
+
     while i < len(left) and j < len(right):
         if left[i] <= right[j]:
             result.append(left[i])
@@ -337,28 +273,22 @@ def merge(left, right):
         else:
             result.append(right[j])
             j += 1
-    
-    # Add remaining elements
+
     result.extend(left[i:])
     result.extend(right[j:])
-    
     return result`;
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
+            <div className="bg-gradient-to-r from-orange-600 to-amber-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center mb-6">
                         <Link href="/sorting" className="flex items-center text-white hover:text-orange-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Sorting
+                            <ArrowLeft className="h-5 w-5 mr-2" />Back to Sorting
                         </Link>
                     </div>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Merge Sort Visualizer
-                        </h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Merge Sort Visualizer</h1>
                         <p className="text-xl text-orange-100 mb-6 max-w-3xl mx-auto">
                             Watch how Merge Sort uses divide-and-conquer to split the array into halves and merge them back in sorted order.
                         </p>
@@ -366,7 +296,7 @@ def merge(left, right):
                             <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(n log n)</div>
                             <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(n)</div>
                             <div className="bg-white/20 px-3 py-1 rounded-full">Stable: Yes</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Divide & Conquer</div>
+                            <div className="bg-white/20 px-3 py-1 rounded-full">Divide &amp; Conquer</div>
                         </div>
                     </div>
                 </div>
@@ -374,266 +304,143 @@ def merge(left, right):
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Visualization */}
                     <div className="lg:col-span-2">
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
-                            {/* Controls */}
                             <div className="flex flex-wrap gap-3 mb-6">
-                                <button
-                                    onClick={isPlaying ? pauseVisualization : startVisualization}
-                                    className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
-                                    disabled={currentStep >= stepHistory.length - 1 && !isPlaying}
-                                >
-                                    {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                                    {isPlaying ? 'Pause' : 'Play'}
+                                <button onClick={isPlaying ? pauseVisualization : startVisualization} className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium" disabled={currentStep >= stepHistory.length - 1 && !isPlaying}>
+                                    {isPlaying ? <Pause size={18} /> : <Play size={18} />}{isPlaying ? 'Pause' : 'Play'}
                                 </button>
-
-                                <button
-                                    onClick={stepBackward}
-                                    className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
-                                    disabled={isPlaying || currentStep === 0}
-                                >
-                                    <SkipBack size={18} />
-                                    Step Back
+                                <button onClick={stepBackward} className="flex items-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium" disabled={isPlaying || currentStep === 0}>
+                                    <SkipBack size={18} />Step Back
                                 </button>
-
-                                <button
-                                    onClick={stepForward}
-                                    className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-                                    disabled={isPlaying || currentStep >= stepHistory.length - 1}
-                                >
-                                    <SkipForward size={18} />
-                                    Step Forward
+                                <button onClick={stepForward} className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium" disabled={isPlaying || currentStep >= stepHistory.length - 1}>
+                                    <SkipForward size={18} />Step Forward
                                 </button>
-
-                                <button
-                                    onClick={resetVisualization}
-                                    className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium"
-                                >
-                                    <RotateCcw size={18} />
-                                    Reset
+                                <button onClick={resetVisualization} className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium">
+                                    <RotateCcw size={18} />Reset
                                 </button>
-
-                                <button
-                                    onClick={generateNewArray}
-                                    className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
-                                >
-                                    Randomize
+                                <button onClick={generateNewArray} className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium">
+                                    <Shuffle size={18} />Randomize
                                 </button>
-
-                                <button
-                                    onClick={resetToOriginal}
-                                    className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium"
-                                >
+                                <button onClick={resetToOriginal} className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium">
                                     Original Array
                                 </button>
                             </div>
 
-                            {/* Speed Control */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2 text-slate-300">
-                                    Animation Speed: {speed}ms
-                                </label>
-                                <input
-                                    type="range"
-                                    min="500"
-                                    max="3000"
-                                    value={speed}
-                                    onChange={(e) => setSpeed(Number(e.target.value))}
-                                    className="w-full max-w-md accent-orange-500"
-                                />
-                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1">
-                                    <span>Fast (500ms)</span>
-                                    <span>Slow (3000ms)</span>
-                                </div>
+                                <label className="block text-sm font-medium mb-2 text-slate-300">Animation Speed: {speed}ms</label>
+                                <input type="range" min="500" max="3000" value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="w-full max-w-md accent-orange-500" />
+                                <div className="flex justify-between text-xs text-slate-500 max-w-md mt-1"><span>Fast (500ms)</span><span>Slow (3000ms)</span></div>
                             </div>
 
-                            {/* Progress */}
                             <div className="mb-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium text-slate-300">
-                                        Progress: Step {currentStep + 1} of {stepHistory.length}
-                                    </span>
-                                    <span className="text-sm text-slate-500">
-                                        Level {currentState.level} of {currentState.totalLevels} | Phase: {currentState.phase}
-                                    </span>
+                                    <span className="text-sm font-medium text-slate-300">Progress: Step {currentStep + 1} of {stepHistory.length}</span>
+                                    <span className="text-sm text-slate-500">Level {currentState.level} of {currentState.totalLevels} | Phase: {currentState.phase}</span>
                                 </div>
                                 <div className="w-full bg-slate-700 rounded-full h-2">
-                                    <div
-                                        className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-                                        style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}
-                                    ></div>
+                                    <div className="bg-orange-500 h-2 rounded-full transition-all duration-300" style={{ width: `${((currentStep + 1) / stepHistory.length) * 100}%` }}></div>
                                 </div>
                             </div>
 
-                            {/* Array Visualization */}
                             <div className="mb-6">
                                 <div className="flex items-end justify-center gap-2 h-64 p-4 bg-slate-800/60 rounded-lg border-2 border-slate-700/60">
                                     {currentState.array.map((value, index) => (
                                         <div key={index} className="flex flex-col items-center">
-                                            <div
-                                                className={`w-12 transition-all duration-500 border-2 rounded-t-lg ${getBarColor(index)}`}
-                                                style={{
-                                                    height: `${(value / maxValue) * 200}px`,
-                                                }}
-                                            />
+                                            <div className={`w-12 transition-all duration-500 border-2 rounded-t-lg ${getBarColor(index)}`} style={{ height: `${(value / maxValue) * 200}px` }} />
                                             <span className="text-sm mt-2 font-medium text-slate-300">{value}</span>
                                             <span className="text-xs text-slate-500">{index}</span>
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Legend */}
-                                <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-orange-400 border border-orange-500 rounded"></div>
-                                        <span>Unsorted</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-cyan-400 border border-cyan-500 rounded"></div>
-                                        <span>Left Section</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-pink-400 border border-pink-500 rounded"></div>
-                                        <span>Right Section</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-blue-500 border border-blue-600 rounded"></div>
-                                        <span>Left Pointer</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-purple-500 border border-purple-600 rounded"></div>
-                                        <span>Right Pointer</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded"></div>
-                                        <span>Merging</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-green-500 border border-green-600 rounded"></div>
-                                        <span>Sorted</span>
-                                    </div>
+                                <div className="flex flex-wrap justify-center gap-3 mt-4 text-sm">
+                                    {[['bg-orange-400 border-orange-500', 'Unsorted'], ['bg-cyan-400 border-cyan-500', 'Left Section'], ['bg-pink-400 border-pink-500', 'Right Section'], ['bg-blue-500 border-blue-600', 'Left Pointer'], ['bg-purple-500 border-purple-600', 'Right Pointer'], ['bg-yellow-400 border-yellow-500', 'Merging'], ['bg-green-500 border-green-600', 'Sorted']].map(([color, label]) => (
+                                        <div key={label} className="flex items-center gap-2">
+                                            <div className={`w-4 h-4 ${color} border rounded`}></div>
+                                            <span className="text-slate-300">{label}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
-                            {/* Current Step Explanation */}
                             <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
-                                    <Lightbulb className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                                    <Info className="h-5 w-5 text-orange-400 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-orange-300 mb-2">Current Step:</h3>
-                                        <p className="text-orange-300 leading-relaxed">{currentState.explanation}</p>
+                                        <h3 className="font-semibold text-orange-300 mb-1">Current Step</h3>
+                                        <p className="text-orange-200 leading-relaxed">{currentState.explanation}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Sidebar */}
                     <div className="space-y-6">
-                        {/* Algorithm Info */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
-                                <Clock className="h-5 w-5 text-orange-600" />
+                                <Clock className="h-5 w-5 text-orange-500" />
                                 <h3 className="font-bold text-white">Algorithm Details</h3>
                             </div>
                             <div className="space-y-3 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Best Case:</span>
-                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n log n)</code>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Average Case:</span>
-                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n log n)</code>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Worst Case:</span>
-                                    <code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n log n)</code>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Space:</span>
-                                    <code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O(n)</code>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">Stable:</span>
-                                    <span className="bg-green-500/15 text-green-400 px-2 py-1 rounded">Yes</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium text-slate-300">In-place:</span>
-                                    <span className="bg-red-500/15 text-red-400 px-2 py-1 rounded">No</span>
-                                </div>
+                                <div className="flex justify-between"><span className="font-medium text-slate-300">Best Case:</span><code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n log n)</code></div>
+                                <div className="flex justify-between"><span className="font-medium text-slate-300">Average Case:</span><code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n log n)</code></div>
+                                <div className="flex justify-between"><span className="font-medium text-slate-300">Worst Case:</span><code className="bg-green-500/15 text-green-400 px-2 py-1 rounded">O(n log n)</code></div>
+                                <div className="flex justify-between"><span className="font-medium text-slate-300">Space:</span><code className="bg-yellow-500/15 text-yellow-400 px-2 py-1 rounded">O(n)</code></div>
+                                <div className="flex justify-between"><span className="font-medium text-slate-300">Stable:</span><span className="bg-green-500/15 text-green-400 px-2 py-1 rounded">Yes</span></div>
+                                <div className="flex justify-between"><span className="font-medium text-slate-300">In-place:</span><span className="bg-red-500/15 text-red-400 px-2 py-1 rounded">No</span></div>
                             </div>
                         </div>
 
-                        {/* When to Use */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
                             <h3 className="font-bold text-white mb-4">When to Use Merge Sort</h3>
                             <ul className="space-y-2 text-sm text-slate-300">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
-                                    <span>Large datasets requiring guaranteed O(n log n)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
-                                    <span>When stability is required</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
-                                    <span>External sorting (data doesn&apos;t fit in memory)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-1">✓</span>
-                                    <span>Parallel processing applications</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-red-600 mt-1">✗</span>
-                                    <span>Memory-constrained environments</span>
-                                </li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Large datasets requiring guaranteed O(n log n)</span></li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>When stability is required</span></li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>External sorting (data doesn&apos;t fit in memory)</span></li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Parallel processing applications</span></li>
+                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Memory-constrained environments</span></li>
                             </ul>
                         </div>
 
-                        {/* Real-world Applications */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="font-bold text-white mb-4">Real-world Applications</h3>
-                            <ul className="space-y-2 text-sm text-slate-300">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>Database sorting operations</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>External sorting of large files</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>Parallel computing algorithms</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>Version control systems (like Git)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-blue-600 mt-1">•</span>
-                                    <span>Inversion count problems</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        {/* Code Toggle */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <button
-                                onClick={() => setShowCode(!showCode)}
-                                className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium"
-                            >
-                                <Code2 className="h-5 w-5" />
-                                {showCode ? 'Hide' : 'Show'} Python Code
-                            </button>
-
-                            {showCode && (
-                                <div className="mt-4">
-                                    <CodeBlock code={codeExample} language="python" />
+                            <h3 className="font-bold text-white mb-4">Knowledge Check</h3>
+                            {quizState.complete ? (
+                                <div className="text-center">
+                                    <p className="text-2xl font-bold text-white mb-2">{quizState.score}/{quizQuestions.length}</p>
+                                    <p className="text-slate-400 mb-4">{quizState.score === quizQuestions.length ? 'Perfect score!' : 'Keep practicing!'}</p>
+                                    <button onClick={resetQuiz} className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium">Try Again</button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-2">Question {quizState.current + 1} of {quizQuestions.length}</p>
+                                    <p className="text-sm font-medium text-slate-200 mb-3">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((option, i) => {
+                                            let cls = 'w-full text-left px-3 py-2 rounded-lg text-sm border transition-colors ';
+                                            if (!quizState.answered) cls += 'border-slate-600 text-slate-300 hover:border-orange-500 hover:text-white bg-slate-800/50';
+                                            else if (i === quizQuestions[quizState.current].correct) cls += 'border-green-500 bg-green-500/10 text-green-300';
+                                            else if (i === quizState.selected) cls += 'border-red-500 bg-red-500/10 text-red-300';
+                                            else cls += 'border-slate-700 text-slate-500 bg-slate-800/30';
+                                            return <button key={i} onClick={() => handleQuizAnswer(i)} className={cls}>{option}</button>;
+                                        })}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className="mt-3">
+                                            <p className="text-xs text-slate-400 mb-3">{quizQuestions[quizState.current].explanation}</p>
+                                            <button onClick={nextQuestion} className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium">
+                                                {quizState.current < quizQuestions.length - 1 ? 'Next Question' : 'See Results'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
+                        </div>
+
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <button onClick={() => setShowCode(!showCode)} className="flex items-center gap-2 text-orange-400 hover:text-orange-300 font-medium">
+                                <Code2 className="h-5 w-5" />{showCode ? 'Hide' : 'Show'} Python Code
+                            </button>
+                            {showCode && <div className="mt-4"><CodeBlock code={codeExample} language="python" /></div>}
                         </div>
                     </div>
                 </div>
