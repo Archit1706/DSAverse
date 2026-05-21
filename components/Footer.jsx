@@ -37,6 +37,7 @@ const Footer = () => {
                             <li><Link href="/basics" className="hover:text-white transition-colors">Basics</Link></li>
                             <li><Link href="/recursion" className="hover:text-white transition-colors">Recursion</Link></li>
                             <li><Link href="/heap-like-data-structures" className="hover:text-white transition-colors">Heap Structures</Link></li>
+                            <li><Link href="/two-pointers-and-sliding-window" className="hover:text-white transition-colors">Two Pointers & Sliding Window</Link></li>
                         </ul>
                     </div>
                 </div>

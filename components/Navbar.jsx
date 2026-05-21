@@ -5,7 +5,7 @@ import { algorithmCategories } from '../data/algorithmCategories';
 import {
     ChevronDown, Menu, X, BookOpen, ArrowRight,
     Layers, RefreshCw, ArrowUpDown, Search as SearchIcon,
-    Database, Brain, GitBranch, BarChart2,
+    Database, Brain, GitBranch, BarChart2, ArrowLeftRight,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -46,7 +46,8 @@ const CAT_META = {
     'Searching':                 { icon: <SearchIcon className="w-3.5 h-3.5" />, grad: 'from-red-500    to-rose-500'  },
     'Heap-like Data Structures': { icon: <Database  className="w-3.5 h-3.5" />, grad: 'from-amber-500  to-yellow-500'},
     'Dynamic Programming':       { icon: <Brain     className="w-3.5 h-3.5" />, grad: 'from-rose-500   to-pink-600'  },
-    'Graph Algorithms':          { icon: <GitBranch className="w-3.5 h-3.5" />, grad: 'from-cyan-500   to-sky-600'   },
+    'Graph Algorithms':                   { icon: <GitBranch     className="w-3.5 h-3.5" />, grad: 'from-cyan-500   to-sky-600'     },
+    'Two Pointers and Sliding Window':    { icon: <ArrowLeftRight className="w-3.5 h-3.5"/>, grad: 'from-violet-500 to-purple-600'  },
 };
 
 /* ── Animated brand name ─────────────────────────────── */
@@ -160,7 +161,7 @@ function AnimatedBrand() {
 const PAGES_EXIST = new Set([
     'Basics', 'Recursion', 'Sorting', 'Searching',
     'Heap-like Data Structures', 'Dynamic Programming',
-    'Graph Algorithms',
+    'Graph Algorithms', 'Two Pointers and Sliding Window',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 

@@ -132,5 +132,18 @@ export const algorithmCategories = [
             "0-1 Knapsack",
             "House Robber"
         ]
+    },
+    {
+        name: "Two Pointers and Sliding Window",
+        color: "bg-violet-500",
+        lightColor: "bg-violet-50",
+        borderColor: "border-violet-200",
+        textColor: "text-violet-700",
+        algorithms: [
+            "Two Sum II",
+            "Valid Palindrome",
+            "Maximum Sum Subarray",
+            "Longest Substring Without Repeating Characters"
+        ]
     }
 ];
