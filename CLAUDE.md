@@ -6,64 +6,194 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm run dev      # Start dev server with Turbopack
-npm run build    # Production build
+npm run build    # Production build (also validates all pages)
 npm start        # Run production build
-npm run lint     # ESLint check
+npm run lint     # ESLint check (must be run manually — build ignores lint errors)
 ```
+
+`next.config.mjs` sets `ignoreBuildErrors: true` and `ignoreDuringBuilds: true`, so **always run `npm run build` after changes** to catch React/JSX errors that lint won't catch.
 
 ## Architecture
 
 **DSAverse** is a Next.js 15 App Router educational platform for visualizing data structures and algorithms. Live at https://dsa-verse.vercel.app.
 
 ### Tech Stack
-- **Next.js 15** with App Router and `"use client"` directives on all interactive pages
-- **React 19** — hooks only, no Redux or Context API
-- **Tailwind CSS 4** — utility classes only, no component library
-- **Lucide React** — icons (Play, Pause, RotateCcw, SkipForward, etc.)
-- **React Syntax Highlighter** — code display in algorithm detail pages
+- **Next.js 15** App Router — `"use client"` on all interactive pages
+- **React 19** — hooks only (useState, useEffect, useCallback); no Redux or Context
+- **Tailwind CSS 4** — utility classes only; no component library
+- **Lucide React** — all icons (no emojis anywhere in the codebase)
+- **React Syntax Highlighter** — via `@/components/CodeBlock`
 
 ### Directory Layout
+
 ```
 app/
-  page.js                    # Homepage
-  layout.js                  # Root layout with SEO/metadata
-  globals.css                # Tailwind import + CSS variables
-  sorting/                   # Each category is a subdirectory
-  searching/
-  recursion/
-  dynamic-programming/
-  basics/
-  heap-like-data-structures/
-  contact/
+  layout.js                      # Root layout (no Navbar/Footer — sections handle this)
+  page.js                        # Homepage
+  [section]/
+    layout.js                    # Section layout: Navbar + Footer + section metadata
+    page.js                      # Section index page (server component, no "use client")
+    [algorithm]/
+      layout.js                  # Per-page metadata only (exports metadata + passthrough Layout)
+      page.js                    # Algorithm visualizer ("use client")
 components/
-  Navbar.jsx                 # Dropdown nav driven by algorithmCategories.js
+  Navbar.jsx                     # Mega-menu driven by algorithmCategories.js + PAGES_EXIST set
+  CodeBlock.jsx                  # Syntax-highlighted code block (wraps react-syntax-highlighter)
+  GraphCustomizer.jsx            # Shared modal for custom graph input (BFS/DFS/Dijkstra)
   Hero.jsx, Features.jsx, AlgorithmsGrid.jsx, CTA.jsx, Footer.jsx
 data/
-  algorithmCategories.js     # Single source of truth for all categories/algorithms
+  algorithmCategories.js         # Single source of truth for nav categories and algorithm names
 ```
+
+### Two-Layout Pattern
+
+Every section uses **two levels of layout.js**:
+
+1. **Section layout** (`app/[section]/layout.js`) — server component that wraps with `<Navbar />`, `<main className="pt-16">`, `<Footer />`, and exports section-wide metadata with a title template:
+   ```js
+   export const metadata = { title: { template: "%s – Sorting | DSAverse", default: "..." } }
+   export default function Layout({ children }) { return <><Navbar /><main className="pt-16">{children}</main><Footer /></> }
+   ```
+
+2. **Algorithm layout** (`app/[section]/[algorithm]/layout.js`) — exports per-page metadata only; just passes children through:
+   ```js
+   export const metadata = { title: "Bubble Sort Visualizer – ...", description: "...", keywords: [...] }
+   export default function Layout({ children }) { return children; }
+   ```
+
+### Section Index Page Pattern
+
+Section index pages (`app/[section]/page.js`) are **server components** (no `"use client"`). They follow this exact layout:
+
+1. **Gradient header** matching the section's color theme
+2. **Algorithm grid** — `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` with equal-height cards:
+   - Each `<Link>` has `className="h-full flex flex-col"`
+   - Inner `<div>` has `h-full flex flex-col`
+   - Card header: `bg-gradient-to-br from-[color] to-[color2]` containing icon + algorithm name
+   - Card body: `flex-1 flex flex-col` with description, then `mt-auto` complexity rows
+   - Complexity rows use `flex justify-between` with `<code className="bg-[color]/15 text-[color] ...">` badges
+   - Difficulty badge with `getDifficultyColor()` helper
+   - "Start Visualization" button at the bottom
+3. **Info section** at the bottom — `bg-slate-900/70 border-t border-slate-700/50` with 3-column "Why Learn" grid
+
+### Section Color Themes
+
+| Section | Gradient | Accent |
+|---|---|---|
+| Sorting | `from-orange-600 to-amber-700` | `orange-400` / `orange-500` |
+| Searching | `from-red-600 to-rose-700` | `red-400` / `red-500` |
+| Dynamic Programming | `from-rose-600 to-pink-700` | `rose-400` / `rose-500` |
+| Graph Algorithms | `from-cyan-600 to-sky-700` | `cyan-400` / `cyan-500` |
+| Heap-like Data Structures | `from-amber-500 to-orange-600` | `amber-400` / `amber-500` |
+| Recursion | `from-green-600 to-emerald-700` | `green-400` |
+| Basics | `from-blue-600 to-indigo-700` | `blue-400` |
 
 ### Algorithm Visualizer Pattern
 
-Every algorithm page follows the same pattern — understand this before creating or editing any visualizer:
+Every algorithm page (`"use client"`) follows this structure:
 
-1. **Pre-generate all steps** — a `generate<Name>Steps(arr)` function runs the full algorithm, capturing state at each comparison/swap into a `steps[]` array. Each step object contains: `{ array, comparisons, swaps, sorted, explanation, ... }`.
+**Step generation:**
+```js
+// Pre-generate ALL steps upfront — never compute incrementally during animation
+const generateSteps = useCallback(() => {
+    const steps = [];
+    // ... run algorithm, push one step object per meaningful state change
+    steps.push({ array, highlightIndices, explanation, phase, ... });
+    return steps;
+}, [array, target]); // dependencies regenerate steps
 
-2. **Drive animation from `currentStep` index** — `stepHistory[currentStep]` gives the current visual state. Play mode advances the index via `setInterval`/`setTimeout` at the configured speed.
+useEffect(() => { setStepHistory(generateSteps()); setCurrentStep(0); }, [generateSteps]);
+```
 
-3. **Bar colors encode state:**
-   - Default: unsorted
-   - Yellow: currently being compared (`comparisons` indices)
-   - Red: being swapped (`swaps` indices)
-   - Green: fully sorted (`sorted` indices)
+**Animation — always `setTimeout`, never `setInterval`:**
+```js
+useEffect(() => {
+    if (!isPlaying || stepHistory.length === 0) return;
+    if (currentStep >= stepHistory.length - 1) { setIsPlaying(false); return; }
+    const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+    return () => clearTimeout(t);
+}, [isPlaying, currentStep, stepHistory, speed]);
+```
 
-4. **Page layout** — two-column: left = bar chart visualization, right = sidebar with complexity info, explanation text, and toggleable code example.
+**Controls** (standard set across all pages):
+- `SkipBack` / `SkipForward` for manual stepping
+- Play/Pause toggle
+- Reset (`RotateCcw`) — resets to step 0
+- Shuffle (`Shuffle`) — generates new random input
+- Speed: `<input type="range">` slider, 150–2000 ms (inverted: `value={maxMs - speed}`)
 
-5. **Controls** — Play/Pause, Step Forward/Back, Reset, Randomize, and "Original Array" buttons; speed slider (200–2000 ms delay).
+**Layout** — two-column `lg:grid-cols-2`: left = visualization + controls, right = info + quiz + collapsible code.
 
-### `algorithmCategories.js`
+**Element color conventions (dark theme):**
 
-Central config for all 8 categories (Basics, Recursion, Sorting, Searching, Dynamic Programming, Heap-Like, Graph). The Navbar reads this to build its dropdown. Algorithm names in this file are converted to kebab-case slugs for routing — keep names consistent with their page directory names.
+| State | Classes |
+|---|---|
+| Default / unchecked | `bg-slate-700 border-slate-600 text-slate-100` |
+| Active / comparing | `bg-yellow-400 border-yellow-300 text-slate-900 scale-110` |
+| Found / complete | `bg-green-500 border-green-400 text-white scale-105` |
+| Eliminated / checked | `bg-slate-800 border-slate-700 text-slate-500` |
+| In search range | `bg-[section-color]-800/50 border-[section-color]-700 text-slate-200` |
 
-### Build Config Notes
+**Step explanation box:**
+```jsx
+<div className="bg-[color]-500/10 border border-[color]-500/20 rounded-lg p-4">
+    <div className="flex items-start gap-2">
+        <Info className="h-4 w-4 text-[color]-400 mt-0.5 flex-shrink-0" />
+        <p className="text-[color]-300 text-sm leading-relaxed">{currentState.explanation}</p>
+    </div>
+</div>
+```
 
-`next.config.mjs` ignores TypeScript and ESLint errors during builds (`ignoreBuildErrors: true`, `ignoreDuringBuilds: true`). This means linting must be run manually via `npm run lint`.
+### Active Recall Quiz Pattern
+
+Every algorithm page includes a 3-question quiz in the right sidebar. Standard implementation:
+
+```js
+const quizQuestions = [{ question, options: [4 strings], correct: 0|1|2|3, explanation }];
+const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
+const handleQuizAnswer = (idx) => {
+    if (quizState.answered) return;
+    const correct = idx === quizQuestions[quizState.current].correct;
+    setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
+};
+const nextQuestion = () => {
+    if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+    else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
+};
+```
+
+Button states: unanswered → `hover:border-[color]-500`; correct → `border-green-500 bg-green-500/10 text-green-300`; wrong → `border-red-500 bg-red-500/10 text-red-300`; other → `text-slate-500`.
+
+### Graph-Specific Patterns
+
+**SVG visualization** — always use `viewBox="0 0 W H"` with `width="100%"` so the graph scales to its container without horizontal scrolling. Never use fixed pixel widths like `width={800}`.
+
+**GraphCustomizer** (`components/GraphCustomizer.jsx`) — shared modal for BFS, DFS, Dijkstra. Exports:
+- `layoutNodes(nodeCount)` — arranges n nodes in a circle
+- `parseGraphInput(text, format, weighted)` — parses edge list / adjacency list / matrix
+- `GraphCustomizer` — the modal component (`weighted` prop for Dijkstra)
+
+Usage pattern in graph pages:
+```js
+const [customGraph, setCustomGraph] = useState(null);
+const nodes = customGraph ? layoutNodes(customGraph.nodeCount) : DEFAULT_NODES;
+const edges = customGraph ? customGraph.edges : DEFAULT_EDGES;
+const adj   = customGraph ? customGraph.adj   : DEFAULT_ADJ;
+
+// Clamp startNode when switching to a smaller custom graph
+useEffect(() => { setStartNode(prev => Math.min(prev, nodes.length - 1)); }, [nodes.length]);
+```
+
+### Navbar — Adding a New Section
+
+`components/Navbar.jsx` has a `PAGES_EXIST` set that gates which categories appear in the dropdown:
+```js
+const PAGES_EXIST = new Set(['Basics', 'Recursion', 'Sorting', 'Searching',
+    'Heap-like Data Structures', 'Dynamic Programming', 'Graph Algorithms']);
+```
+Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed.
+
+### `data/algorithmCategories.js`
+
+The single source of truth for nav structure. Algorithm names here must match their directory slugs (via `toSlug()`). The Navbar filters to `PAGES_EXIST` categories, so adding an algorithm to this file without adding a page won't break anything — it just won't be navigable.
