@@ -1,557 +1,457 @@
-﻿'use client';
-import { useState, useCallback, useEffect } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap, Search } from 'lucide-react';
+import { Play, Pause, RotateCcw, ArrowLeft, SkipBack, SkipForward, Info, CheckCircle, XCircle, Code, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 
-const TernarySearchPage = () => {
-    const [array, setArray] = useState([1, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65]);
-    const [originalArray] = useState([1, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65]);
-    const [target, setTarget] = useState(25);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentStep, setCurrentStep] = useState(0);
-    const [stepHistory, setStepHistory] = useState([]);
-    const [speed, setSpeed] = useState(1000);
+const INITIAL_ARRAY = [1, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65];
+const INITIAL_TARGET = 25;
 
-    const generateSteps = useCallback(() => {
-        const steps = [];
-        let left = 0;
-        let right = array.length - 1;
-        let found = false;
-        let foundIndex = -1;
+const quizQuestions = [
+    {
+        question: "Ternary search divides the search space into how many parts each iteration?",
+        options: ["2", "3", "4", "log n"],
+        correct: 1,
+        explanation: "Ternary search uses two midpoints (mid1 and mid2) to divide the range [left, right] into three equal thirds. Depending on the comparisons, one third is eliminated each iteration."
+    },
+    {
+        question: "How many element comparisons does ternary search make per iteration?",
+        options: ["1", "2", "3", "log n"],
+        correct: 1,
+        explanation: "Ternary search compares the target against arr[mid1] AND arr[mid2] each iteration — 2 comparisons per step. Binary search makes only 1 comparison per step."
+    },
+    {
+        question: "Despite dividing into 3 parts per step, ternary search is not faster than binary search. Why?",
+        options: [
+            "Arrays must be much larger for it to matter",
+            "2 comparisons x log3(n) steps is approximately 1.26 x log2(n), worse than 1 x log2(n) for binary",
+            "Ternary search has more memory overhead",
+            "Ternary search cannot find elements at odd indices"
+        ],
+        correct: 1,
+        explanation: "Total comparisons: ternary = 2 x log3(n) = 2 x 0.631 x log2(n) = 1.26 x log2(n), binary = 1 x log2(n). Ternary search actually makes MORE total comparisons despite halving fewer times. Binary search wins in practice."
+    }
+];
+
+const codeString = `def ternary_search(arr, target):
+    """O(log3 n) iterations, but 2 comparisons each — O(log n) overall"""
+    left, right = 0, len(arr) - 1
+
+    while left <= right:
+        # Divide into three equal thirds
+        third = (right - left) // 3
+        mid1 = left + third
+        mid2 = right - third
+
+        if arr[mid1] == target:
+            return mid1
+        if arr[mid2] == target:
+            return mid2
+
+        if target < arr[mid1]:
+            right = mid1 - 1        # target in left third
+        elif target > arr[mid2]:
+            left = mid2 + 1         # target in right third
+        else:
+            left = mid1 + 1         # target in middle third
+            right = mid2 - 1
+
+    return -1
+
+# Note: Not faster than binary search in practice
+# Binary: 1 comparison x log2 n steps
+# Ternary: 2 comparisons x log3 n steps = 1.26 x log2 n total
+arr = [1, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+print(ternary_search(arr, 25))  # 6`;
+
+function generateSteps(arr, target) {
+    const steps = [];
+    const n = arr.length;
+    let left = 0;
+    let right = n - 1;
+
+    steps.push({
+        array: arr,
+        left, right, mid1: -1, mid2: -1,
+        found: false, foundIndex: -1,
+        explanation: `Starting ternary search for ${target}. Initial range: L=${left}, R=${right}. Will divide range into 3 parts each iteration.`
+    });
+
+    while (left <= right) {
+        const third = Math.floor((right - left) / 3);
+        const mid1 = left + third;
+        const mid2 = right - third;
 
         steps.push({
-            array: [...array],
-            left: left,
-            right: right,
-            mid1: -1,
-            mid2: -1,
-            found: false,
-            foundIndex: -1,
-            phase: 'initial',
-            explanation: `Starting Ternary Search for target ${target}. Search space: entire sorted array.`,
-            comparisons: 0
+            array: arr, left, right, mid1, mid2,
+            found: false, foundIndex: -1,
+            explanation: `Range [${left}, ${right}]: third=(${right}-${left})//3=${third}. mid1=${left}+${third}=${mid1} (val=${arr[mid1]}), mid2=${right}-${third}=${mid2} (val=${arr[mid2]}).`
         });
 
-        let comparisons = 0;
-
-        while (left <= right && !found) {
-            const mid1 = left + Math.floor((right - left) / 3);
-            const mid2 = right - Math.floor((right - left) / 3);
-
+        if (arr[mid1] === target) {
             steps.push({
-                array: [...array],
-                left: left,
-                right: right,
-                mid1: mid1,
-                mid2: mid2,
-                found: false,
-                foundIndex: -1,
-                phase: 'dividing',
-                explanation: `Divide into thirds: mid1=${mid1} (${array[mid1]}), mid2=${mid2} (${array[mid2]})`,
-                comparisons: comparisons
+                array: arr, left, right, mid1, mid2,
+                found: true, foundIndex: mid1,
+                explanation: `arr[${mid1}] = ${arr[mid1]} equals target ${target}. Found at index ${mid1}!`
             });
-
-            comparisons++;
-            if (array[mid1] === target) {
-                found = true;
-                foundIndex = mid1;
-                steps.push({
-                    array: [...array],
-                    left: left,
-                    right: right,
-                    mid1: mid1,
-                    mid2: mid2,
-                    found: true,
-                    foundIndex: foundIndex,
-                    phase: 'found',
-                    explanation: `🎯 Target ${target} found at mid1 (index ${mid1})!`,
-                    comparisons: comparisons
-                });
-                break;
-            }
-
-            comparisons++;
-            if (array[mid2] === target) {
-                found = true;
-                foundIndex = mid2;
-                steps.push({
-                    array: [...array],
-                    left: left,
-                    right: right,
-                    mid1: mid1,
-                    mid2: mid2,
-                    found: true,
-                    foundIndex: foundIndex,
-                    phase: 'found',
-                    explanation: `🎯 Target ${target} found at mid2 (index ${mid2})!`,
-                    comparisons: comparisons
-                });
-                break;
-            }
-
-            if (target < array[mid1]) {
-                steps.push({
-                    array: [...array],
-                    left: left,
-                    right: right,
-                    mid1: mid1,
-                    mid2: mid2,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'left_third',
-                    explanation: `${target} < ${array[mid1]}. Search left third: [${left}, ${mid1 - 1}]`,
-                    comparisons: comparisons
-                });
-                right = mid1 - 1;
-            } else if (target > array[mid2]) {
-                steps.push({
-                    array: [...array],
-                    left: left,
-                    right: right,
-                    mid1: mid1,
-                    mid2: mid2,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'right_third',
-                    explanation: `${target} > ${array[mid2]}. Search right third: [${mid2 + 1}, ${right}]`,
-                    comparisons: comparisons
-                });
-                left = mid2 + 1;
-            } else {
-                steps.push({
-                    array: [...array],
-                    left: left,
-                    right: right,
-                    mid1: mid1,
-                    mid2: mid2,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'middle_third',
-                    explanation: `${array[mid1]} < ${target} < ${array[mid2]}. Search middle third: [${mid1 + 1}, ${mid2 - 1}]`,
-                    comparisons: comparisons
-                });
-                left = mid1 + 1;
-                right = mid2 - 1;
-            }
+            return steps;
         }
 
-        if (!found) {
+        if (arr[mid2] === target) {
             steps.push({
-                array: [...array],
-                left: left,
-                right: right,
-                mid1: -1,
-                mid2: -1,
-                found: false,
-                foundIndex: -1,
-                phase: 'not_found',
-                explanation: `❌ Target ${target} not found in the array.`,
-                comparisons: comparisons
+                array: arr, left, right, mid1, mid2,
+                found: true, foundIndex: mid2,
+                explanation: `arr[${mid2}] = ${arr[mid2]} equals target ${target}. Found at index ${mid2}!`
             });
+            return steps;
         }
 
-        return steps;
-    }, [array, target]);
+        if (target < arr[mid1]) {
+            steps.push({
+                array: arr, left, right: mid1 - 1, mid1, mid2,
+                found: false, foundIndex: -1,
+                explanation: `${target} < arr[${mid1}]=${arr[mid1]}. Target is in the LEFT third. New range: [${left}, ${mid1 - 1}].`
+            });
+            right = mid1 - 1;
+        } else if (target > arr[mid2]) {
+            steps.push({
+                array: arr, left: mid2 + 1, right, mid1, mid2,
+                found: false, foundIndex: -1,
+                explanation: `${target} > arr[${mid2}]=${arr[mid2]}. Target is in the RIGHT third. New range: [${mid2 + 1}, ${right}].`
+            });
+            left = mid2 + 1;
+        } else {
+            steps.push({
+                array: arr, left: mid1 + 1, right: mid2 - 1, mid1, mid2,
+                found: false, foundIndex: -1,
+                explanation: `arr[${mid1}]=${arr[mid1]} < ${target} < arr[${mid2}]=${arr[mid2]}. Target is in the MIDDLE third. New range: [${mid1 + 1}, ${mid2 - 1}]. Note: ternary uses 2 comparisons per step vs 1 for binary search.`
+            });
+            left = mid1 + 1;
+            right = mid2 - 1;
+        }
+    }
+
+    steps.push({
+        array: arr, left, right, mid1: -1, mid2: -1,
+        found: false, foundIndex: -1,
+        explanation: `Target ${target} not found. Search range exhausted.`
+    });
+    return steps;
+}
+
+export default function TernarySearchPage() {
+    const [arr] = useState(INITIAL_ARRAY);
+    const [target] = useState(INITIAL_TARGET);
+    const [stepHistory, setStepHistory] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [speed, setSpeed] = useState(900);
+    const [showCode, setShowCode] = useState(false);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
 
     useEffect(() => {
-        const steps = generateSteps();
-        setStepHistory(steps);
+        setStepHistory(generateSteps(arr, target));
         setCurrentStep(0);
-    }, [generateSteps]);
+        setIsPlaying(false);
+    }, [arr, target]);
 
     useEffect(() => {
-        let interval;
-        if (isPlaying && currentStep < stepHistory.length - 1) {
-            interval = setInterval(() => {
-                setCurrentStep(prev => Math.min(prev + 1, stepHistory.length - 1));
-            }, speed);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-        }
-        return () => clearInterval(interval);
-    }, [isPlaying, currentStep, stepHistory.length, speed]);
-
-    const handlePlay = () => {
-        if (currentStep >= stepHistory.length - 1) {
-            setCurrentStep(0);
-        }
-        setIsPlaying(true);
-    };
-
-    const handlePause = () => setIsPlaying(false);
-    const handleStop = () => {
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const handleNext = () => {
-        if (currentStep < stepHistory.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
-    };
-
-    const handlePrevious = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
-    };
-
-    const resetArray = () => {
-        setArray([...originalArray]);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
+        if (!isPlaying || stepHistory.length === 0) return;
+        if (currentStep >= stepHistory.length - 1) { setIsPlaying(false); return; }
+        const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+        return () => clearTimeout(t);
+    }, [isPlaying, currentStep, stepHistory, speed]);
 
     const currentState = stepHistory[currentStep] || {
-        array: array,
-        left: 0,
-        right: array.length - 1,
-        mid1: -1,
-        mid2: -1,
-        found: false,
-        foundIndex: -1,
-        phase: 'initial',
-        explanation: 'Click Start to begin Ternary Search visualization',
-        comparisons: 0
+        left: 0, right: arr.length - 1, mid1: -1, mid2: -1,
+        found: false, foundIndex: -1, explanation: ''
     };
 
-    const getBarColor = (index) => {
-        if (currentState.found && index === currentState.foundIndex) return 'bg-green-500 border-green-600 shadow-green-300';
-        if (index === currentState.mid1 || index === currentState.mid2) return 'bg-yellow-400 border-yellow-500 shadow-yellow-300 transform scale-110';
-        if (index < currentState.left || index > currentState.right) return 'bg-gray-400 border-gray-500 opacity-50';
-        if (index === currentState.left || index === currentState.right) return 'bg-red-400 border-red-500 shadow-red-300';
-        return 'bg-red-300 border-red-400';
+    const getColor = (i) => {
+        if (i === currentState.foundIndex) return 'bg-green-500 border-green-400 text-white scale-105';
+        if (i === currentState.mid1 && currentState.mid1 !== -1) return 'bg-purple-500 border-purple-400 text-white scale-110';
+        if (i === currentState.mid2 && currentState.mid2 !== -1) return 'bg-orange-500 border-orange-400 text-slate-900 scale-110';
+        if (i >= currentState.left && i <= currentState.right && currentState.left !== -1)
+            return 'bg-red-800/50 border-red-700 text-slate-200';
+        return 'bg-slate-800 border-slate-700 text-slate-500';
     };
 
-    const codeExample = `def ternary_search(arr, target, left=0, right=None):
-    if right is None:
-        right = len(arr) - 1
-    
-    if left > right:
-        return -1
-    
-    # Divide array into three parts
-    mid1 = left + (right - left) // 3
-    mid2 = right - (right - left) // 3
-    
-    # Check if target is at mid1 or mid2
-    if arr[mid1] == target:
-        return mid1
-    if arr[mid2] == target:
-        return mid2
-    
-    # Search in appropriate third
-    if target < arr[mid1]:
-        return ternary_search(arr, target, left, mid1 - 1)
-    elif target > arr[mid2]:
-        return ternary_search(arr, target, mid2 + 1, right)
-    else:
-        return ternary_search(arr, target, mid1 + 1, mid2 - 1)`;
+    const getLabel = (i) => {
+        if (i === currentState.foundIndex) return null;
+        const labels = [];
+        if (i === currentState.left && currentState.left !== -1) labels.push({ text: 'L', color: 'text-orange-400' });
+        if (i === currentState.mid1 && currentState.mid1 !== -1) labels.push({ text: 'M1', color: 'text-purple-400' });
+        if (i === currentState.mid2 && currentState.mid2 !== -1) labels.push({ text: 'M2', color: 'text-orange-400' });
+        if (i === currentState.right && currentState.right !== -1) labels.push({ text: 'R', color: 'text-orange-400' });
+        return labels.length ? labels : null;
+    };
+
+    const handleQuizAnswer = (idx) => {
+        if (quizState.answered) return;
+        const correct = idx === quizQuestions[quizState.current].correct;
+        setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
+    };
+
+    const nextQuestion = () => {
+        if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+        else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
+    };
+
+    const resetQuiz = () => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false });
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-red-700 to-rose-700 text-white">
+            <div className="bg-gradient-to-r from-red-500 to-rose-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center mb-6">
-                        <Link href="/searching" className="flex items-center text-white hover:text-red-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Searching
-                        </Link>
-                    </div>
+                    <Link href="/searching" className="inline-flex items-center text-red-100 hover:text-white mb-5">
+                        <ArrowLeft className="h-5 w-5 mr-2" /> Back to Searching
+                    </Link>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Ternary Search Visualizer
-                        </h1>
-                        <p className="text-xl text-red-100 mb-6 max-w-3xl mx-auto">
-                            Watch how Ternary Search divides the array into three parts, eliminating 2/3 of the search space at each step.
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Ternary Search</h1>
+                        <p className="text-xl text-red-100 max-w-3xl mx-auto">
+                            Divides the search space into three parts per iteration using two midpoints — but is it actually faster?
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4 text-sm">
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(log₃ n)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(1)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Requirement: Sorted Array</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Three-way Division</div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Visualization */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
-                            {/* Controls */}
-                            <div className="flex flex-wrap gap-3 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Column */}
+                    <div className="space-y-6">
+                        <div className="bg-slate-900 rounded-xl p-6 border border-slate-700">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-semibold text-slate-100">Array Visualization</h2>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-slate-400 text-sm">Target:</span>
+                                    <span className="bg-red-500/20 border border-red-500/40 text-red-300 px-3 py-1 rounded-lg font-mono font-bold">{target}</span>
+                                </div>
+                            </div>
+
+                            {/* Range Info */}
+                            {currentState.left !== undefined && currentState.left !== -1 && (
+                                <div className="mb-4 text-center text-xs text-slate-400 bg-slate-800 rounded-lg py-2 px-4">
+                                    Search range: [<span className="text-orange-400 font-mono">{currentState.left}</span>, <span className="text-orange-400 font-mono">{currentState.right}</span>]
+                                    {currentState.mid1 !== -1 && (
+                                        <span className="ml-2">— divides into 3 parts</span>
+                                    )}
+                                </div>
+                            )}
+
+                            <div className="overflow-x-auto">
+                                <div className="flex gap-1.5 pb-2 min-w-max mx-auto justify-center">
+                                    {arr.map((val, i) => (
+                                        <div key={i} className="flex flex-col items-center gap-1">
+                                            <div className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 font-mono text-xs font-bold transition-all duration-300 ${getColor(i)}`}>
+                                                {val}
+                                            </div>
+                                            <div className="h-4 flex items-center justify-center">
+                                                {i === currentState.foundIndex ? (
+                                                    <div className="w-2 h-1 bg-green-400 rounded mx-auto" />
+                                                ) : (
+                                                    getLabel(i) && (
+                                                        <div className="flex gap-0.5">
+                                                            {getLabel(i).map((l, li) => (
+                                                                <span key={li} className={`text-xs font-bold font-mono leading-none ${l.color}`}>{l.text}</span>
+                                                            ))}
+                                                        </div>
+                                                    )
+                                                )}
+                                            </div>
+                                            <span className="text-slate-600 text-xs font-mono">{i}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                            <h3 className="text-sm font-semibold text-slate-300 mb-3">Color Legend</h3>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-purple-500 border border-purple-400 flex-shrink-0" /><span className="text-slate-400">M1 (first midpoint)</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-orange-500 border border-orange-400 flex-shrink-0" /><span className="text-slate-400">M2 (second midpoint)</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-red-800 border border-red-700 flex-shrink-0" /><span className="text-slate-400">In search range</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-slate-800 border border-slate-700 flex-shrink-0" /><span className="text-slate-400">Eliminated</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-green-500 border border-green-400 flex-shrink-0" /><span className="text-slate-400">Found</span></div>
+                            </div>
+                        </div>
+
+                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                            <p className="text-red-300 text-sm leading-relaxed">
+                                {currentState.explanation || 'Press Play to start the visualization.'}
+                            </p>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700 space-y-4">
+                            <div className="flex items-center gap-2 justify-center flex-wrap">
                                 <button
-                                    onClick={isPlaying ? handlePause : handlePlay}
-                                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
                                 >
-                                    {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+                                    <RotateCcw className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setCurrentStep(s => Math.max(0, s - 1))}
+                                    disabled={currentStep === 0}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
+                                >
+                                    <SkipBack className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setIsPlaying(p => !p)}
+                                    className="px-6 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-semibold flex items-center gap-2 transition-colors"
+                                >
+                                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                                     {isPlaying ? 'Pause' : 'Play'}
                                 </button>
                                 <button
-                                    onClick={handleStop}
-                                    className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                                >
-                                    <Square className="h-4 w-4 mr-2" />
-                                    Stop
-                                </button>
-                                <button
-                                    onClick={handlePrevious}
-                                    disabled={currentStep === 0}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <ChevronLeft className="h-4 w-4 mr-2" />
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={handleNext}
+                                    onClick={() => setCurrentStep(s => Math.min(stepHistory.length - 1, s + 1))}
                                     disabled={currentStep >= stepHistory.length - 1}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
                                 >
-                                    Next
-                                    <ChevronRight className="h-4 w-4 ml-2" />
+                                    <SkipForward className="h-4 w-4" />
                                 </button>
                                 <button
-                                    onClick={resetArray}
-                                    className="flex items-center px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-600 hover:bg-slate-500 text-slate-200 rounded-lg transition-colors"
                                 >
-                                    <RotateCcw className="h-4 w-4 mr-2" />
-                                    Reset
+                                    <XCircle className="h-4 w-4" />
                                 </button>
                             </div>
 
-                            {/* Target Input */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Target Value: {target}
-                                </label>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="number"
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                        min="0"
-                                        max="100"
-                                    />
-                                    <select
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value))}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                    >
-                                        {array.map(val => (
-                                            <option key={val} value={val}>{val}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Search Info */}
-                            <div className="mb-6 bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
-                                <div className="text-sm text-purple-300">
-                                    <span className="font-semibold">Search Range:</span> [{currentState.left}, {currentState.right}] |
-                                    {currentState.mid1 >= 0 && currentState.mid2 >= 0 && (
-                                        <span> <span className="font-semibold">Mid Points:</span> {currentState.mid1}, {currentState.mid2} |</span>
-                                    )}
-                                    <span className="font-semibold"> Comparisons:</span> {currentState.comparisons}
-                                </div>
-                            </div>
-
-                            {/* Speed Control */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Animation Speed: {speed === 500 ? 'Fast' : speed === 1000 ? 'Normal' : 'Slow'}
-                                </label>
+                            <div>
+                                <label className="text-slate-400 text-xs mb-1 block">Speed: {speed}ms delay</label>
                                 <input
                                     type="range"
-                                    min="500"
-                                    max="2000"
-                                    step="500"
+                                    min={200}
+                                    max={2000}
+                                    step={100}
                                     value={speed}
-                                    onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                                    onChange={e => setSpeed(Number(e.target.value))}
+                                    className="w-full accent-red-500"
                                 />
-                            </div>
-
-                            {/* Array Visualization */}
-                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
-                                <div className="flex items-center justify-center mb-4">
-                                    <div className="flex items-end gap-1 overflow-x-auto pb-2">
-                                        {currentState.array.map((value, index) => (
-                                            <div key={index} className="flex flex-col items-center">
-                                                <div className="text-xs mb-1 font-medium">{index}</div>
-                                                <div
-                                                    className={`w-10 h-12 flex items-center justify-center text-white font-bold rounded-lg border-2 transition-all duration-500 ${getBarColor(index)}`}
-                                                >
-                                                    {value}
-                                                </div>
-                                                {index === currentState.left && (
-                                                    <div className="text-xs mt-1 text-red-600 font-bold">L</div>
-                                                )}
-                                                {index === currentState.right && (
-                                                    <div className="text-xs mt-1 text-red-600 font-bold">R</div>
-                                                )}
-                                                {index === currentState.mid1 && (
-                                                    <div className="text-xs mt-1 text-yellow-600 font-bold">M1</div>
-                                                )}
-                                                {index === currentState.mid2 && (
-                                                    <div className="text-xs mt-1 text-yellow-600 font-bold">M2</div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Search Info */}
-                                <div className="text-center mt-4">
-                                    <div className="text-sm text-slate-400">
-                                        <span className="font-semibold">Target:</span> {target} |
-                                        <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
-                                    </div>
+                                <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                    <span>Fast</span><span>Slow</span>
                                 </div>
                             </div>
 
-                            {/* Step Explanation */}
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
-                                <p className="text-red-300">{currentState.explanation}</p>
+                            <div className="text-center text-slate-400 text-xs">
+                                Step {currentStep + 1} of {stepHistory.length}
                             </div>
                         </div>
                     </div>
 
-                    {/* Side Panel */}
+                    {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Algorithm Info */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                                <Search className="h-5 w-5 mr-2 text-red-500" />
-                                Ternary Search
-                            </h3>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Time Complexity:</span>
-                                    <span className="font-semibold">O(log₃ n)</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Space Complexity:</span>
-                                    <span className="font-semibold">O(1)</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Comparisons:</span>
-                                    <span className="font-semibold">2 per iteration</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Division:</span>
-                                    <span className="font-semibold">Three parts</span>
-                                </div>
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Info className="h-4 w-4 text-red-400" />
+                                <h2 className="text-lg font-semibold text-slate-100">About Ternary Search</h2>
                             </div>
-                        </div>
-
-                        {/* Color Legend */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
-                            <div className="space-y-2">
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
-                                    <span className="text-sm">Mid Points (M1, M2)</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-red-400 border border-red-500 rounded mr-3"></div>
-                                    <span className="text-sm">Search Boundaries (L, R)</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-green-500 border border-green-600 rounded mr-3"></div>
-                                    <span className="text-sm">Target Found</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-red-300 border border-red-400 rounded mr-3"></div>
-                                    <span className="text-sm">Active Search Space</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-gray-400 border border-gray-500 rounded mr-3 opacity-50"></div>
-                                    <span className="text-sm">Eliminated Space</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Comparison with Binary Search */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">vs Binary Search</h3>
-                            <div className="space-y-3 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Ternary:</span>
-                                    <span className="font-semibold">2 comparisons/step</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Binary:</span>
-                                    <span className="font-semibold">1 comparison/step</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Elimination:</span>
-                                    <span className="font-semibold">2/3 vs 1/2</span>
-                                </div>
-                                <p className="text-xs text-slate-400 mt-2">
-                                    Despite eliminating more space, ternary search typically performs more total comparisons than binary search.
+                            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+                                Ternary search splits the search range into three equal thirds using two midpoints (mid1 and mid2).
+                                Each iteration makes 2 comparisons and eliminates one third of the remaining range.
+                            </p>
+                            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-3">
+                                <p className="text-yellow-300 text-xs leading-relaxed font-semibold mb-1">Why ternary is not faster than binary:</p>
+                                <p className="text-slate-400 text-xs leading-relaxed">
+                                    Binary: 1 comparison x log2(n) steps = log2(n) total<br />
+                                    Ternary: 2 comparisons x log3(n) steps = 2 x 0.631 x log2(n) = 1.26 x log2(n) total<br />
+                                    Ternary makes more comparisons overall despite dividing into 3 parts!
                                 </p>
                             </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Time Complexity</div>
+                                    <div className="text-green-400 font-mono font-bold">O(log n)</div>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Comparisons/step</div>
+                                    <div className="text-yellow-400 font-mono font-bold">2 (vs 1 binary)</div>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Requires</div>
+                                    <div className="text-yellow-400 text-sm font-semibold">Sorted Array</div>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Space</div>
+                                    <div className="text-green-400 font-mono font-bold">O(1)</div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Algorithm Steps */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">How It Works</h3>
-                            <ol className="space-y-2 text-sm text-slate-300">
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
-                                    <span>Divide array into three equal parts</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
-                                    <span>Check both mid points (mid1, mid2)</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
-                                    <span>Eliminate 2/3 of search space</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
-                                    <span>Repeat on remaining 1/3</span>
-                                </li>
-                            </ol>
+                        {/* Quiz */}
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <h2 className="text-lg font-semibold text-slate-100 mb-4">Active Recall Quiz</h2>
+                            {quizState.complete ? (
+                                <div className="text-center space-y-3">
+                                    <CheckCircle className="h-10 w-10 text-green-400 mx-auto" />
+                                    <p className="text-slate-200 font-semibold">Quiz Complete!</p>
+                                    <p className="text-slate-400 text-sm">Score: {quizState.score} / {quizQuestions.length}</p>
+                                    <button onClick={resetQuiz} className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                        Retry Quiz
+                                    </button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <div className="flex justify-between items-center mb-3">
+                                        <span className="text-xs text-slate-500">Question {quizState.current + 1} of {quizQuestions.length}</span>
+                                        <span className="text-xs text-slate-500">Score: {quizState.score}</span>
+                                    </div>
+                                    <p className="text-slate-200 text-sm mb-4 leading-relaxed">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((opt, idx) => {
+                                            let cls = 'w-full text-left px-4 py-3 rounded-lg text-sm border transition-all ';
+                                            if (!quizState.answered) {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-300 hover:border-red-500/50 hover:bg-slate-700';
+                                            } else if (idx === quizQuestions[quizState.current].correct) {
+                                                cls += 'border-green-500 bg-green-500/10 text-green-300';
+                                            } else if (idx === quizState.selected) {
+                                                cls += 'border-red-500 bg-red-500/10 text-red-300';
+                                            } else {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-500';
+                                            }
+                                            return (
+                                                <button key={idx} className={cls} onClick={() => handleQuizAnswer(idx)}>
+                                                    {opt}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className="mt-3 space-y-2">
+                                            <p className="text-slate-400 text-xs leading-relaxed">{quizQuestions[quizState.current].explanation}</p>
+                                            <button onClick={nextQuestion} className="w-full py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                                {quizState.current + 1 >= quizQuestions.length ? 'See Results' : 'Next Question'}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
-                        {/* Code Example */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Code className="h-5 w-5 mr-2 text-red-500" />
-                                Python Implementation
-                            </h3>
-                            <CodeBlock code={codeExample} language="python" />
-                        </div>
-
-                        {/* Real-world Applications */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Target className="h-5 w-5 mr-2 text-red-500" />
-                                Real-world Applications
-                            </h3>
-                            <ul className="space-y-2 text-sm text-slate-300">
-                                <li>• Finding peaks in unimodal functions</li>
-                                <li>• Optimization problems in mathematics</li>
-                                <li>• Game theory and decision trees</li>
-                                <li>• Scientific computing simulations</li>
-                                <li>• When elimination rate matters more</li>
-                                <li>• Educational purposes for algorithm analysis</li>
-                            </ul>
+                        {/* Code Block */}
+                        <div className="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                            <button
+                                onClick={() => setShowCode(p => !p)}
+                                className="w-full flex items-center justify-between px-5 py-4 text-slate-200 hover:bg-slate-800 transition-colors"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Code className="h-4 w-4 text-red-400" />
+                                    <span className="font-semibold text-sm">Python Implementation</span>
+                                </div>
+                                <span className="text-slate-400 text-xs">{showCode ? 'Hide' : 'Show'}</span>
+                            </button>
+                            {showCode && (
+                                <div className="px-5 pb-5">
+                                    <CodeBlock code={codeString} language="python" />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export default TernarySearchPage;
-
+}

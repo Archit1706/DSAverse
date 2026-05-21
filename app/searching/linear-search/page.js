@@ -1,396 +1,333 @@
-﻿'use client';
+'use client';
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap, Search } from 'lucide-react';
+import { ArrowLeft, Pause, Play, RotateCcw, SkipBack, SkipForward, Code, Target, Shuffle, Info, CheckCircle, XCircle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 
-const LinearSearchPage = () => {
+const quizQuestions = [
+    {
+        question: "What is the time complexity of linear search in the worst case (target not present)?",
+        options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+        correct: 2,
+        explanation: "Linear search must check every element when the target is absent, making n comparisons. Worst case is O(n). Best case is O(1) when the target is the first element."
+    },
+    {
+        question: "What key advantage does linear search have over binary search?",
+        options: ["It is always faster", "It requires O(n) extra space", "It works on unsorted arrays", "It uses divide and conquer"],
+        correct: 2,
+        explanation: "Linear search makes no assumption about element ordering — it works on any array (sorted or not), any data structure with sequential access (linked lists), and can find all occurrences in a single pass."
+    },
+    {
+        question: "In a linear search that finds all occurrences (not just the first), how many comparisons are made for an array of n elements?",
+        options: ["Exactly 1", "At most log n", "Exactly n", "It depends on the target"],
+        correct: 2,
+        explanation: "To guarantee finding all occurrences, the full array must be scanned from start to end. Exactly n comparisons are always made regardless of the target's presence — making average and worst case both O(n)."
+    }
+];
+
+export default function LinearSearchPage() {
     const [array, setArray] = useState([45, 23, 78, 12, 67, 34, 89, 56, 23, 91]);
-    const [originalArray] = useState([45, 23, 78, 12, 67, 34, 89, 56, 23, 91]);
     const [target, setTarget] = useState(23);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [stepHistory, setStepHistory] = useState([]);
-    const [speed, setSpeed] = useState(1000);
+    const [speed, setSpeed] = useState(700);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+    const [showCode, setShowCode] = useState(false);
 
     const generateSteps = useCallback(() => {
         const steps = [];
-        let found = false;
-        let foundIndices = [];
+        const arr = array;
+        const foundIndices = [];
 
         steps.push({
-            array: [...array],
-            currentIndex: -1,
-            found: false,
-            foundIndices: [],
-            checked: [],
-            explanation: `Starting Linear Search for target ${target}. Will check each element sequentially.`,
+            currentIndex: -1, foundIndices: [], checked: [],
+            explanation: `Linear search for target ${target}. Will check each element from left to right — no sorting required.`,
             comparisons: 0
         });
 
-        let comparisons = 0;
-        for (let i = 0; i < array.length; i++) {
-            comparisons++;
-
+        for (let i = 0; i < arr.length; i++) {
+            const isMatch = arr[i] === target;
             steps.push({
-                array: [...array],
                 currentIndex: i,
-                found: false,
                 foundIndices: [...foundIndices],
-                checked: Array.from({ length: i }, (_, idx) => idx),
-                explanation: `Checking index ${i}: ${array[i]} ${array[i] === target ? '==' : '!='} ${target}`,
-                comparisons: comparisons
+                checked: Array.from({ length: i }, (_, j) => j),
+                explanation: `Index ${i}: ${arr[i]} ${isMatch ? '==' : '!='} ${target}${isMatch ? ' — match!' : ''}`,
+                comparisons: i + 1
             });
-
-            if (array[i] === target) {
-                found = true;
+            if (isMatch) {
                 foundIndices.push(i);
                 steps.push({
-                    array: [...array],
                     currentIndex: i,
-                    found: true,
                     foundIndices: [...foundIndices],
-                    checked: Array.from({ length: i + 1 }, (_, idx) => idx),
-                    explanation: `🎯 Target ${target} found at index ${i}! Continuing to find all occurrences.`,
-                    comparisons: comparisons
+                    checked: Array.from({ length: i + 1 }, (_, j) => j),
+                    explanation: `Target ${target} found at index ${i}. Continuing scan to find all occurrences.`,
+                    comparisons: i + 1
                 });
             }
         }
 
         steps.push({
-            array: [...array],
             currentIndex: -1,
-            found: foundIndices.length > 0,
-            foundIndices: foundIndices,
-            checked: Array.from({ length: array.length }, (_, idx) => idx),
+            foundIndices,
+            checked: Array.from({ length: arr.length }, (_, i) => i),
             explanation: foundIndices.length > 0
-                ? `✅ Search complete! Found ${foundIndices.length} occurrence(s) of ${target} at index(es): ${foundIndices.join(', ')}`
-                : `❌ Search complete! Target ${target} not found in the array.`,
-            comparisons: comparisons
+                ? `Search complete. Found ${foundIndices.length} occurrence(s) of ${target} at index(es): [${foundIndices.join(', ')}].`
+                : `Search complete. Target ${target} not found in the array after ${arr.length} comparisons.`,
+            comparisons: arr.length
         });
 
         return steps;
     }, [array, target]);
 
-    useEffect(() => {
-        const steps = generateSteps();
-        setStepHistory(steps);
-        setCurrentStep(0);
-    }, [generateSteps]);
+    useEffect(() => { setStepHistory(generateSteps()); setCurrentStep(0); }, [generateSteps]);
 
     useEffect(() => {
-        let interval;
-        if (isPlaying && currentStep < stepHistory.length - 1) {
-            interval = setInterval(() => {
-                setCurrentStep(prev => Math.min(prev + 1, stepHistory.length - 1));
-            }, speed);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-        }
-        return () => clearInterval(interval);
-    }, [isPlaying, currentStep, stepHistory.length, speed]);
+        if (!isPlaying || stepHistory.length === 0) return;
+        if (currentStep >= stepHistory.length - 1) { setIsPlaying(false); return; }
+        const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+        return () => clearTimeout(t);
+    }, [isPlaying, currentStep, stepHistory, speed]);
 
-    const handlePlay = () => {
-        if (currentStep >= stepHistory.length - 1) {
-            setCurrentStep(0);
-        }
-        setIsPlaying(true);
-    };
-
-    const handlePause = () => setIsPlaying(false);
-    const handleStop = () => {
+    const generateRandom = () => {
+        const arr = Array.from({ length: 10 }, () => Math.floor(Math.random() * 90) + 5);
+        setArray(arr);
         setIsPlaying(false);
         setCurrentStep(0);
     };
 
-    const handleNext = () => {
-        if (currentStep < stepHistory.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
+    const handleQuizAnswer = (idx) => {
+        if (quizState.answered) return;
+        const correct = idx === quizQuestions[quizState.current].correct;
+        setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
+    };
+    const nextQuestion = () => {
+        if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+        else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
     };
 
-    const handlePrevious = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
+    const cur = stepHistory[currentStep] || { currentIndex: -1, foundIndices: [], checked: [], explanation: 'Ready — click Play or step through manually.', comparisons: 0 };
+
+    const getColor = (i) => {
+        if (cur.foundIndices.includes(i)) return 'bg-green-500 border-green-400 text-white scale-105';
+        if (i === cur.currentIndex) return 'bg-yellow-400 border-yellow-300 text-slate-900 scale-110';
+        if (cur.checked.includes(i)) return 'bg-slate-800 border-slate-700 text-slate-500';
+        return 'bg-slate-700 border-slate-600 text-slate-100';
     };
 
-    const resetArray = () => {
-        setArray([...originalArray]);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
+    const code = `def linear_search_all(arr, target):
+    """Find ALL occurrences — O(n) time, O(1) space"""
+    found = []
+    for i, val in enumerate(arr):
+        if val == target:
+            found.append(i)
+    return found if found else -1
 
-    const generateRandomArray = () => {
-        const newArray = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100));
-        setArray(newArray);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const currentState = stepHistory[currentStep] || {
-        array: array,
-        currentIndex: -1,
-        found: false,
-        foundIndices: [],
-        checked: [],
-        explanation: 'Click Start to begin Linear Search visualization',
-        comparisons: 0
-    };
-
-    const getBarColor = (index) => {
-        if (currentState.foundIndices.includes(index)) return 'bg-green-500 border-green-600 shadow-green-300';
-        if (index === currentState.currentIndex) return 'bg-yellow-400 border-yellow-500 shadow-yellow-300 transform scale-110';
-        if (currentState.checked.includes(index)) return 'bg-gray-400 border-gray-500';
-        return 'bg-red-300 border-red-400';
-    };
-
-    const codeExample = `def linear_search(arr, target):
-    found_indices = []
-    
-    for i in range(len(arr)):
-        if arr[i] == target:
-            found_indices.append(i)
-    
-    return found_indices if found_indices else -1
-
-# For finding first occurrence only:
 def linear_search_first(arr, target):
-    for i in range(len(arr)):
-        if arr[i] == target:
+    """Find FIRST occurrence only"""
+    for i, val in enumerate(arr):
+        if val == target:
             return i
-    return -1`;
+    return -1
+
+# Example
+arr = [45, 23, 78, 12, 67, 34, 89, 56, 23, 91]
+print(linear_search_all(arr, 23))   # [1, 8]
+print(linear_search_first(arr, 23)) # 1`;
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-red-600 to-rose-600 text-white">
+            <div className="bg-gradient-to-r from-red-500 to-rose-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center mb-6">
-                        <Link href="/searching" className="flex items-center text-white hover:text-red-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Searching
-                        </Link>
-                    </div>
+                    <Link href="/searching" className="inline-flex items-center text-red-100 hover:text-white mb-5 transition-colors">
+                        <ArrowLeft className="h-5 w-5 mr-2" /> Back to Searching
+                    </Link>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Linear Search Visualizer
-                        </h1>
-                        <p className="text-xl text-red-100 mb-6 max-w-3xl mx-auto">
-                            Watch how Linear Search checks each element sequentially until the target is found or the array ends.
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Linear Search</h1>
+                        <p className="text-xl text-red-100 max-w-3xl mx-auto">
+                            Check every element one by one until the target is found — or the array ends.
+                            Simple, universal, finds all occurrences in a single pass.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4 text-sm">
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(n)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(1)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">No Prerequisites</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Sequential Access</div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Visualization */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
-                            {/* Controls */}
-                            <div className="flex flex-wrap gap-3 mb-6">
-                                <button
-                                    onClick={isPlaying ? handlePause : handlePlay}
-                                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                                >
-                                    {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    {/* ── Left: Visualization ── */}
+                    <div className="space-y-4">
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-xl font-bold text-slate-100 mb-5">Visualization</h2>
+
+                            {/* Inputs */}
+                            <div className="flex flex-wrap gap-3 mb-4">
+                                <div className="flex items-center gap-2">
+                                    <label className="text-sm text-slate-400 whitespace-nowrap">Target:</label>
+                                    <input type="number" value={target}
+                                        onChange={e => { setTarget(parseInt(e.target.value) || 0); setIsPlaying(false); setCurrentStep(0); }}
+                                        className="w-20 px-3 py-2 bg-slate-800 border border-slate-600 text-slate-100 rounded-lg text-sm focus:outline-none focus:border-red-500" />
+                                </div>
+                                <button onClick={generateRandom}
+                                    className="flex items-center gap-2 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm">
+                                    <Shuffle className="h-4 w-4" /> Random
+                                </button>
+                                <button onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="flex items-center gap-2 px-3 py-2 bg-slate-600 hover:bg-slate-500 text-slate-200 rounded-lg text-sm">
+                                    <RotateCcw className="h-4 w-4" /> Reset
+                                </button>
+                            </div>
+
+                            {/* Playback */}
+                            <div className="flex flex-wrap items-center gap-2 mb-5">
+                                <button onClick={() => setCurrentStep(s => Math.max(0, s - 1))}
+                                    disabled={currentStep === 0 || isPlaying}
+                                    className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200">
+                                    <SkipBack className="h-4 w-4" />
+                                </button>
+                                <button onClick={() => { if (currentStep >= stepHistory.length - 1) setCurrentStep(0); setIsPlaying(v => !v); }}
+                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+                                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                                     {isPlaying ? 'Pause' : 'Play'}
                                 </button>
-                                <button
-                                    onClick={handleStop}
-                                    className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                                >
-                                    <Square className="h-4 w-4 mr-2" />
-                                    Stop
+                                <button onClick={() => setCurrentStep(s => Math.min(stepHistory.length - 1, s + 1))}
+                                    disabled={currentStep >= stepHistory.length - 1 || isPlaying}
+                                    className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200">
+                                    <SkipForward className="h-4 w-4" />
                                 </button>
-                                <button
-                                    onClick={handlePrevious}
-                                    disabled={currentStep === 0}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <ChevronLeft className="h-4 w-4 mr-2" />
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={handleNext}
-                                    disabled={currentStep >= stepHistory.length - 1}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Next
-                                    <ChevronRight className="h-4 w-4 ml-2" />
-                                </button>
-                                <button
-                                    onClick={resetArray}
-                                    className="flex items-center px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 transition-colors"
-                                >
-                                    <RotateCcw className="h-4 w-4 mr-2" />
-                                    Reset
-                                </button>
-                                <button
-                                    onClick={generateRandomArray}
-                                    className="flex items-center px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 transition-colors"
-                                >
-                                    <Zap className="h-4 w-4 mr-2" />
-                                    Random
-                                </button>
+                                <div className="flex items-center gap-2 ml-auto">
+                                    <span className="text-xs text-slate-400">Speed</span>
+                                    <input type="range" min={150} max={1800} step={50} value={1950 - speed}
+                                        onChange={e => setSpeed(1950 - Number(e.target.value))}
+                                        className="w-24 accent-red-500" />
+                                </div>
                             </div>
 
-                            {/* Target Input */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Target Value: {target}
-                                </label>
-                                <input
-                                    type="number"
-                                    value={target}
-                                    onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                    className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                    min="0"
-                                    max="100"
-                                />
-                            </div>
-
-                            {/* Speed Control */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Animation Speed: {speed === 500 ? 'Fast' : speed === 1000 ? 'Normal' : 'Slow'}
-                                </label>
-                                <input
-                                    type="range"
-                                    min="500"
-                                    max="2000"
-                                    step="500"
-                                    value={speed}
-                                    onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
-                                />
-                            </div>
-
-                            {/* Array Visualization */}
-                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
-                                <div className="flex items-center justify-center mb-4">
-                                    <div className="flex items-end gap-2 overflow-x-auto pb-2">
-                                        {currentState.array.map((value, index) => (
-                                            <div key={index} className="flex flex-col items-center">
-                                                <div className="text-xs mb-1 font-medium">{index}</div>
-                                                <div
-                                                    className={`w-12 h-16 flex items-center justify-center text-white font-bold rounded-lg border-2 transition-all duration-500 ${getBarColor(index)}`}
-                                                >
-                                                    {value}
-                                                </div>
-                                                {index === currentState.currentIndex && (
-                                                    <div className="text-xs mt-1 text-yellow-600 font-bold">👆</div>
-                                                )}
+                            {/* Array */}
+                            <div className="bg-slate-800/60 rounded-lg p-4 mb-4">
+                                <div className="flex flex-wrap justify-center gap-2">
+                                    {array.map((val, i) => (
+                                        <div key={i} className="flex flex-col items-center gap-1">
+                                            <span className="text-xs text-slate-500">{i}</span>
+                                            <div className={`w-11 h-11 flex items-center justify-center rounded-lg border-2 font-bold text-sm transition-all duration-300 ${getColor(i)}`}>
+                                                {val}
                                             </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Search Info */}
-                                <div className="text-center mt-4">
-                                    <div className="text-sm text-slate-400">
-                                        <span className="font-semibold">Target:</span> {target} |
-                                        <span className="font-semibold"> Comparisons:</span> {currentState.comparisons} |
-                                        <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
-                                    </div>
+                                            {i === cur.currentIndex && <div className="w-2 h-1 bg-yellow-400 rounded" />}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
-                            {/* Step Explanation */}
+                            {/* Legend */}
+                            <div className="flex flex-wrap gap-3 mb-4 text-xs text-slate-400">
+                                {[['bg-yellow-400', 'Currently checking'], ['bg-green-500', 'Found'], ['bg-slate-800', 'Already checked'], ['bg-slate-700', 'Unchecked']].map(([cls, label]) => (
+                                    <span key={label} className="flex items-center gap-1.5">
+                                        <span className={`w-3 h-3 rounded ${cls} border border-slate-600 inline-block`} />{label}
+                                    </span>
+                                ))}
+                            </div>
+
+                            {/* Stats */}
+                            <div className="grid grid-cols-3 gap-3 mb-4">
+                                {[['Target', target], ['Comparisons', cur.comparisons], ['Step', `${currentStep + 1}/${stepHistory.length}`]].map(([label, val]) => (
+                                    <div key={label} className="bg-slate-800/60 rounded-lg p-3 text-center">
+                                        <div className="text-base font-bold text-red-400">{val}</div>
+                                        <div className="text-xs text-slate-400">{label}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Explanation */}
                             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
-                                <p className="text-red-300">{currentState.explanation}</p>
+                                <div className="flex items-start gap-2">
+                                    <Info className="h-4 w-4 text-red-400 mt-0.5 flex-shrink-0" />
+                                    <p className="text-red-300 text-sm leading-relaxed">{cur.explanation}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Side Panel */}
-                    <div className="space-y-6">
-                        {/* Algorithm Info */}
+                    {/* ── Right: Info ── */}
+                    <div className="space-y-5">
+                        {/* Complexity */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                                <Search className="h-5 w-5 mr-2 text-red-500" />
-                                Linear Search
-                            </h3>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Time Complexity:</span>
-                                    <span className="font-semibold">O(n)</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Space Complexity:</span>
-                                    <span className="font-semibold">O(1)</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Best Case:</span>
-                                    <span className="font-semibold">O(1)</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Worst Case:</span>
-                                    <span className="font-semibold">O(n)</span>
-                                </div>
+                            <h2 className="text-lg font-bold text-slate-100 mb-4">Complexity</h2>
+                            <div className="grid grid-cols-2 gap-3">
+                                {[['Best Case', 'O(1)', 'green'], ['Worst Case', 'O(n)', 'red'], ['Average', 'O(n)', 'yellow'], ['Space', 'O(1)', 'green']].map(([label, val, color]) => (
+                                    <div key={label} className="bg-slate-800/60 rounded-lg p-3 text-center">
+                                        <div className={`text-base font-bold text-${color}-400`}>{val}</div>
+                                        <div className="text-xs text-slate-400 mt-1">{label}</div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Color Legend */}
+                        {/* When to use */}
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
-                            <div className="space-y-2">
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
-                                    <span className="text-sm">Currently Checking</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-green-500 border border-green-600 rounded mr-3"></div>
-                                    <span className="text-sm">Target Found</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-gray-400 border border-gray-500 rounded mr-3"></div>
-                                    <span className="text-sm">Already Checked</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-red-300 border border-red-400 rounded mr-3"></div>
-                                    <span className="text-sm">Not Yet Checked</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Code Example */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Code className="h-5 w-5 mr-2 text-red-500" />
-                                Python Implementation
-                            </h3>
-                            <CodeBlock code={codeExample} language="python" />
-                        </div>
-
-                        {/* Real-world Applications */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Target className="h-5 w-5 mr-2 text-red-500" />
-                                Real-world Applications
-                            </h3>
+                            <h2 className="text-lg font-bold text-slate-100 mb-3">When to Use</h2>
                             <ul className="space-y-2 text-sm text-slate-300">
-                                <li>• Searching unsorted data collections</li>
-                                <li>• Finding all occurrences of an element</li>
-                                <li>• Small dataset searches where simplicity matters</li>
-                                <li>• Searching linked lists (no random access)</li>
-                                <li>• Finding patterns in text processing</li>
-                                <li>• Initial validation and testing scenarios</li>
+                                <li className="flex gap-2"><span className="text-red-400">•</span><span>Unsorted arrays or linked lists (no random access)</span></li>
+                                <li className="flex gap-2"><span className="text-red-400">•</span><span>Finding <strong>all occurrences</strong> in one pass</span></li>
+                                <li className="flex gap-2"><span className="text-red-400">•</span><span>Small arrays where simplicity beats optimization</span></li>
+                                <li className="flex gap-2"><span className="text-red-400">•</span><span>When sorting overhead is not justified</span></li>
+                                <li className="flex gap-2"><span className="text-red-400">•</span><span>Searching text, patterns, or custom objects</span></li>
                             </ul>
+                        </div>
+
+                        {/* Quiz */}
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <h2 className="text-lg font-bold text-slate-100 mb-4">Active Recall Quiz</h2>
+                            {!quizState.complete ? (
+                                <div>
+                                    <p className="text-xs text-slate-400 mb-3">Question {quizState.current + 1} of {quizQuestions.length}</p>
+                                    <p className="text-slate-200 text-sm font-medium mb-3 leading-relaxed">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((opt, idx) => (
+                                            <button key={idx} onClick={() => handleQuizAnswer(idx)}
+                                                className={`w-full text-left px-3 py-2.5 rounded-lg border text-sm transition-all ${
+                                                    !quizState.answered ? 'border-slate-600 bg-slate-800 hover:border-red-500 hover:bg-red-500/10 text-slate-200'
+                                                    : idx === quizQuestions[quizState.current].correct ? 'border-green-500 bg-green-500/10 text-green-300'
+                                                    : idx === quizState.selected ? 'border-red-500 bg-red-500/10 text-red-300'
+                                                    : 'border-slate-700 bg-slate-800/50 text-slate-500'
+                                                }`}>
+                                                <span className="font-mono text-xs mr-2">{String.fromCharCode(65 + idx)}.</span>{opt}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className={`mt-3 p-3 rounded-lg text-sm flex items-start gap-2 ${quizState.selected === quizQuestions[quizState.current].correct ? 'bg-green-500/10 border border-green-500/20 text-green-300' : 'bg-red-500/10 border border-red-500/20 text-red-300'}`}>
+                                            {quizState.selected === quizQuestions[quizState.current].correct ? <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" /> : <XCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />}
+                                            <span>{quizQuestions[quizState.current].explanation}</span>
+                                        </div>
+                                    )}
+                                    {quizState.answered && (
+                                        <button onClick={nextQuestion} className="mt-3 text-sm text-red-400 hover:text-red-300">
+                                            {quizState.current + 1 < quizQuestions.length ? 'Next question →' : 'See results →'}
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="text-center py-4">
+                                    <div className="text-3xl font-bold text-white mb-1">{quizState.score}/{quizQuestions.length}</div>
+                                    <div className="text-slate-400 text-sm mb-4">{quizState.score === quizQuestions.length ? 'Perfect!' : quizState.score >= 2 ? 'Well done!' : 'Keep practicing!'}</div>
+                                    <button onClick={() => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false })} className="text-sm text-red-400 hover:text-red-300">Retry quiz</button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Code */}
+                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
+                            <button onClick={() => setShowCode(v => !v)}
+                                className="flex items-center gap-2 text-lg font-bold text-slate-100 w-full mb-3 hover:text-red-400 transition-colors">
+                                <Code className="h-5 w-5 text-red-400" />
+                                Implementation
+                                <span className="text-xs text-slate-500 ml-auto">{showCode ? 'hide' : 'show'}</span>
+                            </button>
+                            {showCode && <CodeBlock code={code} language="python" />}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export default LinearSearchPage;
+}

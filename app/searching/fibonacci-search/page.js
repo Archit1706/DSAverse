@@ -1,555 +1,530 @@
-﻿'use client';
-import { useState, useCallback, useEffect } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap } from 'lucide-react';
-import { TrendingUp } from 'lucide-react';
+import { Play, Pause, RotateCcw, ArrowLeft, SkipBack, SkipForward, Info, CheckCircle, XCircle, Code, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 
-const FibonacciSearchPage = () => {
-    const [array, setArray] = useState([2, 3, 4, 10, 40, 43, 56, 67, 78, 89, 99]);
-    const [originalArray] = useState([2, 3, 4, 10, 40, 43, 56, 67, 78, 89, 99]);
-    const [target, setTarget] = useState(10);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentStep, setCurrentStep] = useState(0);
-    const [stepHistory, setStepHistory] = useState([]);
-    const [speed, setSpeed] = useState(1500);
+const INITIAL_ARRAY = [2, 3, 4, 10, 40, 43, 56, 67, 78, 89, 99];
+const INITIAL_TARGET = 10;
 
-    const generateSteps = useCallback(() => {
-        const steps = [];
-        const n = array.length;
+const quizQuestions = [
+    {
+        question: "What is the key advantage of Fibonacci search over binary search in terms of operations used?",
+        options: [
+            "It finds the target in fewer comparisons",
+            "It uses addition/subtraction instead of division to compute the probe index",
+            "It works on unsorted arrays",
+            "It uses less memory"
+        ],
+        correct: 1,
+        explanation: "Fibonacci search computes the probe index using offset + fibM2 (addition only). Binary search uses (left+right)//2 (division). On older hardware without a hardware divider, avoiding division gave a real performance benefit."
+    },
+    {
+        question: "What is the time complexity of Fibonacci search?",
+        options: [
+            "O(1)",
+            "O(log n)",
+            "O(sqrt(n))",
+            "O(n)"
+        ],
+        correct: 1,
+        explanation: "Fibonacci search is O(log n) — the Fibonacci numbers grow exponentially, so the algorithm eliminates a constant fraction of the remaining search space each step, just like binary search."
+    },
+    {
+        question: "After each comparison in Fibonacci search, the eliminated portion is approximately what fraction of the remaining space?",
+        options: [
+            "1/2",
+            "1/3",
+            "1/phi^2 approx 38% or 62%",
+            "1/4"
+        ],
+        correct: 2,
+        explanation: "Because fibM2/fibM = 1/phi^2 = 0.382 and fibM1/fibM = 1/phi = 0.618, Fibonacci search eliminates roughly 38% or 62% of the remaining range per step (depending on comparison result), compared to binary search's exact 50%."
+    }
+];
 
-        // Generate Fibonacci numbers
-        let fibM2 = 0; // (m-2)'th Fibonacci number
-        let fibM1 = 1; // (m-1)'th Fibonacci number
-        let fibM = fibM2 + fibM1; // m'th Fibonacci number
-
-        while (fibM < n) {
-            fibM2 = fibM1;
-            fibM1 = fibM;
-            fibM = fibM2 + fibM1;
-        }
-
-        steps.push({
-            array: [...array],
-            fibM: fibM,
-            fibM1: fibM1,
-            fibM2: fibM2,
-            offset: -1,
-            i: -1,
-            found: false,
-            foundIndex: -1,
-            phase: 'setup',
-            explanation: `Setup: Found Fibonacci numbers. fibM=${fibM}, fibM1=${fibM1}, fibM2=${fibM2}`,
-            comparisons: 0
-        });
-
-        let offset = -1;
-        let found = false;
-        let foundIndex = -1;
-        let comparisons = 0;
-
-        while (fibM > 1) {
-            let i = Math.min(offset + fibM2, n - 1);
-            comparisons++;
-
-            steps.push({
-                array: [...array],
-                fibM: fibM,
-                fibM1: fibM1,
-                fibM2: fibM2,
-                offset: offset,
-                i: i,
-                found: false,
-                foundIndex: -1,
-                phase: 'searching',
-                explanation: `Check array[${i}] = ${array[i]}. Compare with target ${target}.`,
-                comparisons: comparisons
-            });
-
-            if (array[i] < target) {
-                steps.push({
-                    array: [...array],
-                    fibM: fibM,
-                    fibM1: fibM1,
-                    fibM2: fibM2,
-                    offset: offset,
-                    i: i,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'move_right',
-                    explanation: `${array[i]} < ${target}. Move to right subarray. Update Fibonacci numbers.`,
-                    comparisons: comparisons
-                });
-
-                fibM = fibM1;
-                fibM1 = fibM2;
-                fibM2 = fibM - fibM1;
-                offset = i;
-            } else if (array[i] > target) {
-                steps.push({
-                    array: [...array],
-                    fibM: fibM,
-                    fibM1: fibM1,
-                    fibM2: fibM2,
-                    offset: offset,
-                    i: i,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'move_left',
-                    explanation: `${array[i]} > ${target}. Move to left subarray. Update Fibonacci numbers.`,
-                    comparisons: comparisons
-                });
-
-                fibM = fibM2;
-                fibM1 = fibM1 - fibM2;
-                fibM2 = fibM - fibM1;
-            } else {
-                found = true;
-                foundIndex = i;
-                steps.push({
-                    array: [...array],
-                    fibM: fibM,
-                    fibM1: fibM1,
-                    fibM2: fibM2,
-                    offset: offset,
-                    i: i,
-                    found: true,
-                    foundIndex: foundIndex,
-                    phase: 'found',
-                    explanation: `🎯 Target ${target} found at index ${i}!`,
-                    comparisons: comparisons
-                });
-                break;
-            }
-        }
-
-        if (!found) {
-            if (fibM1 && offset + 1 < n && array[offset + 1] === target) {
-                found = true;
-                foundIndex = offset + 1;
-                steps.push({
-                    array: [...array],
-                    fibM: fibM,
-                    fibM1: fibM1,
-                    fibM2: fibM2,
-                    offset: offset,
-                    i: offset + 1,
-                    found: true,
-                    foundIndex: foundIndex,
-                    phase: 'found',
-                    explanation: `🎯 Target ${target} found at index ${offset + 1}!`,
-                    comparisons: comparisons + 1
-                });
-            } else {
-                steps.push({
-                    array: [...array],
-                    fibM: fibM,
-                    fibM1: fibM1,
-                    fibM2: fibM2,
-                    offset: offset,
-                    i: -1,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'not_found',
-                    explanation: `❌ Target ${target} not found in the array.`,
-                    comparisons: comparisons
-                });
-            }
-        }
-
-        return steps;
-    }, [array, target]);
-
-    useEffect(() => {
-        const steps = generateSteps();
-        setStepHistory(steps);
-        setCurrentStep(0);
-    }, [generateSteps]);
-
-    useEffect(() => {
-        let interval;
-        if (isPlaying && currentStep < stepHistory.length - 1) {
-            interval = setInterval(() => {
-                setCurrentStep(prev => Math.min(prev + 1, stepHistory.length - 1));
-            }, speed);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-        }
-        return () => clearInterval(interval);
-    }, [isPlaying, currentStep, stepHistory.length, speed]);
-
-    const handlePlay = () => {
-        if (currentStep >= stepHistory.length - 1) {
-            setCurrentStep(0);
-        }
-        setIsPlaying(true);
-    };
-
-    const handlePause = () => setIsPlaying(false);
-    const handleStop = () => {
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const handleNext = () => {
-        if (currentStep < stepHistory.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
-    };
-
-    const handlePrevious = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
-    };
-
-    const resetArray = () => {
-        setArray([...originalArray]);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const currentState = stepHistory[currentStep] || {
-        array: array,
-        fibM: 0,
-        fibM1: 0,
-        fibM2: 0,
-        offset: -1,
-        i: -1,
-        found: false,
-        foundIndex: -1,
-        phase: 'setup',
-        explanation: 'Click Start to begin Fibonacci Search visualization',
-        comparisons: 0
-    };
-
-    const getBarColor = (index) => {
-        if (currentState.found && index === currentState.foundIndex) return 'bg-green-500 border-green-600 shadow-green-300';
-        if (index === currentState.i) return 'bg-yellow-400 border-yellow-500 shadow-yellow-300 transform scale-110';
-        if (index === currentState.offset) return 'bg-blue-400 border-blue-500 shadow-blue-300';
-        return 'bg-red-300 border-red-400';
-    };
-
-    const codeExample = `def fibonacci_search(arr, target):
+const codeString = `def fibonacci_search(arr, target):
+    """O(log n) time, O(1) space — uses addition instead of division"""
     n = len(arr)
-    
-    # Initialize Fibonacci numbers
-    fib_m2 = 0  # (m-2)'th Fibonacci number
-    fib_m1 = 1  # (m-1)'th Fibonacci number
-    fib_m = fib_m2 + fib_m1  # m'th Fibonacci number
-    
-    # Find smallest Fibonacci number >= n
+
+    # Find smallest Fibonacci >= n
+    fib_m2, fib_m1, fib_m = 0, 1, 1
     while fib_m < n:
-        fib_m2 = fib_m1
-        fib_m1 = fib_m
+        fib_m2, fib_m1 = fib_m1, fib_m
         fib_m = fib_m2 + fib_m1
-    
-    offset = -1
-    
+
+    offset = -1  # marks eliminated left portion
+
     while fib_m > 1:
-        # Calculate index to check
+        # Probe index: offset + fib_m2 (uses only addition!)
         i = min(offset + fib_m2, n - 1)
-        
+
         if arr[i] < target:
-            fib_m = fib_m1
-            fib_m1 = fib_m2
-            fib_m2 = fib_m - fib_m1
-            offset = i
+            fib_m, fib_m1, fib_m2 = fib_m1, fib_m2, fib_m1 - fib_m2
+            offset = i          # eliminate left up to i
         elif arr[i] > target:
-            fib_m = fib_m2
-            fib_m1 = fib_m1 - fib_m2
-            fib_m2 = fib_m - fib_m1
+            fib_m, fib_m1, fib_m2 = fib_m2, fib_m1 - fib_m2, fib_m - fib_m1
         else:
-            return i
-    
+            return i            # found!
+
     # Check last element
     if fib_m1 and offset + 1 < n and arr[offset + 1] == target:
         return offset + 1
-    
+
     return -1`;
+
+function buildInitialFibs(n) {
+    let fm2 = 0, fm1 = 1, fm = 1;
+    while (fm < n) {
+        const next = fm2 + fm1;
+        fm2 = fm1;
+        fm1 = fm;
+        fm = next;
+    }
+    return { fm2, fm1, fm };
+}
+
+function generateSteps(arr, target) {
+    const steps = [];
+    const n = arr.length;
+
+    const initial = buildInitialFibs(n);
+    let fm2 = initial.fm2;
+    let fm1 = initial.fm1;
+    let fm = initial.fm;
+    let offset = -1;
+
+    steps.push({
+        array: arr,
+        fibM: fm,
+        fibM1: fm1,
+        fibM2: fm2,
+        offset: offset,
+        compareIndex: -1,
+        found: false,
+        foundIndex: -1,
+        explanation: `Starting Fibonacci search for ${target}. Built Fibonacci numbers up to ${fm} (>= array length ${n}). fibM2=${fm2}, fibM1=${fm1}, fibM=${fm}.`
+    });
+
+    while (fm > 1) {
+        const i = Math.min(offset + fm2, n - 1);
+
+        steps.push({
+            array: arr,
+            fibM: fm,
+            fibM1: fm1,
+            fibM2: fm2,
+            offset: offset,
+            compareIndex: i,
+            found: false,
+            foundIndex: -1,
+            explanation: `Compare index: offset(${offset}) + fibM2(${fm2}) = ${i}. Checking arr[${i}]=${arr[i]} vs target=${target}.`
+        });
+
+        if (arr[i] === target) {
+            steps.push({
+                array: arr,
+                fibM: fm,
+                fibM1: fm1,
+                fibM2: fm2,
+                offset: offset,
+                compareIndex: i,
+                found: true,
+                foundIndex: i,
+                explanation: `Found! arr[${i}] = ${arr[i]} equals target ${target}. Search complete.`
+            });
+            return steps;
+        } else if (arr[i] < target) {
+            const newFm = fm1;
+            const newFm1 = fm2;
+            const newFm2 = fm1 - fm2;
+            steps.push({
+                array: arr,
+                fibM: newFm,
+                fibM1: newFm1,
+                fibM2: newFm2,
+                offset: i,
+                compareIndex: i,
+                found: false,
+                foundIndex: -1,
+                explanation: `arr[${i}]=${arr[i]} < ${target}. Eliminate left portion. Move offset to ${i}. New fibM2=${newFm2}, fibM1=${newFm1}, fibM=${newFm}.`
+            });
+            fm = newFm;
+            fm1 = newFm1;
+            fm2 = newFm2;
+            offset = i;
+        } else {
+            const newFm = fm2;
+            const newFm1 = fm1 - fm2;
+            const newFm2 = fm - fm1;
+            steps.push({
+                array: arr,
+                fibM: newFm,
+                fibM1: newFm1,
+                fibM2: newFm2,
+                offset: offset,
+                compareIndex: i,
+                found: false,
+                foundIndex: -1,
+                explanation: `arr[${i}]=${arr[i]} > ${target}. Eliminate right portion. New fibM2=${newFm2}, fibM1=${newFm1}, fibM=${newFm}.`
+            });
+            fm = newFm;
+            fm1 = newFm1;
+            fm2 = newFm2;
+        }
+    }
+
+    // Check last element
+    if (fm1 && offset + 1 < n && arr[offset + 1] === target) {
+        steps.push({
+            array: arr,
+            fibM: fm,
+            fibM1: fm1,
+            fibM2: fm2,
+            offset: offset,
+            compareIndex: offset + 1,
+            found: true,
+            foundIndex: offset + 1,
+            explanation: `Checking final element at index ${offset + 1} (value ${arr[offset + 1]}). Found target ${target}!`
+        });
+        return steps;
+    }
+
+    steps.push({
+        array: arr,
+        fibM: fm,
+        fibM1: fm1,
+        fibM2: fm2,
+        offset: offset,
+        compareIndex: -1,
+        found: false,
+        foundIndex: -1,
+        explanation: `Target ${target} not found in array.`
+    });
+    return steps;
+}
+
+export default function FibonacciSearchPage() {
+    const [arr] = useState(INITIAL_ARRAY);
+    const [target] = useState(INITIAL_TARGET);
+    const [stepHistory, setStepHistory] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [speed, setSpeed] = useState(900);
+    const [showCode, setShowCode] = useState(false);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
+    useEffect(() => {
+        setStepHistory(generateSteps(arr, target));
+        setCurrentStep(0);
+        setIsPlaying(false);
+    }, [arr, target]);
+
+    useEffect(() => {
+        if (!isPlaying || stepHistory.length === 0) return;
+        if (currentStep >= stepHistory.length - 1) { setIsPlaying(false); return; }
+        const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+        return () => clearTimeout(t);
+    }, [isPlaying, currentStep, stepHistory, speed]);
+
+    const currentState = stepHistory[currentStep] || {
+        fibM: 0, fibM1: 0, fibM2: 0, offset: -1,
+        compareIndex: -1, found: false, foundIndex: -1, explanation: ''
+    };
+
+    const getColor = (i) => {
+        if (i === currentState.foundIndex) return 'bg-green-500 border-green-400 text-white scale-105';
+        if (i === currentState.compareIndex && currentState.compareIndex !== -1)
+            return 'bg-yellow-400 border-yellow-300 text-slate-900 scale-110';
+        if (i <= currentState.offset && currentState.offset >= 0)
+            return 'bg-slate-800 border-slate-700 text-slate-500';
+        return 'bg-slate-700 border-slate-600 text-slate-100';
+    };
+
+    const handleQuizAnswer = (idx) => {
+        if (quizState.answered) return;
+        const correct = idx === quizQuestions[quizState.current].correct;
+        setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
+    };
+
+    const nextQuestion = () => {
+        if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+        else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
+    };
+
+    const resetQuiz = () => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false });
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-red-600 to-rose-600 text-white">
+            <div className="bg-gradient-to-r from-red-500 to-rose-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center mb-6">
-                        <Link href="/searching" className="flex items-center text-white hover:text-red-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Searching
-                        </Link>
-                    </div>
+                    <Link href="/searching" className="inline-flex items-center text-red-100 hover:text-white mb-5">
+                        <ArrowLeft className="h-5 w-5 mr-2" /> Back to Searching
+                    </Link>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Fibonacci Search Visualizer
-                        </h1>
-                        <p className="text-xl text-red-100 mb-6 max-w-3xl mx-auto">
-                            Watch how Fibonacci Search uses Fibonacci numbers to divide the array and efficiently locate the target element.
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Fibonacci Search</h1>
+                        <p className="text-xl text-red-100 max-w-3xl mx-auto">
+                            A sorted-array search that uses Fibonacci numbers and only addition — no division required.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4 text-sm">
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(log n)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(1)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Requirement: Sorted Array</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Fibonacci Division</div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Visualization */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
-                            {/* Controls */}
-                            <div className="flex flex-wrap gap-3 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Column */}
+                    <div className="space-y-6">
+                        <div className="bg-slate-900 rounded-xl p-6 border border-slate-700">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-semibold text-slate-100">Array Visualization</h2>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-slate-400 text-sm">Target:</span>
+                                    <span className="bg-red-500/20 border border-red-500/40 text-red-300 px-3 py-1 rounded-lg font-mono font-bold">{target}</span>
+                                </div>
+                            </div>
+
+                            {/* Fibonacci Trio Display */}
+                            <div className="mb-4 flex gap-3 justify-center flex-wrap">
+                                <div className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono">
+                                    <span className="text-slate-500">fibM2=</span>
+                                    <span className="text-orange-400 font-bold">{currentState.fibM2}</span>
+                                </div>
+                                <div className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono">
+                                    <span className="text-slate-500">fibM1=</span>
+                                    <span className="text-yellow-400 font-bold">{currentState.fibM1}</span>
+                                </div>
+                                <div className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono">
+                                    <span className="text-slate-500">fibM=</span>
+                                    <span className="text-red-400 font-bold">{currentState.fibM}</span>
+                                </div>
+                                <div className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono">
+                                    <span className="text-slate-500">offset=</span>
+                                    <span className="text-blue-400 font-bold">{currentState.offset}</span>
+                                </div>
+                            </div>
+
+                            {/* Probe index formula */}
+                            {currentState.compareIndex !== -1 && (
+                                <div className="mb-3 text-center text-xs text-slate-400 font-mono">
+                                    Compare index: offset({currentState.offset}) + fibM2({currentState.fibM2}) = <span className="text-yellow-400">{currentState.compareIndex}</span>
+                                </div>
+                            )}
+
+                            <div className="overflow-x-auto">
+                                <div className="flex gap-2 pb-4 min-w-max mx-auto justify-center">
+                                    {arr.map((val, i) => (
+                                        <div key={i} className="flex flex-col items-center gap-1">
+                                            <div className={`w-11 h-11 flex items-center justify-center rounded-lg border-2 font-mono text-sm font-bold transition-all duration-300 ${getColor(i)}`}>
+                                                {val}
+                                            </div>
+                                            <div className="h-3 flex items-center justify-center">
+                                                {i === currentState.compareIndex && currentState.foundIndex === -1 && (
+                                                    <div className="w-2 h-1 bg-yellow-400 rounded mx-auto" />
+                                                )}
+                                                {i === currentState.foundIndex && (
+                                                    <div className="w-2 h-1 bg-green-400 rounded mx-auto" />
+                                                )}
+                                            </div>
+                                            <span className="text-slate-600 text-xs font-mono">{i}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Fibonacci sequence reference */}
+                            <div className="mt-2 bg-slate-800 rounded-lg p-3">
+                                <p className="text-xs text-slate-500">Fibonacci sequence: <span className="text-slate-400 font-mono">0, 1, 1, 2, 3, 5, 8, 13, 21, ...</span></p>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                            <h3 className="text-sm font-semibold text-slate-300 mb-3">Color Legend</h3>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-slate-700 border border-slate-600 flex-shrink-0" /><span className="text-slate-400">Unchecked</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-yellow-400 border border-yellow-300 flex-shrink-0" /><span className="text-slate-400">Being compared</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-slate-800 border border-slate-700 flex-shrink-0" /><span className="text-slate-400">Eliminated left</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-green-500 border border-green-400 flex-shrink-0" /><span className="text-slate-400">Found</span></div>
+                            </div>
+                        </div>
+
+                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                            <p className="text-red-300 text-sm leading-relaxed">
+                                {currentState.explanation || 'Press Play to start the visualization.'}
+                            </p>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700 space-y-4">
+                            <div className="flex items-center gap-2 justify-center flex-wrap">
                                 <button
-                                    onClick={isPlaying ? handlePause : handlePlay}
-                                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
+                                    title="Reset"
                                 >
-                                    {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+                                    <RotateCcw className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setCurrentStep(s => Math.max(0, s - 1))}
+                                    disabled={currentStep === 0}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
+                                >
+                                    <SkipBack className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setIsPlaying(p => !p)}
+                                    className="px-6 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-semibold flex items-center gap-2 transition-colors"
+                                >
+                                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                                     {isPlaying ? 'Pause' : 'Play'}
                                 </button>
                                 <button
-                                    onClick={handleStop}
-                                    className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                                >
-                                    <Square className="h-4 w-4 mr-2" />
-                                    Stop
-                                </button>
-                                <button
-                                    onClick={handlePrevious}
-                                    disabled={currentStep === 0}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <ChevronLeft className="h-4 w-4 mr-2" />
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={handleNext}
+                                    onClick={() => setCurrentStep(s => Math.min(stepHistory.length - 1, s + 1))}
                                     disabled={currentStep >= stepHistory.length - 1}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
                                 >
-                                    Next
-                                    <ChevronRight className="h-4 w-4 ml-2" />
+                                    <SkipForward className="h-4 w-4" />
                                 </button>
                                 <button
-                                    onClick={resetArray}
-                                    className="flex items-center px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-600 hover:bg-slate-500 text-slate-200 rounded-lg transition-colors"
+                                    title="Stop"
                                 >
-                                    <RotateCcw className="h-4 w-4 mr-2" />
-                                    Reset
+                                    <XCircle className="h-4 w-4" />
                                 </button>
                             </div>
 
-                            {/* Target Input */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Target Value: {target}
-                                </label>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="number"
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                        min="0"
-                                        max="100"
-                                    />
-                                    <select
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value))}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                    >
-                                        {array.map(val => (
-                                            <option key={val} value={val}>{val}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Fibonacci Info */}
-                            <div className="mb-6 bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
-                                <div className="text-sm text-purple-300">
-                                    <span className="font-semibold">Fibonacci Numbers:</span> fibM={currentState.fibM}, fibM1={currentState.fibM1}, fibM2={currentState.fibM2} |
-                                    <span className="font-semibold"> Offset:</span> {currentState.offset} |
-                                    <span className="font-semibold"> Comparisons:</span> {currentState.comparisons}
-                                </div>
-                            </div>
-
-                            {/* Speed Control */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Animation Speed: {speed === 1000 ? 'Fast' : speed === 1500 ? 'Normal' : 'Slow'}
-                                </label>
+                            <div>
+                                <label className="text-slate-400 text-xs mb-1 block">Speed: {speed}ms delay</label>
                                 <input
                                     type="range"
-                                    min="1000"
-                                    max="2500"
-                                    step="500"
+                                    min={200}
+                                    max={2000}
+                                    step={100}
                                     value={speed}
-                                    onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                                    onChange={e => setSpeed(Number(e.target.value))}
+                                    className="w-full accent-red-500"
                                 />
-                            </div>
-
-                            {/* Array Visualization */}
-                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
-                                <div className="flex items-center justify-center mb-4">
-                                    <div className="flex items-end gap-2 overflow-x-auto pb-2">
-                                        {currentState.array.map((value, index) => (
-                                            <div key={index} className="flex flex-col items-center">
-                                                <div className="text-xs mb-1 font-medium">{index}</div>
-                                                <div
-                                                    className={`w-12 h-16 flex items-center justify-center text-white font-bold rounded-lg border-2 transition-all duration-500 ${getBarColor(index)}`}
-                                                >
-                                                    {value}
-                                                </div>
-                                                {index === currentState.i && (
-                                                    <div className="text-xs mt-1 text-yellow-600 font-bold">CHECK</div>
-                                                )}
-                                                {index === currentState.offset && (
-                                                    <div className="text-xs mt-1 text-blue-600 font-bold">OFFSET</div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Search Info */}
-                                <div className="text-center mt-4">
-                                    <div className="text-sm text-slate-400">
-                                        <span className="font-semibold">Target:</span> {target} |
-                                        <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
-                                    </div>
+                                <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                    <span>Fast</span><span>Slow</span>
                                 </div>
                             </div>
 
-                            {/* Step Explanation */}
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
-                                <p className="text-red-300">{currentState.explanation}</p>
+                            <div className="text-center text-slate-400 text-xs">
+                                Step {currentStep + 1} of {stepHistory.length}
                             </div>
                         </div>
                     </div>
 
-                    {/* Side Panel */}
+                    {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Algorithm Info */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                                <TrendingUp className="h-5 w-5 mr-2 text-red-500" />
-                                Fibonacci Search
-                            </h3>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Time Complexity:</span>
-                                    <span className="font-semibold">O(log n)</span>
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Info className="h-4 w-4 text-red-400" />
+                                <h2 className="text-lg font-semibold text-slate-100">About Fibonacci Search</h2>
+                            </div>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+                                Fibonacci search uses Fibonacci numbers to divide the array into unequal parts. The key insight
+                                is that the probe index is computed as offset + fibM2, using only addition — no division needed.
+                            </p>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+                                After each comparison, the Fibonacci triple (fibM2, fibM1, fibM) is updated by shifting:
+                                move left or right depending on whether the target is smaller or larger.
+                            </p>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                                Each step eliminates roughly 38% or 62% of the remaining range (vs 50% for binary search), due to
+                                the golden ratio properties of Fibonacci numbers.
+                            </p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Time Complexity</div>
+                                    <div className="text-green-400 font-mono font-bold">O(log n)</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Space Complexity:</span>
-                                    <span className="font-semibold">O(1)</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Space Complexity</div>
+                                    <div className="text-green-400 font-mono font-bold">O(1)</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Division:</span>
-                                    <span className="font-semibold">Fibonacci</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Requires</div>
+                                    <div className="text-yellow-400 text-sm font-semibold">Sorted Array</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Operations:</span>
-                                    <span className="font-semibold">Addition only</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Key Feature</div>
+                                    <div className="text-yellow-400 text-sm font-semibold">No Division</div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Color Legend */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
-                            <div className="space-y-2">
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
-                                    <span className="text-sm">Currently Checking</span>
+                        {/* Quiz */}
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <h2 className="text-lg font-semibold text-slate-100 mb-4">Active Recall Quiz</h2>
+                            {quizState.complete ? (
+                                <div className="text-center space-y-3">
+                                    <CheckCircle className="h-10 w-10 text-green-400 mx-auto" />
+                                    <p className="text-slate-200 font-semibold">Quiz Complete!</p>
+                                    <p className="text-slate-400 text-sm">Score: {quizState.score} / {quizQuestions.length}</p>
+                                    <button onClick={resetQuiz} className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                        Retry Quiz
+                                    </button>
                                 </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-blue-400 border border-blue-500 rounded mr-3"></div>
-                                    <span className="text-sm">Offset Position</span>
+                            ) : (
+                                <div>
+                                    <div className="flex justify-between items-center mb-3">
+                                        <span className="text-xs text-slate-500">Question {quizState.current + 1} of {quizQuestions.length}</span>
+                                        <span className="text-xs text-slate-500">Score: {quizState.score}</span>
+                                    </div>
+                                    <p className="text-slate-200 text-sm mb-4 leading-relaxed">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((opt, idx) => {
+                                            let cls = 'w-full text-left px-4 py-3 rounded-lg text-sm border transition-all ';
+                                            if (!quizState.answered) {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-300 hover:border-red-500/50 hover:bg-slate-700';
+                                            } else if (idx === quizQuestions[quizState.current].correct) {
+                                                cls += 'border-green-500 bg-green-500/10 text-green-300';
+                                            } else if (idx === quizState.selected) {
+                                                cls += 'border-red-500 bg-red-500/10 text-red-300';
+                                            } else {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-500';
+                                            }
+                                            return (
+                                                <button key={idx} className={cls} onClick={() => handleQuizAnswer(idx)}>
+                                                    {opt}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className="mt-3 space-y-2">
+                                            <p className="text-slate-400 text-xs leading-relaxed">{quizQuestions[quizState.current].explanation}</p>
+                                            <button onClick={nextQuestion} className="w-full py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                                {quizState.current + 1 >= quizQuestions.length ? 'See Results' : 'Next Question'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-green-500 border border-green-600 rounded mr-3"></div>
-                                    <span className="text-sm">Target Found</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-red-300 border border-red-400 rounded mr-3"></div>
-                                    <span className="text-sm">Search Space</span>
-                                </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* Fibonacci Sequence */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">Fibonacci Numbers</h3>
-                            <div className="text-sm text-slate-300">
-                                <p className="mb-2">The algorithm uses Fibonacci numbers to divide the array:</p>
-                                <div className="bg-slate-800 p-2 rounded font-mono text-xs">
-                                    0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89...
+                        {/* Code Block */}
+                        <div className="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                            <button
+                                onClick={() => setShowCode(p => !p)}
+                                className="w-full flex items-center justify-between px-5 py-4 text-slate-200 hover:bg-slate-800 transition-colors"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Code className="h-4 w-4 text-red-400" />
+                                    <span className="font-semibold text-sm">Python Implementation</span>
                                 </div>
-                                <p className="mt-2 text-xs">Each division follows the golden ratio (φ ≈ 1.618), providing optimal search performance.</p>
-                            </div>
-                        </div>
-
-                        {/* Algorithm Steps */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">How It Works</h3>
-                            <ol className="space-y-2 text-sm text-slate-300">
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
-                                    <span>Find smallest Fibonacci ≥ array length</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
-                                    <span>Check element at offset + fibM2</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
-                                    <span>Eliminate sections using Fibonacci</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
-                                    <span>Continue until target found or exhausted</span>
-                                </li>
-                            </ol>
-                        </div>
-
-                        {/* Code Example */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Code className="h-5 w-5 mr-2 text-red-500" />
-                                Python Implementation
-                            </h3>
-                            <CodeBlock code={codeExample} language="python" />
-                        </div>
-
-                        {/* Real-world Applications */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Target className="h-5 w-5 mr-2 text-red-500" />
-                                Real-world Applications
-                            </h3>
-                            <ul className="space-y-2 text-sm text-slate-300">
-                                <li>• When multiplication/division is expensive</li>
-                                <li>• Searching in sorted arrays efficiently</li>
-                                <li>• Systems without floating-point arithmetic</li>
-                                <li>• Optimal search with addition-only operations</li>
-                                <li>• Embedded systems with limited CPU</li>
-                                <li>• Mathematical sequence analysis</li>
-                            </ul>
+                                <span className="text-slate-400 text-xs">{showCode ? 'Hide' : 'Show'}</span>
+                            </button>
+                            {showCode && (
+                                <div className="px-5 pb-5">
+                                    <CodeBlock code={codeString} language="python" />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export default FibonacciSearchPage;
-
-
+}

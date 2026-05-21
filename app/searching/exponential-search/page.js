@@ -1,256 +1,65 @@
-﻿'use client';
-import React, { useState, useEffect, useCallback } from 'react';
-import { Play, Pause, Square, RotateCcw, ArrowLeft, ChevronLeft, ChevronRight, Search, Clock, Code, Target, Zap, TrendingUp } from 'lucide-react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { Play, Pause, RotateCcw, ArrowLeft, SkipBack, SkipForward, Info, CheckCircle, XCircle, Code, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 
-const ExponentialSearchPage = () => {
-    const [array, setArray] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]);
-    const [originalArray] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]);
-    const [target, setTarget] = useState(18);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentStep, setCurrentStep] = useState(0);
-    const [stepHistory, setStepHistory] = useState([]);
-    const [speed, setSpeed] = useState(1000);
+const INITIAL_ARRAY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30];
+const INITIAL_TARGET = 18;
 
-    const generateSteps = useCallback(() => {
-        const steps = [];
-        let bound = 1;
-        let found = false;
-        let foundIndex = -1;
+const quizQuestions = [
+    {
+        question: "What does the first phase (exponential scan) of exponential search accomplish?",
+        options: [
+            "It finds the target directly",
+            "It establishes a range [bound/2, bound] that contains the target",
+            "It sorts the array",
+            "It counts the elements"
+        ],
+        correct: 1,
+        explanation: "The exponential phase doubles the bound (1, 2, 4, 8, 16...) until arr[bound] >= target. This identifies a range [bound/2, bound] where the target must be, without knowing the array size upfront."
+    },
+    {
+        question: "After finding the range, exponential search applies which algorithm?",
+        options: [
+            "Linear search",
+            "Jump search",
+            "Binary search",
+            "Interpolation search"
+        ],
+        correct: 2,
+        explanation: "Binary search is applied on the identified range [bound/2, min(bound, n-1)]. This gives O(log n) total time since the exponential phase also takes O(log n) doublings."
+    },
+    {
+        question: "Why is exponential search especially useful for unbounded or infinite arrays?",
+        options: [
+            "It never accesses out-of-bounds indices",
+            "It finds a finite range before searching, so array size is not needed upfront",
+            "It works without sorting",
+            "It uses O(n) extra space for bookkeeping"
+        ],
+        correct: 1,
+        explanation: "Exponential search only needs to find a bound — it works even if you don't know how large the array is. Once the bound exceeds the target, binary search is applied within a known range."
+    }
+];
 
-        steps.push({
-            array: [...array],
-            bound: bound,
-            left: -1,
-            right: -1,
-            mid: -1,
-            found: false,
-            foundIndex: -1,
-            phase: 'exponential',
-            currentIndex: 0,
-            explanation: `Starting Exponential Search for target ${target}. Begin with bound = 1.`,
-            comparisons: 0
-        });
+const codeString = `def exponential_search(arr, target):
+    """O(log n) time, O(1) space — requires sorted array"""
+    n = len(arr)
 
-        let comparisons = 0;
-
-        // Exponential phase - find the range
-        while (bound < array.length && array[bound] < target) {
-            comparisons++;
-            steps.push({
-                array: [...array],
-                bound: bound,
-                left: -1,
-                right: -1,
-                mid: -1,
-                found: false,
-                foundIndex: -1,
-                phase: 'exponential',
-                currentIndex: bound,
-                explanation: `Check array[${bound}] = ${array[bound]}. ${array[bound]} < ${target}, double the bound.`,
-                comparisons: comparisons
-            });
-            bound *= 2;
-        }
-
-        comparisons++;
-        let left = Math.floor(bound / 2);
-        let right = Math.min(bound, array.length - 1);
-
-        steps.push({
-            array: [...array],
-            bound: bound,
-            left: left,
-            right: right,
-            mid: -1,
-            found: false,
-            foundIndex: -1,
-            phase: 'found_range',
-            currentIndex: right,
-            explanation: `Found range! array[${right}] = ${array[right]} >= ${target}. Binary search in range [${left}, ${right}].`,
-            comparisons: comparisons
-        });
-
-        // Binary search phase
-        while (left <= right && !found) {
-            const mid = Math.floor((left + right) / 2);
-            comparisons++;
-
-            steps.push({
-                array: [...array],
-                bound: bound,
-                left: left,
-                right: right,
-                mid: mid,
-                found: false,
-                foundIndex: -1,
-                phase: 'binary_search',
-                currentIndex: mid,
-                explanation: `Binary search: Check middle element array[${mid}] = ${array[mid]}`,
-                comparisons: comparisons
-            });
-
-            if (array[mid] === target) {
-                found = true;
-                foundIndex = mid;
-                steps.push({
-                    array: [...array],
-                    bound: bound,
-                    left: left,
-                    right: right,
-                    mid: mid,
-                    found: true,
-                    foundIndex: foundIndex,
-                    phase: 'found',
-                    currentIndex: mid,
-                    explanation: `🎯 Target ${target} found at index ${mid}!`,
-                    comparisons: comparisons
-                });
-            } else if (array[mid] < target) {
-                steps.push({
-                    array: [...array],
-                    bound: bound,
-                    left: left,
-                    right: right,
-                    mid: mid,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'binary_search',
-                    currentIndex: mid,
-                    explanation: `${array[mid]} < ${target}. Search right half.`,
-                    comparisons: comparisons
-                });
-                left = mid + 1;
-            } else {
-                steps.push({
-                    array: [...array],
-                    bound: bound,
-                    left: left,
-                    right: right,
-                    mid: mid,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'binary_search',
-                    currentIndex: mid,
-                    explanation: `${array[mid]} > ${target}. Search left half.`,
-                    comparisons: comparisons
-                });
-                right = mid - 1;
-            }
-        }
-
-        if (!found) {
-            steps.push({
-                array: [...array],
-                bound: bound,
-                left: left,
-                right: right,
-                mid: -1,
-                found: false,
-                foundIndex: -1,
-                phase: 'not_found',
-                currentIndex: -1,
-                explanation: `❌ Target ${target} not found in the array.`,
-                comparisons: comparisons
-            });
-        }
-
-        return steps;
-    }, [array, target]);
-
-    useEffect(() => {
-        const steps = generateSteps();
-        setStepHistory(steps);
-        setCurrentStep(0);
-    }, [generateSteps]);
-
-    useEffect(() => {
-        let interval;
-        if (isPlaying && currentStep < stepHistory.length - 1) {
-            interval = setInterval(() => {
-                setCurrentStep(prev => Math.min(prev + 1, stepHistory.length - 1));
-            }, speed);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-        }
-        return () => clearInterval(interval);
-    }, [isPlaying, currentStep, stepHistory.length, speed]);
-
-    const handlePlay = () => {
-        if (currentStep >= stepHistory.length - 1) {
-            setCurrentStep(0);
-        }
-        setIsPlaying(true);
-    };
-
-    const handlePause = () => setIsPlaying(false);
-    const handleStop = () => {
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const handleNext = () => {
-        if (currentStep < stepHistory.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
-    };
-
-    const handlePrevious = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
-    };
-
-    const resetArray = () => {
-        setArray([...originalArray]);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const currentState = stepHistory[currentStep] || {
-        array: array,
-        bound: 1,
-        left: -1,
-        right: -1,
-        mid: -1,
-        found: false,
-        foundIndex: -1,
-        phase: 'exponential',
-        currentIndex: 0,
-        explanation: 'Click Start to begin Exponential Search visualization',
-        comparisons: 0
-    };
-
-    const getBarColor = (index) => {
-        if (currentState.found && index === currentState.foundIndex) return 'bg-green-500 border-green-600 shadow-green-300';
-        if (index === currentState.currentIndex) return 'bg-yellow-400 border-yellow-500 shadow-yellow-300 transform scale-110';
-        if (currentState.phase === 'binary_search' && index >= currentState.left && index <= currentState.right) {
-            return 'bg-red-300 border-red-400';
-        }
-        if (currentState.phase === 'exponential' && index < currentState.bound) {
-            return 'bg-blue-300 border-blue-400';
-        }
-        return 'bg-gray-300 border-gray-400';
-    };
-
-    const codeExample = `def exponential_search(arr, target):
-    # If target is at first position
     if arr[0] == target:
         return 0
-    
-    # Find range for binary search
-    bound = 1
-    while bound < len(arr) and arr[bound] < target:
-        bound *= 2
-    
-    # Binary search in found range
-    left = bound // 2
-    right = min(bound, len(arr) - 1)
-    
-    return binary_search(arr, target, left, right)
 
-def binary_search(arr, target, left, right):
+    # Phase 1: Find range by doubling bound
+    bound = 1
+    while bound < n and arr[bound] < target:
+        bound *= 2
+
+    # Phase 2: Binary search within [bound//2, min(bound, n-1)]
+    left = bound // 2
+    right = min(bound, n - 1)
+
     while left <= right:
         mid = (left + right) // 2
         if arr[mid] == target:
@@ -259,290 +68,429 @@ def binary_search(arr, target, left, right):
             left = mid + 1
         else:
             right = mid - 1
-    return -1`;
+
+    return -1
+
+# Example
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20]
+print(exponential_search(arr, 18))  # 13`;
+
+function generateSteps(arr, target) {
+    const steps = [];
+    const n = arr.length;
+
+    steps.push({
+        array: arr,
+        bound: 1,
+        left: -1,
+        right: -1,
+        mid: -1,
+        found: false,
+        foundIndex: -1,
+        phase: 'exponential',
+        currentIndex: -1,
+        explanation: `Starting exponential search for ${target}. Phase 1: find range by doubling the bound.`
+    });
+
+    if (arr[0] === target) {
+        steps.push({
+            array: arr, bound: 1, left: -1, right: -1, mid: -1,
+            found: true, foundIndex: 0, phase: 'complete', currentIndex: 0,
+            explanation: `Check index 0 (value ${arr[0]}). Found target ${target} at index 0!`
+        });
+        return steps;
+    }
+
+    steps.push({
+        array: arr, bound: 1, left: -1, right: -1, mid: -1,
+        found: false, foundIndex: -1, phase: 'exponential', currentIndex: 0,
+        explanation: `Check index 0 (value ${arr[0]}). ${arr[0]} !== ${target}, continue to Phase 1 exponential scan.`
+    });
+
+    let bound = 1;
+    while (bound < n && arr[bound] < target) {
+        const nextBound = bound * 2;
+        steps.push({
+            array: arr, bound: bound, left: -1, right: -1, mid: -1,
+            found: false, foundIndex: -1, phase: 'exponential', currentIndex: bound,
+            explanation: `Checking index ${bound} (value ${arr[bound]}). ${arr[bound]} < ${target}, doubling bound to ${nextBound}.`
+        });
+        bound = nextBound;
+    }
+
+    const bLeft = Math.floor(bound / 2);
+    const bRight = Math.min(bound, n - 1);
+
+    steps.push({
+        array: arr, bound: bound, left: bLeft, right: bRight, mid: -1,
+        found: false, foundIndex: -1, phase: 'binary', currentIndex: -1,
+        explanation: `Found range! Target is between index ${bLeft} and ${bRight}. Switching to Phase 2: binary search.`
+    });
+
+    let left = bLeft;
+    let right = bRight;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        steps.push({
+            array: arr, bound: bound, left, right, mid,
+            found: false, foundIndex: -1, phase: 'binary', currentIndex: mid,
+            explanation: `Binary search: L=${left}, M=${mid}, R=${right}. Checking arr[${mid}]=${arr[mid]} vs target=${target}.`
+        });
+
+        if (arr[mid] === target) {
+            steps.push({
+                array: arr, bound: bound, left, right, mid,
+                found: true, foundIndex: mid, phase: 'complete', currentIndex: mid,
+                explanation: `Found! arr[${mid}] = ${arr[mid]} equals target ${target}. Search complete.`
+            });
+            return steps;
+        } else if (arr[mid] < target) {
+            steps.push({
+                array: arr, bound: bound, left: mid + 1, right, mid,
+                found: false, foundIndex: -1, phase: 'binary', currentIndex: mid,
+                explanation: `arr[${mid}]=${arr[mid]} < ${target}. Move left pointer to ${mid + 1}.`
+            });
+            left = mid + 1;
+        } else {
+            steps.push({
+                array: arr, bound: bound, left, right: mid - 1, mid,
+                found: false, foundIndex: -1, phase: 'binary', currentIndex: mid,
+                explanation: `arr[${mid}]=${arr[mid]} > ${target}. Move right pointer to ${mid - 1}.`
+            });
+            right = mid - 1;
+        }
+    }
+
+    steps.push({
+        array: arr, bound: bound, left, right, mid: -1,
+        found: false, foundIndex: -1, phase: 'complete', currentIndex: -1,
+        explanation: `Target ${target} not found in array.`
+    });
+    return steps;
+}
+
+export default function ExponentialSearchPage() {
+    const [arr] = useState(INITIAL_ARRAY);
+    const [target] = useState(INITIAL_TARGET);
+    const [stepHistory, setStepHistory] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [speed, setSpeed] = useState(900);
+    const [showCode, setShowCode] = useState(false);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
+    useEffect(() => {
+        setStepHistory(generateSteps(arr, target));
+        setCurrentStep(0);
+        setIsPlaying(false);
+    }, [arr, target]);
+
+    useEffect(() => {
+        if (!isPlaying || stepHistory.length === 0) return;
+        if (currentStep >= stepHistory.length - 1) { setIsPlaying(false); return; }
+        const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+        return () => clearTimeout(t);
+    }, [isPlaying, currentStep, stepHistory, speed]);
+
+    const currentState = stepHistory[currentStep] || {
+        bound: 1, left: -1, right: -1, mid: -1, found: false, foundIndex: -1,
+        phase: 'exponential', currentIndex: -1, explanation: ''
+    };
+
+    const getColor = (i) => {
+        if (i === currentState.foundIndex) return 'bg-green-500 border-green-400 text-white scale-105';
+        if (currentState.phase === 'exponential' && i === currentState.bound && currentState.bound < arr.length)
+            return 'bg-orange-500 border-orange-400 text-slate-900 scale-110';
+        if (currentState.phase === 'binary' && i === currentState.mid && currentState.mid !== -1)
+            return 'bg-yellow-400 border-yellow-300 text-slate-900 scale-110';
+        if (currentState.phase === 'binary' && i >= currentState.left && i <= currentState.right)
+            return 'bg-red-800/50 border-red-700 text-slate-200';
+        if (currentState.phase === 'exponential' && i < currentState.bound)
+            return 'bg-slate-800 border-slate-700 text-slate-500';
+        return 'bg-slate-700 border-slate-600 text-slate-100';
+    };
+
+    const handleQuizAnswer = (idx) => {
+        if (quizState.answered) return;
+        const correct = idx === quizQuestions[quizState.current].correct;
+        setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
+    };
+
+    const nextQuestion = () => {
+        if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+        else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
+    };
+
+    const resetQuiz = () => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
+    const phaseLabel = currentState.phase === 'exponential'
+        ? 'Phase 1: Exponential Scan'
+        : currentState.phase === 'binary'
+            ? 'Phase 2: Binary Search'
+            : 'Complete';
+
+    const phaseColor = currentState.phase === 'exponential'
+        ? 'text-orange-400'
+        : currentState.phase === 'binary'
+            ? 'text-yellow-400'
+            : 'text-green-400';
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-red-800 to-rose-800 text-white">
+            <div className="bg-gradient-to-r from-red-500 to-rose-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center mb-6">
-                        <Link href="/searching" className="flex items-center text-white hover:text-red-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Searching
-                        </Link>
-                    </div>
+                    <Link href="/searching" className="inline-flex items-center text-red-100 hover:text-white mb-5">
+                        <ArrowLeft className="h-5 w-5 mr-2" /> Back to Searching
+                    </Link>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Exponential Search Visualizer
-                        </h1>
-                        <p className="text-xl text-red-100 mb-6 max-w-3xl mx-auto">
-                            Watch how Exponential Search finds the range exponentially, then performs binary search within that range.
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Exponential Search</h1>
+                        <p className="text-xl text-red-100 max-w-3xl mx-auto">
+                            A two-phase algorithm: exponential range-finding followed by binary search. Ideal for unbounded arrays.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4 text-sm">
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(log n)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(1)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Requirement: Sorted Array</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Exponential + Binary</div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Visualization */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
-                            {/* Controls */}
-                            <div className="flex flex-wrap gap-3 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Column */}
+                    <div className="space-y-6">
+                        <div className="bg-slate-900 rounded-xl p-6 border border-slate-700">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-semibold text-slate-100">Array Visualization</h2>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-slate-400 text-sm">Target:</span>
+                                    <span className="bg-red-500/20 border border-red-500/40 text-red-300 px-3 py-1 rounded-lg font-mono font-bold">{target}</span>
+                                </div>
+                            </div>
+
+                            <div className="mb-4 text-center">
+                                <span className={`text-sm font-semibold ${phaseColor} bg-slate-800 px-4 py-1.5 rounded-full border border-slate-700`}>
+                                    {phaseLabel}
+                                </span>
+                                {currentState.phase === 'exponential' && (
+                                    <span className="ml-3 text-slate-400 text-sm">
+                                        Current bound: <span className="text-orange-400 font-mono">{currentState.bound}</span>
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <div className="flex gap-1.5 pb-4 min-w-max mx-auto justify-center flex-wrap">
+                                    {arr.map((val, i) => (
+                                        <div key={i} className="flex flex-col items-center gap-1">
+                                            <div className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 font-mono text-xs font-bold transition-all duration-300 ${getColor(i)}`}>
+                                                {val}
+                                            </div>
+                                            <div className="h-3 flex items-center justify-center">
+                                                {i === currentState.currentIndex && currentState.foundIndex === -1 && (
+                                                    <div className="w-2 h-1 bg-yellow-400 rounded mx-auto" />
+                                                )}
+                                                {i === currentState.foundIndex && (
+                                                    <div className="w-2 h-1 bg-green-400 rounded mx-auto" />
+                                                )}
+                                            </div>
+                                            <span className="text-slate-600 text-xs font-mono">{i}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {currentState.phase === 'binary' && currentState.left !== -1 && (
+                                <div className="flex gap-4 mt-2 justify-center text-xs font-mono">
+                                    <span className="text-blue-400">L={currentState.left}</span>
+                                    {currentState.mid !== -1 && <span className="text-yellow-400">M={currentState.mid}</span>}
+                                    <span className="text-blue-400">R={currentState.right}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                            <h3 className="text-sm font-semibold text-slate-300 mb-3">Color Legend</h3>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-slate-700 border border-slate-600 flex-shrink-0" /><span className="text-slate-400">Unchecked</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-orange-500 border border-orange-400 flex-shrink-0" /><span className="text-slate-400">Bound (phase 1)</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-yellow-400 border border-yellow-300 flex-shrink-0" /><span className="text-slate-400">Mid (phase 2)</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-red-800 border border-red-700 flex-shrink-0" /><span className="text-slate-400">Search range</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-slate-800 border border-slate-700 flex-shrink-0" /><span className="text-slate-400">Passed</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-green-500 border border-green-400 flex-shrink-0" /><span className="text-slate-400">Found</span></div>
+                            </div>
+                        </div>
+
+                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                            <p className="text-red-300 text-sm leading-relaxed">
+                                {currentState.explanation || 'Press Play to start the visualization.'}
+                            </p>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700 space-y-4">
+                            <div className="flex items-center gap-2 justify-center flex-wrap">
                                 <button
-                                    onClick={isPlaying ? handlePause : handlePlay}
-                                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
+                                    title="Reset"
                                 >
-                                    {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+                                    <RotateCcw className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setCurrentStep(s => Math.max(0, s - 1))}
+                                    disabled={currentStep === 0}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
+                                >
+                                    <SkipBack className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setIsPlaying(p => !p)}
+                                    className="px-6 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-semibold flex items-center gap-2 transition-colors"
+                                >
+                                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                                     {isPlaying ? 'Pause' : 'Play'}
                                 </button>
                                 <button
-                                    onClick={handleStop}
-                                    className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                                >
-                                    <Square className="h-4 w-4 mr-2" />
-                                    Stop
-                                </button>
-                                <button
-                                    onClick={handlePrevious}
-                                    disabled={currentStep === 0}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <ChevronLeft className="h-4 w-4 mr-2" />
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={handleNext}
+                                    onClick={() => setCurrentStep(s => Math.min(stepHistory.length - 1, s + 1))}
                                     disabled={currentStep >= stepHistory.length - 1}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
                                 >
-                                    Next
-                                    <ChevronRight className="h-4 w-4 ml-2" />
+                                    <SkipForward className="h-4 w-4" />
                                 </button>
                                 <button
-                                    onClick={resetArray}
-                                    className="flex items-center px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-600 hover:bg-slate-500 text-slate-200 rounded-lg transition-colors"
+                                    title="Stop"
                                 >
-                                    <RotateCcw className="h-4 w-4 mr-2" />
-                                    Reset
+                                    <XCircle className="h-4 w-4" />
                                 </button>
                             </div>
 
-                            {/* Target Input */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Target Value: {target}
-                                </label>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="number"
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                        min="0"
-                                        max="50"
-                                    />
-                                    <select
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value))}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                    >
-                                        {array.map(val => (
-                                            <option key={val} value={val}>{val}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Algorithm Info */}
-                            <div className="mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                                <div className="text-sm text-blue-300">
-                                    <span className="font-semibold">Current Bound:</span> {currentState.bound} |
-                                    <span className="font-semibold"> Phase:</span> {currentState.phase.replace('_', ' ').toUpperCase()} |
-                                    <span className="font-semibold"> Comparisons:</span> {currentState.comparisons}
-                                    {currentState.left >= 0 && currentState.right >= 0 && (
-                                        <span> | <span className="font-semibold">Search Range:</span> [{currentState.left}, {currentState.right}]</span>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Speed Control */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Animation Speed: {speed === 500 ? 'Fast' : speed === 1000 ? 'Normal' : 'Slow'}
-                                </label>
+                            <div>
+                                <label className="text-slate-400 text-xs mb-1 block">Speed: {speed}ms delay</label>
                                 <input
                                     type="range"
-                                    min="500"
-                                    max="2000"
-                                    step="500"
+                                    min={200}
+                                    max={2000}
+                                    step={100}
                                     value={speed}
-                                    onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                                    onChange={e => setSpeed(Number(e.target.value))}
+                                    className="w-full accent-red-500"
                                 />
-                            </div>
-
-                            {/* Array Visualization */}
-                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
-                                <div className="flex items-center justify-center mb-4">
-                                    <div className="flex items-end gap-1 overflow-x-auto pb-2">
-                                        {currentState.array.map((value, index) => (
-                                            <div key={index} className="flex flex-col items-center">
-                                                <div className="text-xs mb-1 font-medium">{index}</div>
-                                                <div
-                                                    className={`w-8 h-12 flex items-center justify-center text-white font-bold rounded-lg border-2 transition-all duration-500 ${getBarColor(index)}`}
-                                                >
-                                                    {value}
-                                                </div>
-                                                {index === currentState.currentIndex && (
-                                                    <div className="text-xs mt-1 text-yellow-600 font-bold">👆</div>
-                                                )}
-                                                {index === currentState.left && (
-                                                    <div className="text-xs mt-1 text-red-600 font-bold">L</div>
-                                                )}
-                                                {index === currentState.right && (
-                                                    <div className="text-xs mt-1 text-red-600 font-bold">R</div>
-                                                )}
-                                                {index === currentState.mid && (
-                                                    <div className="text-xs mt-1 text-yellow-600 font-bold">MID</div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Search Info */}
-                                <div className="text-center mt-4">
-                                    <div className="text-sm text-slate-400">
-                                        <span className="font-semibold">Target:</span> {target} |
-                                        <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
-                                    </div>
+                                <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                    <span>Fast</span><span>Slow</span>
                                 </div>
                             </div>
 
-                            {/* Step Explanation */}
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
-                                <p className="text-red-300">{currentState.explanation}</p>
+                            <div className="text-center text-slate-400 text-xs">
+                                Step {currentStep + 1} of {stepHistory.length}
                             </div>
                         </div>
                     </div>
 
-                    {/* Side Panel */}
+                    {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Algorithm Info */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                                <TrendingUp className="h-5 w-5 mr-2 text-red-500" />
-                                Exponential Search
-                            </h3>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Time Complexity:</span>
-                                    <span className="font-semibold">O(log n)</span>
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Info className="h-4 w-4 text-red-400" />
+                                <h2 className="text-lg font-semibold text-slate-100">About Exponential Search</h2>
+                            </div>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+                                Exponential search works in two phases. Phase 1 doubles a bound (1, 2, 4, 8, 16...) until the
+                                array element at that position is greater than or equal to the target. Phase 2 runs binary search
+                                within the found range [bound/2, min(bound, n-1)].
+                            </p>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                                This algorithm shines for unbounded or infinite arrays because you never need to know the array
+                                size — just find a range first, then search within it.
+                            </p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Time Complexity</div>
+                                    <div className="text-green-400 font-mono font-bold">O(log n)</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Space Complexity:</span>
-                                    <span className="font-semibold">O(1)</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Space Complexity</div>
+                                    <div className="text-green-400 font-mono font-bold">O(1)</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Best For:</span>
-                                    <span className="font-semibold">Unbounded Arrays</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Requires</div>
+                                    <div className="text-yellow-400 text-sm font-semibold">Sorted Array</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Type:</span>
-                                    <span className="font-semibold">Hybrid</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Best For</div>
+                                    <div className="text-yellow-400 text-sm font-semibold">Unbounded Arrays</div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Color Legend */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
-                            <div className="space-y-2">
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-blue-300 border border-blue-400 rounded mr-3"></div>
-                                    <span className="text-sm">Exponential Phase Range</span>
+                        {/* Quiz */}
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <h2 className="text-lg font-semibold text-slate-100 mb-4">Active Recall Quiz</h2>
+                            {quizState.complete ? (
+                                <div className="text-center space-y-3">
+                                    <CheckCircle className="h-10 w-10 text-green-400 mx-auto" />
+                                    <p className="text-slate-200 font-semibold">Quiz Complete!</p>
+                                    <p className="text-slate-400 text-sm">Score: {quizState.score} / {quizQuestions.length}</p>
+                                    <button onClick={resetQuiz} className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                        Retry Quiz
+                                    </button>
                                 </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
-                                    <span className="text-sm">Currently Checking</span>
+                            ) : (
+                                <div>
+                                    <div className="flex justify-between items-center mb-3">
+                                        <span className="text-xs text-slate-500">Question {quizState.current + 1} of {quizQuestions.length}</span>
+                                        <span className="text-xs text-slate-500">Score: {quizState.score}</span>
+                                    </div>
+                                    <p className="text-slate-200 text-sm mb-4 leading-relaxed">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((opt, idx) => {
+                                            let cls = 'w-full text-left px-4 py-3 rounded-lg text-sm border transition-all ';
+                                            if (!quizState.answered) {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-300 hover:border-red-500/50 hover:bg-slate-700';
+                                            } else if (idx === quizQuestions[quizState.current].correct) {
+                                                cls += 'border-green-500 bg-green-500/10 text-green-300';
+                                            } else if (idx === quizState.selected) {
+                                                cls += 'border-red-500 bg-red-500/10 text-red-300';
+                                            } else {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-500';
+                                            }
+                                            return (
+                                                <button key={idx} className={cls} onClick={() => handleQuizAnswer(idx)}>
+                                                    {opt}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className="mt-3 space-y-2">
+                                            <p className="text-slate-400 text-xs leading-relaxed">{quizQuestions[quizState.current].explanation}</p>
+                                            <button onClick={nextQuestion} className="w-full py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                                {quizState.current + 1 >= quizQuestions.length ? 'See Results' : 'Next Question'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-red-300 border border-red-400 rounded mr-3"></div>
-                                    <span className="text-sm">Binary Search Range</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-green-500 border border-green-600 rounded mr-3"></div>
-                                    <span className="text-sm">Target Found</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded mr-3"></div>
-                                    <span className="text-sm">Not in Search Range</span>
-                                </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* Algorithm Steps */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">How It Works</h3>
-                            <ol className="space-y-2 text-sm text-slate-300">
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
-                                    <span>Start with bound = 1</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
-                                    <span>Double bound until element ≥ target</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
-                                    <span>Set range [bound/2, bound]</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
-                                    <span>Perform binary search in range</span>
-                                </li>
-                            </ol>
-                        </div>
-
-                        {/* Code Example */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Code className="h-5 w-5 mr-2 text-red-500" />
-                                Python Implementation
-                            </h3>
-                            <CodeBlock code={codeExample} language="python" />
-                        </div>
-
-                        {/* Real-world Applications */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Target className="h-5 w-5 mr-2 text-red-500" />
-                                Real-world Applications
-                            </h3>
-                            <ul className="space-y-2 text-sm text-slate-300">
-                                <li>• Searching in unbounded/infinite arrays</li>
-                                <li>• When array size is unknown</li>
-                                <li>• Searching in very large sorted datasets</li>
-                                <li>• Finding elements near the beginning</li>
-                                <li>• Memory-mapped file searching</li>
-                                <li>• Network packet searching</li>
-                            </ul>
+                        {/* Code Block */}
+                        <div className="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                            <button
+                                onClick={() => setShowCode(p => !p)}
+                                className="w-full flex items-center justify-between px-5 py-4 text-slate-200 hover:bg-slate-800 transition-colors"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Code className="h-4 w-4 text-red-400" />
+                                    <span className="font-semibold text-sm">Python Implementation</span>
+                                </div>
+                                <span className="text-slate-400 text-xs">{showCode ? 'Hide' : 'Show'}</span>
+                            </button>
+                            {showCode && (
+                                <div className="px-5 pb-5">
+                                    <CodeBlock code={codeString} language="python" />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export default ExponentialSearchPage;
-
+}

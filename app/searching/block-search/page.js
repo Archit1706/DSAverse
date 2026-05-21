@@ -1,586 +1,520 @@
-﻿'use client';
-import { useState, useCallback, useEffect } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Pause, Play, Square, ChevronLeft, ChevronRight, RotateCcw, Code, Target, Zap } from 'lucide-react';
+import { Play, Pause, RotateCcw, ArrowLeft, SkipBack, SkipForward, Info, CheckCircle, XCircle, Code, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 
-const BlockSearchPage = () => {
-    const [array, setArray] = useState([1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]);
-    const [originalArray] = useState([1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]);
-    const [target, setTarget] = useState(13);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentStep, setCurrentStep] = useState(0);
-    const [stepHistory, setStepHistory] = useState([]);
-    const [speed, setSpeed] = useState(1200);
+const INITIAL_ARRAY = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31];
+const INITIAL_TARGET = 13;
+const BLOCK_SIZE = 4; // floor(sqrt(16)) = 4
 
-    const generateSteps = useCallback(() => {
-        const steps = [];
-        const n = array.length;
-        const blockSize = Math.floor(Math.sqrt(n));
-        let blockStart = 0;
-        let found = false;
-        let foundIndex = -1;
+const quizQuestions = [
+    {
+        question: "What is the optimal block size used in block search?",
+        options: ["n/2", "log n", "sqrt(n)", "n/3"],
+        correct: 2,
+        explanation: "Block size sqrt(n) minimizes total comparisons. The block endpoint scan takes at most sqrt(n) steps, and the linear scan within the block takes at most sqrt(n) steps — total O(sqrt(n))."
+    },
+    {
+        question: "What are the two phases of block search?",
+        options: [
+            "Sort phase, then search phase",
+            "Block endpoint scan, then linear search within the found block",
+            "Exponential scan, then binary search",
+            "Hashing phase, then collision resolution"
+        ],
+        correct: 1,
+        explanation: "Phase 1: scan block endpoints (arr[sqrt(n)-1], arr[2*sqrt(n)-1], ...) to find which block contains the target. Phase 2: linear scan within that block to find the exact position."
+    },
+    {
+        question: "What is another common name for block search?",
+        options: ["Binary search", "Jump search", "Heap search", "Interpolation search"],
+        correct: 1,
+        explanation: "Block search is also called jump search because it 'jumps' ahead by block-sized steps. Both names refer to the same algorithm: fixed-size block endpoint scanning followed by linear search."
+    }
+];
 
-        steps.push({
-            array: [...array],
-            blockSize: blockSize,
-            blockStart: 0,
-            blockEnd: -1,
-            currentIndex: -1,
-            found: false,
-            foundIndex: -1,
-            phase: 'setup',
-            searchingBlock: [],
-            explanation: `Starting Block Search for target ${target}. Block size = √${n} = ${blockSize}`,
-            comparisons: 0
-        });
-
-        let comparisons = 0;
-
-        // Find the appropriate block
-        while (blockStart < n) {
-            const blockEnd = Math.min(blockStart + blockSize - 1, n - 1);
-
-            steps.push({
-                array: [...array],
-                blockSize: blockSize,
-                blockStart: blockStart,
-                blockEnd: blockEnd,
-                currentIndex: blockEnd,
-                found: false,
-                foundIndex: -1,
-                phase: 'finding_block',
-                searchingBlock: Array.from({ length: blockEnd - blockStart + 1 }, (_, i) => blockStart + i),
-                explanation: `Checking block [${blockStart}, ${blockEnd}]. Is ${array[blockEnd]} >= ${target}?`,
-                comparisons: comparisons
-            });
-
-            comparisons++;
-            if (array[blockEnd] >= target) {
-                steps.push({
-                    array: [...array],
-                    blockSize: blockSize,
-                    blockStart: blockStart,
-                    blockEnd: blockEnd,
-                    currentIndex: blockEnd,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'found_block',
-                    searchingBlock: Array.from({ length: blockEnd - blockStart + 1 }, (_, i) => blockStart + i),
-                    explanation: `Found target block! ${array[blockEnd]} >= ${target}. Linear search within block [${blockStart}, ${blockEnd}].`,
-                    comparisons: comparisons
-                });
-                break;
-            } else {
-                steps.push({
-                    array: [...array],
-                    blockSize: blockSize,
-                    blockStart: blockStart,
-                    blockEnd: blockEnd,
-                    currentIndex: blockEnd,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'block_too_small',
-                    searchingBlock: Array.from({ length: blockEnd - blockStart + 1 }, (_, i) => blockStart + i),
-                    explanation: `${array[blockEnd]} < ${target}. Move to next block.`,
-                    comparisons: comparisons
-                });
-                blockStart += blockSize;
-            }
-        }
-
-        if (blockStart >= n) {
-            steps.push({
-                array: [...array],
-                blockSize: blockSize,
-                blockStart: blockStart,
-                blockEnd: -1,
-                currentIndex: -1,
-                found: false,
-                foundIndex: -1,
-                phase: 'not_found',
-                searchingBlock: [],
-                explanation: `❌ Reached end of array. Target ${target} not found.`,
-                comparisons: comparisons
-            });
-            return steps;
-        }
-
-        // Linear search within the block
-        const blockEnd = Math.min(blockStart + blockSize - 1, n - 1);
-        for (let i = blockStart; i <= blockEnd; i++) {
-            comparisons++;
-            steps.push({
-                array: [...array],
-                blockSize: blockSize,
-                blockStart: blockStart,
-                blockEnd: blockEnd,
-                currentIndex: i,
-                found: false,
-                foundIndex: -1,
-                phase: 'linear_search',
-                searchingBlock: Array.from({ length: blockEnd - blockStart + 1 }, (_, idx) => blockStart + idx),
-                explanation: `Linear search: Check array[${i}] = ${array[i]} ${array[i] === target ? '==' : '!='} ${target}`,
-                comparisons: comparisons
-            });
-
-            if (array[i] === target) {
-                found = true;
-                foundIndex = i;
-                steps.push({
-                    array: [...array],
-                    blockSize: blockSize,
-                    blockStart: blockStart,
-                    blockEnd: blockEnd,
-                    currentIndex: i,
-                    found: true,
-                    foundIndex: foundIndex,
-                    phase: 'found',
-                    searchingBlock: Array.from({ length: blockEnd - blockStart + 1 }, (_, idx) => blockStart + idx),
-                    explanation: `🎯 Target ${target} found at index ${i}!`,
-                    comparisons: comparisons
-                });
-                break;
-            }
-
-            if (array[i] > target) {
-                steps.push({
-                    array: [...array],
-                    blockSize: blockSize,
-                    blockStart: blockStart,
-                    blockEnd: blockEnd,
-                    currentIndex: i,
-                    found: false,
-                    foundIndex: -1,
-                    phase: 'passed_target',
-                    searchingBlock: Array.from({ length: blockEnd - blockStart + 1 }, (_, idx) => blockStart + idx),
-                    explanation: `❌ ${array[i]} > ${target}. Target not in array.`,
-                    comparisons: comparisons
-                });
-                break;
-            }
-        }
-
-        if (!found && blockStart < n) {
-            steps.push({
-                array: [...array],
-                blockSize: blockSize,
-                blockStart: blockStart,
-                blockEnd: blockEnd,
-                currentIndex: -1,
-                found: false,
-                foundIndex: -1,
-                phase: 'not_found_in_block',
-                searchingBlock: Array.from({ length: blockEnd - blockStart + 1 }, (_, idx) => blockStart + idx),
-                explanation: `❌ Target ${target} not found in block [${blockStart}, ${blockEnd}].`,
-                comparisons: comparisons
-            });
-        }
-
-        return steps;
-    }, [array, target]);
-
-    useEffect(() => {
-        const steps = generateSteps();
-        setStepHistory(steps);
-        setCurrentStep(0);
-    }, [generateSteps]);
-
-    useEffect(() => {
-        let interval;
-        if (isPlaying && currentStep < stepHistory.length - 1) {
-            interval = setInterval(() => {
-                setCurrentStep(prev => Math.min(prev + 1, stepHistory.length - 1));
-            }, speed);
-        } else if (currentStep >= stepHistory.length - 1) {
-            setIsPlaying(false);
-        }
-        return () => clearInterval(interval);
-    }, [isPlaying, currentStep, stepHistory.length, speed]);
-
-    const handlePlay = () => {
-        if (currentStep >= stepHistory.length - 1) {
-            setCurrentStep(0);
-        }
-        setIsPlaying(true);
-    };
-
-    const handlePause = () => setIsPlaying(false);
-    const handleStop = () => {
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const handleNext = () => {
-        if (currentStep < stepHistory.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
-    };
-
-    const handlePrevious = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
-    };
-
-    const resetArray = () => {
-        setArray([...originalArray]);
-        setIsPlaying(false);
-        setCurrentStep(0);
-    };
-
-    const currentState = stepHistory[currentStep] || {
-        array: array,
-        blockSize: Math.floor(Math.sqrt(array.length)),
-        blockStart: 0,
-        blockEnd: -1,
-        currentIndex: -1,
-        found: false,
-        foundIndex: -1,
-        phase: 'setup',
-        searchingBlock: [],
-        explanation: 'Click Start to begin Block Search visualization',
-        comparisons: 0
-    };
-
-    const getBarColor = (index) => {
-        if (currentState.found && index === currentState.foundIndex) return 'bg-green-500 border-green-600 shadow-green-300';
-        if (index === currentState.currentIndex) return 'bg-yellow-400 border-yellow-500 shadow-yellow-300 transform scale-110';
-        if (currentState.searchingBlock.includes(index)) return 'bg-red-300 border-red-400';
-        return 'bg-gray-300 border-gray-400';
-    };
-
-    const codeExample = `import math
+const codeString = `import math
 
 def block_search(arr, target):
+    """O(sqrt(n)) time, O(1) space — also called Jump Search"""
     n = len(arr)
     block_size = int(math.sqrt(n))
-    block_start = 0
-    
-    # Find the appropriate block
-    while block_start < n:
-        block_end = min(block_start + block_size - 1, n - 1)
-        
-        if arr[block_end] >= target:
-            # Linear search within the block
-            for i in range(block_start, block_end + 1):
-                if arr[i] == target:
-                    return i
-                elif arr[i] > target:
-                    return -1
-            return -1
-        
-        block_start += block_size
-    
-    return -1`;
+
+    # Phase 1: Find the block where target could be
+    block_end = block_size - 1
+    while block_end < n and arr[block_end] < target:
+        block_end += block_size
+
+    # Phase 2: Linear search within the identified block
+    block_start = max(0, block_end - block_size + 1)
+    block_end   = min(block_end, n - 1)
+
+    for i in range(block_start, block_end + 1):
+        if arr[i] == target:
+            return i
+
+    return -1  # not found
+
+# Example
+arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]
+print(block_search(arr, 13))   # 6
+print(block_search(arr, 100))  # -1`;
+
+function generateSteps(arr, target, blockSize) {
+    const steps = [];
+    const n = arr.length;
+
+    steps.push({
+        array: arr,
+        blockSize,
+        blockStart: -1,
+        blockEnd: -1,
+        currentIndex: -1,
+        phase: 'scanning',
+        found: false,
+        foundIndex: -1,
+        scannedBlocks: [],
+        explanation: `Starting block search for ${target}. Block size = sqrt(${n}) = ${blockSize}. Array has ${Math.ceil(n / blockSize)} blocks. Phase 1: scan block endpoints.`
+    });
+
+    let blockEnd = blockSize - 1;
+    const scannedBlocks = [];
+
+    // Phase 1: Scan block endpoints
+    while (blockEnd < n && arr[blockEnd] < target) {
+        steps.push({
+            array: arr,
+            blockSize,
+            blockStart: -1,
+            blockEnd: blockEnd,
+            currentIndex: blockEnd,
+            phase: 'scanning',
+            found: false,
+            foundIndex: -1,
+            scannedBlocks: [...scannedBlocks],
+            explanation: `Phase 1: Checking block endpoint at index ${blockEnd} (value ${arr[blockEnd]}). ${arr[blockEnd]} < ${target}, jump to next block.`
+        });
+        const bStart = Math.max(0, blockEnd - blockSize + 1);
+        scannedBlocks.push({ start: bStart, end: blockEnd });
+        blockEnd += blockSize;
+    }
+
+    // Clamp
+    const actualBlockEnd = Math.min(blockEnd, n - 1);
+    const blockStart = Math.max(0, actualBlockEnd - blockSize + 1);
+
+    // Check endpoint step
+    if (actualBlockEnd < n) {
+        steps.push({
+            array: arr,
+            blockSize,
+            blockStart,
+            blockEnd: actualBlockEnd,
+            currentIndex: actualBlockEnd,
+            phase: 'scanning',
+            found: false,
+            foundIndex: -1,
+            scannedBlocks: [...scannedBlocks],
+            explanation: `Phase 1: Block endpoint at index ${actualBlockEnd} (value ${arr[actualBlockEnd]}) >= ${target}. Target is in block [${blockStart}, ${actualBlockEnd}]. Switching to Phase 2: linear search.`
+        });
+    }
+
+    // Phase 2: Linear search
+    steps.push({
+        array: arr,
+        blockSize,
+        blockStart,
+        blockEnd: actualBlockEnd,
+        currentIndex: blockStart,
+        phase: 'linear',
+        found: false,
+        foundIndex: -1,
+        scannedBlocks: [...scannedBlocks],
+        explanation: `Phase 2: Linear scan within block [${blockStart}, ${actualBlockEnd}]. Starting at index ${blockStart} (value ${arr[blockStart]}).`
+    });
+
+    for (let i = blockStart; i <= actualBlockEnd; i++) {
+        steps.push({
+            array: arr,
+            blockSize,
+            blockStart,
+            blockEnd: actualBlockEnd,
+            currentIndex: i,
+            phase: 'linear',
+            found: arr[i] === target,
+            foundIndex: arr[i] === target ? i : -1,
+            scannedBlocks: [...scannedBlocks],
+            explanation: arr[i] === target
+                ? `Found! arr[${i}] = ${arr[i]} equals target ${target}. Search complete.`
+                : `Checking arr[${i}] = ${arr[i]}. ${arr[i]} !== ${target}, continue.`
+        });
+
+        if (arr[i] === target) return steps;
+    }
+
+    steps.push({
+        array: arr,
+        blockSize,
+        blockStart,
+        blockEnd: actualBlockEnd,
+        currentIndex: -1,
+        phase: 'notfound',
+        found: false,
+        foundIndex: -1,
+        scannedBlocks: [...scannedBlocks],
+        explanation: `Target ${target} not found in array.`
+    });
+    return steps;
+}
+
+export default function BlockSearchPage() {
+    const [arr] = useState(INITIAL_ARRAY);
+    const [target] = useState(INITIAL_TARGET);
+    const [stepHistory, setStepHistory] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [speed, setSpeed] = useState(900);
+    const [showCode, setShowCode] = useState(false);
+    const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
+    useEffect(() => {
+        setStepHistory(generateSteps(arr, target, BLOCK_SIZE));
+        setCurrentStep(0);
+        setIsPlaying(false);
+    }, [arr, target]);
+
+    useEffect(() => {
+        if (!isPlaying || stepHistory.length === 0) return;
+        if (currentStep >= stepHistory.length - 1) { setIsPlaying(false); return; }
+        const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+        return () => clearTimeout(t);
+    }, [isPlaying, currentStep, stepHistory, speed]);
+
+    const currentState = stepHistory[currentStep] || {
+        blockSize: BLOCK_SIZE, blockStart: -1, blockEnd: -1, currentIndex: -1,
+        phase: 'scanning', found: false, foundIndex: -1, scannedBlocks: [], explanation: ''
+    };
+
+    const getColor = (i) => {
+        if (i === currentState.foundIndex) return 'bg-green-500 border-green-400 text-white scale-105';
+        if (i === currentState.currentIndex && currentState.foundIndex === -1)
+            return 'bg-yellow-400 border-yellow-300 text-slate-900 scale-110';
+        if (i >= currentState.blockStart && i <= currentState.blockEnd && currentState.blockEnd !== -1
+            && currentState.phase === 'linear')
+            return 'bg-orange-700/40 border-orange-600 text-slate-200';
+        if (currentState.scannedBlocks && currentState.scannedBlocks.some(b => i >= b.start && i <= b.end)
+            && currentState.phase !== 'linear')
+            return 'bg-slate-800 border-slate-700 text-slate-500';
+        return 'bg-slate-700 border-slate-600 text-slate-100';
+    };
+
+    const handleQuizAnswer = (idx) => {
+        if (quizState.answered) return;
+        const correct = idx === quizQuestions[quizState.current].correct;
+        setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
+    };
+
+    const nextQuestion = () => {
+        if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+        else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
+    };
+
+    const resetQuiz = () => setQuizState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
+    const phaseLabel = currentState.phase === 'scanning'
+        ? 'Phase 1: Scanning Block Endpoints'
+        : currentState.phase === 'linear'
+            ? `Phase 2: Linear Search in Block [${currentState.blockStart}, ${currentState.blockEnd}]`
+            : currentState.phase === 'notfound'
+                ? 'Not Found'
+                : 'Complete';
+
+    const phaseColor = currentState.phase === 'scanning'
+        ? 'text-yellow-400'
+        : currentState.phase === 'linear'
+            ? 'text-orange-400'
+            : 'text-green-400';
 
     return (
         <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-red-700 to-rose-700 text-white">
+            <div className="bg-gradient-to-r from-red-500 to-rose-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center mb-6">
-                        <Link href="/searching" className="flex items-center text-white hover:text-red-200 transition-colors mr-4">
-                            <ArrowLeft className="h-5 w-5 mr-2" />
-                            Back to Searching
-                        </Link>
-                    </div>
+                    <Link href="/searching" className="inline-flex items-center text-red-100 hover:text-white mb-5">
+                        <ArrowLeft className="h-5 w-5 mr-2" /> Back to Searching
+                    </Link>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Block Search Visualizer
-                        </h1>
-                        <p className="text-xl text-red-100 mb-6 max-w-3xl mx-auto">
-                            Watch how Block Search divides the array into blocks and performs linear search within the appropriate block.
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Block Search</h1>
+                        <p className="text-xl text-red-100 max-w-3xl mx-auto">
+                            Also known as Jump Search — scan block endpoints by sqrt(n) jumps, then linear search within the block.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4 text-sm">
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(√n)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Space: O(1)</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Requirement: Sorted Array</div>
-                            <div className="bg-white/20 px-3 py-1 rounded-full">Block + Linear</div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Visualization */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6 mb-6">
-                            {/* Controls */}
-                            <div className="flex flex-wrap gap-3 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Column */}
+                    <div className="space-y-6">
+                        <div className="bg-slate-900 rounded-xl p-6 border border-slate-700">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-semibold text-slate-100">Array Visualization</h2>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-slate-400 text-sm">Target:</span>
+                                    <span className="bg-red-500/20 border border-red-500/40 text-red-300 px-3 py-1 rounded-lg font-mono font-bold">{target}</span>
+                                </div>
+                            </div>
+
+                            <div className="mb-4 flex items-center gap-4 flex-wrap">
+                                <span className={`text-sm font-semibold ${phaseColor} bg-slate-800 px-4 py-1.5 rounded-full border border-slate-700`}>
+                                    {phaseLabel}
+                                </span>
+                                <span className="text-slate-400 text-xs">
+                                    Block size: sqrt({arr.length}) = <span className="text-yellow-400 font-mono">{BLOCK_SIZE}</span>
+                                </span>
+                            </div>
+
+                            {/* Array with block separators */}
+                            <div className="overflow-x-auto">
+                                <div className="flex items-start gap-0 pb-2 min-w-max mx-auto justify-center">
+                                    {arr.map((val, i) => (
+                                        <div key={i} className="flex items-start">
+                                            {/* Block separator before each block start (except index 0) */}
+                                            {i > 0 && i % BLOCK_SIZE === 0 && (
+                                                <div className="w-0.5 h-10 bg-red-500/40 self-center mx-1 mt-0" />
+                                            )}
+                                            <div className="flex flex-col items-center gap-1">
+                                                <div className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 font-mono text-xs font-bold transition-all duration-300 ${getColor(i)}`}>
+                                                    {val}
+                                                </div>
+                                                <div className="h-3 flex items-center justify-center">
+                                                    {i === currentState.currentIndex && currentState.foundIndex === -1 && (
+                                                        <div className="w-2 h-1 bg-yellow-400 rounded mx-auto" />
+                                                    )}
+                                                    {i === currentState.foundIndex && (
+                                                        <div className="w-2 h-1 bg-green-400 rounded mx-auto" />
+                                                    )}
+                                                </div>
+                                                <span className="text-slate-600 text-xs font-mono">{i}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Block labels */}
+                            <div className="mt-3 flex gap-1 flex-wrap">
+                                {Array.from({ length: Math.ceil(arr.length / BLOCK_SIZE) }, (_, bi) => {
+                                    const bStart = bi * BLOCK_SIZE;
+                                    const bEnd = Math.min(bStart + BLOCK_SIZE - 1, arr.length - 1);
+                                    const isScanned = currentState.scannedBlocks && currentState.scannedBlocks.some(b => b.start === bStart);
+                                    const isActive = currentState.blockStart === bStart && currentState.phase === 'linear';
+                                    return (
+                                        <div
+                                            key={bi}
+                                            className={`text-xs px-2 py-1 rounded border font-mono transition-colors ${isActive
+                                                ? 'border-orange-500 bg-orange-500/10 text-orange-300'
+                                                : isScanned
+                                                    ? 'border-slate-700 bg-slate-800 text-slate-600'
+                                                    : 'border-slate-700 bg-slate-800/50 text-slate-500'
+                                                }`}
+                                        >
+                                            Block {bi} [{bStart}-{bEnd}]
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                            <h3 className="text-sm font-semibold text-slate-300 mb-3">Color Legend</h3>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-slate-700 border border-slate-600 flex-shrink-0" /><span className="text-slate-400">Unchecked</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-yellow-400 border border-yellow-300 flex-shrink-0" /><span className="text-slate-400">Currently checking</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-orange-700 border border-orange-600 flex-shrink-0" /><span className="text-slate-400">Target block (linear)</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-slate-800 border border-slate-700 flex-shrink-0" /><span className="text-slate-400">Scanned/eliminated</span></div>
+                                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-green-500 border border-green-400 flex-shrink-0" /><span className="text-slate-400">Found</span></div>
+                                <div className="flex items-center gap-2"><div className="w-0.5 h-4 bg-red-500/40 flex-shrink-0" /><span className="text-slate-400">Block boundary</span></div>
+                            </div>
+                        </div>
+
+                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                            <p className="text-red-300 text-sm leading-relaxed">
+                                {currentState.explanation || 'Press Play to start the visualization.'}
+                            </p>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700 space-y-4">
+                            <div className="flex items-center gap-2 justify-center flex-wrap">
                                 <button
-                                    onClick={isPlaying ? handlePause : handlePlay}
-                                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
                                 >
-                                    {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+                                    <RotateCcw className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setCurrentStep(s => Math.max(0, s - 1))}
+                                    disabled={currentStep === 0}
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
+                                >
+                                    <SkipBack className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setIsPlaying(p => !p)}
+                                    className="px-6 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-semibold flex items-center gap-2 transition-colors"
+                                >
+                                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                                     {isPlaying ? 'Pause' : 'Play'}
                                 </button>
                                 <button
-                                    onClick={handleStop}
-                                    className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                                >
-                                    <Square className="h-4 w-4 mr-2" />
-                                    Stop
-                                </button>
-                                <button
-                                    onClick={handlePrevious}
-                                    disabled={currentStep === 0}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <ChevronLeft className="h-4 w-4 mr-2" />
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={handleNext}
+                                    onClick={() => setCurrentStep(s => Math.min(stepHistory.length - 1, s + 1))}
                                     disabled={currentStep >= stepHistory.length - 1}
-                                    className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors disabled:opacity-40"
                                 >
-                                    Next
-                                    <ChevronRight className="h-4 w-4 ml-2" />
+                                    <SkipForward className="h-4 w-4" />
                                 </button>
                                 <button
-                                    onClick={resetArray}
-                                    className="flex items-center px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 transition-colors"
+                                    onClick={() => { setCurrentStep(0); setIsPlaying(false); }}
+                                    className="p-2 bg-slate-600 hover:bg-slate-500 text-slate-200 rounded-lg transition-colors"
                                 >
-                                    <RotateCcw className="h-4 w-4 mr-2" />
-                                    Reset
+                                    <XCircle className="h-4 w-4" />
                                 </button>
                             </div>
 
-                            {/* Target Input */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Target Value: {target}
-                                </label>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="number"
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                        min="0"
-                                        max="50"
-                                    />
-                                    <select
-                                        value={target}
-                                        onChange={(e) => setTarget(parseInt(e.target.value))}
-                                        className="px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-slate-800 text-slate-200"
-                                    >
-                                        {array.map(val => (
-                                            <option key={val} value={val}>{val}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Algorithm Info */}
-                            <div className="mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                                <div className="text-sm text-blue-300">
-                                    <span className="font-semibold">Block Size:</span> √{array.length} = {currentState.blockSize} |
-                                    <span className="font-semibold"> Phase:</span> {currentState.phase.replace('_', ' ').toUpperCase()} |
-                                    <span className="font-semibold"> Comparisons:</span> {currentState.comparisons}
-                                    {currentState.blockStart >= 0 && currentState.blockEnd >= 0 && (
-                                        <span> | <span className="font-semibold">Current Block:</span> [{currentState.blockStart}, {currentState.blockEnd}]</span>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Speed Control */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Animation Speed: {speed === 800 ? 'Fast' : speed === 1200 ? 'Normal' : 'Slow'}
-                                </label>
+                            <div>
+                                <label className="text-slate-400 text-xs mb-1 block">Speed: {speed}ms delay</label>
                                 <input
                                     type="range"
-                                    min="800"
-                                    max="2000"
-                                    step="400"
+                                    min={200}
+                                    max={2000}
+                                    step={100}
                                     value={speed}
-                                    onChange={(e) => setSpeed(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                                    onChange={e => setSpeed(Number(e.target.value))}
+                                    className="w-full accent-red-500"
                                 />
-                            </div>
-
-                            {/* Array Visualization */}
-                            <div className="bg-slate-800/60 rounded-lg p-6 mb-6">
-                                <div className="flex items-center justify-center mb-4">
-                                    <div className="flex items-end gap-1 overflow-x-auto pb-2">
-                                        {currentState.array.map((value, index) => (
-                                            <div key={index} className="flex flex-col items-center">
-                                                <div className="text-xs mb-1 font-medium">{index}</div>
-                                                <div
-                                                    className={`w-8 h-12 flex items-center justify-center text-white font-bold rounded-lg border-2 transition-all duration-500 ${getBarColor(index)}`}
-                                                >
-                                                    {value}
-                                                </div>
-                                                {index === currentState.currentIndex && (
-                                                    <div className="text-xs mt-1 text-yellow-600 font-bold">👆</div>
-                                                )}
-                                                {index === currentState.blockStart && (
-                                                    <div className="text-xs mt-1 text-red-600 font-bold">START</div>
-                                                )}
-                                                {index === currentState.blockEnd && (
-                                                    <div className="text-xs mt-1 text-red-600 font-bold">END</div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Block Visualization */}
-                                {currentState.searchingBlock.length > 0 && (
-                                    <div className="text-center mt-2">
-                                        <div className="text-sm text-red-600 font-semibold">
-                                            Current Block: [{currentState.blockStart} - {currentState.blockEnd}] (size: {currentState.searchingBlock.length})
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Search Info */}
-                                <div className="text-center mt-4">
-                                    <div className="text-sm text-slate-400">
-                                        <span className="font-semibold">Target:</span> {target} |
-                                        <span className="font-semibold"> Step:</span> {currentStep + 1} of {stepHistory.length}
-                                    </div>
+                                <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                    <span>Fast</span><span>Slow</span>
                                 </div>
                             </div>
 
-                            {/* Step Explanation */}
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                                <h3 className="font-semibold text-red-300 mb-2">Current Step:</h3>
-                                <p className="text-red-300">{currentState.explanation}</p>
+                            <div className="text-center text-slate-400 text-xs">
+                                Step {currentStep + 1} of {stepHistory.length}
                             </div>
                         </div>
                     </div>
 
-                    {/* Side Panel */}
+                    {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Algorithm Info */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                                <Zap className="h-5 w-5 mr-2 text-red-500" />
-                                Block Search
-                            </h3>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Time Complexity:</span>
-                                    <span className="font-semibold">O(√n)</span>
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Info className="h-4 w-4 text-red-400" />
+                                <h2 className="text-lg font-semibold text-slate-100">About Block Search</h2>
+                            </div>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+                                Block search (also called Jump Search) divides the sorted array into blocks of size sqrt(n).
+                                Phase 1 scans block endpoints by jumping sqrt(n) steps at a time. Phase 2 does a linear scan
+                                within the identified block.
+                            </p>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+                                The sqrt(n) block size is optimal: it minimizes total comparisons since both phases take
+                                at most sqrt(n) comparisons each, giving O(sqrt(n)) overall.
+                            </p>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                                It sits between linear search O(n) and binary search O(log n) in complexity, but has the
+                                advantage of traversing the array in a forward direction, which can benefit cache performance.
+                            </p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Time Complexity</div>
+                                    <div className="text-yellow-400 font-mono font-bold">O(sqrt(n))</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Space Complexity:</span>
-                                    <span className="font-semibold">O(1)</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Space Complexity</div>
+                                    <div className="text-green-400 font-mono font-bold">O(1)</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Block Size:</span>
-                                    <span className="font-semibold">√n</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Block Size</div>
+                                    <div className="text-yellow-400 font-mono font-bold">sqrt({arr.length}) = {BLOCK_SIZE}</div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Type:</span>
-                                    <span className="font-semibold">Hybrid</span>
+                                <div className="bg-slate-800 rounded-lg p-3">
+                                    <div className="text-xs text-slate-500 mb-1">Also Called</div>
+                                    <div className="text-yellow-400 text-sm font-semibold">Jump Search</div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Color Legend */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">Color Legend</h3>
-                            <div className="space-y-2">
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-yellow-400 border border-yellow-500 rounded mr-3"></div>
-                                    <span className="text-sm">Currently Checking</span>
+                        {/* Quiz */}
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+                            <h2 className="text-lg font-semibold text-slate-100 mb-4">Active Recall Quiz</h2>
+                            {quizState.complete ? (
+                                <div className="text-center space-y-3">
+                                    <CheckCircle className="h-10 w-10 text-green-400 mx-auto" />
+                                    <p className="text-slate-200 font-semibold">Quiz Complete!</p>
+                                    <p className="text-slate-400 text-sm">Score: {quizState.score} / {quizQuestions.length}</p>
+                                    <button onClick={resetQuiz} className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                        Retry Quiz
+                                    </button>
                                 </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-red-300 border border-red-400 rounded mr-3"></div>
-                                    <span className="text-sm">Current Block</span>
+                            ) : (
+                                <div>
+                                    <div className="flex justify-between items-center mb-3">
+                                        <span className="text-xs text-slate-500">Question {quizState.current + 1} of {quizQuestions.length}</span>
+                                        <span className="text-xs text-slate-500">Score: {quizState.score}</span>
+                                    </div>
+                                    <p className="text-slate-200 text-sm mb-4 leading-relaxed">{quizQuestions[quizState.current].question}</p>
+                                    <div className="space-y-2">
+                                        {quizQuestions[quizState.current].options.map((opt, idx) => {
+                                            let cls = 'w-full text-left px-4 py-3 rounded-lg text-sm border transition-all ';
+                                            if (!quizState.answered) {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-300 hover:border-red-500/50 hover:bg-slate-700';
+                                            } else if (idx === quizQuestions[quizState.current].correct) {
+                                                cls += 'border-green-500 bg-green-500/10 text-green-300';
+                                            } else if (idx === quizState.selected) {
+                                                cls += 'border-red-500 bg-red-500/10 text-red-300';
+                                            } else {
+                                                cls += 'border-slate-700 bg-slate-800 text-slate-500';
+                                            }
+                                            return (
+                                                <button key={idx} className={cls} onClick={() => handleQuizAnswer(idx)}>
+                                                    {opt}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {quizState.answered && (
+                                        <div className="mt-3 space-y-2">
+                                            <p className="text-slate-400 text-xs leading-relaxed">{quizQuestions[quizState.current].explanation}</p>
+                                            <button onClick={nextQuestion} className="w-full py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg text-sm transition-colors">
+                                                {quizState.current + 1 >= quizQuestions.length ? 'See Results' : 'Next Question'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-green-500 border border-green-600 rounded mr-3"></div>
-                                    <span className="text-sm">Target Found</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded mr-3"></div>
-                                    <span className="text-sm">Not in Current Block</span>
-                                </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* Comparison with Jump Search */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">vs Jump Search</h3>
-                            <div className="space-y-3 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Block Search:</span>
-                                    <span className="font-semibold">Fixed block size</span>
+                        {/* Code Block */}
+                        <div className="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                            <button
+                                onClick={() => setShowCode(p => !p)}
+                                className="w-full flex items-center justify-between px-5 py-4 text-slate-200 hover:bg-slate-800 transition-colors"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Code className="h-4 w-4 text-red-400" />
+                                    <span className="font-semibold text-sm">Python Implementation</span>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Jump Search:</span>
-                                    <span className="font-semibold">Variable jump size</span>
+                                <span className="text-slate-400 text-xs">{showCode ? 'Hide' : 'Show'}</span>
+                            </button>
+                            {showCode && (
+                                <div className="px-5 pb-5">
+                                    <CodeBlock code={codeString} language="python" />
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-400">Both:</span>
-                                    <span className="font-semibold">O(√n) complexity</span>
-                                </div>
-                                <p className="text-xs text-slate-400 mt-2">
-                                    Block search is conceptually simpler and easier to implement than jump search.
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Algorithm Steps */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4">How It Works</h3>
-                            <ol className="space-y-2 text-sm text-slate-300">
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
-                                    <span>Divide array into blocks of size √n</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
-                                    <span>Find block containing the target</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">3</span>
-                                    <span>Perform linear search within block</span>
-                                </li>
-                                <li className="flex">
-                                    <span className="bg-red-500/15 text-red-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">4</span>
-                                    <span>Return index if found, -1 otherwise</span>
-                                </li>
-                            </ol>
-                        </div>
-
-                        {/* Code Example */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Code className="h-5 w-5 mr-2 text-red-500" />
-                                Python Implementation
-                            </h3>
-                            <CodeBlock code={codeExample} language="python" />
-                        </div>
-
-                        {/* Real-world Applications */}
-                        <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <Target className="h-5 w-5 mr-2 text-red-500" />
-                                Real-world Applications
-                            </h3>
-                            <ul className="space-y-2 text-sm text-slate-300">
-                                <li>• Simple alternative to jump search</li>
-                                <li>• Educational purposes for algorithm study</li>
-                                <li>• Memory block organization</li>
-                                <li>• File system block searching</li>
-                                <li>• Cache-friendly data structure searches</li>
-                                <li>• When simplicity over optimization matters</li>
-                            </ul>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export default BlockSearchPage;
-
-
+}
