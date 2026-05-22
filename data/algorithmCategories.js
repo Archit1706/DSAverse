@@ -11,7 +11,10 @@ export const algorithmCategories = [
             "Queues: Array",
             "Queues: Linked List",
             "Lists: Array",
-            "Lists: Linked List"
+            "Lists: Linked List",
+            "Linked List: Doubly",
+            "Linked List: Circular",
+            "Linked List: Circular Doubly"
         ]
     },
     {

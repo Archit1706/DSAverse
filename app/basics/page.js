@@ -80,6 +80,39 @@ export default function BasicsPage() {
             icon: <Database className="h-7 w-7" />,
             applications: ["Playlists", "Browser history", "Graph edges"],
             tag: "Linked List"
+        },
+        {
+            name: "Linked List: Doubly",
+            slug: "linked-list-doubly",
+            description: "Bidirectional nodes with prev + next pointers. O(1) tail delete and backward traversal.",
+            timeComplexity: "O(1) ends",
+            spaceComplexity: "O(n)",
+            difficulty: "Intermediate",
+            icon: <ArrowUpDown className="h-7 w-7" />,
+            applications: ["LRU cache", "Undo/redo stacks", "Browser history"],
+            tag: "Linked List"
+        },
+        {
+            name: "Linked List: Circular",
+            slug: "linked-list-circular",
+            description: "Tail's next wraps to head — no NULL. Ideal for round-robin and circular buffers.",
+            timeComplexity: "O(1) ends",
+            spaceComplexity: "O(n)",
+            difficulty: "Intermediate",
+            icon: <ArrowRight className="h-7 w-7" />,
+            applications: ["Round-robin CPU", "Ring buffers", "Game turns"],
+            tag: "Linked List"
+        },
+        {
+            name: "Linked List: Circular Doubly",
+            slug: "linked-list-circular-doubly",
+            description: "Bidirectional + circular — the most powerful variant. No NULL pointers anywhere.",
+            timeComplexity: "O(1) ends",
+            spaceComplexity: "O(n)",
+            difficulty: "Advanced",
+            icon: <List className="h-7 w-7" />,
+            applications: ["Linux kernel", "LRU cache", "Text editors"],
+            tag: "Linked List"
         }
     ];
 
@@ -87,6 +120,7 @@ export default function BasicsPage() {
         switch (difficulty) {
             case 'Beginner': return 'bg-green-500/15 text-green-400 border border-green-500/30';
             case 'Intermediate': return 'bg-yellow-500/15 text-yellow-400 border border-yellow-500/30';
+            case 'Advanced': return 'bg-red-500/15 text-red-400 border border-red-500/30';
             default: return 'bg-slate-700 text-slate-300';
         }
     };
@@ -96,6 +130,8 @@ export default function BasicsPage() {
         { step: 2, title: "Queue (Array)", slug: "queues-array", desc: "Learn FIFO as the flip side of LIFO" },
         { step: 3, title: "Linked implementations", slug: "stack-linked-list", desc: "See how dynamic allocation changes the game" },
         { step: 4, title: "Dynamic Lists", slug: "lists-array", desc: "Understand resizing and direct access trade-offs" },
+        { step: 5, title: "Doubly Linked List", slug: "linked-list-doubly", desc: "Add prev pointers for O(1) tail delete and backward traversal" },
+        { step: 6, title: "Circular & Circular Doubly", slug: "linked-list-circular", desc: "Close the ring — no NULL, infinite cycling" },
     ];
 
     return (
