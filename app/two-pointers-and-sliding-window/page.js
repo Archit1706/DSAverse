@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Clock, Code, Play, ArrowLeftRight, BarChart2, AlignLeft, Zap, TrendingUp } from 'lucide-react';
+import { Clock, Code, Play, ArrowLeftRight, BarChart2, AlignLeft, Zap, TrendingUp, Layers, Filter } from 'lucide-react';
 
 export const metadata = {
     title: "Two Pointers & Sliding Window – Visualizer & Complexity Guide",
@@ -53,6 +53,36 @@ const twoPointersAlgorithms = [
         timeComplexity: "O(n)",
         spaceComplexity: "O(k)",
         difficulty: "Intermediate",
+        pattern: "Dynamic Window",
+    },
+    {
+        name: "Container With Most Water",
+        slug: "container-with-most-water",
+        icon: Layers,
+        description: "Given bar heights, find two bars that trap the most water. Two pointers converge inward, always moving the shorter bar — watch the water area update in real time.",
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(1)",
+        difficulty: "Intermediate",
+        pattern: "Two Pointers",
+    },
+    {
+        name: "3Sum",
+        slug: "3sum",
+        icon: ArrowLeftRight,
+        description: "Sort the array, fix a pivot, then run a two-pointer sweep on the remainder. Duplicate pivots and duplicate pairs are skipped to produce a unique set of triplets.",
+        timeComplexity: "O(n²)",
+        spaceComplexity: "O(1)",
+        difficulty: "Intermediate",
+        pattern: "Two Pointers",
+    },
+    {
+        name: "Minimum Window Substring",
+        slug: "minimum-window-substring",
+        icon: Filter,
+        description: "Expand the right pointer until the window contains all required characters, then shrink from the left to find the tightest valid window. Track character frequencies to detect validity in O(1).",
+        timeComplexity: "O(n + m)",
+        spaceComplexity: "O(m)",
+        difficulty: "Advanced",
         pattern: "Dynamic Window",
     },
 ];

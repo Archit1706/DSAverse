@@ -87,6 +87,7 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Heap-like Data Structures | `from-amber-500 to-orange-600` | `amber-400` / `amber-500` |
 | Recursion | `from-green-600 to-emerald-700` | `green-400` |
 | Basics | `from-blue-600 to-indigo-700` | `blue-400` |
+| Two Pointers and Sliding Window | `from-violet-600 to-purple-700` | `violet-400` / `violet-500` |
 
 ### Algorithm Visualizer Pattern
 
@@ -132,7 +133,10 @@ useEffect(() => {
 | Active / comparing | `bg-yellow-400 border-yellow-300 text-slate-900 scale-110` |
 | Found / complete | `bg-green-500 border-green-400 text-white scale-105` |
 | Eliminated / checked | `bg-slate-800 border-slate-700 text-slate-500` |
-| In search range | `bg-[section-color]-800/50 border-[section-color]-700 text-slate-200` |
+| In search range / window | `bg-[section-color]-800/50 border-[section-color]-700 text-slate-200` |
+| Left pointer (two-pointer pages) | `bg-blue-500 border-blue-400 text-white scale-110` |
+| Right pointer (two-pointer pages) | `bg-orange-500 border-orange-400 text-white scale-110` |
+| Mismatch / duplicate | `bg-red-500/30 border-red-500 text-red-300` |
 
 **Step explanation box:**
 ```jsx
@@ -189,10 +193,13 @@ useEffect(() => { setStartNode(prev => Math.min(prev, nodes.length - 1)); }, [no
 
 `components/Navbar.jsx` has a `PAGES_EXIST` set that gates which categories appear in the dropdown:
 ```js
-const PAGES_EXIST = new Set(['Basics', 'Recursion', 'Sorting', 'Searching',
-    'Heap-like Data Structures', 'Dynamic Programming', 'Graph Algorithms']);
+const PAGES_EXIST = new Set([
+    'Basics', 'Recursion', 'Sorting', 'Searching',
+    'Heap-like Data Structures', 'Dynamic Programming',
+    'Graph Algorithms', 'Two Pointers and Sliding Window',
+]);
 ```
-Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed.
+Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.
 
 ### `data/algorithmCategories.js`
 

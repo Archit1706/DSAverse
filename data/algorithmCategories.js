@@ -146,7 +146,10 @@ export const algorithmCategories = [
             "Two Sum II",
             "Valid Palindrome",
             "Maximum Sum Subarray",
-            "Longest Substring Without Repeating Characters"
+            "Longest Substring Without Repeating Characters",
+            "Container With Most Water",
+            "3Sum",
+            "Minimum Window Substring"
         ]
     }
 ];
