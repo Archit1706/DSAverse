@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     ArrowRight, Layers, RefreshCw, ArrowUpDown, Search,
-    GitBranch, Database, Brain, BarChart2
+    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -103,6 +103,42 @@ const CATEGORIES = [
         glow:        'hover:shadow-violet-500/20',
         badge:       'bg-violet-500/10 text-violet-300',
     },
+    {
+        name:        'Bit Manipulation',
+        slug:        'bit-manipulation',
+        icon:        <Cpu className="w-6 h-6" />,
+        description: 'XOR Tricks & Bitwise Ops',
+        algorithms:  ['Single Number (XOR)', 'Count Set Bits', 'Power of Two'],
+        gradient:    'from-teal-500 to-cyan-600',
+        border:      'border-teal-500/30',
+        hoverBorder: 'hover:border-teal-400',
+        glow:        'hover:shadow-teal-500/20',
+        badge:       'bg-teal-500/10 text-teal-300',
+    },
+    {
+        name:        'String Algorithms',
+        slug:        'string-algorithms',
+        icon:        <Type className="w-6 h-6" />,
+        description: 'Pattern Matching & Hashing',
+        algorithms:  ['KMP String Matching', 'Rabin-Karp', 'Z-Algorithm'],
+        gradient:    'from-fuchsia-500 to-pink-600',
+        border:      'border-fuchsia-500/30',
+        hoverBorder: 'hover:border-fuchsia-400',
+        glow:        'hover:shadow-fuchsia-500/20',
+        badge:       'bg-fuchsia-500/10 text-fuchsia-300',
+    },
+    {
+        name:        'Backtracking',
+        slug:        'backtracking',
+        icon:        <GitMerge className="w-6 h-6" />,
+        description: 'Explore & Prune Search Space',
+        algorithms:  ['N-Queens', 'Word Search', 'Rat in a Maze'],
+        gradient:    'from-indigo-500 to-purple-600',
+        border:      'border-indigo-500/30',
+        hoverBorder: 'hover:border-indigo-400',
+        glow:        'hover:shadow-indigo-500/20',
+        badge:       'bg-indigo-500/10 text-indigo-300',
+    },
 ];
 
 function CategoryCard({ cat, index }) {
@@ -183,7 +219,7 @@ export default function AlgorithmsGrid() {
                         </span>
                     </h2>
                     <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                        Eight categories, 38+ algorithms — each with animations, explanations, and code.
+                        11 categories, 50+ algorithms — each with animations, explanations, and code.
                     </p>
                 </div>
 
