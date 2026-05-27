@@ -133,7 +133,10 @@ export const algorithmCategories = [
             "Making Change",
             "Longest Common Subsequence",
             "0-1 Knapsack",
-            "House Robber"
+            "House Robber",
+            "Longest Increasing Subsequence",
+            "Edit Distance",
+            "Matrix Chain Multiplication"
         ]
     },
     {

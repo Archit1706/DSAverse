@@ -32,6 +32,7 @@ app/
   page.js                        # Homepage
   [section]/
     layout.js                    # Section layout: Navbar + Footer + section metadata
+    loading.js                   # Section-specific loading animation (dark theme)
     page.js                      # Section index page (server component, no "use client")
     [algorithm]/
       layout.js                  # Per-page metadata only (exports metadata + passthrough Layout)
@@ -76,6 +77,8 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
    - "Start Visualization" button at the bottom
 3. **Info section** at the bottom — `bg-slate-900/70 border-t border-slate-700/50` with 3-column "Why Learn" grid
 
+**Coming-soon cards**: Section indexes use an `available` boolean on each algorithm entry. When `available: false`, the card renders with reduced opacity, a "Coming Soon" label instead of the button, and the `<Link>` wrapper is replaced with a plain `<div>`. This lets you list planned algorithms without broken links.
+
 ### Section Color Themes
 
 | Section | Gradient | Accent |
@@ -93,16 +96,18 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 
 Every algorithm page (`"use client"`) follows this structure:
 
-**Step generation:**
+**Step generation** — pre-generate ALL steps upfront, never incrementally:
 ```js
-// Pre-generate ALL steps upfront — never compute incrementally during animation
-const generateSteps = useCallback(() => {
+// Option A: module-level function (preferred for pages where inputs are passed as args)
+const generateSteps = (input) => {
     const steps = [];
-    // ... run algorithm, push one step object per meaningful state change
-    steps.push({ array, highlightIndices, explanation, phase, ... });
+    steps.push({ ...state, explanation: '...', phase: '...' });
     return steps;
-}, [array, target]); // dependencies regenerate steps
+};
+useEffect(() => { setStepHistory(generateSteps(arr)); setCurrentStep(0); }, [arr]);
 
+// Option B: useCallback (when step gen closes over component state)
+const generateSteps = useCallback(() => { ... }, [dep1, dep2]);
 useEffect(() => { setStepHistory(generateSteps()); setCurrentStep(0); }, [generateSteps]);
 ```
 
@@ -121,9 +126,11 @@ useEffect(() => {
 - Play/Pause toggle
 - Reset (`RotateCcw`) — resets to step 0
 - Shuffle (`Shuffle`) — generates new random input
-- Speed: `<input type="range">` slider, 150–2000 ms (inverted: `value={maxMs - speed}`)
+- Speed: `<input type="range" min="200" max="2000" value={speed}>` — higher = slower
 
-**Layout** — two-column `lg:grid-cols-2`: left = visualization + controls, right = info + quiz + collapsible code.
+**Layout** — two common variants:
+- Simple: `lg:grid-cols-2` (left = visualization, right = sidebar)
+- Wider viz: `lg:grid-cols-3` with `lg:col-span-2` on the visualization panel and `col-span-1` on the sidebar
 
 **Element color conventions (dark theme):**
 
@@ -169,6 +176,16 @@ const nextQuestion = () => {
 
 Button states: unanswered → `hover:border-[color]-500`; correct → `border-green-500 bg-green-500/10 text-green-300`; wrong → `border-red-500 bg-red-500/10 text-red-300`; other → `text-slate-500`.
 
+### DP Table Visualization Pattern
+
+2D DP table pages (LCS, Edit Distance, Knapsack, Matrix Chain Multiplication) share a common rendering approach:
+
+- Table headers show string characters or matrix labels; row 0 / col 0 show base-case values
+- A `getCellColor(i, j, val)` function returns Tailwind classes based on: current cell, backtrack path membership, fill phase, and value magnitude
+- `Infinity` values display as `∞`; large numbers use `.toLocaleString()` or abbreviations (`12k`)
+- Backtrack / optimal path cells use `bg-purple-700` (or `bg-purple-800` during animation)
+- The `phase` field in each step object drives color: `'comparing'`, `'match'`, `'no_match'`, `'backtracking'`, `'complete'`
+
 ### Graph-Specific Patterns
 
 **SVG visualization** — always use `viewBox="0 0 W H"` with `width="100%"` so the graph scales to its container without horizontal scrolling. Never use fixed pixel widths like `width={800}`.
@@ -204,3 +221,11 @@ Add the new category name here when its section page is ready. The `toSlug()` he
 ### `data/algorithmCategories.js`
 
 The single source of truth for nav structure. Algorithm names here must match their directory slugs (via `toSlug()`). The Navbar filters to `PAGES_EXIST` categories, so adding an algorithm to this file without adding a page won't break anything — it just won't be navigable.
+
+### Adding a New Algorithm Page — Checklist
+
+1. Create `app/[section]/[slug]/layout.js` — metadata + passthrough layout
+2. Create `app/[section]/[slug]/page.js` — `"use client"` visualizer
+3. Add the algorithm name to `data/algorithmCategories.js` under the correct section
+4. If the section index has an `available` flag, flip it to `true` (or add the entry)
+5. Run `npm run build` to confirm no errors

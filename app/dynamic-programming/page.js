@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Play, Clock, Code, Brain, Zap, Target, Sigma, Coins, AlignLeft, Package, Home, TrendingUp, Edit3, BarChart2 } from 'lucide-react';
+import { Play, Clock, Code, Brain, Zap, Target, Sigma, Coins, AlignLeft, Package, Home, TrendingUp, Edit3, BarChart2, Layers } from 'lucide-react';
 
 export const metadata = {
     title: "Dynamic Programming – Interactive Visualizer",
@@ -85,7 +85,7 @@ const dpAlgorithms = [
         difficulty: "Intermediate",
         type: "1D DP Array",
         pattern: "Subsequence",
-        available: false,
+        available: true,
     },
     {
         name: "Edit Distance",
@@ -97,7 +97,19 @@ const dpAlgorithms = [
         difficulty: "Advanced",
         type: "2D DP Table",
         pattern: "String Transformation",
-        available: false,
+        available: true,
+    },
+    {
+        name: "Matrix Chain Multiplication",
+        slug: "matrix-chain-multiplication",
+        icon: Layers,
+        description: "Find the optimal parenthesization of a matrix chain to minimize scalar multiplications. Classic interval DP — the table fills diagonally by chain length.",
+        timeComplexity: "O(n³)",
+        spaceComplexity: "O(n²)",
+        difficulty: "Advanced",
+        type: "Interval DP",
+        pattern: "Optimization",
+        available: true,
     },
     {
         name: "Maximum Subarray",
@@ -128,6 +140,7 @@ const getPatternColor = (p) => {
         'Subsequence': 'bg-blue-500/15 text-blue-400',
         'String Transformation': 'bg-purple-500/15 text-purple-400',
         'Subarray': 'bg-teal-500/15 text-teal-400',
+        'Interval DP': 'bg-violet-500/15 text-violet-400',
         'Decision Making': 'bg-green-500/15 text-green-400',
     };
     return map[p] || 'bg-slate-700 text-slate-300';
