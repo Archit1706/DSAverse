@@ -30,6 +30,9 @@ export const algorithmCategories = [
             "N-Queens",
             "Maze Solver",
             "Tower of Hanoi",
+            "Subsets (Power Set)",
+            "Permutations",
+            "Sudoku Solver",
         ]
     },
     {

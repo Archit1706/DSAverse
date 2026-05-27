@@ -1,8 +1,8 @@
 import React from 'react';
 export const metadata = {
     title: "Recursion Algorithms – Interactive Visualizer",
-    description: "Visualize recursive algorithms including Factorial, Fibonacci Sequence, Tower of Hanoi, N-Queens, Maze Solver, and String Reversal. Understand call stacks and base cases step by step.",
-    keywords: ["recursion", "recursive algorithms", "tower of hanoi", "n-queens", "fibonacci", "maze solver", "algorithm visualization"],
+    description: "Visualize recursive algorithms including Factorial, Fibonacci Sequence, Tower of Hanoi, N-Queens, Maze Solver, Subsets/Power Set, Permutations, and Sudoku Solver. Understand call stacks and base cases step by step.",
+    keywords: ["recursion", "recursive algorithms", "tower of hanoi", "n-queens", "fibonacci", "maze solver", "subsets", "power set", "permutations", "sudoku solver", "algorithm visualization"],
     openGraph: {
         title: "Recursion Algorithms Visualizer – DSAverse",
         description: "Interactive step-by-step recursion visualizations with call stack animations.",
@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 import Link from 'next/link';
-import { ArrowRight, Clock, Code, Play, Layers, Brain, BookOpen, GitBranch, RotateCcw, FlaskConical, Sigma, Grid3X3, Map, Type } from 'lucide-react';
+import { ArrowRight, Clock, Code, Play, Layers, Brain, BookOpen, GitBranch, RotateCcw, FlaskConical, Sigma, Grid3X3, Map, Type, GitFork, ArrowLeftRight, LayoutGrid } from 'lucide-react';
 
 const RecursionPage = () => {
     const recursionAlgorithms = [
@@ -80,6 +80,39 @@ const RecursionPage = () => {
             concept: "Backtracking & Path Finding",
             realWorldUse: "Robotics navigation, GPS routing",
             Icon: Map
+        },
+        {
+            name: "Subsets (Power Set)",
+            slug: "subsets-power-set",
+            description: "Generate all 2ⁿ subsets via binary include/exclude decisions — watch the full decision tree grow level by level.",
+            timeComplexity: "O(n · 2ⁿ)",
+            spaceComplexity: "O(n · 2ⁿ)",
+            difficulty: "Intermediate",
+            concept: "Binary Decision Tree",
+            realWorldUse: "Combination problems, feature selection",
+            Icon: GitFork
+        },
+        {
+            name: "Permutations",
+            slug: "permutations",
+            description: "Generate all n! permutations using swap-based backtracking — fix positions left-to-right and swap back to explore every arrangement.",
+            timeComplexity: "O(n · n!)",
+            spaceComplexity: "O(n)",
+            difficulty: "Intermediate",
+            concept: "Swap-Based Backtracking",
+            realWorldUse: "Scheduling, anagram generation, brute-force search",
+            Icon: ArrowLeftRight
+        },
+        {
+            name: "Sudoku Solver",
+            slug: "sudoku-solver",
+            description: "Solve a 9×9 Sudoku grid using constraint-based backtracking — place digits, hit dead ends, erase, and try the next candidate.",
+            timeComplexity: "O(9^m)",
+            spaceComplexity: "O(m)",
+            difficulty: "Advanced",
+            concept: "Constraint Satisfaction",
+            realWorldUse: "Puzzle solving, timetable scheduling, register allocation",
+            Icon: LayoutGrid
         }
     ];
 
