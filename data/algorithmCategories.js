@@ -157,5 +157,41 @@ export const algorithmCategories = [
             "3Sum",
             "Minimum Window Substring"
         ]
+    },
+    {
+        name: "Bit Manipulation",
+        color: "bg-teal-500",
+        lightColor: "bg-teal-50",
+        borderColor: "border-teal-200",
+        textColor: "text-teal-700",
+        algorithms: [
+            "Single Number (XOR)",
+            "Count Set Bits (Brian Kernighan)",
+            "Power of Two"
+        ]
+    },
+    {
+        name: "String Algorithms",
+        color: "bg-fuchsia-500",
+        lightColor: "bg-fuchsia-50",
+        borderColor: "border-fuchsia-200",
+        textColor: "text-fuchsia-700",
+        algorithms: [
+            "KMP String Matching",
+            "Rabin-Karp",
+            "Z-Algorithm"
+        ]
+    },
+    {
+        name: "Backtracking",
+        color: "bg-indigo-500",
+        lightColor: "bg-indigo-50",
+        borderColor: "border-indigo-200",
+        textColor: "text-indigo-700",
+        algorithms: [
+            "N-Queens",
+            "Word Search",
+            "Rat in a Maze"
+        ]
     }
 ];

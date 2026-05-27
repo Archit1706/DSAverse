@@ -6,6 +6,7 @@ import {
     ChevronDown, Menu, X, BookOpen, ArrowRight,
     Layers, RefreshCw, ArrowUpDown, Search as SearchIcon,
     Database, Brain, GitBranch, BarChart2, ArrowLeftRight,
+    Cpu, Type, GitMerge,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -48,6 +49,9 @@ const CAT_META = {
     'Dynamic Programming':       { icon: <Brain     className="w-3.5 h-3.5" />, grad: 'from-rose-500   to-pink-600'  },
     'Graph Algorithms':                   { icon: <GitBranch     className="w-3.5 h-3.5" />, grad: 'from-cyan-500   to-sky-600'     },
     'Two Pointers and Sliding Window':    { icon: <ArrowLeftRight className="w-3.5 h-3.5"/>, grad: 'from-violet-500 to-purple-600'  },
+    'Bit Manipulation':                   { icon: <Cpu           className="w-3.5 h-3.5" />, grad: 'from-teal-500   to-cyan-600'    },
+    'String Algorithms':                  { icon: <Type          className="w-3.5 h-3.5" />, grad: 'from-fuchsia-500 to-pink-600'   },
+    'Backtracking':                       { icon: <GitMerge      className="w-3.5 h-3.5" />, grad: 'from-indigo-500  to-purple-600' },
 };
 
 /* ── Animated brand name ─────────────────────────────── */
@@ -162,6 +166,7 @@ const PAGES_EXIST = new Set([
     'Basics', 'Recursion', 'Sorting', 'Searching',
     'Heap-like Data Structures', 'Dynamic Programming',
     'Graph Algorithms', 'Two Pointers and Sliding Window',
+    'Bit Manipulation', 'String Algorithms', 'Backtracking',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
