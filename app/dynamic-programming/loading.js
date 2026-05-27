@@ -2,189 +2,113 @@
 import React, { useState, useEffect } from 'react';
 
 const DPLoader = () => {
-    const [dpValues, setDpValues] = useState([1, 1, 2, 3, 5, 8, 13]);
-    const [currentAlgorithm, setCurrentAlgorithm] = useState(0);
-    const [memoTable, setMemoTable] = useState([false, false, false, false, false]);
+    const [grid, setGrid] = useState(() => Array(3).fill(null).map(() => Array(5).fill(false)));
+    const [currentMsg, setCurrentMsg] = useState(0);
 
-    const algorithms = [
-        "Initializing Dynamic Programming...",
-        "Loading Memoization Tables...",
+    const messages = [
+        "Loading Dynamic Programming...",
+        "Building Memoization Tables...",
         "Configuring State Transitions...",
-        "Optimizing Subproblem Solutions..."
+        "Preparing DP Visualizations...",
+        "Optimizing Subproblems..."
     ];
 
-    // Fibonacci-like animation
     useEffect(() => {
-        const fibInterval = setInterval(() => {
-            setDpValues(prev => {
-                const newValues = [...prev];
-                // Simulate DP table updates
-                const randomIndex = Math.floor(Math.random() * newValues.length);
-                newValues[randomIndex] = Math.floor(Math.random() * 20) + 1;
-                return newValues;
+        let row = 0;
+        let col = 0;
+        const t = setInterval(() => {
+            setGrid(prev => {
+                const next = prev.map(r => [...r]);
+                next[row][col] = true;
+                return next;
             });
-        }, 1000);
-
-        return () => clearInterval(fibInterval);
+            col++;
+            if (col >= 5) { col = 0; row++; }
+            if (row >= 3) {
+                row = 0;
+                col = 0;
+                setGrid(Array(3).fill(null).map(() => Array(5).fill(false)));
+            }
+        }, 300);
+        return () => clearInterval(t);
     }, []);
 
-    // Memoization animation
     useEffect(() => {
-        const memoInterval = setInterval(() => {
-            setMemoTable(prev => {
-                const newTable = [...prev];
-                const randomIndex = Math.floor(Math.random() * newTable.length);
-                newTable[randomIndex] = !newTable[randomIndex];
-                return newTable;
-            });
-        }, 600);
-
-        return () => clearInterval(memoInterval);
-    }, []);
-
-    // Algorithm text cycling
-    useEffect(() => {
-        const textInterval = setInterval(() => {
-            setCurrentAlgorithm(prev => (prev + 1) % algorithms.length);
-        }, 1500);
-
-        return () => clearInterval(textInterval);
+        const t = setInterval(() => setCurrentMsg(p => (p + 1) % messages.length), 1500);
+        return () => clearInterval(t);
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-rose-50 to-pink-100 p-8">
-            {/* Main Loading Container */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl w-full">
-                {/* Header */}
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-8">
+            <div className="bg-slate-900 border border-slate-700/50 rounded-2xl p-8 max-w-md w-full shadow-2xl">
                 <div className="text-center mb-8">
-                    <div className="flex items-center justify-center mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-pink-500 rounded-lg flex items-center justify-center mr-4">
-                            <div className="w-6 h-6 border-2 border-white rounded animate-spin border-t-transparent"></div>
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-gradient-to-r from-rose-600 to-pink-700 rounded-lg flex items-center justify-center">
+                            <div className="w-5 h-5 border-2 border-white/80 rounded-full animate-spin border-t-transparent" />
                         </div>
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-                            DSAverse
-                        </h1>
+                        <div>
+                            <h1 className="text-xl font-bold bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
+                                DSAverse
+                            </h1>
+                            <p className="text-xs text-slate-500">Dynamic Programming</p>
+                        </div>
                     </div>
-
-                    <div className="h-8 mb-6">
-                        <p className="text-lg text-gray-600 animate-pulse transition-all duration-500">
-                            {algorithms[currentAlgorithm]}
-                        </p>
-                    </div>
-
-                    {/* Progress bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
-                        <div className="bg-gradient-to-r from-rose-500 to-pink-500 h-2 rounded-full animate-pulse"
-                            style={{ width: '75%', animation: 'progress 3s ease-in-out infinite' }}></div>
+                    <p className="text-slate-400 text-sm h-5">{messages[currentMsg]}</p>
+                    <div className="mt-4 h-1 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full"
+                            style={{ animation: 'dpProgress 2.5s ease-in-out infinite' }} />
                     </div>
                 </div>
 
-                {/* Animation Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-                    {/* DP Table Animation */}
-                    <div className="text-center">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">DP Table</h3>
-                        <div className="bg-rose-50 rounded-lg p-4 h-32">
-                            <div className="grid grid-cols-4 gap-2 h-full">
-                                {dpValues.map((value, index) => (
-                                    <div
-                                        key={index}
-                                        className="bg-gradient-to-br from-rose-400 to-pink-500 text-white rounded flex items-center justify-center font-bold text-sm transition-all duration-700 ease-in-out transform hover:scale-105"
-                                        style={{
-                                            animationDelay: `${index * 0.1}s`,
-                                            animation: `fadeInScale 1s ease-in-out ${index * 0.1}s infinite alternate`
-                                        }}
-                                    >
-                                        {value}
+                <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-4 text-center">
+                        DP Table Filling
+                    </p>
+                    <div className="space-y-1.5">
+                        {grid.map((row, ri) => (
+                            <div key={ri} className="flex gap-1.5 justify-center">
+                                {row.map((filled, ci) => (
+                                    <div key={ci}
+                                        className={`w-10 h-8 rounded flex items-center justify-center text-xs font-mono font-bold border transition-all duration-300 ${
+                                            filled
+                                                ? 'bg-rose-500 border-rose-400 text-white scale-105'
+                                                : 'bg-slate-700/50 border-slate-700 text-slate-600'
+                                        }`}>
+                                        {filled ? `f${ri * 5 + ci}` : '?'}
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        ))}
                     </div>
-
-                    {/* Memoization Animation */}
-                    <div className="text-center">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Memoization</h3>
-                        <div className="bg-rose-50 rounded-lg p-4 h-32 flex flex-col justify-center">
-                            <div className="space-y-2">
-                                {memoTable.map((computed, index) => (
-                                    <div key={index} className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">f({index})</span>
-                                        <div className={`w-4 h-4 rounded-full transition-all duration-500 ${computed ? 'bg-green-500 shadow-lg' : 'bg-gray-300'
-                                            }`} />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* State Transition Animation */}
-                    <div className="text-center">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">State Transitions</h3>
-                        <div className="bg-rose-50 rounded-lg p-4 h-32 flex items-center justify-center">
-                            <div className="flex space-x-2">
-                                {Array.from({ length: 5 }).map((_, index) => (
-                                    <div
-                                        key={index}
-                                        className="w-4 h-4 rounded-full bg-gradient-to-r from-rose-500 to-pink-500"
-                                        style={{
-                                            animation: `bounce 1.5s ease-in-out ${index * 0.2}s infinite alternate`
-                                        }}
-                                    />
-                                ))}
-                            </div>
+                    <div className="flex justify-between mt-3 text-xs text-slate-600">
+                        <span>subproblems</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-rose-500/70">O(2^n)</span>
+                            <span>→</span>
+                            <span className="text-xs text-green-500/70">O(n)</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom Section */}
-                <div className="mt-8">
-                    {/* Optimization Visualization */}
-                    <div className="text-center mb-6">
-                        <div className="flex justify-center items-center space-x-4">
-                            <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">Without DP</div>
-                                <div className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-mono">
-                                    O(2^n)
-                                </div>
-                            </div>
-                            <div className="flex-1 h-px bg-gradient-to-r from-red-300 via-yellow-300 to-green-300"></div>
-                            <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">With DP</div>
-                                <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-mono">
-                                    O(n)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Footer Text */}
-                    <div className="text-center">
-                        <p className="text-sm text-gray-500">
-                            Preparing interactive dynamic programming visualizations for optimal learning...
-                        </p>
-                    </div>
+                <div className="mt-4 flex justify-center gap-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="w-2 h-2 rounded-full bg-rose-500/60"
+                            style={{ animation: `dpBounce 1.2s ease-in-out ${i * 0.15}s infinite alternate` }} />
+                    ))}
                 </div>
-
-                <style jsx>{`
-                    @keyframes progress {
-                        0% { width: 20%; }
-                        50% { width: 85%; }
-                        100% { width: 75%; }
-                    }
-                    
-                    @keyframes bounce {
-                        0% { transform: translateY(0); }
-                        100% { transform: translateY(-10px); }
-                    }
-
-                    @keyframes fadeInScale {
-                        0% { transform: scale(1); opacity: 0.7; }
-                        100% { transform: scale(1.05); opacity: 1; }
-                    }
-                `}</style>
             </div>
+
+            <style jsx>{`
+                @keyframes dpProgress {
+                    0% { width: 15%; }
+                    50% { width: 80%; }
+                    100% { width: 52%; }
+                }
+                @keyframes dpBounce {
+                    from { transform: translateY(0); opacity: 0.4; }
+                    to { transform: translateY(-6px); opacity: 1; }
+                }
+            `}</style>
         </div>
     );
 };
