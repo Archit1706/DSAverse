@@ -92,7 +92,7 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Basics | `from-blue-600 to-indigo-700` | `blue-400` |
 | Two Pointers and Sliding Window | `from-violet-600 to-purple-700` | `violet-400` / `violet-500` |
 | Bit Manipulation | `from-teal-600 to-cyan-700` | `teal-400` / `teal-500` |
-| String Algorithms | `from-fuchsia-500 to-pink-600` | `fuchsia-400` / `fuchsia-500` |
+| String Algorithms | `from-fuchsia-600 to-pink-700` | `fuchsia-400` / `fuchsia-500` |
 | Backtracking | `from-indigo-600 to-purple-700` | `indigo-400` / `indigo-500` |
 
 ### Algorithm Visualizer Pattern
@@ -178,6 +178,51 @@ const nextQuestion = () => {
 ```
 
 Button states: unanswered → `hover:border-[color]-500`; correct → `border-green-500 bg-green-500/10 text-green-300`; wrong → `border-red-500 bg-red-500/10 text-red-300`; other → `text-slate-500`.
+
+### Bit Manipulation Binary Register Pattern
+
+Bit manipulation pages display numbers as 8-bit registers using a `toBin` helper and a `BitRow` sub-component:
+
+```js
+const BITS = 8;
+const toBin = (n) => (n >>> 0).toString(2).padStart(BITS, '0');
+
+function BitRow({ label, value, color, highlight, highlightMask }) { /* ... */ }
+```
+
+The three-row layout shows `n`, `n-1`, and `n & (n-1)` stacked with a labelled divider (`AND ↓`). Bits that changed between rows use `bg-orange-500 text-white scale-105` to call out the operation. These pages use `type="number"` inputs (1–255) or a `PRESETS` array cycled by the Shuffle button, rather than random-array shuffle.
+
+### String Algorithm Input & Two-Phase Pattern
+
+String algorithm pages (KMP, Rabin-Karp, Z-Algorithm) share a different input model:
+
+```js
+const PRESETS = [{ text: '...', pattern: '...' }, ...];
+// Input fields: toUpperCase(), slice to max length
+<input value={text} onChange={e => setText(e.target.value.toUpperCase().slice(0, 25))} />
+```
+
+Step generation often has two phases in the same `stepHistory` array, distinguished by the `phase` field:
+
+```js
+// KMP example — phase drives which panel is rendered
+steps.push({ phase: 'lps', lps: [...], ... });   // Phase 1: build failure function
+steps.push({ phase: 'matching', textI, patJ, ... }); // Phase 2: search
+```
+
+Conditional rendering uses `['lps', 'lps_done'].includes(phase)` guards so only the relevant visualization panel is shown at each step.
+
+### Quiz Panel Extraction
+
+When the quiz logic is complex, it is extracted as a local `QuizPanel` component within the page file (not a shared component). Pass `quizState` and `setQuizState` as props:
+
+```jsx
+function QuizPanel({ quizState, setQuizState }) { /* ... */ }
+// Usage inside the page:
+<QuizPanel quizState={quizState} setQuizState={setQuizState} />
+```
+
+This keeps the quiz reusable within the file without polluting the global component namespace.
 
 ### DP Table Visualization Pattern
 
