@@ -2,11 +2,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-    ArrowRight, Layers, RefreshCw, ArrowUpDown, Search,
+    ArrowRight, ArrowLeftRight, Layers, RefreshCw, ArrowUpDown, Search,
     GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2
 } from 'lucide-react';
 
 const CATEGORIES = [
+    // ── 1. Foundations ──────────────────────────────────────────────────────
     {
         name:        'Basics',
         slug:        'basics',
@@ -23,7 +24,7 @@ const CATEGORIES = [
         name:        'Recursion',
         slug:        'recursion',
         icon:        <RefreshCw className="w-6 h-6" />,
-        description: 'Call Stacks & Backtracking',
+        description: 'Call Stacks & Recursive Thinking',
         algorithms:  ['Factorial', 'Fibonacci Sequence', 'Tower of Hanoi', 'N-Queens', 'Maze Solver', 'String Reversal'],
         gradient:    'from-emerald-500 to-teal-500',
         border:      'border-emerald-500/30',
@@ -31,6 +32,7 @@ const CATEGORIES = [
         glow:        'hover:shadow-emerald-500/20',
         badge:       'bg-emerald-500/10 text-emerald-300',
     },
+    // ── 2. Core Algorithms ───────────────────────────────────────────────────
     {
         name:        'Sorting',
         slug:        'sorting',
@@ -55,49 +57,14 @@ const CATEGORIES = [
         glow:        'hover:shadow-red-500/20',
         badge:       'bg-red-500/10 text-red-300',
     },
+    // ── 3. Array & String Patterns ───────────────────────────────────────────
     {
-        name:        'Heap Structures',
-        slug:        'heap-like-data-structures',
-        icon:        <Database className="w-6 h-6" />,
-        description: 'Priority Queues & Heapify',
-        algorithms:  ['Heaps', 'Binomial Queues', 'Fibonacci Heaps', 'Leftist Heaps', 'Skew Heaps'],
-        gradient:    'from-amber-500 to-yellow-500',
-        border:      'border-amber-500/30',
-        hoverBorder: 'hover:border-amber-400',
-        glow:        'hover:shadow-amber-500/20',
-        badge:       'bg-amber-500/10 text-amber-300',
-    },
-    {
-        name:        'Dynamic Prog.',
-        slug:        'dynamic-programming',
-        icon:        <Brain className="w-6 h-6" />,
-        description: 'Memoisation & Tabulation',
-        algorithms:  ['Fibonacci Numbers', 'Making Change', 'Longest Common Subsequence', '0-1 Knapsack', 'House Robber'],
-        gradient:    'from-rose-500 to-pink-600',
-        border:      'border-rose-500/30',
-        hoverBorder: 'hover:border-rose-400',
-        glow:        'hover:shadow-rose-500/20',
-        badge:       'bg-rose-500/10 text-rose-300',
-    },
-    {
-        name:        'Graph Algorithms',
-        slug:        'graph-algorithms',
-        icon:        <GitBranch className="w-6 h-6" />,
-        description: 'Traversal & Shortest Paths',
-        algorithms:  ['BFS', 'DFS', 'Dijkstra\'s', 'Prim\'s MST', 'Kruskal\'s MST', 'Floyd-Warshall', 'Topological Sort'],
-        gradient:    'from-cyan-500 to-sky-600',
-        border:      'border-cyan-500/30',
-        hoverBorder: 'hover:border-cyan-400',
-        glow:        'hover:shadow-cyan-500/20',
-        badge:       'bg-cyan-500/10 text-cyan-300',
-    },
-    {
-        name:        'Cheatsheet',
-        slug:        'cheatsheet',
-        icon:        <BarChart2 className="w-6 h-6" />,
-        description: 'Quick Complexity Reference',
-        algorithms:  ['Time Complexity', 'Space Complexity', 'Big-O', 'Sorting Table', 'Graph Table', 'Data Structures'],
-        gradient:    'from-violet-500 to-indigo-600',
+        name:        'Two Pointers & Window',
+        slug:        'two-pointers-and-sliding-window',
+        icon:        <ArrowLeftRight className="w-6 h-6" />,
+        description: 'Two Pointers & Sliding Window',
+        algorithms:  ['Two Sum II', 'Valid Palindrome', 'Maximum Sum Subarray', 'Container With Most Water', '3Sum', 'Min Window Substring'],
+        gradient:    'from-violet-500 to-purple-600',
         border:      'border-violet-500/30',
         hoverBorder: 'hover:border-violet-400',
         glow:        'hover:shadow-violet-500/20',
@@ -115,17 +82,43 @@ const CATEGORIES = [
         glow:        'hover:shadow-teal-500/20',
         badge:       'bg-teal-500/10 text-teal-300',
     },
+    // ── 4. Data Structures ───────────────────────────────────────────────────
     {
-        name:        'String Algorithms',
-        slug:        'string-algorithms',
-        icon:        <Type className="w-6 h-6" />,
-        description: 'Pattern Matching & Hashing',
-        algorithms:  ['KMP String Matching', 'Rabin-Karp', 'Z-Algorithm'],
-        gradient:    'from-fuchsia-500 to-pink-600',
-        border:      'border-fuchsia-500/30',
-        hoverBorder: 'hover:border-fuchsia-400',
-        glow:        'hover:shadow-fuchsia-500/20',
-        badge:       'bg-fuchsia-500/10 text-fuchsia-300',
+        name:        'Trees',
+        slug:        'trees',
+        icon:        <TreePine className="w-6 h-6" />,
+        description: 'BST, AVL, Traversals & Tries',
+        algorithms:  ['Binary Search Tree', 'AVL Tree', 'Binary Tree Traversals', 'Segment Tree', 'Trie'],
+        gradient:    'from-lime-500 to-green-600',
+        border:      'border-lime-500/30',
+        hoverBorder: 'hover:border-lime-400',
+        glow:        'hover:shadow-lime-500/20',
+        badge:       'bg-lime-500/10 text-lime-300',
+    },
+    {
+        name:        'Heap Structures',
+        slug:        'heap-like-data-structures',
+        icon:        <Database className="w-6 h-6" />,
+        description: 'Priority Queues & Heapify',
+        algorithms:  ['Heaps', 'Binomial Queues', 'Fibonacci Heaps', 'Leftist Heaps', 'Skew Heaps'],
+        gradient:    'from-amber-500 to-yellow-500',
+        border:      'border-amber-500/30',
+        hoverBorder: 'hover:border-amber-400',
+        glow:        'hover:shadow-amber-500/20',
+        badge:       'bg-amber-500/10 text-amber-300',
+    },
+    // ── 5. Algorithm Paradigms ───────────────────────────────────────────────
+    {
+        name:        'Divide & Conquer',
+        slug:        'divide-and-conquer',
+        icon:        <Scissors className="w-6 h-6" />,
+        description: 'Split, Solve & Combine',
+        algorithms:  ['Merge Sort', 'Binary Search', "Strassen's Matrix Mult", 'Closest Pair of Points'],
+        gradient:    'from-sky-500 to-blue-600',
+        border:      'border-sky-500/30',
+        hoverBorder: 'hover:border-sky-400',
+        glow:        'hover:shadow-sky-500/20',
+        badge:       'bg-sky-500/10 text-sky-300',
     },
     {
         name:        'Backtracking',
@@ -140,28 +133,29 @@ const CATEGORIES = [
         badge:       'bg-indigo-500/10 text-indigo-300',
     },
     {
-        name:        'Trees',
-        slug:        'trees',
-        icon:        <TreePine className="w-6 h-6" />,
-        description: 'BST, AVL, Traversals & Tries',
-        algorithms:  ['Binary Search Tree', 'AVL Tree', 'Binary Tree Traversals', 'Segment Tree', 'Trie'],
-        gradient:    'from-lime-500 to-green-600',
-        border:      'border-lime-500/30',
-        hoverBorder: 'hover:border-lime-400',
-        glow:        'hover:shadow-lime-500/20',
-        badge:       'bg-lime-500/10 text-lime-300',
+        name:        'Dynamic Prog.',
+        slug:        'dynamic-programming',
+        icon:        <Brain className="w-6 h-6" />,
+        description: 'Memoisation & Tabulation',
+        algorithms:  ['Fibonacci Numbers', 'Making Change', 'Longest Common Subsequence', '0-1 Knapsack', 'House Robber'],
+        gradient:    'from-rose-500 to-pink-600',
+        border:      'border-rose-500/30',
+        hoverBorder: 'hover:border-rose-400',
+        glow:        'hover:shadow-rose-500/20',
+        badge:       'bg-rose-500/10 text-rose-300',
     },
+    // ── 6. Graphs & Advanced ─────────────────────────────────────────────────
     {
-        name:        'Divide & Conquer',
-        slug:        'divide-and-conquer',
-        icon:        <Scissors className="w-6 h-6" />,
-        description: 'Split, Solve & Combine',
-        algorithms:  ['Merge Sort', 'Binary Search', "Strassen's Matrix Mult", 'Closest Pair of Points'],
-        gradient:    'from-sky-500 to-blue-600',
-        border:      'border-sky-500/30',
-        hoverBorder: 'hover:border-sky-400',
-        glow:        'hover:shadow-sky-500/20',
-        badge:       'bg-sky-500/10 text-sky-300',
+        name:        'Graph Algorithms',
+        slug:        'graph-algorithms',
+        icon:        <GitBranch className="w-6 h-6" />,
+        description: 'Traversal & Shortest Paths',
+        algorithms:  ['BFS', 'DFS', "Dijkstra's", "Prim's MST", "Kruskal's MST", 'Floyd-Warshall', 'Topological Sort'],
+        gradient:    'from-cyan-500 to-sky-600',
+        border:      'border-cyan-500/30',
+        hoverBorder: 'hover:border-cyan-400',
+        glow:        'hover:shadow-cyan-500/20',
+        badge:       'bg-cyan-500/10 text-cyan-300',
     },
     {
         name:        'Union-Find',
@@ -174,6 +168,31 @@ const CATEGORIES = [
         hoverBorder: 'hover:border-purple-400',
         glow:        'hover:shadow-purple-500/20',
         badge:       'bg-purple-500/10 text-purple-300',
+    },
+    {
+        name:        'String Algorithms',
+        slug:        'string-algorithms',
+        icon:        <Type className="w-6 h-6" />,
+        description: 'Pattern Matching & Hashing',
+        algorithms:  ['KMP String Matching', 'Rabin-Karp', 'Z-Algorithm'],
+        gradient:    'from-fuchsia-500 to-pink-600',
+        border:      'border-fuchsia-500/30',
+        hoverBorder: 'hover:border-fuchsia-400',
+        glow:        'hover:shadow-fuchsia-500/20',
+        badge:       'bg-fuchsia-500/10 text-fuchsia-300',
+    },
+    // ── Reference ────────────────────────────────────────────────────────────
+    {
+        name:        'Cheatsheet',
+        slug:        'cheatsheet',
+        icon:        <BarChart2 className="w-6 h-6" />,
+        description: 'Quick Complexity Reference',
+        algorithms:  ['Time Complexity', 'Space Complexity', 'Big-O', 'Sorting Table', 'Graph Table', 'Data Structures'],
+        gradient:    'from-violet-500 to-indigo-600',
+        border:      'border-violet-500/30',
+        hoverBorder: 'hover:border-violet-400',
+        glow:        'hover:shadow-violet-500/20',
+        badge:       'bg-violet-500/10 text-violet-300',
     },
 ];
 
@@ -255,7 +274,7 @@ export default function AlgorithmsGrid() {
                         </span>
                     </h2>
                     <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                        14 categories, 63+ algorithms — each with animations, explanations, and code.
+                        14 categories, 63+ algorithms — ordered from foundations to advanced. Each with animations, explanations, and code.
                     </p>
                 </div>
 

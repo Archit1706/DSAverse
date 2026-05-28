@@ -36,28 +36,6 @@ export const algorithmCategories = [
         ]
     },
     {
-        name: "Indexing",
-        color: "bg-purple-500",
-        lightColor: "bg-purple-50",
-        borderColor: "border-purple-200",
-        textColor: "text-purple-700",
-        algorithms: [
-            "Binary and Linear Search",
-            "Binary Search Trees",
-            "AVL Trees",
-            "Red-Black Trees",
-            "Splay Trees",
-            "Open Hash Tables",
-            "Closed Hash Tables",
-            "Closed Hash Tables with Buckets",
-            "Trie (Prefix Tree)",
-            "Radix Tree",
-            "Ternary Search Tree",
-            "B Trees",
-            "B+ Trees"
-        ]
-    },
-    {
         name: "Sorting",
         color: "bg-orange-500",
         lightColor: "bg-orange-50",
@@ -94,55 +72,6 @@ export const algorithmCategories = [
         ]
     },
     {
-        name: "Heap-like Data Structures",
-        color: "bg-amber-500",
-        lightColor: "bg-amber-50",
-        borderColor: "border-amber-200",
-        textColor: "text-amber-700",
-        algorithms: [
-            "Heaps",
-            "Binomial Queues",
-            "Fibonacci Heaps",
-            "Leftist Heaps",
-            "Skew Heaps"
-        ]
-    },
-    {
-        name: "Graph Algorithms",
-        color: "bg-cyan-500",
-        lightColor: "bg-cyan-50",
-        borderColor: "border-cyan-200",
-        textColor: "text-cyan-700",
-        algorithms: [
-            "Breadth-First Search",
-            "Depth-First Search",
-            "Connected Components",
-            "Dijkstra's Shortest Path",
-            "Prim's Minimum Spanning Tree",
-            "Topological Sort (Indegree)",
-            "Topological Sort (DFS)",
-            "Floyd-Warshall",
-            "Kruskal Minimum Spanning Tree"
-        ]
-    },
-    {
-        name: "Dynamic Programming",
-        color: "bg-rose-500",
-        lightColor: "bg-rose-50",
-        borderColor: "border-rose-200",
-        textColor: "text-rose-700",
-        algorithms: [
-            "Fibonacci Numbers",
-            "Making Change",
-            "Longest Common Subsequence",
-            "0-1 Knapsack",
-            "House Robber",
-            "Longest Increasing Subsequence",
-            "Edit Distance",
-            "Matrix Chain Multiplication"
-        ]
-    },
-    {
         name: "Two Pointers and Sliding Window",
         color: "bg-violet-500",
         lightColor: "bg-violet-50",
@@ -171,30 +100,6 @@ export const algorithmCategories = [
         ]
     },
     {
-        name: "String Algorithms",
-        color: "bg-fuchsia-500",
-        lightColor: "bg-fuchsia-50",
-        borderColor: "border-fuchsia-200",
-        textColor: "text-fuchsia-700",
-        algorithms: [
-            "KMP String Matching",
-            "Rabin-Karp",
-            "Z-Algorithm"
-        ]
-    },
-    {
-        name: "Backtracking",
-        color: "bg-indigo-500",
-        lightColor: "bg-indigo-50",
-        borderColor: "border-indigo-200",
-        textColor: "text-indigo-700",
-        algorithms: [
-            "N-Queens",
-            "Word Search",
-            "Rat in a Maze"
-        ]
-    },
-    {
         name: "Trees",
         color: "bg-lime-500",
         lightColor: "bg-lime-50",
@@ -206,6 +111,42 @@ export const algorithmCategories = [
             "Binary Tree Traversals",
             "Segment Tree",
             "Trie"
+        ]
+    },
+    {
+        name: "Indexing",
+        color: "bg-purple-500",
+        lightColor: "bg-purple-50",
+        borderColor: "border-purple-200",
+        textColor: "text-purple-700",
+        algorithms: [
+            "Binary and Linear Search",
+            "Binary Search Trees",
+            "AVL Trees",
+            "Red-Black Trees",
+            "Splay Trees",
+            "Open Hash Tables",
+            "Closed Hash Tables",
+            "Closed Hash Tables with Buckets",
+            "Trie (Prefix Tree)",
+            "Radix Tree",
+            "Ternary Search Tree",
+            "B Trees",
+            "B+ Trees"
+        ]
+    },
+    {
+        name: "Heap-like Data Structures",
+        color: "bg-amber-500",
+        lightColor: "bg-amber-50",
+        borderColor: "border-amber-200",
+        textColor: "text-amber-700",
+        algorithms: [
+            "Heaps",
+            "Binomial Queues",
+            "Fibonacci Heaps",
+            "Leftist Heaps",
+            "Skew Heaps"
         ]
     },
     {
@@ -222,6 +163,53 @@ export const algorithmCategories = [
         ]
     },
     {
+        name: "Backtracking",
+        color: "bg-indigo-500",
+        lightColor: "bg-indigo-50",
+        borderColor: "border-indigo-200",
+        textColor: "text-indigo-700",
+        algorithms: [
+            "N-Queens",
+            "Word Search",
+            "Rat in a Maze"
+        ]
+    },
+    {
+        name: "Dynamic Programming",
+        color: "bg-rose-500",
+        lightColor: "bg-rose-50",
+        borderColor: "border-rose-200",
+        textColor: "text-rose-700",
+        algorithms: [
+            "Fibonacci Numbers",
+            "Making Change",
+            "Longest Common Subsequence",
+            "0-1 Knapsack",
+            "House Robber",
+            "Longest Increasing Subsequence",
+            "Edit Distance",
+            "Matrix Chain Multiplication"
+        ]
+    },
+    {
+        name: "Graph Algorithms",
+        color: "bg-cyan-500",
+        lightColor: "bg-cyan-50",
+        borderColor: "border-cyan-200",
+        textColor: "text-cyan-700",
+        algorithms: [
+            "Breadth-First Search",
+            "Depth-First Search",
+            "Connected Components",
+            "Dijkstra's Shortest Path",
+            "Prim's Minimum Spanning Tree",
+            "Topological Sort (Indegree)",
+            "Topological Sort (DFS)",
+            "Floyd-Warshall",
+            "Kruskal Minimum Spanning Tree"
+        ]
+    },
+    {
         name: "Union-Find",
         color: "bg-purple-500",
         lightColor: "bg-purple-50",
@@ -232,6 +220,18 @@ export const algorithmCategories = [
             "Quick Union",
             "Path Compression",
             "Union by Rank"
+        ]
+    },
+    {
+        name: "String Algorithms",
+        color: "bg-fuchsia-500",
+        lightColor: "bg-fuchsia-50",
+        borderColor: "border-fuchsia-200",
+        textColor: "text-fuchsia-700",
+        algorithms: [
+            "KMP String Matching",
+            "Rabin-Karp",
+            "Z-Algorithm"
         ]
     }
 ];
