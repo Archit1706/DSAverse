@@ -17,12 +17,12 @@ const tracks = [
             {
                 name: 'Python Execution Pipeline',
                 slug: 'python-execution-pipeline',
-                description: 'Source → Tokens → AST → Bytecode → CPython VM → Memory Model → CPU. Every layer visualized step by step.',
+                description: 'Source → Tokens → AST → Bytecode → CPython VM → Memory Model → GIL. Every layer visualized step by step.',
                 complexity: 'Source → Bytecode',
                 space: '6 stages',
                 pattern: 'Interpreter',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
             {
                 name: 'C++ Execution Pipeline',
