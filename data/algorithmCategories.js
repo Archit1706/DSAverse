@@ -233,5 +233,32 @@ export const algorithmCategories = [
             "Rabin-Karp",
             "Z-Algorithm"
         ]
+    },
+    {
+        name: "Under the Hood",
+        color: "bg-zinc-500",
+        lightColor: "bg-zinc-50",
+        borderColor: "border-zinc-200",
+        textColor: "text-zinc-700",
+        algorithms: [
+            "Python Execution Pipeline",
+            "Cpp Execution Pipeline",
+            "Python Memory Model",
+            "Garbage Collection",
+            "Async Await and Event Loop",
+            "Multithreading",
+            "Processes vs Threads",
+            "What Happens When You Search a URL",
+            "HTTPS and TLS",
+            "How a REST API Works",
+            "Classes Objects and Memory",
+            "Inheritance and MRO",
+            "Polymorphism and Virtual Dispatch",
+            "Composition vs Inheritance",
+            "Virtual Memory and Paging",
+            "CPU Cache Hierarchy",
+            "How a Database Query Executes",
+            "How Git Works Internally"
+        ]
     }
 ];
