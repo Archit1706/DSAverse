@@ -306,7 +306,7 @@ export default function Navbar() {
     return (
         <nav className={`fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 ${navBg}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16 items-center">
+                <div className="relative flex justify-between h-16 items-center">
 
                     {/* Logo */}
                     <AnimatedBrand />
@@ -322,7 +322,7 @@ export default function Navbar() {
                         </Link>
 
                         {/* Visualize mega-menu */}
-                        <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
+                        <div onMouseEnter={onEnter} onMouseLeave={onLeave}>
                             <button
                                 className="flex items-center gap-1 text-sm font-medium px-3 py-2 rounded-lg
                                           text-slate-300 hover:text-white hover:bg-white/10
