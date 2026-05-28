@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 /* ─── Cycling words ──────────────────────────────────── */
-const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings'];
+const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees'];
 
 function WordCycler() {
     const [idx, setIdx] = useState(0);
@@ -132,9 +132,9 @@ function useCountUp(target, duration = 1600, trigger = true) {
 }
 
 const STATS = [
-    { label: 'Algorithms',       value: 50, suffix: '+', icon: <Zap className="w-5 h-5" />        },
-    { label: 'Categories',       value: 11, suffix: '',  icon: <Network className="w-5 h-5" />     },
-    { label: 'Interactive Demos',value: 41, suffix: '+', icon: <BarChart2 className="w-5 h-5" />   },
+    { label: 'Algorithms',       value: 55, suffix: '+', icon: <Zap className="w-5 h-5" />        },
+    { label: 'Categories',       value: 12, suffix: '',  icon: <Network className="w-5 h-5" />     },
+    { label: 'Interactive Demos',value: 46, suffix: '+', icon: <BarChart2 className="w-5 h-5" />   },
     { label: 'Completely Free',  value: 100,suffix: '%', icon: <BookOpen className="w-5 h-5" />    },
 ];
 
@@ -292,7 +292,7 @@ export default function Hero() {
 
                             {/* Quick-nav chips */}
                             <div className="animate-fade-in-up delay-700 flex flex-wrap gap-2">
-                                {['Sorting', 'Searching', 'Recursion', 'Dynamic Prog.', 'Heaps', 'Basics', 'Backtracking', 'Bit Manipulation', 'String Algorithms'].map((cat, i) => (
+                                {['Sorting', 'Searching', 'Recursion', 'Dynamic Prog.', 'Heaps', 'Basics', 'Backtracking', 'Bit Manipulation', 'String Algorithms', 'Trees'].map((cat, i) => (
                                     <Link
                                         key={cat}
                                         href={`/${cat.toLowerCase().replace(/[.\s]+/g, '-').replace(/-$/, '')}`}

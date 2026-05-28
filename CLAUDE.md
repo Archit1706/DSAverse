@@ -94,6 +94,7 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Bit Manipulation | `from-teal-600 to-cyan-700` | `teal-400` / `teal-500` |
 | String Algorithms | `from-fuchsia-600 to-pink-700` | `fuchsia-400` / `fuchsia-500` |
 | Backtracking | `from-indigo-600 to-purple-700` | `indigo-400` / `indigo-500` |
+| Trees | `from-lime-600 to-green-700` | `lime-400` / `lime-500` |
 
 ### Algorithm Visualizer Pattern
 
@@ -234,6 +235,35 @@ This keeps the quiz reusable within the file without polluting the global compon
 - Backtrack / optimal path cells use `bg-purple-700` (or `bg-purple-800` during animation)
 - The `phase` field in each step object drives color: `'comparing'`, `'match'`, `'no_match'`, `'backtracking'`, `'complete'`
 
+### Tree Visualizer SVG Pattern
+
+Tree pages use **inorder-based SVG layout** so nodes never overlap regardless of tree shape:
+
+```js
+// computeLayout: x = inorder index × spacing, y = depth × spacing
+function computeLayout(node, depth = 0, counter = { n: 0 }, xGap = 64) {
+    if (!node) return { pos: {}, edges: [] };
+    const left = computeLayout(node.left, depth + 1, counter, xGap);
+    const x = counter.n * xGap + xGap / 2;
+    const y = depth * 80 + 50;
+    counter.n++;
+    const right = computeLayout(node.right, depth + 1, counter, xGap);
+    // merge pos + edges...
+}
+
+// Dynamic viewBox so tree fits any size
+const svgW = nodeCount(tree) * xGap;
+const svgH = treeHeight(tree) * 80 + 40;
+<svg viewBox={`0 0 ${svgW} ${svgH}`} width="100%" ...>
+```
+
+**Tree page specifics:**
+- BST (`binary-search-tree`) — search + insert operations with traversal path highlighting; `visited[]` array tracks path, `current` is the node being compared; "Keep this tree" button lets user chain inserts
+- AVL (`avl-tree`) — preset insertion sequences demonstrating all 4 rotation types; `bf` (balance factor) stored on each node; rotation type detected by checking the naive-BST-insert tree before rebalancing
+- Traversals (`binary-tree-traversals`) — fixed 8-node tree; 4 modes (Inorder/Preorder/Postorder/Level-Order); call-stack panel shown for DFS modes; visit order row at bottom
+- Segment Tree (`segment-tree`) — array-backed 1-indexed tree (`tree[1]` = root); nodes 1–15 shown for up to 8-element arrays; build + range-query modes; query highlights out/in/partial nodes differently
+- Trie (`trie`) — characters as edge labels (rendered as `<text>` on each `<line>`); `isEnd` nodes get double-circle; insert mode shows step-by-step edge creation; search shows found/not-found path coloring
+
 ### Graph-Specific Patterns
 
 **SVG visualization** — always use `viewBox="0 0 W H"` with `width="100%"` so the graph scales to its container without horizontal scrolling. Never use fixed pixel widths like `width={800}`.
@@ -262,7 +292,7 @@ const PAGES_EXIST = new Set([
     'Basics', 'Recursion', 'Sorting', 'Searching',
     'Heap-like Data Structures', 'Dynamic Programming',
     'Graph Algorithms', 'Two Pointers and Sliding Window',
-    'Bit Manipulation', 'String Algorithms', 'Backtracking',
+    'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
 ]);
 ```
 Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.

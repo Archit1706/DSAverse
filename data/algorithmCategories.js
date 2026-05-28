@@ -193,5 +193,19 @@ export const algorithmCategories = [
             "Word Search",
             "Rat in a Maze"
         ]
+    },
+    {
+        name: "Trees",
+        color: "bg-lime-500",
+        lightColor: "bg-lime-50",
+        borderColor: "border-lime-200",
+        textColor: "text-lime-700",
+        algorithms: [
+            "Binary Search Tree",
+            "AVL Tree",
+            "Binary Tree Traversals",
+            "Segment Tree",
+            "Trie"
+        ]
     }
 ];

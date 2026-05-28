@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     ArrowRight, Layers, RefreshCw, ArrowUpDown, Search,
-    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge
+    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -139,6 +139,18 @@ const CATEGORIES = [
         glow:        'hover:shadow-indigo-500/20',
         badge:       'bg-indigo-500/10 text-indigo-300',
     },
+    {
+        name:        'Trees',
+        slug:        'trees',
+        icon:        <TreePine className="w-6 h-6" />,
+        description: 'BST, AVL, Traversals & Tries',
+        algorithms:  ['Binary Search Tree', 'AVL Tree', 'Binary Tree Traversals', 'Segment Tree', 'Trie'],
+        gradient:    'from-lime-500 to-green-600',
+        border:      'border-lime-500/30',
+        hoverBorder: 'hover:border-lime-400',
+        glow:        'hover:shadow-lime-500/20',
+        badge:       'bg-lime-500/10 text-lime-300',
+    },
 ];
 
 function CategoryCard({ cat, index }) {
@@ -219,7 +231,7 @@ export default function AlgorithmsGrid() {
                         </span>
                     </h2>
                     <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                        11 categories, 50+ algorithms — each with animations, explanations, and code.
+                        12 categories, 55+ algorithms — each with animations, explanations, and code.
                     </p>
                 </div>
 
