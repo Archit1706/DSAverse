@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     ArrowRight, Layers, RefreshCw, ArrowUpDown, Search,
-    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine
+    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -151,6 +151,18 @@ const CATEGORIES = [
         glow:        'hover:shadow-lime-500/20',
         badge:       'bg-lime-500/10 text-lime-300',
     },
+    {
+        name:        'Divide & Conquer',
+        slug:        'divide-and-conquer',
+        icon:        <Scissors className="w-6 h-6" />,
+        description: 'Split, Solve & Combine',
+        algorithms:  ['Merge Sort', 'Binary Search', "Strassen's Matrix Mult", 'Closest Pair of Points'],
+        gradient:    'from-sky-500 to-blue-600',
+        border:      'border-sky-500/30',
+        hoverBorder: 'hover:border-sky-400',
+        glow:        'hover:shadow-sky-500/20',
+        badge:       'bg-sky-500/10 text-sky-300',
+    },
 ];
 
 function CategoryCard({ cat, index }) {
@@ -231,7 +243,7 @@ export default function AlgorithmsGrid() {
                         </span>
                     </h2>
                     <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                        12 categories, 55+ algorithms — each with animations, explanations, and code.
+                        13 categories, 59+ algorithms — each with animations, explanations, and code.
                     </p>
                 </div>
 

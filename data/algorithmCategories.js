@@ -207,5 +207,18 @@ export const algorithmCategories = [
             "Segment Tree",
             "Trie"
         ]
+    },
+    {
+        name: "Divide and Conquer",
+        color: "bg-sky-500",
+        lightColor: "bg-sky-50",
+        borderColor: "border-sky-200",
+        textColor: "text-sky-700",
+        algorithms: [
+            "Merge Sort",
+            "Binary Search",
+            "Strassens Matrix Multiplication",
+            "Closest Pair of Points"
+        ]
     }
 ];

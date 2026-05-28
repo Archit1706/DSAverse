@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 /* ─── Cycling words ──────────────────────────────────── */
-const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees'];
+const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer'];
 
 function WordCycler() {
     const [idx, setIdx] = useState(0);
@@ -132,9 +132,9 @@ function useCountUp(target, duration = 1600, trigger = true) {
 }
 
 const STATS = [
-    { label: 'Algorithms',       value: 55, suffix: '+', icon: <Zap className="w-5 h-5" />        },
-    { label: 'Categories',       value: 12, suffix: '',  icon: <Network className="w-5 h-5" />     },
-    { label: 'Interactive Demos',value: 46, suffix: '+', icon: <BarChart2 className="w-5 h-5" />   },
+    { label: 'Algorithms',       value: 59, suffix: '+', icon: <Zap className="w-5 h-5" />        },
+    { label: 'Categories',       value: 13, suffix: '',  icon: <Network className="w-5 h-5" />     },
+    { label: 'Interactive Demos',value: 50, suffix: '+', icon: <BarChart2 className="w-5 h-5" />   },
     { label: 'Completely Free',  value: 100,suffix: '%', icon: <BookOpen className="w-5 h-5" />    },
 ];
 
@@ -292,10 +292,10 @@ export default function Hero() {
 
                             {/* Quick-nav chips */}
                             <div className="animate-fade-in-up delay-700 flex flex-wrap gap-2">
-                                {['Sorting', 'Searching', 'Recursion', 'Dynamic Prog.', 'Heaps', 'Basics', 'Backtracking', 'Bit Manipulation', 'String Algorithms', 'Trees'].map((cat, i) => (
+                                {['Sorting', 'Searching', 'Recursion', 'Dynamic Prog.', 'Heaps', 'Basics', 'Backtracking', 'Bit Manipulation', 'String Algorithms', 'Trees', 'Divide & Conquer'].map((cat, i) => (
                                     <Link
                                         key={cat}
-                                        href={`/${cat.toLowerCase().replace(/[.\s]+/g, '-').replace(/-$/, '')}`}
+                                        href={`/${cat.toLowerCase().replace(/&\s*/g, 'and-').replace(/[.\s]+/g, '-').replace(/-$/, '')}`}
                                         className="px-3 py-1 rounded-full text-xs font-medium text-slate-300 border border-slate-700 hover:border-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-all duration-200"
                                         style={{ animationDelay: `${0.7 + i * 0.05}s` }}
                                     >
