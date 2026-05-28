@@ -6,7 +6,7 @@ import {
     ChevronDown, Menu, X, BookOpen, ArrowRight,
     Layers, RefreshCw, ArrowUpDown, Search as SearchIcon,
     Database, Brain, GitBranch, BarChart2, ArrowLeftRight,
-    Cpu, Type, GitMerge, TreePine, Scissors,
+    Cpu, Type, GitMerge, TreePine, Scissors, Share2,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -54,6 +54,7 @@ const CAT_META = {
     'Backtracking':                       { icon: <GitMerge      className="w-3.5 h-3.5" />, grad: 'from-indigo-500  to-purple-600' },
     'Trees':                              { icon: <TreePine      className="w-3.5 h-3.5" />, grad: 'from-lime-500    to-green-600'   },
     'Divide and Conquer':                 { icon: <Scissors      className="w-3.5 h-3.5" />, grad: 'from-sky-500     to-blue-600'    },
+    'Union-Find':                         { icon: <Share2        className="w-3.5 h-3.5" />, grad: 'from-purple-500  to-violet-600'  },
 };
 
 /* ── Animated brand name ─────────────────────────────── */
@@ -169,7 +170,7 @@ const PAGES_EXIST = new Set([
     'Heap-like Data Structures', 'Dynamic Programming',
     'Graph Algorithms', 'Two Pointers and Sliding Window',
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
-    'Divide and Conquer',
+    'Divide and Conquer', 'Union-Find',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 

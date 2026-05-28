@@ -96,6 +96,7 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Backtracking | `from-indigo-600 to-purple-700` | `indigo-400` / `indigo-500` |
 | Trees | `from-lime-600 to-green-700` | `lime-400` / `lime-500` |
 | Divide and Conquer | `from-sky-600 to-blue-700` | `sky-400` / `sky-500` |
+| Union-Find | `from-purple-600 to-violet-700` | `purple-400` / `violet-400` |
 
 ### Algorithm Visualizer Pattern
 
@@ -294,7 +295,7 @@ const PAGES_EXIST = new Set([
     'Heap-like Data Structures', 'Dynamic Programming',
     'Graph Algorithms', 'Two Pointers and Sliding Window',
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
-    'Divide and Conquer',
+    'Divide and Conquer', 'Union-Find',
 ]);
 ```
 Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.

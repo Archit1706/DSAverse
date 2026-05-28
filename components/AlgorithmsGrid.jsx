@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     ArrowRight, Layers, RefreshCw, ArrowUpDown, Search,
-    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors
+    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -163,6 +163,18 @@ const CATEGORIES = [
         glow:        'hover:shadow-sky-500/20',
         badge:       'bg-sky-500/10 text-sky-300',
     },
+    {
+        name:        'Union-Find',
+        slug:        'union-find',
+        icon:        <Share2 className="w-6 h-6" />,
+        description: 'Disjoint Sets & Path Compression',
+        algorithms:  ['Quick Find', 'Quick Union', 'Path Compression', 'Union by Rank'],
+        gradient:    'from-purple-500 to-violet-600',
+        border:      'border-purple-500/30',
+        hoverBorder: 'hover:border-purple-400',
+        glow:        'hover:shadow-purple-500/20',
+        badge:       'bg-purple-500/10 text-purple-300',
+    },
 ];
 
 function CategoryCard({ cat, index }) {
@@ -243,7 +255,7 @@ export default function AlgorithmsGrid() {
                         </span>
                     </h2>
                     <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                        13 categories, 59+ algorithms — each with animations, explanations, and code.
+                        14 categories, 63+ algorithms — each with animations, explanations, and code.
                     </p>
                 </div>
 

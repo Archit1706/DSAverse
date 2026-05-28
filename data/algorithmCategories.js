@@ -220,5 +220,18 @@ export const algorithmCategories = [
             "Strassens Matrix Multiplication",
             "Closest Pair of Points"
         ]
+    },
+    {
+        name: "Union-Find",
+        color: "bg-purple-500",
+        lightColor: "bg-purple-50",
+        borderColor: "border-purple-200",
+        textColor: "text-purple-700",
+        algorithms: [
+            "Quick Find",
+            "Quick Union",
+            "Path Compression",
+            "Union by Rank"
+        ]
     }
 ];
