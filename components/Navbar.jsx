@@ -177,18 +177,19 @@ const toSlug = (name) => name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()
 function MegaMenu({ onClose }) {
     return (
         <div className="absolute top-full right-0 mt-2 z-[60]
-                        w-[540px] max-w-[calc(100vw-2rem)]
+                        w-[700px] max-w-[calc(100vw-2rem)]
                         bg-slate-900/98 backdrop-blur-xl
                         rounded-2xl border border-slate-700/60
                         shadow-2xl shadow-slate-950/70
-                        overflow-hidden">
+                        overflow-hidden flex flex-col
+                        max-h-[calc(100vh-5rem)]">
 
             {/* top gradient strip */}
             <div className="h-px w-full"
                 style={{ background: 'linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899)' }} />
 
             {/* header row */}
-            <div className="px-4 pt-3 pb-2 flex items-center justify-between">
+            <div className="px-4 pt-3 pb-2 flex items-center justify-between flex-shrink-0">
                 <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
                     Visualize
                 </span>
@@ -197,8 +198,8 @@ function MegaMenu({ onClose }) {
                 </span>
             </div>
 
-            {/* 2-column category grid */}
-            <div className="px-3 pb-3 grid grid-cols-2 gap-1">
+            {/* 3-column category grid */}
+            <div className="px-3 pb-3 overflow-y-auto flex-1 grid grid-cols-3 gap-1">
                 {VALID_CATS.map((cat) => {
                     const meta = CAT_META[cat.name] ?? { icon: <BarChart2 className="w-3.5 h-3.5"/>, grad: 'from-slate-500 to-slate-600' };
                     const slug = toSlug(cat.name);
@@ -208,36 +209,36 @@ function MegaMenu({ onClose }) {
 
                             {/* category header → links to category page */}
                             <Link href={`/${slug}`} onClick={onClose}
-                                className="flex items-center gap-2.5 mb-2.5">
+                                className="flex items-center gap-2 mb-2">
                                 <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center
                                                bg-gradient-to-br ${meta.grad} text-white shadow-sm
                                                group-hover:scale-110 transition-transform duration-200`}>
                                     {meta.icon}
                                 </div>
-                                <span className="font-semibold text-sm text-slate-300
+                                <span className="font-semibold text-xs text-slate-300 leading-tight
                                                group-hover:text-white transition-colors">
                                     {cat.name}
                                 </span>
                             </Link>
 
                             {/* algorithm link list */}
-                            <div className="ml-[38px] space-y-0.5">
-                                {cat.algorithms.slice(0, 4).map(algo => (
+                            <div className="ml-[36px] space-y-0.5">
+                                {cat.algorithms.slice(0, 3).map(algo => (
                                     <Link
                                         key={algo}
                                         href={`/${slug}/${toSlug(algo)}`}
                                         onClick={onClose}
                                         className="block text-xs text-slate-500 hover:text-slate-200
-                                                  py-0.5 transition-colors duration-100"
+                                                  py-0.5 truncate transition-colors duration-100"
                                     >
                                         {algo}
                                     </Link>
                                 ))}
-                                {cat.algorithms.length > 4 && (
+                                {cat.algorithms.length > 3 && (
                                     <Link href={`/${slug}`} onClick={onClose}
                                         className="flex items-center gap-0.5 text-[11px] text-slate-600
                                                   hover:text-indigo-400 transition-colors pt-0.5">
-                                        +{cat.algorithms.length - 4} more
+                                        +{cat.algorithms.length - 3} more
                                         <ArrowRight className="w-2.5 h-2.5" />
                                     </Link>
                                 )}
@@ -249,7 +250,7 @@ function MegaMenu({ onClose }) {
 
             {/* footer bar */}
             <div className="border-t border-slate-800/60 bg-slate-900/60
-                           px-4 py-2.5 flex items-center justify-between">
+                           px-4 py-2.5 flex items-center justify-between flex-shrink-0">
                 <Link href="/cheatsheet" onClick={onClose}
                     className="flex items-center gap-1.5 text-xs text-slate-400
                               hover:text-violet-400 transition-colors">
