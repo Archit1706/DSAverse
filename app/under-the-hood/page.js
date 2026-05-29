@@ -42,7 +42,7 @@ const tracks = [
                 space: 'refcount',
                 pattern: 'Reference Count',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
             {
                 name: 'Garbage Collection',
