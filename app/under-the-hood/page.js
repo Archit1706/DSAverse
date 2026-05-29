@@ -81,7 +81,7 @@ const tracks = [
                 space: '1–8 MB/thread',
                 pattern: 'Shared Memory',
                 difficulty: 'Advanced',
-                available: false,
+                available: true,
             },
             {
                 name: 'Processes vs Threads',
