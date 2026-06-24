@@ -37,6 +37,9 @@ app/
     [algorithm]/
       layout.js                  # Per-page metadata only (exports metadata + passthrough Layout)
       page.js                    # Algorithm visualizer ("use client")
+  cheatsheet/                    # Searchable Big-O complexity reference table ("use client")
+  contact/                       # Contact / GitHub page ("use client")
+  under-the-hood/                # CS-internals explainers — own track-based index + stage-model pages
 components/
   Navbar.jsx                     # Mega-menu driven by algorithmCategories.js + PAGES_EXIST set
   CodeBlock.jsx                  # Syntax-highlighted code block (wraps react-syntax-highlighter)
@@ -97,6 +100,9 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Trees | `from-lime-600 to-green-700` | `lime-400` / `lime-500` |
 | Divide and Conquer | `from-sky-600 to-blue-700` | `sky-400` / `sky-500` |
 | Union-Find | `from-purple-600 to-violet-700` | `purple-400` / `violet-400` |
+| Under the Hood | `from-zinc-600 to-slate-700` | `zinc-300` / `zinc-400` |
+
+> **Note:** `Indexing` is listed in `data/algorithmCategories.js` (and `app/indexing/` is an empty dir) but is **not** in `PAGES_EXIST`, so it is intentionally not navigable — treat it as planned, not built.
 
 ### Algorithm Visualizer Pattern
 
@@ -286,6 +292,27 @@ const adj   = customGraph ? customGraph.adj   : DEFAULT_ADJ;
 useEffect(() => { setStartNode(prev => Math.min(prev, nodes.length - 1)); }, [nodes.length]);
 ```
 
+### "Under the Hood" Section (CS Internals Explainers)
+
+The `under-the-hood` section is **not** an algorithm category — it's a set of conceptual, multi-act animated explainers (Python execution pipeline, memory model, event loop, multithreading, "what happens when you search a URL", etc.). It follows its own conventions:
+
+**Index page** (`app/under-the-hood/page.js`) — unlike other section indexes, it is **not a flat algorithm grid**. It groups entries into `tracks` (Language Runtimes, Concurrency, The Web, Object-Oriented Programming, Systems). Each track has `{ id, name, desc, icon, color: 'zinc', algorithms: [...] }`, and each entry carries `{ name, slug, description, complexity, space, pattern, difficulty, available }`. The whole section uses the **zinc/slate** theme (`from-zinc-600 to-slate-700`) regardless of track. `available: false` entries render with `Construction` icon, `opacity-60`, and a "Coming Soon" label instead of a `<Link>`.
+
+**Visualizer pages** follow the same `generateSteps()` + `setTimeout` + standard-controls skeleton as algorithm pages, but with a **stage/act model** instead of a single algorithm run:
+
+```js
+const STAGES = [{ id: 1, label: 'Names, Not Boxes', short: 'Names' }, ...];
+
+function generateSteps() {
+    const S = [];
+    const s = (stage, phase, data, explanation) => S.push({ stage, phase, ...data, explanation });
+    s(1, 'assign_x', { code: ['x = 42'], activeLine: 0, namespace: {...}, heap: [...] }, '...');
+    return S;
+}
+```
+
+Each step carries a `stage` (which act it belongs to) and a `phase` (which sub-scene to render), plus arbitrary scene data (`code`, `activeLine`, `heap`, `namespace`, `mutation`, etc.). Conditional rendering keys off `stage`/`phase` to switch between scenes. These pages are large (1000+ lines) because every conceptual step is hand-authored with its own explanation string — there is no shuffle/random input.
+
 ### Navbar — Adding a New Section
 
 `components/Navbar.jsx` has a `PAGES_EXIST` set that gates which categories appear in the dropdown:
@@ -295,7 +322,7 @@ const PAGES_EXIST = new Set([
     'Heap-like Data Structures', 'Dynamic Programming',
     'Graph Algorithms', 'Two Pointers and Sliding Window',
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
-    'Divide and Conquer', 'Union-Find',
+    'Divide and Conquer', 'Union-Find', 'Under the Hood',
 ]);
 ```
 Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.
