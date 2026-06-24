@@ -130,7 +130,7 @@ const tracks = [
                 space: 'stateless',
                 pattern: 'Request/Response',
                 difficulty: 'Beginner',
-                available: false,
+                available: true,
             },
         ],
     },
