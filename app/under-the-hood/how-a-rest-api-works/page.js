@@ -554,7 +554,7 @@ function SceneStateless({ step }) {
     return (
         <div className="flex flex-col gap-4 py-6">
             <div className="flex flex-col gap-3">
-                {step.requests.map(req => (
+                {(step.requests || []).map(req => (
                     <div key={req.id} className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${
                         req.active ? 'border-zinc-400/60 bg-zinc-500/15 scale-[1.02]' : 'border-slate-800/60 bg-slate-900/30 opacity-50'
                     }`}>
