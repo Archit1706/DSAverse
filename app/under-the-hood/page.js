@@ -52,7 +52,7 @@ const tracks = [
                 space: 'O(n)',
                 pattern: 'Mark & Sweep',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
         ],
     },
