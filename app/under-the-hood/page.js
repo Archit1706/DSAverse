@@ -32,7 +32,7 @@ const tracks = [
                 space: '6 stages',
                 pattern: 'Compiler',
                 difficulty: 'Advanced',
-                available: false,
+                available: true,
             },
             {
                 name: 'Python Memory Model',
