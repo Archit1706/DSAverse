@@ -218,7 +218,7 @@ const tracks = [
                 space: 'O(n) full scan',
                 pattern: 'Cost-Based Opt.',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
             {
                 name: 'How Git Works Internally',
