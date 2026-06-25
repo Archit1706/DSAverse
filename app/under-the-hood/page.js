@@ -228,7 +228,7 @@ const tracks = [
                 space: 'O(commits)',
                 pattern: 'DAG + Content Hash',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
         ],
     },
