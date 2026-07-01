@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     ArrowRight, ArrowLeftRight, Layers, RefreshCw, ArrowUpDown, Search,
-    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2
+    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -181,6 +181,19 @@ const CATEGORIES = [
         glow:        'hover:shadow-fuchsia-500/20',
         badge:       'bg-fuchsia-500/10 text-fuchsia-300',
     },
+    // ── CS Internals ─────────────────────────────────────────────────────────
+    {
+        name:        'Under the Hood',
+        slug:        'under-the-hood',
+        icon:        <Monitor className="w-6 h-6" />,
+        description: 'CS Internals — Visualized',
+        algorithms:  ['Python Pipeline', 'Virtual Memory', 'CPU Cache', 'Event Loop', 'HTTPS & TLS', 'How Git Works', 'vtables', 'MRO'],
+        gradient:    'from-zinc-500 to-slate-600',
+        border:      'border-zinc-500/30',
+        hoverBorder: 'hover:border-zinc-400',
+        glow:        'hover:shadow-zinc-500/20',
+        badge:       'bg-zinc-500/10 text-zinc-300',
+    },
     // ── Reference ────────────────────────────────────────────────────────────
     {
         name:        'Cheatsheet',
@@ -274,7 +287,7 @@ export default function AlgorithmsGrid() {
                         </span>
                     </h2>
                     <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                        14 categories, 63+ algorithms — ordered from foundations to advanced. Each with animations, explanations, and code.
+                        15 categories, 80+ topics — from foundations to advanced, plus CS internals under the hood. Each with animations, explanations, and code.
                     </p>
                 </div>
 
