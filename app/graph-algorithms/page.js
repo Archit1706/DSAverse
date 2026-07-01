@@ -92,7 +92,7 @@ const graphAlgorithms = [
         timeComplexity: "O(E log E)",
         spaceComplexity: "O(V)",
         category: "MST",
-        available: false
+        available: true
     },
     {
         name: "Topological Sort (DFS)",
