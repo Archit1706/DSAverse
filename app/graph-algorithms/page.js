@@ -102,7 +102,7 @@ const graphAlgorithms = [
         timeComplexity: "O(V + E)",
         spaceComplexity: "O(V)",
         category: "Ordering",
-        available: false
+        available: true
     },
 ];
 
