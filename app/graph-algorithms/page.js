@@ -62,7 +62,7 @@ const graphAlgorithms = [
         timeComplexity: "O((V + E) log V)",
         spaceComplexity: "O(V)",
         category: "MST",
-        available: false
+        available: true
     },
     {
         name: "Topological Sort",
