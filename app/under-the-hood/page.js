@@ -91,7 +91,7 @@ const tracks = [
                 space: 'separate AS',
                 pattern: 'OS Scheduling',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
         ],
     },
