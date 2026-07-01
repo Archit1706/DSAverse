@@ -208,7 +208,7 @@ const tracks = [
                 space: '64-byte lines',
                 pattern: 'Cache Hierarchy',
                 difficulty: 'Advanced',
-                available: false,
+                available: true,
             },
             {
                 name: 'How a Database Query Executes',
