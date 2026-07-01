@@ -52,7 +52,7 @@ const graphAlgorithms = [
         timeComplexity: "O(V + E)",
         spaceComplexity: "O(V)",
         category: "Traversal",
-        available: false
+        available: true
     },
     {
         name: "Prim's Minimum Spanning Tree",
