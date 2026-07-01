@@ -120,7 +120,7 @@ const tracks = [
                 space: 'O(1)',
                 pattern: 'Asymmetric → Symmetric',
                 difficulty: 'Advanced',
-                available: false,
+                available: true,
             },
             {
                 name: 'How a REST API Works',
