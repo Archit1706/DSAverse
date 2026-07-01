@@ -82,7 +82,7 @@ const graphAlgorithms = [
         timeComplexity: "O(V³)",
         spaceComplexity: "O(V²)",
         category: "Shortest Path",
-        available: false
+        available: true
     },
     {
         name: "Kruskal's MST",
