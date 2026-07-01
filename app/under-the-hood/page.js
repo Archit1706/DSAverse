@@ -198,7 +198,7 @@ const tracks = [
                 space: '4KB pages',
                 pattern: 'MMU + Page Table',
                 difficulty: 'Advanced',
-                available: false,
+                available: true,
             },
             {
                 name: 'CPU Cache Hierarchy',
