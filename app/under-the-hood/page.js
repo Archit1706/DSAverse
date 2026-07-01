@@ -179,7 +179,7 @@ const tracks = [
                 space: 'comparable',
                 pattern: 'HAS-A > IS-A',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
         ],
     },
