@@ -169,7 +169,7 @@ const tracks = [
                 space: 'vptr per object',
                 pattern: 'vtable',
                 difficulty: 'Advanced',
-                available: false,
+                available: true,
             },
             {
                 name: 'Composition vs Inheritance',
