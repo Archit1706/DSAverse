@@ -149,7 +149,7 @@ const tracks = [
                 space: '__dict__',
                 pattern: 'Object Model',
                 difficulty: 'Intermediate',
-                available: false,
+                available: true,
             },
             {
                 name: 'Inheritance and MRO',
