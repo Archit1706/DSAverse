@@ -159,7 +159,7 @@ const tracks = [
                 space: 'O(n)',
                 pattern: 'C3 Linearization',
                 difficulty: 'Advanced',
-                available: false,
+                available: true,
             },
             {
                 name: 'Polymorphism and Virtual Dispatch',
