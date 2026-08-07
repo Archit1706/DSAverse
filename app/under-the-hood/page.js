@@ -231,6 +231,16 @@ const tracks = [
                 available: true,
             },
             {
+                name: 'How a File System Works',
+                slug: 'how-a-file-system-works',
+                description: 'Blocks, inodes, directory entries, path resolution, hard links vs symlinks, the page cache, and journaling for crash consistency.',
+                complexity: 'O(depth) lookup',
+                space: '4 KB blocks',
+                pattern: 'Inode + Journal',
+                difficulty: 'Intermediate',
+                available: true,
+            },
+            {
                 name: 'How a Database Query Executes',
                 slug: 'how-a-database-query-executes',
                 description: 'SQL → Parser → Planner → Optimizer → Executor. Index scan vs full scan animated. Why the query planner chooses what it chooses.',
