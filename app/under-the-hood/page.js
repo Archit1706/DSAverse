@@ -201,6 +201,16 @@ const tracks = [
         color: 'zinc',
         algorithms: [
             {
+                name: 'System Calls and Kernel Mode',
+                slug: 'system-calls-and-kernel-mode',
+                description: 'Protection rings, the syscall trap instruction, table dispatch, copy_from_user validation, and why buffered I/O exists.',
+                complexity: '~50–200 ns',
+                space: 'ring 3 → 0',
+                pattern: 'Trap + Dispatch',
+                difficulty: 'Advanced',
+                available: true,
+            },
+            {
                 name: 'Virtual Memory and Paging',
                 slug: 'virtual-memory-and-paging',
                 description: 'Virtual address space layout, page tables, TLB, page faults, and why every process thinks it has 4GB of RAM.',
