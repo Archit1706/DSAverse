@@ -244,6 +244,7 @@ export const algorithmCategories = [
             "Python Execution Pipeline",
             "Cpp Execution Pipeline",
             "Python Memory Model",
+            "Floating Point and IEEE 754",
             "JIT Compilation",
             "Garbage Collection",
             "Async Await and Event Loop",
