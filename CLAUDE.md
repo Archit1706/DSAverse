@@ -376,7 +376,9 @@ This keeps the index flip — the commit that actually makes the page reachable 
 
 ### Build Status
 
-Every entry across all section indexes is `available: true` except a single one in `app/dynamic-programming/page.js`. All 18 Under the Hood explainers are built. When asked to work on "what's left", check `available: false` first, then look for gaps against `data/algorithmCategories.js` — a new topic usually means adding the entry to both the section index and `algorithmCategories.js`, not flipping an existing flag.
+Every entry across all section indexes is `available: true` **except Maximum Subarray (Kadane's) in `app/dynamic-programming/page.js`** — that is the only unbuilt page the indexes advertise. Under the Hood has 26 explainers.
+
+When asked to work on "what's left": check `available: false` first, then look for gaps against `data/algorithmCategories.js`. Because the listed sections are essentially complete, a new topic usually means *adding* an entry to both the section index and `algorithmCategories.js` rather than flipping an existing flag — which is a scope decision worth confirming rather than assuming.
 
 ### AGENTS.md
 
