@@ -45,6 +45,16 @@ const tracks = [
                 available: true,
             },
             {
+                name: 'Unicode and UTF-8',
+                slug: 'unicode-and-utf-8',
+                description: 'Code points, UTF-8 prefix bits, UTF-16 surrogate pairs, grapheme clusters and ZWJ emoji — and why string length lies.',
+                complexity: '1–4 bytes',
+                space: 'U+0 – U+10FFFF',
+                pattern: 'Variable Length',
+                difficulty: 'Intermediate',
+                available: true,
+            },
+            {
                 name: 'Floating Point and IEEE 754',
                 slug: 'floating-point-and-ieee-754',
                 description: 'Why 0.1 + 0.2 is not 0.3 — binary fractions, the 64-bit layout, round-to-nearest-even, ULP spacing, cancellation and NaN.',
