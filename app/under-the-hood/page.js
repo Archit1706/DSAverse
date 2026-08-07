@@ -153,6 +153,16 @@ const tracks = [
                 available: true,
             },
             {
+                name: 'How the Internet Routes a Packet',
+                slug: 'how-the-internet-routes-a-packet',
+                description: 'Subnet masks, ARP, NAT, longest prefix match, TTL and BGP — no packet ever knows its own route.',
+                complexity: 'hop by hop',
+                space: '20-byte header',
+                pattern: 'Longest Prefix Match',
+                difficulty: 'Intermediate',
+                available: true,
+            },
+            {
                 name: 'How the Browser Renders a Page',
                 slug: 'how-the-browser-renders-a-page',
                 description: 'HTML → DOM, CSS → CSSOM, render tree, layout, paint, compositing. Why transform animates at 60fps and top does not.',
