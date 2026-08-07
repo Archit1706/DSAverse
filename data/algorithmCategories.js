@@ -244,6 +244,7 @@ export const algorithmCategories = [
             "Python Execution Pipeline",
             "Cpp Execution Pipeline",
             "Python Memory Model",
+            "Unicode and UTF-8",
             "Floating Point and IEEE 754",
             "JIT Compilation",
             "Garbage Collection",
