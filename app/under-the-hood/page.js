@@ -261,6 +261,16 @@ const tracks = [
                 available: true,
             },
             {
+                name: 'How Containers Work',
+                slug: 'how-containers-work',
+                description: 'Namespaces, cgroups and overlay layers — why a container is just a process, and how it differs from a VM.',
+                complexity: 'ms startup',
+                space: 'shared layers',
+                pattern: 'Namespaces + cgroups',
+                difficulty: 'Intermediate',
+                available: true,
+            },
+            {
                 name: 'How a File System Works',
                 slug: 'how-a-file-system-works',
                 description: 'Blocks, inodes, directory entries, path resolution, hard links vs symlinks, the page cache, and journaling for crash consistency.',
