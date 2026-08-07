@@ -256,6 +256,7 @@ export const algorithmCategories = [
             "Inheritance and MRO",
             "Polymorphism and Virtual Dispatch",
             "Composition vs Inheritance",
+            "System Calls and Kernel Mode",
             "Virtual Memory and Paging",
             "CPU Cache Hierarchy",
             "How a Database Query Executes",
