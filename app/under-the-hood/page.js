@@ -45,6 +45,16 @@ const tracks = [
                 available: true,
             },
             {
+                name: 'JIT Compilation',
+                slug: 'jit-compilation',
+                description: 'Profiling counters finding hot code, tiered compilation, inline caches, speculative optimization with guards, and deoptimization.',
+                complexity: 'warmup curve',
+                space: '3 tiers',
+                pattern: 'Speculate + Guard',
+                difficulty: 'Advanced',
+                available: true,
+            },
+            {
                 name: 'Garbage Collection',
                 slug: 'garbage-collection',
                 description: 'Reference counting, cyclic GC, mark-and-sweep, and generational collection. How memory gets reclaimed automatically.',
