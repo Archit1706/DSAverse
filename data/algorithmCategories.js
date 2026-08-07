@@ -259,6 +259,7 @@ export const algorithmCategories = [
             "System Calls and Kernel Mode",
             "Virtual Memory and Paging",
             "CPU Cache Hierarchy",
+            "How a File System Works",
             "How a Database Query Executes",
             "How Git Works Internally"
         ]
