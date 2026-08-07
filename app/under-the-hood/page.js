@@ -123,6 +123,16 @@ const tracks = [
                 available: true,
             },
             {
+                name: 'How the Browser Renders a Page',
+                slug: 'how-the-browser-renders-a-page',
+                description: 'HTML → DOM, CSS → CSSOM, render tree, layout, paint, compositing. Why transform animates at 60fps and top does not.',
+                complexity: 'per frame',
+                space: '8 acts',
+                pattern: 'Critical Render Path',
+                difficulty: 'Intermediate',
+                available: true,
+            },
+            {
                 name: 'How a REST API Works',
                 slug: 'how-a-rest-api-works',
                 description: 'HTTP verbs, status codes, request/response cycle, JSON serialization, authentication headers, and REST constraints visualized.',
