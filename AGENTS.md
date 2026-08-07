@@ -1,0 +1,381 @@
+# AGENTS.md
+
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+npm run dev      # Start dev server with Turbopack
+npm run build    # Production build (also validates all pages)
+npm start        # Run production build
+npm run lint     # ESLint check (must be run manually — build ignores lint errors)
+```
+
+`next.config.mjs` sets `ignoreBuildErrors: true` and `ignoreDuringBuilds: true`, so **always run `npm run build` after changes** to catch React/JSX errors that lint won't catch.
+
+## Architecture
+
+**DSAverse** is a Next.js 15 App Router educational platform for visualizing data structures and algorithms. Live at https://dsa-verse.vercel.app.
+
+### Tech Stack
+- **Next.js 15** App Router — `"use client"` on all interactive pages
+- **React 19** — hooks only (useState, useEffect, useCallback); no Redux or Context
+- **Tailwind CSS 4** — utility classes only; no component library
+- **Lucide React** — all icons (no emojis anywhere in the codebase)
+- **React Syntax Highlighter** — via `@/components/CodeBlock`
+
+### Directory Layout
+
+```
+app/
+  layout.js                      # Root layout (no Navbar/Footer — sections handle this)
+  page.js                        # Homepage
+  [section]/
+    layout.js                    # Section layout: Navbar + Footer + section metadata
+    loading.js                   # Section-specific loading animation (dark theme)
+    page.js                      # Section index page (server component, no "use client")
+    [algorithm]/
+      layout.js                  # Per-page metadata only (exports metadata + passthrough Layout)
+      page.js                    # Algorithm visualizer ("use client")
+  cheatsheet/                    # Searchable Big-O complexity reference table ("use client")
+  contact/                       # Contact / GitHub page ("use client")
+  under-the-hood/                # CS-internals explainers — own track-based index + stage-model pages
+components/
+  Navbar.jsx                     # Mega-menu driven by algorithmCategories.js + PAGES_EXIST set
+  CodeBlock.jsx                  # Syntax-highlighted code block (wraps react-syntax-highlighter)
+  GraphCustomizer.jsx            # Shared modal for custom graph input (BFS/DFS/Dijkstra)
+  Hero.jsx, Features.jsx, AlgorithmsGrid.jsx, CTA.jsx, Footer.jsx
+data/
+  algorithmCategories.js         # Single source of truth for nav categories and algorithm names
+```
+
+### Two-Layout Pattern
+
+Every section uses **two levels of layout.js**:
+
+1. **Section layout** (`app/[section]/layout.js`) — server component that wraps with `<Navbar />`, `<main className="pt-16">`, `<Footer />`, and exports section-wide metadata with a title template:
+   ```js
+   export const metadata = { title: { template: "%s – Sorting | DSAverse", default: "..." } }
+   export default function Layout({ children }) { return <><Navbar /><main className="pt-16">{children}</main><Footer /></> }
+   ```
+
+2. **Algorithm layout** (`app/[section]/[algorithm]/layout.js`) — exports per-page metadata only; just passes children through:
+   ```js
+   export const metadata = { title: "Bubble Sort Visualizer – ...", description: "...", keywords: [...] }
+   export default function Layout({ children }) { return children; }
+   ```
+
+### Section Index Page Pattern
+
+Section index pages (`app/[section]/page.js`) are **server components** (no `"use client"`). They follow this exact layout:
+
+1. **Gradient header** matching the section's color theme
+2. **Algorithm grid** — `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` with equal-height cards:
+   - Each `<Link>` has `className="h-full flex flex-col"`
+   - Inner `<div>` has `h-full flex flex-col`
+   - Card header: `bg-gradient-to-br from-[color] to-[color2]` containing icon + algorithm name
+   - Card body: `flex-1 flex flex-col` with description, then `mt-auto` complexity rows
+   - Complexity rows use `flex justify-between` with `<code className="bg-[color]/15 text-[color] ...">` badges
+   - Difficulty badge with `getDifficultyColor()` helper
+   - "Start Visualization" button at the bottom
+3. **Info section** at the bottom — `bg-slate-900/70 border-t border-slate-700/50` with 3-column "Why Learn" grid
+
+**Coming-soon cards**: Section indexes use an `available` boolean on each algorithm entry. When `available: false`, the card renders with reduced opacity, a "Coming Soon" label instead of the button, and the `<Link>` wrapper is replaced with a plain `<div>`. This lets you list planned algorithms without broken links.
+
+### Section Color Themes
+
+| Section | Gradient | Accent |
+|---|---|---|
+| Sorting | `from-orange-600 to-amber-700` | `orange-400` / `orange-500` |
+| Searching | `from-red-600 to-rose-700` | `red-400` / `red-500` |
+| Dynamic Programming | `from-rose-600 to-pink-700` | `rose-400` / `rose-500` |
+| Graph Algorithms | `from-cyan-600 to-sky-700` | `cyan-400` / `cyan-500` |
+| Heap-like Data Structures | `from-amber-500 to-orange-600` | `amber-400` / `amber-500` |
+| Recursion | `from-green-600 to-emerald-700` | `green-400` |
+| Basics | `from-blue-600 to-indigo-700` | `blue-400` |
+| Two Pointers and Sliding Window | `from-violet-600 to-purple-700` | `violet-400` / `violet-500` |
+| Bit Manipulation | `from-teal-600 to-cyan-700` | `teal-400` / `teal-500` |
+| String Algorithms | `from-fuchsia-600 to-pink-700` | `fuchsia-400` / `fuchsia-500` |
+| Backtracking | `from-indigo-600 to-purple-700` | `indigo-400` / `indigo-500` |
+| Trees | `from-lime-600 to-green-700` | `lime-400` / `lime-500` |
+| Divide and Conquer | `from-sky-600 to-blue-700` | `sky-400` / `sky-500` |
+| Union-Find | `from-purple-600 to-violet-700` | `purple-400` / `violet-400` |
+| Under the Hood | `from-zinc-600 to-slate-700` | `zinc-300` / `zinc-400` |
+
+> **Note:** `Indexing` is listed in `data/algorithmCategories.js` (and `app/indexing/` is an empty dir) but is **not** in `PAGES_EXIST`, so it is intentionally not navigable — treat it as planned, not built.
+
+### Algorithm Visualizer Pattern
+
+Every algorithm page (`"use client"`) follows this structure:
+
+**Step generation** — pre-generate ALL steps upfront, never incrementally:
+```js
+// Option A: module-level function (preferred for pages where inputs are passed as args)
+const generateSteps = (input) => {
+    const steps = [];
+    steps.push({ ...state, explanation: '...', phase: '...' });
+    return steps;
+};
+useEffect(() => { setStepHistory(generateSteps(arr)); setCurrentStep(0); }, [arr]);
+
+// Option B: useCallback (when step gen closes over component state)
+const generateSteps = useCallback(() => { ... }, [dep1, dep2]);
+useEffect(() => { setStepHistory(generateSteps()); setCurrentStep(0); }, [generateSteps]);
+```
+
+**Animation — always `setTimeout`, never `setInterval`:**
+```js
+useEffect(() => {
+    if (!isPlaying || stepHistory.length === 0) return;
+    if (currentStep >= stepHistory.length - 1) { setIsPlaying(false); return; }
+    const t = setTimeout(() => setCurrentStep(s => s + 1), speed);
+    return () => clearTimeout(t);
+}, [isPlaying, currentStep, stepHistory, speed]);
+```
+
+**Controls** (standard set across all pages):
+- `SkipBack` / `SkipForward` for manual stepping
+- Play/Pause toggle
+- Reset (`RotateCcw`) — resets to step 0
+- Shuffle (`Shuffle`) — generates new random input
+- Speed: `<input type="range" min="200" max="2000" value={speed}>` — higher = slower
+
+**Layout** — two common variants:
+- Simple: `lg:grid-cols-2` (left = visualization, right = sidebar)
+- Wider viz: `lg:grid-cols-3` with `lg:col-span-2` on the visualization panel and `col-span-1` on the sidebar
+
+**Element color conventions (dark theme):**
+
+| State | Classes |
+|---|---|
+| Default / unchecked | `bg-slate-700 border-slate-600 text-slate-100` |
+| Active / comparing | `bg-yellow-400 border-yellow-300 text-slate-900 scale-110` |
+| Found / complete | `bg-green-500 border-green-400 text-white scale-105` |
+| Eliminated / checked | `bg-slate-800 border-slate-700 text-slate-500` |
+| In search range / window | `bg-[section-color]-800/50 border-[section-color]-700 text-slate-200` |
+| Left pointer (two-pointer pages) | `bg-blue-500 border-blue-400 text-white scale-110` |
+| Right pointer (two-pointer pages) | `bg-orange-500 border-orange-400 text-white scale-110` |
+| Mismatch / duplicate | `bg-red-500/30 border-red-500 text-red-300` |
+
+**Step explanation box:**
+```jsx
+<div className="bg-[color]-500/10 border border-[color]-500/20 rounded-lg p-4">
+    <div className="flex items-start gap-2">
+        <Info className="h-4 w-4 text-[color]-400 mt-0.5 flex-shrink-0" />
+        <p className="text-[color]-300 text-sm leading-relaxed">{currentState.explanation}</p>
+    </div>
+</div>
+```
+
+### Active Recall Quiz Pattern
+
+Every algorithm page includes a 3-question quiz in the right sidebar. Standard implementation:
+
+```js
+const quizQuestions = [{ question, options: [4 strings], correct: 0|1|2|3, explanation }];
+const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+
+const handleQuizAnswer = (idx) => {
+    if (quizState.answered) return;
+    const correct = idx === quizQuestions[quizState.current].correct;
+    setQuizState(s => ({ ...s, selected: idx, answered: true, score: correct ? s.score + 1 : s.score }));
+};
+const nextQuestion = () => {
+    if (quizState.current + 1 >= quizQuestions.length) setQuizState(s => ({ ...s, complete: true }));
+    else setQuizState(s => ({ ...s, current: s.current + 1, selected: null, answered: false }));
+};
+```
+
+Button states: unanswered → `hover:border-[color]-500`; correct → `border-green-500 bg-green-500/10 text-green-300`; wrong → `border-red-500 bg-red-500/10 text-red-300`; other → `text-slate-500`.
+
+### Bit Manipulation Binary Register Pattern
+
+Bit manipulation pages display numbers as 8-bit registers using a `toBin` helper and a `BitRow` sub-component:
+
+```js
+const BITS = 8;
+const toBin = (n) => (n >>> 0).toString(2).padStart(BITS, '0');
+
+function BitRow({ label, value, color, highlight, highlightMask }) { /* ... */ }
+```
+
+The three-row layout shows `n`, `n-1`, and `n & (n-1)` stacked with a labelled divider (`AND ↓`). Bits that changed between rows use `bg-orange-500 text-white scale-105` to call out the operation. These pages use `type="number"` inputs (1–255) or a `PRESETS` array cycled by the Shuffle button, rather than random-array shuffle.
+
+### String Algorithm Input & Two-Phase Pattern
+
+String algorithm pages (KMP, Rabin-Karp, Z-Algorithm) share a different input model:
+
+```js
+const PRESETS = [{ text: '...', pattern: '...' }, ...];
+// Input fields: toUpperCase(), slice to max length
+<input value={text} onChange={e => setText(e.target.value.toUpperCase().slice(0, 25))} />
+```
+
+Step generation often has two phases in the same `stepHistory` array, distinguished by the `phase` field:
+
+```js
+// KMP example — phase drives which panel is rendered
+steps.push({ phase: 'lps', lps: [...], ... });   // Phase 1: build failure function
+steps.push({ phase: 'matching', textI, patJ, ... }); // Phase 2: search
+```
+
+Conditional rendering uses `['lps', 'lps_done'].includes(phase)` guards so only the relevant visualization panel is shown at each step.
+
+### Quiz Panel Extraction
+
+When the quiz logic is complex, it is extracted as a local `QuizPanel` component within the page file (not a shared component). Pass `quizState` and `setQuizState` as props:
+
+```jsx
+function QuizPanel({ quizState, setQuizState }) { /* ... */ }
+// Usage inside the page:
+<QuizPanel quizState={quizState} setQuizState={setQuizState} />
+```
+
+This keeps the quiz reusable within the file without polluting the global component namespace.
+
+### DP Table Visualization Pattern
+
+2D DP table pages (LCS, Edit Distance, Knapsack, Matrix Chain Multiplication) share a common rendering approach:
+
+- Table headers show string characters or matrix labels; row 0 / col 0 show base-case values
+- A `getCellColor(i, j, val)` function returns Tailwind classes based on: current cell, backtrack path membership, fill phase, and value magnitude
+- `Infinity` values display as `∞`; large numbers use `.toLocaleString()` or abbreviations (`12k`)
+- Backtrack / optimal path cells use `bg-purple-700` (or `bg-purple-800` during animation)
+- The `phase` field in each step object drives color: `'comparing'`, `'match'`, `'no_match'`, `'backtracking'`, `'complete'`
+
+### Tree Visualizer SVG Pattern
+
+Tree pages use **inorder-based SVG layout** so nodes never overlap regardless of tree shape:
+
+```js
+// computeLayout: x = inorder index × spacing, y = depth × spacing
+function computeLayout(node, depth = 0, counter = { n: 0 }, xGap = 64) {
+    if (!node) return { pos: {}, edges: [] };
+    const left = computeLayout(node.left, depth + 1, counter, xGap);
+    const x = counter.n * xGap + xGap / 2;
+    const y = depth * 80 + 50;
+    counter.n++;
+    const right = computeLayout(node.right, depth + 1, counter, xGap);
+    // merge pos + edges...
+}
+
+// Dynamic viewBox so tree fits any size
+const svgW = nodeCount(tree) * xGap;
+const svgH = treeHeight(tree) * 80 + 40;
+<svg viewBox={`0 0 ${svgW} ${svgH}`} width="100%" ...>
+```
+
+**Tree page specifics:**
+- BST (`binary-search-tree`) — search + insert operations with traversal path highlighting; `visited[]` array tracks path, `current` is the node being compared; "Keep this tree" button lets user chain inserts
+- AVL (`avl-tree`) — preset insertion sequences demonstrating all 4 rotation types; `bf` (balance factor) stored on each node; rotation type detected by checking the naive-BST-insert tree before rebalancing
+- Traversals (`binary-tree-traversals`) — fixed 8-node tree; 4 modes (Inorder/Preorder/Postorder/Level-Order); call-stack panel shown for DFS modes; visit order row at bottom
+- Segment Tree (`segment-tree`) — array-backed 1-indexed tree (`tree[1]` = root); nodes 1–15 shown for up to 8-element arrays; build + range-query modes; query highlights out/in/partial nodes differently
+- Trie (`trie`) — characters as edge labels (rendered as `<text>` on each `<line>`); `isEnd` nodes get double-circle; insert mode shows step-by-step edge creation; search shows found/not-found path coloring
+
+### Graph-Specific Patterns
+
+**SVG visualization** — always use `viewBox="0 0 W H"` with `width="100%"` so the graph scales to its container without horizontal scrolling. Never use fixed pixel widths like `width={800}`.
+
+**GraphCustomizer** (`components/GraphCustomizer.jsx`) — shared modal for BFS, DFS, Dijkstra. Exports:
+- `layoutNodes(nodeCount)` — arranges n nodes in a circle
+- `parseGraphInput(text, format, weighted)` — parses edge list / adjacency list / matrix
+- `GraphCustomizer` — the modal component (`weighted` prop for Dijkstra)
+
+Usage pattern in graph pages:
+```js
+const [customGraph, setCustomGraph] = useState(null);
+const nodes = customGraph ? layoutNodes(customGraph.nodeCount) : DEFAULT_NODES;
+const edges = customGraph ? customGraph.edges : DEFAULT_EDGES;
+const adj   = customGraph ? customGraph.adj   : DEFAULT_ADJ;
+
+// Clamp startNode when switching to a smaller custom graph
+useEffect(() => { setStartNode(prev => Math.min(prev, nodes.length - 1)); }, [nodes.length]);
+```
+
+### "Under the Hood" Section (CS Internals Explainers)
+
+The `under-the-hood` section is **not** an algorithm category — it's a set of conceptual, multi-act animated explainers (Python execution pipeline, memory model, event loop, multithreading, "what happens when you search a URL", etc.). It follows its own conventions:
+
+**Index page** (`app/under-the-hood/page.js`) — unlike other section indexes, it is **not a flat algorithm grid**. It groups entries into `tracks` (Language Runtimes, Concurrency, The Web, Object-Oriented Programming, Systems). Each track has `{ id, name, desc, icon, color: 'zinc', algorithms: [...] }`, and each entry carries `{ name, slug, description, complexity, space, pattern, difficulty, available }`. The whole section uses the **zinc/slate** theme (`from-zinc-600 to-slate-700`) regardless of track. `available: false` entries render with `Construction` icon, `opacity-60`, and a "Coming Soon" label instead of a `<Link>`.
+
+**Visualizer pages** follow the same `generateSteps()` + `setTimeout` + standard-controls skeleton as algorithm pages, but with a **multi-act model** instead of a single algorithm run. There is no shuffle/random input — every step is hand-authored with its own explanation string, so these pages run 400–1300 lines.
+
+Two generations of this pattern exist in the tree. **Write new pages in the Act style** (below); the older `STAGES` + `phase` style (`python-execution-pipeline`, `python-memory-model`, `async-await-and-event-loop`, `what-happens-when-you-search-a-url`) is legacy and only differs in naming and in re-rendering a fresh scene per phase.
+
+**Act model + persistent animated stage** (`cpu-cache-hierarchy`, `virtual-memory-and-paging`, `processes-vs-threads`, `https-and-tls` are the reference implementations):
+
+```js
+const ACTS = [{ id: 1, label: 'Speed Gap', icon: Gauge }, ...];   // 6–8 acts, each with a Lucide icon
+
+function generateSteps() {
+    const steps = [];
+    const s = (act, actName, data, explanation) => steps.push({ act, actName, ...data, explanation });
+    s(1, 'The Speed Gap', { ladder: true }, 'A modern CPU core executes billions of…');
+    return steps;
+}
+const STEPS = generateSteps();   // module-level constant — inputs never change
+```
+
+Key structural pieces:
+
+- **One persistent `<svg>` stage component** (e.g. `CacheStage`, `PagingStage`) that stays mounted across all steps in its acts. Geometry lives in module-level constants (`LEVELS`, `ANCHOR`, `WIRES`); the step object only sets *state* (`active`, `hit`, `missed`, `token`, `activeWire`). Transitions come from CSS (`transition: fill .4s ease`) and a `translate()` on a moving token `<g>` — never from re-mounting elements. Staggered reveals use `style={{ transitionDelay: \`${i * 55}ms\` }}`.
+- **A `VisualizationPanel({ step })` router** that picks the scene: special one-off scenes (an intro ladder, a recap grid) short-circuit on a boolean flag in the step; everything else falls through to the persistent stage.
+  ```js
+  function VisualizationPanel({ step }) {
+      if (!step) return null;
+      if (step.ladder) return <LadderScene emphasizeHuman={step.emphasizeHuman} />;
+      if (step.recap)  return <RecapCards wins={step.wins} />;
+      return <CacheStage step={step} />;
+  }
+  ```
+- **Act timeline chips** in the gradient header — clickable, jump to `STEPS.findIndex(s => s.act === act.id)` and pause. Current act `bg-white/20 text-white border-white/30`; completed `bg-white/5 text-zinc-400`; future `text-zinc-600 border-transparent`.
+- **Progress bar** under the header: `<div className="h-0.5 bg-slate-800">` with an inner `bg-gradient-to-r from-zinc-500 to-slate-400` at `width: ${pct}%`.
+- **Panel chrome** — `Act {step.act} of 8 · {step.actName}` on the left of the viz header, `step {n}` on the right; the viz body is `min-h-[420px] flex items-center` so scenes of different heights don't jolt the layout.
+- **Controls** — Reset / SkipBack / Play-Pause / SkipForward + speed slider. **No Shuffle button** (no random input to generate).
+- **Sidebar** — explanation box (`bg-zinc-500/10 border-zinc-500/20`), then a small reference table whose rows highlight when the current act is in their `acts: [...]` list, then the quiz.
+
+Because inputs are fixed, the animation effect drops `stepHistory` from its deps: `}, [isPlaying, currentStep, speed]);`.
+
+### Navbar — Adding a New Section
+
+`components/Navbar.jsx` has a `PAGES_EXIST` set that gates which categories appear in the dropdown:
+```js
+const PAGES_EXIST = new Set([
+    'Basics', 'Recursion', 'Sorting', 'Searching',
+    'Heap-like Data Structures', 'Dynamic Programming',
+    'Graph Algorithms', 'Two Pointers and Sliding Window',
+    'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
+    'Divide and Conquer', 'Union-Find', 'Under the Hood',
+]);
+```
+Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.
+
+### `data/algorithmCategories.js`
+
+The single source of truth for nav structure. Algorithm names here must match their directory slugs (via `toSlug()`). The Navbar filters to `PAGES_EXIST` categories, so adding an algorithm to this file without adding a page won't break anything — it just won't be navigable.
+
+### Adding a New Algorithm Page — Checklist
+
+1. Create `app/[section]/[slug]/layout.js` — metadata + passthrough layout
+2. Create `app/[section]/[slug]/page.js` — `"use client"` visualizer
+3. Add the algorithm name to `data/algorithmCategories.js` under the correct section
+4. If the section index has an `available` flag, flip it to `true` (or add the entry)
+5. Run `npm run build` to confirm no errors
+
+The repo history commits a new page as **three separate commits**, in this order — keep it up:
+
+```
+Add <Name> layout metadata          # layout.js only
+Build <Name> visualizer             # page.js only
+Mark <Name> as available in <Section> index   # index page.js (+ algorithmCategories.js)
+```
+
+This keeps the index flip — the commit that actually makes the page reachable — separate from the page itself, so a half-finished visualizer is never linked from the site.
+
+### Build Status
+
+Every entry across all section indexes is `available: true` except a single one in `app/dynamic-programming/page.js`. All 18 Under the Hood explainers are built. When asked to work on "what's left", check `available: false` first, then look for gaps against `data/algorithmCategories.js` — a new topic usually means adding the entry to both the section index and `algorithmCategories.js`, not flipping an existing flag.
+
+### AGENTS.md
+
+`AGENTS.md` at the repo root is a near-verbatim copy of this file for other coding agents. When you change architectural guidance here, mirror it there (the only intended difference is the opening line naming the tool).
