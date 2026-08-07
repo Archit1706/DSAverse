@@ -298,20 +298,43 @@ The `under-the-hood` section is **not** an algorithm category — it's a set of 
 
 **Index page** (`app/under-the-hood/page.js`) — unlike other section indexes, it is **not a flat algorithm grid**. It groups entries into `tracks` (Language Runtimes, Concurrency, The Web, Object-Oriented Programming, Systems). Each track has `{ id, name, desc, icon, color: 'zinc', algorithms: [...] }`, and each entry carries `{ name, slug, description, complexity, space, pattern, difficulty, available }`. The whole section uses the **zinc/slate** theme (`from-zinc-600 to-slate-700`) regardless of track. `available: false` entries render with `Construction` icon, `opacity-60`, and a "Coming Soon" label instead of a `<Link>`.
 
-**Visualizer pages** follow the same `generateSteps()` + `setTimeout` + standard-controls skeleton as algorithm pages, but with a **stage/act model** instead of a single algorithm run:
+**Visualizer pages** follow the same `generateSteps()` + `setTimeout` + standard-controls skeleton as algorithm pages, but with a **multi-act model** instead of a single algorithm run. There is no shuffle/random input — every step is hand-authored with its own explanation string, so these pages run 400–1300 lines.
+
+Two generations of this pattern exist in the tree. **Write new pages in the Act style** (below); the older `STAGES` + `phase` style (`python-execution-pipeline`, `python-memory-model`, `async-await-and-event-loop`, `what-happens-when-you-search-a-url`) is legacy and only differs in naming and in re-rendering a fresh scene per phase.
+
+**Act model + persistent animated stage** (`cpu-cache-hierarchy`, `virtual-memory-and-paging`, `processes-vs-threads`, `https-and-tls` are the reference implementations):
 
 ```js
-const STAGES = [{ id: 1, label: 'Names, Not Boxes', short: 'Names' }, ...];
+const ACTS = [{ id: 1, label: 'Speed Gap', icon: Gauge }, ...];   // 6–8 acts, each with a Lucide icon
 
 function generateSteps() {
-    const S = [];
-    const s = (stage, phase, data, explanation) => S.push({ stage, phase, ...data, explanation });
-    s(1, 'assign_x', { code: ['x = 42'], activeLine: 0, namespace: {...}, heap: [...] }, '...');
-    return S;
+    const steps = [];
+    const s = (act, actName, data, explanation) => steps.push({ act, actName, ...data, explanation });
+    s(1, 'The Speed Gap', { ladder: true }, 'A modern CPU core executes billions of…');
+    return steps;
 }
+const STEPS = generateSteps();   // module-level constant — inputs never change
 ```
 
-Each step carries a `stage` (which act it belongs to) and a `phase` (which sub-scene to render), plus arbitrary scene data (`code`, `activeLine`, `heap`, `namespace`, `mutation`, etc.). Conditional rendering keys off `stage`/`phase` to switch between scenes. These pages are large (1000+ lines) because every conceptual step is hand-authored with its own explanation string — there is no shuffle/random input.
+Key structural pieces:
+
+- **One persistent `<svg>` stage component** (e.g. `CacheStage`, `PagingStage`) that stays mounted across all steps in its acts. Geometry lives in module-level constants (`LEVELS`, `ANCHOR`, `WIRES`); the step object only sets *state* (`active`, `hit`, `missed`, `token`, `activeWire`). Transitions come from CSS (`transition: fill .4s ease`) and a `translate()` on a moving token `<g>` — never from re-mounting elements. Staggered reveals use `style={{ transitionDelay: \`${i * 55}ms\` }}`.
+- **A `VisualizationPanel({ step })` router** that picks the scene: special one-off scenes (an intro ladder, a recap grid) short-circuit on a boolean flag in the step; everything else falls through to the persistent stage.
+  ```js
+  function VisualizationPanel({ step }) {
+      if (!step) return null;
+      if (step.ladder) return <LadderScene emphasizeHuman={step.emphasizeHuman} />;
+      if (step.recap)  return <RecapCards wins={step.wins} />;
+      return <CacheStage step={step} />;
+  }
+  ```
+- **Act timeline chips** in the gradient header — clickable, jump to `STEPS.findIndex(s => s.act === act.id)` and pause. Current act `bg-white/20 text-white border-white/30`; completed `bg-white/5 text-zinc-400`; future `text-zinc-600 border-transparent`.
+- **Progress bar** under the header: `<div className="h-0.5 bg-slate-800">` with an inner `bg-gradient-to-r from-zinc-500 to-slate-400` at `width: ${pct}%`.
+- **Panel chrome** — `Act {step.act} of 8 · {step.actName}` on the left of the viz header, `step {n}` on the right; the viz body is `min-h-[420px] flex items-center` so scenes of different heights don't jolt the layout.
+- **Controls** — Reset / SkipBack / Play-Pause / SkipForward + speed slider. **No Shuffle button** (no random input to generate).
+- **Sidebar** — explanation box (`bg-zinc-500/10 border-zinc-500/20`), then a small reference table whose rows highlight when the current act is in their `acts: [...]` list, then the quiz.
+
+Because inputs are fixed, the animation effect drops `stepHistory` from its deps: `}, [isPlaying, currentStep, speed]);`.
 
 ### Navbar — Adding a New Section
 
@@ -338,3 +361,21 @@ The single source of truth for nav structure. Algorithm names here must match th
 3. Add the algorithm name to `data/algorithmCategories.js` under the correct section
 4. If the section index has an `available` flag, flip it to `true` (or add the entry)
 5. Run `npm run build` to confirm no errors
+
+The repo history commits a new page as **three separate commits**, in this order — keep it up:
+
+```
+Add <Name> layout metadata          # layout.js only
+Build <Name> visualizer             # page.js only
+Mark <Name> as available in <Section> index   # index page.js (+ algorithmCategories.js)
+```
+
+This keeps the index flip — the commit that actually makes the page reachable — separate from the page itself, so a half-finished visualizer is never linked from the site.
+
+### Build Status
+
+Every entry across all section indexes is `available: true` except a single one in `app/dynamic-programming/page.js`. All 18 Under the Hood explainers are built. When asked to work on "what's left", check `available: false` first, then look for gaps against `data/algorithmCategories.js` — a new topic usually means adding the entry to both the section index and `algorithmCategories.js`, not flipping an existing flag.
+
+### AGENTS.md
+
+`AGENTS.md` at the repo root is a near-verbatim copy of this file for other coding agents. When you change architectural guidance here, mirror it there (the only intended difference is the opening line naming the tool).
