@@ -13,6 +13,8 @@ npm run lint     # ESLint check (must be run manually — build ignores lint err
 
 `next.config.mjs` sets `ignoreBuildErrors: true` and `ignoreDuringBuilds: true`, so **always run `npm run build` after changes** to catch React/JSX errors that lint won't catch.
 
+**Stop the dev server before building.** `next dev` and `next build` share the `.next` directory — running a build while the dev server is up deletes files out from under it, producing an ENOENT storm in the dev log and leaving pages that serve HTML but never hydrate (buttons render, clicks do nothing). Recovery is `rm -rf .next` and a dev-server restart.
+
 ## Architecture
 
 **DSAverse** is a Next.js 15 App Router educational platform for visualizing data structures and algorithms. Live at https://dsa-verse.vercel.app.
