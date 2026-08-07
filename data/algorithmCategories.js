@@ -253,6 +253,7 @@ export const algorithmCategories = [
             "Processes vs Threads",
             "What Happens When You Search a URL",
             "HTTPS and TLS",
+            "How the Internet Routes a Packet",
             "How the Browser Renders a Page",
             "How a REST API Works",
             "Classes Objects and Memory",
