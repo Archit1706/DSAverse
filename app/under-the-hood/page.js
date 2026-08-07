@@ -45,6 +45,16 @@ const tracks = [
                 available: true,
             },
             {
+                name: 'Floating Point and IEEE 754',
+                slug: 'floating-point-and-ieee-754',
+                description: 'Why 0.1 + 0.2 is not 0.3 — binary fractions, the 64-bit layout, round-to-nearest-even, ULP spacing, cancellation and NaN.',
+                complexity: '53-bit precision',
+                space: '64 bits',
+                pattern: 'Sign · Exp · Mantissa',
+                difficulty: 'Intermediate',
+                available: true,
+            },
+            {
                 name: 'JIT Compilation',
                 slug: 'jit-compilation',
                 description: 'Profiling counters finding hot code, tiered compilation, inline caches, speculative optimization with guards, and deoptimization.',
