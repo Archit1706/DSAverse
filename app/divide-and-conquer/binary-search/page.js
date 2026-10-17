@@ -1,6 +1,52 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Search } from 'lucide-react';
+import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Search, Code2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
+
+const CODE_EXAMPLE = `def binary_search(arr, target):
+    """Each comparison halves the search space -> O(log n)."""
+    lo, hi = 0, len(arr) - 1
+
+    while lo <= hi:
+        mid = (lo + hi) // 2        # this is one decision node
+        if arr[mid] == target:
+            return mid
+        if arr[mid] < target:
+            lo = mid + 1            # take the right branch
+        else:
+            hi = mid - 1            # take the left branch
+
+    return -1
+
+
+def binary_search_recursive(arr, target, lo=0, hi=None):
+    """The same decision tree, written as recursion."""
+    if hi is None:
+        hi = len(arr) - 1
+    if lo > hi:
+        return -1
+
+    mid = (lo + hi) // 2
+    if arr[mid] == target:
+        return mid
+    if arr[mid] < target:
+        return binary_search_recursive(arr, target, mid + 1, hi)
+    return binary_search_recursive(arr, target, lo, mid - 1)
+
+# T(n) = T(n/2) + O(1)  ->  O(log n) time, O(1) space iteratively.`;
+
+function CodePanel() {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+            <button onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-2 text-sky-400 hover:text-sky-300 text-sm font-medium transition-colors">
+                <Code2 className="h-4 w-4" />{open ? 'Hide' : 'Show'} Python Code
+            </button>
+            {open && <div className="mt-3"><CodeBlock code={CODE_EXAMPLE} language="python" /></div>}
+        </div>
+    );
+}
 
 // ─── Step generation ──────────────────────────────────────────────────────────
 
@@ -388,6 +434,7 @@ export default function BinarySearchPage() {
                             </div>
                         </div>
 
+                        <CodePanel />
                         <QuizPanel qs={quizState} setQs={setQuizState} />
                     </div>
                 </div>
