@@ -241,7 +241,7 @@ export default function StrassensPage() {
             <div className="bg-gradient-to-r from-sky-600 to-blue-700 py-10 px-4">
                 <div className="max-w-6xl mx-auto">
                     <p className="text-sky-200 text-sm font-semibold uppercase tracking-widest mb-1">Divide &amp; Conquer</p>
-                    <h1 className="text-3xl md:text-4xl font-bold mb-2">Strassen's Matrix Multiplication</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2">Strassen&apos;s Matrix Multiplication</h1>
                     <p className="text-sky-100 text-base max-w-2xl">
                         7 sub-matrix products (M₁–M₇) replace the naive 8. Watch each computed, then see them combine into the 4 output cells.
                     </p>
