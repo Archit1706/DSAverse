@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive factorial recursion visualization with call stack animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/factorial" },
 };
 export default function Layout({ children }) { return children; }

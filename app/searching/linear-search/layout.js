@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Linear Search visualization with sequential element scanning.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/linear-search" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Fibonacci recursion tree visualization showing overlapping subproblems.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/fibonacci-sequence" },
 };
 export default function Layout({ children }) { return children; }

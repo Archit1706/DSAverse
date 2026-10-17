@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Maximum Sum Subarray visualization with fixed sliding window animation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/two-pointers-and-sliding-window/maximum-sum-subarray" },
 };
 export default function Layout({ children }) { return children; }

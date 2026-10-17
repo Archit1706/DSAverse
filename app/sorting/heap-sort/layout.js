@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Heap Sort visualization with heap-building and extraction animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/heap-sort" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Insertion Sort visualization showing element insertion step by step.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/insertion-sort" },
 };
 export default function Layout({ children }) { return children; }

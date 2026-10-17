@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Binomial Queue visualization with tree merging and cascading animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/heap-like-data-structures/binomial-queues" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Array List visualization with insert, delete, and access animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/lists-array" },
 };
 export default function Layout({ children }) { return children; }

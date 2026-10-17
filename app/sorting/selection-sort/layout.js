@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Selection Sort visualization with minimum-finding animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/selection-sort" },
 };
 export default function Layout({ children }) { return children; }

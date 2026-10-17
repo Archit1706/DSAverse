@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive binary decision tree showing how all 2^n subsets are generated through recursive include/exclude choices.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/subsets-power-set" },
 };
 export default function Layout({ children }) { return children; }

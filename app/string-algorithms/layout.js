@@ -15,6 +15,7 @@ export const metadata = {
     },
     authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
     creator: "Archit Rathod",
+    alternates: { canonical: "/string-algorithms" },
 }
 
 export default function StringAlgorithmsLayout({ children }) {

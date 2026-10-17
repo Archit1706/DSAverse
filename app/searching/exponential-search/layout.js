@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Exponential Search visualization with range-doubling animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/exponential-search" },
 };
 export default function Layout({ children }) { return children; }

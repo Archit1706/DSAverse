@@ -7,5 +7,6 @@ export const metadata = {
         description: "Step-by-step Depth-First Search with call stack panel, backtracking visualization, and traversal order animation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/graph-algorithms/depth-first-search" },
 };
 export default function Layout({ children }) { return children; }

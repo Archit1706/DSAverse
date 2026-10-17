@@ -7,5 +7,6 @@ export const metadata = {
         description: "Step-by-step Breadth-First Search with queue panel, distance labels, and traversal order animation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/graph-algorithms/breadth-first-search" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Radix Sort visualization with digit-by-digit bucket animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/radix-sort" },
 };
 export default function Layout({ children }) { return children; }

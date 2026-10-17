@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Longest Substring visualization with dynamic sliding window animation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/two-pointers-and-sliding-window/longest-substring-without-repeating-characters" },
 };
 export default function Layout({ children }) { return children; }

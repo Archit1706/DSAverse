@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive step-by-step permutation generation via recursive swapping.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/permutations" },
 };
 export default function Layout({ children }) { return children; }

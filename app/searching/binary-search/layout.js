@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Binary Search visualization with log(n) step animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/binary-search" },
 };
 export default function Layout({ children }) { return children; }

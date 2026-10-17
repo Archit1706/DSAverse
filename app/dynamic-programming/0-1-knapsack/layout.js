@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive 0-1 Knapsack DP visualization with include/exclude decision table.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/dynamic-programming/0-1-knapsack" },
 };
 export default function Layout({ children }) { return children; }

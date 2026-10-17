@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Tower of Hanoi recursive disk-move animation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/tower-of-hanoi" },
 };
 export default function Layout({ children }) { return children; }

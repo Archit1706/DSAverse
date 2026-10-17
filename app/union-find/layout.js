@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 export const metadata = {
     title: { template: '%s – Union-Find | DSAverse', default: 'Union-Find | DSAverse' },
     description: 'Interactive Union-Find visualizations — Quick Find flat array, Quick Union tree pointers, path compression before/after, and union by rank with rank labels.',
+    alternates: { canonical: '/union-find' },
 };
 
 export default function UnionFindLayout({ children }) {

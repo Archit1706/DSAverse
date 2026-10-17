@@ -7,5 +7,6 @@ export const metadata = {
         description: "Step-by-step Dijkstra's algorithm with weighted edges, live distance table, and shortest path highlighting.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/graph-algorithms/dijkstras-shortest-path" },
 };
 export default function Layout({ children }) { return children; }

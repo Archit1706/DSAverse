@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Jump Search visualization showing block-jumping and linear scan steps.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/jump-search" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Fibonacci DP visualization showing tabulation and subproblem reuse.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/dynamic-programming/fibonacci-numbers" },
 };
 export default function Layout({ children }) { return children; }

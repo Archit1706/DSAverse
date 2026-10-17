@@ -3,5 +3,6 @@ export const metadata = {
     description: "Visualize Rabin-Karp's rolling hash: watch the hash window slide across the text, see hash collisions trigger verification, and understand average O(n+m) pattern matching.",
     keywords: ["Rabin-Karp", "rolling hash", "pattern matching", "string search", "hash collision", "algorithm visualization"],
     openGraph: { title: "Rabin-Karp Visualizer – DSAverse", images: [{ url: "/og-image.png" }] },
+    alternates: { canonical: "/string-algorithms/rabin-karp" },
 };
 export default function Layout({ children }) { return children; }

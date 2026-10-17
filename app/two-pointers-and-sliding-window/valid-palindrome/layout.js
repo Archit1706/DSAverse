@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Valid Palindrome visualization with two-pointer animation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/two-pointers-and-sliding-window/valid-palindrome" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Interpolation Search visualization with probe-position estimation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/interpolation-search" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive recursive string reversal visualization with stack unwinding.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/string-reversal" },
 };
 export default function Layout({ children }) { return children; }

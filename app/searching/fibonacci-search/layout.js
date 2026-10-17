@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Fibonacci Search visualization with Fibonacci-based partitioning.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/fibonacci-search" },
 };
 export default function Layout({ children }) { return children; }

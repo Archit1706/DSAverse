@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive recursive maze solver with backtracking path animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/maze-solver" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Stack array visualization with push, pop, and peek animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/stack-array" },
 };
 export default function Layout({ children }) { return children; }

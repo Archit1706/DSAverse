@@ -21,6 +21,7 @@ export const metadata = {
     },
     authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
     creator: "Archit Rathod",
+    alternates: { canonical: "/two-pointers-and-sliding-window" },
 }
 
 export default function TwoPointersLayout({ children }) {

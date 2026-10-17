@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive LIS DP visualization with element comparison animations and chain reconstruction.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/dynamic-programming/longest-increasing-subsequence" },
 };
 export default function Layout({ children }) { return children; }

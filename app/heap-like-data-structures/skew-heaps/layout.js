@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Skew Heap visualization with self-adjusting merge animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/heap-like-data-structures/skew-heaps" },
 };
 export default function Layout({ children }) { return children; }

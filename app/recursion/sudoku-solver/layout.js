@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive 9×9 Sudoku solved live with backtracking — watch every placement and retreat.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/sudoku-solver" },
 };
 export default function Layout({ children }) { return children; }

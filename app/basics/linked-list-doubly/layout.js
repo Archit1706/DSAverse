@@ -7,5 +7,6 @@ export const metadata = {
         description: "Watch prev and next pointers update live as you insert, delete, and traverse a doubly linked list.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/linked-list-doubly" },
 };
 export default function Layout({ children }) { return children; }

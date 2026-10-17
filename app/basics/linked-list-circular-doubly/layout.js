@@ -7,5 +7,6 @@ export const metadata = {
         description: "See how prev and next pointers stay circular as you modify a circular doubly linked list.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/linked-list-circular-doubly" },
 };
 export default function Layout({ children }) { return children; }

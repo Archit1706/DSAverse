@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Making Change DP visualization with tabulation table animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/dynamic-programming/making-change" },
 };
 export default function Layout({ children }) { return children; }

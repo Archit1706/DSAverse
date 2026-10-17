@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Block Search visualization with block-division and scan animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/block-search" },
 };
 export default function Layout({ children }) { return children; }

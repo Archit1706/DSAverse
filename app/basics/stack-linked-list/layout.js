@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Stack linked-list visualization with node push and pop animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/stack-linked-list" },
 };
 export default function Layout({ children }) { return children; }

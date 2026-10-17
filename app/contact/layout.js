@@ -19,6 +19,7 @@ export const metadata = {
     },
     authors: [{ name: 'Archit Rathod', url: 'https://archit-rathod.vercel.app/' }],
     creator: 'Archit Rathod',
+    alternates: { canonical: '/contact' },
 };
 
 export default function ContactLayout({ children }) {

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Binary Heap visualization with heapify-up and heapify-down animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/heap-like-data-structures/heaps" },
 };
 export default function Layout({ children }) { return children; }

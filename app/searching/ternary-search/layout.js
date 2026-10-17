@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Ternary Search visualization with three-way partition animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/searching/ternary-search" },
 };
 export default function Layout({ children }) { return children; }

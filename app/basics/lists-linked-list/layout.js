@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Linked List visualization with insert, delete, and traversal animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/lists-linked-list" },
 };
 export default function Layout({ children }) { return children; }

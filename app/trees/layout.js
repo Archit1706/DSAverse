@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 export const metadata = {
     title: { template: '%s – Trees | DSAverse', default: 'Trees | DSAverse' },
     description: 'Interactive tree data structure visualizations — BST, AVL, traversals, segment tree, and trie.',
+    alternates: { canonical: '/trees' },
 };
 
 export default function TreesLayout({ children }) {

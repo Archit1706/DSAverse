@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Merge Sort visualization with divide-and-conquer step animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/merge-sort" },
 };
 export default function Layout({ children }) { return children; }

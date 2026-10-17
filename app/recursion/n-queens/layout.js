@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive N-Queens backtracking visualization with step-by-step queen placement.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/recursion/n-queens" },
 };
 export default function Layout({ children }) { return children; }

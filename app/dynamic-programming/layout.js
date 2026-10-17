@@ -21,6 +21,7 @@ export const metadata = {
     },
     authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
     creator: "Archit Rathod",
+    alternates: { canonical: "/dynamic-programming" },
 }
 
 export default function DynamicProgrammingLayout({ children }) {

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Two Sum II visualization with two-pointer animation.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/two-pointers-and-sliding-window/two-sum-ii" },
 };
 export default function Layout({ children }) { return children; }

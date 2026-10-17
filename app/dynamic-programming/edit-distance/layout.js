@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Levenshtein distance DP visualization with 2D table fill and backtracking animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/dynamic-programming/edit-distance" },
 };
 export default function Layout({ children }) { return children; }

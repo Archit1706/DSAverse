@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Bucket Sort visualization showing distribution and bucket sorting.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/bucket-sort" },
 };
 export default function Layout({ children }) { return children; }

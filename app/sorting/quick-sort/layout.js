@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Quick Sort visualization with pivot and partition step animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/quick-sort" },
 };
 export default function Layout({ children }) { return children; }

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Leftist Heap visualization with merge and null-path-length animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/heap-like-data-structures/leftist-heaps" },
 };
 export default function Layout({ children }) { return children; }

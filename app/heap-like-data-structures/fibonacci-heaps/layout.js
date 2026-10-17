@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Fibonacci Heap visualization with lazy merging and consolidation animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/heap-like-data-structures/fibonacci-heaps" },
 };
 export default function Layout({ children }) { return children; }

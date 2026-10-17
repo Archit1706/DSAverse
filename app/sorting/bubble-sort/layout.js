@@ -7,5 +7,6 @@ export const metadata = {
         description: "Step-by-step interactive Bubble Sort with adjacent-swap animations and code examples.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/sorting/bubble-sort" },
 };
 export default function Layout({ children }) { return children; }

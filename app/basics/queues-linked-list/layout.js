@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Queue linked-list visualization with enqueue and dequeue animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/queues-linked-list" },
 };
 export default function Layout({ children }) { return children; }

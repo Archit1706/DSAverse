@@ -7,5 +7,6 @@ export const metadata = {
         description: "Watch the circular connection update as you insert and delete nodes in a circular singly linked list.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/linked-list-circular" },
 };
 export default function Layout({ children }) { return children; }

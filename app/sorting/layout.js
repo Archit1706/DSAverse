@@ -21,6 +21,7 @@ export const metadata = {
     },
     authors: [{ name: "Archit Rathod", url: "https://archit-rathod.vercel.app/" }],
     creator: "Archit Rathod",
+    alternates: { canonical: "/sorting" },
 }
 
 export default function SortingLayout({ children }) {

@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive Queue array visualization with enqueue and dequeue animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/basics/queues-array" },
 };
 export default function Layout({ children }) { return children; }

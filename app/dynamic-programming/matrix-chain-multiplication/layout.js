@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive MCM DP visualization with diagonal table fill and optimal bracket grouping.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/dynamic-programming/matrix-chain-multiplication" },
 };
 export default function Layout({ children }) { return children; }

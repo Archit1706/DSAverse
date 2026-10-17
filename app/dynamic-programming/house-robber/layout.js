@@ -7,5 +7,6 @@ export const metadata = {
         description: "Interactive House Robber DP visualization with rob/skip decision animations.",
         images: [{ url: "/og-image.png" }],
     },
+    alternates: { canonical: "/dynamic-programming/house-robber" },
 };
 export default function Layout({ children }) { return children; }

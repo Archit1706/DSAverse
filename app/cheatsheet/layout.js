@@ -15,6 +15,7 @@ export const metadata = {
         description: 'Quick-reference complexity tables for sorting, searching, graphs, and data structures.',
         images: [{ url: '/og-image.png' }],
     },
+    alternates: { canonical: '/cheatsheet' },
 };
 
 export default function CheatsheetLayout({ children }) {
