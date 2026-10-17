@@ -295,7 +295,7 @@ export default function RabinKarpPage() {
                                 <div className="bg-slate-800/50 rounded-lg p-4 text-center">
                                     <div className="text-xs text-slate-400 mb-1">Pattern Hash</div>
                                     <div className="text-2xl font-bold font-mono text-fuchsia-400">{patHash}</div>
-                                    <div className="text-xs text-slate-500 mt-1 font-mono">hash("{pattern}")</div>
+                                    <div className="text-xs text-slate-500 mt-1 font-mono">hash(&quot;{pattern}&quot;)</div>
                                 </div>
                                 <div className={`rounded-lg p-4 text-center transition-all duration-300 ${
                                     phase === 'found' ? 'bg-green-500/20 border border-green-500/30' :
@@ -312,7 +312,7 @@ export default function RabinKarpPage() {
                                         {windowHash >= 0 ? windowHash : '—'}
                                     </div>
                                     <div className="text-xs text-slate-500 mt-1 font-mono">
-                                        hash("{windowStart < n ? text.slice(windowStart, windowStart + m) : '—'}")
+                                        hash(&quot;{windowStart < n ? text.slice(windowStart, windowStart + m) : '—'}&quot;)
                                     </div>
                                 </div>
                             </div>
@@ -445,7 +445,7 @@ export default function RabinKarpPage() {
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-slate-400">Window</span>
-                                    <span className="text-fuchsia-300 font-mono text-xs">"{text.slice(windowStart, windowStart + m)}"</span>
+                                    <span className="text-fuchsia-300 font-mono text-xs">&quot;{text.slice(windowStart, windowStart + m)}&quot;</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-slate-400">Matches found</span>
