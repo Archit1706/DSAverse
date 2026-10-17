@@ -109,6 +109,10 @@ const SECTIONS = {
         "closed-hash-tables",
         "closed-hash-tables-with-buckets",
         "open-hash-tables",
+        "radix-tree",
+        "red-black-trees",
+        "splay-trees",
+        "ternary-search-tree",
     ],
     "graph-algorithms": [
         "breadth-first-search",
