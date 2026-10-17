@@ -1,6 +1,52 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info } from 'lucide-react';
+import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Code2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
+
+const CODE_EXAMPLE = `def strassen(A, B):
+    """7 recursive multiplications where the naive method needs 8.
+
+    split() cuts a matrix into four quadrants; add() and sub() are
+    element-wise; join() reassembles four quadrants into one matrix.
+    """
+    n = len(A)
+    if n == 1:                       # base case: a single product
+        return [[A[0][0] * B[0][0]]]
+
+    a, b, c, d = split(A)
+    e, f, g, h = split(B)
+
+    m1 = strassen(add(a, d), add(e, h))
+    m2 = strassen(add(c, d), e)
+    m3 = strassen(a, sub(f, h))
+    m4 = strassen(d, sub(g, e))
+    m5 = strassen(add(a, b), h)
+    m6 = strassen(sub(c, a), add(e, f))
+    m7 = strassen(sub(b, d), add(g, h))
+
+    c11 = add(sub(add(m1, m4), m5), m7)
+    c12 = add(m3, m5)
+    c21 = add(m2, m4)
+    c22 = add(sub(add(m1, m3), m2), m6)
+
+    return join(c11, c12, c21, c22)
+
+# Naive:    T(n) = 8T(n/2) + O(n^2)  ->  O(n^3)
+# Strassen: T(n) = 7T(n/2) + O(n^2)  ->  O(n^2.807)
+# The extra additions only pay off for large n.`;
+
+function CodePanel() {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+            <button onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-2 text-sky-400 hover:text-sky-300 text-sm font-medium transition-colors">
+                <Code2 className="h-4 w-4" />{open ? 'Hide' : 'Show'} Python Code
+            </button>
+            {open && <div className="mt-3"><CodeBlock code={CODE_EXAMPLE} language="python" /></div>}
+        </div>
+    );
+}
 
 // ─── Strassen formulas ────────────────────────────────────────────────────────
 // For 2×2 matrices A and B split into quarters: A = [[a,b],[c,d]], B = [[e,f],[g,h]]
@@ -457,6 +503,7 @@ export default function StrassensPage() {
                             </div>
                         )}
 
+                        <CodePanel />
                         <QuizPanel qs={quizState} setQs={setQuizState} />
                     </div>
                 </div>
