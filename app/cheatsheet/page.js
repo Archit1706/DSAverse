@@ -13,12 +13,17 @@ const COMPLEXITY_MAP = {
     'O(√n)':          { bg: 'bg-sky-500/15',     text: 'text-sky-400',     border: 'border-sky-500/30',     dot: 'bg-sky-400',     label: 'Good'      },
     'O(log₃ n)':      { bg: 'bg-sky-500/15',     text: 'text-sky-400',     border: 'border-sky-500/30',     dot: 'bg-sky-400',     label: 'Good'      },
     'O(m)':           { bg: 'bg-sky-500/15',     text: 'text-sky-400',     border: 'border-sky-500/30',     dot: 'bg-sky-400',     label: 'Good'      },
+    'O(α(n))':        { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/30', dot: 'bg-emerald-400', label: 'Excellent' },
+    'O(1)*':          { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/30', dot: 'bg-emerald-400', label: 'Excellent' },
+    'O(log n)*':      { bg: 'bg-green-500/15',   text: 'text-green-400',   border: 'border-green-500/30',   dot: 'bg-green-400',   label: 'Great'     },
     'O(n)':           { bg: 'bg-yellow-500/15',  text: 'text-yellow-400',  border: 'border-yellow-500/30',  dot: 'bg-yellow-400',  label: 'Fair'      },
     'O(n + k)':       { bg: 'bg-yellow-500/15',  text: 'text-yellow-400',  border: 'border-yellow-500/30',  dot: 'bg-yellow-400',  label: 'Fair'      },
+    'O(n + m)':       { bg: 'bg-yellow-500/15',  text: 'text-yellow-400',  border: 'border-yellow-500/30',  dot: 'bg-yellow-400',  label: 'Fair'      },
     'O(nk)':          { bg: 'bg-yellow-500/15',  text: 'text-yellow-400',  border: 'border-yellow-500/30',  dot: 'bg-yellow-400',  label: 'Fair'      },
     'O(V)':           { bg: 'bg-yellow-500/15',  text: 'text-yellow-400',  border: 'border-yellow-500/30',  dot: 'bg-yellow-400',  label: 'Fair'      },
     'O(k)':           { bg: 'bg-yellow-500/15',  text: 'text-yellow-400',  border: 'border-yellow-500/30',  dot: 'bg-yellow-400',  label: 'Fair'      },
     'O(n×m)':         { bg: 'bg-orange-500/15',  text: 'text-orange-400',  border: 'border-orange-500/30',  dot: 'bg-orange-400',  label: 'Fair'      },
+    'O(n×W)':         { bg: 'bg-orange-500/15',  text: 'text-orange-400',  border: 'border-orange-500/30',  dot: 'bg-orange-400',  label: 'Fair'      },
     'O(n log n)':     { bg: 'bg-orange-500/15',  text: 'text-orange-400',  border: 'border-orange-500/30',  dot: 'bg-orange-400',  label: 'Fair'      },
     'O(V + E)':       { bg: 'bg-orange-500/15',  text: 'text-orange-400',  border: 'border-orange-500/30',  dot: 'bg-orange-400',  label: 'Fair'      },
     'O((V+E) log V)': { bg: 'bg-orange-500/15',  text: 'text-orange-400',  border: 'border-orange-500/30',  dot: 'bg-orange-400',  label: 'Fair'      },
@@ -27,6 +32,7 @@ const COMPLEXITY_MAP = {
     'O(n²)':          { bg: 'bg-red-500/15',     text: 'text-red-400',     border: 'border-red-500/30',     dot: 'bg-red-400',     label: 'Poor'      },
     'O(n^(4/3))':     { bg: 'bg-red-500/15',     text: 'text-red-400',     border: 'border-red-500/30',     dot: 'bg-red-400',     label: 'Poor'      },
     'O(n^(3/2))':     { bg: 'bg-red-500/15',     text: 'text-red-400',     border: 'border-red-500/30',     dot: 'bg-red-400',     label: 'Poor'      },
+    'O(n³)':          { bg: 'bg-rose-500/15',    text: 'text-rose-400',    border: 'border-rose-500/30',    dot: 'bg-rose-400',    label: 'Bad'       },
     'O(V × E)':       { bg: 'bg-red-500/15',     text: 'text-red-400',     border: 'border-red-500/30',     dot: 'bg-red-400',     label: 'Poor'      },
     'O(log n)  ':     { bg: 'bg-green-500/15',   text: 'text-green-400',   border: 'border-green-500/30',   dot: 'bg-green-400',   label: 'Great'     },
     'O(log n)   ':    { bg: 'bg-green-500/15',   text: 'text-green-400',   border: 'border-green-500/30',   dot: 'bg-green-400',   label: 'Great'     },
@@ -79,9 +85,6 @@ const SORTING = [
     { name: 'Heap Sort',      slug: '/sorting/heap-sort',      best: 'O(n log n)', avg: 'O(n log n)',  worst: 'O(n log n)',  space: 'O(1)',      stable: 'No'  },
     { name: 'Radix Sort',     slug: '/sorting/radix-sort',     best: 'O(nk)',      avg: 'O(nk)',       worst: 'O(nk)',       space: 'O(n + k)', stable: 'Yes' },
     { name: 'Bucket Sort',    slug: '/sorting/bucket-sort',    best: 'O(n + k)',   avg: 'O(n + k)',    worst: 'O(n²)',       space: 'O(n + k)', stable: 'Yes' },
-    { name: 'Shell Sort',     slug: null,                      best: 'O(n log n)', avg: 'O(n^(4/3))', worst: 'O(n^(3/2))', space: 'O(1)',      stable: 'No'  },
-    { name: 'Counting Sort',  slug: null,                      best: 'O(n + k)',   avg: 'O(n + k)',    worst: 'O(n + k)',   space: 'O(k)',      stable: 'Yes' },
-    { name: 'Tim Sort',       slug: null,                      best: 'O(n)',       avg: 'O(n log n)',  worst: 'O(n log n)', space: 'O(n)',      stable: 'Yes' },
 ];
 
 const SEARCHING = [
@@ -96,28 +99,62 @@ const SEARCHING = [
 ];
 
 const GRAPH = [
-    { name: 'BFS (Breadth-First)',  type: 'Traversal',     time: 'O(V + E)',       space: 'O(V)'  },
-    { name: 'DFS (Depth-First)',    type: 'Traversal',     time: 'O(V + E)',       space: 'O(V)'  },
-    { name: "Dijkstra's",          type: 'Shortest Path', time: 'O((V+E) log V)', space: 'O(V)'  },
-    { name: 'A* Search',           type: 'Shortest Path', time: 'O(E)',           space: 'O(V)'  },
-    { name: 'Bellman-Ford',        type: 'Shortest Path', time: 'O(V × E)',       space: 'O(V)'  },
-    { name: 'Floyd-Warshall',      type: 'All-Pairs SP',  time: 'O(V³)',          space: 'O(V²)' },
-    { name: "Prim's MST",          type: 'MST',           time: 'O((V+E) log V)', space: 'O(V)'  },
-    { name: "Kruskal's MST",       type: 'MST',           time: 'O(E log E)',     space: 'O(V)'  },
-    { name: 'Topological Sort',    type: 'Ordering',      time: 'O(V + E)',       space: 'O(V)'  },
+    { name: 'BFS (Breadth-First)',      slug: '/graph-algorithms/breadth-first-search',           type: 'Traversal',     time: 'O(V + E)',       space: 'O(V)'  },
+    { name: 'DFS (Depth-First)',        slug: '/graph-algorithms/depth-first-search',             type: 'Traversal',     time: 'O(V + E)',       space: 'O(V)'  },
+    { name: 'Connected Components',     slug: '/graph-algorithms/connected-components',           type: 'Traversal',     time: 'O(V + E)',       space: 'O(V)'  },
+    { name: "Dijkstra's",               slug: '/graph-algorithms/dijkstras-shortest-path',        type: 'Shortest Path', time: 'O((V+E) log V)', space: 'O(V)'  },
+    { name: 'Floyd-Warshall',           slug: '/graph-algorithms/floyd-warshall',                 type: 'All-Pairs SP',  time: 'O(V³)',          space: 'O(V²)' },
+    { name: "Prim's MST",               slug: '/graph-algorithms/prims-minimum-spanning-tree',    type: 'MST',           time: 'O((V+E) log V)', space: 'O(V)'  },
+    { name: "Kruskal's MST",            slug: '/graph-algorithms/kruskal-minimum-spanning-tree',  type: 'MST',           time: 'O(E log E)',     space: 'O(V)'  },
+    { name: "Topological Sort (Kahn's)",slug: '/graph-algorithms/topological-sort-indegree',      type: 'Ordering',      time: 'O(V + E)',       space: 'O(V)'  },
+    { name: 'Topological Sort (DFS)',   slug: '/graph-algorithms/topological-sort-dfs',           type: 'Ordering',      time: 'O(V + E)',       space: 'O(V)'  },
 ];
 
 const DATA_STRUCTURES = [
-    { name: 'Array',             access: 'O(1)',     search: 'O(n)',     insert: 'O(n)',     delete: 'O(n)',     space: 'O(n)'   },
-    { name: 'Linked List',       access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
-    { name: 'Stack',             access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
-    { name: 'Queue',             access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
-    { name: 'Hash Table',        access: 'N/A',      search: 'O(1)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
-    { name: 'Binary Search Tree',access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'  },
-    { name: 'AVL Tree',          access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'  },
-    { name: 'Red-Black Tree',    access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'  },
-    { name: 'Heap (Min/Max)',    access: 'O(1)',     search: 'O(n)',     insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'  },
-    { name: 'Trie',              access: 'O(m)',     search: 'O(m)',     insert: 'O(m)',     delete: 'O(m)',     space: 'O(n×m)'},
+    { name: 'Array',              slug: '/basics/lists-array',              access: 'O(1)',     search: 'O(n)',     insert: 'O(n)',     delete: 'O(n)',     space: 'O(n)'   },
+    { name: 'Linked List',        slug: '/basics/lists-linked-list',        access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
+    { name: 'Stack',              slug: '/basics/stack-array',              access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
+    { name: 'Queue',              slug: '/basics/queues-array',             access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
+    { name: 'Binary Search Tree', slug: '/trees/binary-search-tree',        access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
+    { name: 'AVL Tree',           slug: '/trees/avl-tree',                  access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
+    { name: 'Heap (Min/Max)',     slug: '/heap-like-data-structures/heaps', access: 'O(1)',     search: 'O(n)',     insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
+    { name: 'Trie',               slug: '/trees/trie',                      access: 'O(m)',     search: 'O(m)',     insert: 'O(m)',     delete: 'O(m)',     space: 'O(n×m)' },
+    { name: 'Segment Tree',       slug: '/trees/segment-tree',              access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'N/A',      space: 'O(n)'   },
+];
+
+/* Heap-like structures compare on different operations than the
+   general data-structure table, so they get their own columns. */
+const HEAPS = [
+    { name: 'Binary Heap',    slug: '/heap-like-data-structures/heaps',           insert: 'O(log n)',  findMin: 'O(1)', deleteMin: 'O(log n)',  merge: 'O(n)',        space: 'O(n)' },
+    { name: 'Binomial Queue', slug: '/heap-like-data-structures/binomial-queues', insert: 'O(1)*',     findMin: 'O(log n)', deleteMin: 'O(log n)', merge: 'O(log n)', space: 'O(n)' },
+    { name: 'Fibonacci Heap', slug: '/heap-like-data-structures/fibonacci-heaps', insert: 'O(1)',      findMin: 'O(1)', deleteMin: 'O(log n)*', merge: 'O(1)',        space: 'O(n)' },
+    { name: 'Leftist Heap',   slug: '/heap-like-data-structures/leftist-heaps',   insert: 'O(log n)',  findMin: 'O(1)', deleteMin: 'O(log n)',  merge: 'O(log n)',    space: 'O(n)' },
+    { name: 'Skew Heap',      slug: '/heap-like-data-structures/skew-heaps',      insert: 'O(log n)*', findMin: 'O(1)', deleteMin: 'O(log n)*', merge: 'O(log n)*',   space: 'O(n)' },
+];
+
+const DP = [
+    { name: 'Fibonacci Numbers',             slug: '/dynamic-programming/fibonacci-numbers',             time: 'O(n)',    space: 'O(1)',    pattern: 'Memoization' },
+    { name: 'Making Change',                 slug: '/dynamic-programming/making-change',                 time: 'O(n×m)',  space: 'O(n)',    pattern: 'Unbounded knapsack' },
+    { name: 'Longest Common Subsequence',    slug: '/dynamic-programming/longest-common-subsequence',    time: 'O(n×m)',  space: 'O(n×m)',  pattern: '2D table' },
+    { name: '0/1 Knapsack',                  slug: '/dynamic-programming/0-1-knapsack',                  time: 'O(n×W)',  space: 'O(n×W)',  pattern: '2D table' },
+    { name: 'House Robber',                  slug: '/dynamic-programming/house-robber',                  time: 'O(n)',    space: 'O(1)',    pattern: '1D array' },
+    { name: 'Longest Increasing Subsequence',slug: '/dynamic-programming/longest-increasing-subsequence',time: 'O(n²)',   space: 'O(n)',    pattern: '1D array' },
+    { name: 'Edit Distance',                 slug: '/dynamic-programming/edit-distance',                 time: 'O(n×m)',  space: 'O(n×m)',  pattern: '2D table' },
+    { name: 'Matrix Chain Multiplication',   slug: '/dynamic-programming/matrix-chain-multiplication',   time: 'O(n³)',   space: 'O(n²)',   pattern: 'Interval DP' },
+    { name: 'Maximum Subarray',              slug: '/dynamic-programming/maximum-subarray',              time: 'O(n)',    space: 'O(1)',    pattern: 'Running sum' },
+];
+
+const STRINGS = [
+    { name: 'KMP String Matching', slug: '/string-algorithms/kmp-string-matching', pre: 'O(m)',     avg: 'O(n)',     worst: 'O(n + m)', space: 'O(m)'     },
+    { name: 'Rabin-Karp',          slug: '/string-algorithms/rabin-karp',          pre: 'O(m)',     avg: 'O(n + m)', worst: 'O(n×m)',   space: 'O(1)'     },
+    { name: 'Z-Algorithm',         slug: '/string-algorithms/z-algorithm',         pre: 'O(n + m)', avg: 'O(n + m)', worst: 'O(n + m)', space: 'O(n + m)' },
+];
+
+const UNION_FIND = [
+    { name: 'Quick Find',       slug: '/union-find/quick-find',       find: 'O(1)',       union: 'O(n)',       space: 'O(n)' },
+    { name: 'Quick Union',      slug: '/union-find/quick-union',      find: 'O(n)',       union: 'O(n)',       space: 'O(n)' },
+    { name: 'Path Compression', slug: '/union-find/path-compression', find: 'O(log n)*',  union: 'O(log n)*',  space: 'O(n)' },
+    { name: 'Union by Rank',    slug: '/union-find/union-by-rank',    find: 'O(log n)',   union: 'O(log n)',   space: 'O(n)' },
 ];
 
 /* ── dark table primitives ──────────────────────────── */
@@ -213,7 +250,7 @@ function GraphTable({ rows }) {
                 <tbody className={TBODY}>
                     {rows.map(r => (
                         <tr key={r.name} className={TR}>
-                            <TD className="font-medium text-slate-200">{r.name}</TD>
+                            <TD><AlgoLink slug={r.slug} name={r.name} /></TD>
                             <TD><TypeBadge type={r.type} /></TD>
                             <TD><ComplexityBadge c={r.time} /></TD>
                             <TD><ComplexityBadge c={r.space} /></TD>
@@ -233,11 +270,94 @@ function DSTable({ rows }) {
                 <tbody className={TBODY}>
                     {rows.map(r => (
                         <tr key={r.name} className={TR}>
-                            <TD className="font-medium text-slate-200">{r.name}</TD>
+                            <TD><AlgoLink slug={r.slug} name={r.name} /></TD>
                             <TD><ComplexityBadge c={r.access} /></TD>
                             <TD><ComplexityBadge c={r.search} /></TD>
                             <TD><ComplexityBadge c={r.insert} /></TD>
                             <TD><ComplexityBadge c={r.delete} /></TD>
+                            <TD><ComplexityBadge c={r.space} /></TD>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+function HeapTable({ rows }) {
+    return (
+        <div className={TABLE_WRAP}>
+            <table className="min-w-full">
+                <thead><tr><TH>Structure</TH><TH>Insert</TH><TH>Find Min</TH><TH>Delete Min</TH><TH>Merge</TH><TH>Space</TH></tr></thead>
+                <tbody className={TBODY}>
+                    {rows.map(r => (
+                        <tr key={r.name} className={TR}>
+                            <TD><AlgoLink slug={r.slug} name={r.name} /></TD>
+                            <TD><ComplexityBadge c={r.insert} /></TD>
+                            <TD><ComplexityBadge c={r.findMin} /></TD>
+                            <TD><ComplexityBadge c={r.deleteMin} /></TD>
+                            <TD><ComplexityBadge c={r.merge} /></TD>
+                            <TD><ComplexityBadge c={r.space} /></TD>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+function DPTable({ rows }) {
+    return (
+        <div className={TABLE_WRAP}>
+            <table className="min-w-full">
+                <thead><tr><TH>Problem</TH><TH>Time</TH><TH>Space</TH><TH>Pattern</TH></tr></thead>
+                <tbody className={TBODY}>
+                    {rows.map(r => (
+                        <tr key={r.name} className={TR}>
+                            <TD><AlgoLink slug={r.slug} name={r.name} /></TD>
+                            <TD><ComplexityBadge c={r.time} /></TD>
+                            <TD><ComplexityBadge c={r.space} /></TD>
+                            <TD><span className="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-rose-500/15 text-rose-400 border-rose-500/30">{r.pattern}</span></TD>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+function StringTable({ rows }) {
+    return (
+        <div className={TABLE_WRAP}>
+            <table className="min-w-full">
+                <thead><tr><TH>Algorithm</TH><TH>Preprocess</TH><TH>Average</TH><TH>Worst</TH><TH>Space</TH></tr></thead>
+                <tbody className={TBODY}>
+                    {rows.map(r => (
+                        <tr key={r.name} className={TR}>
+                            <TD><AlgoLink slug={r.slug} name={r.name} /></TD>
+                            <TD><ComplexityBadge c={r.pre} /></TD>
+                            <TD><ComplexityBadge c={r.avg} /></TD>
+                            <TD><ComplexityBadge c={r.worst} /></TD>
+                            <TD><ComplexityBadge c={r.space} /></TD>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+function UnionFindTable({ rows }) {
+    return (
+        <div className={TABLE_WRAP}>
+            <table className="min-w-full">
+                <thead><tr><TH>Variant</TH><TH>find(x)</TH><TH>union(p, q)</TH><TH>Space</TH></tr></thead>
+                <tbody className={TBODY}>
+                    {rows.map(r => (
+                        <tr key={r.name} className={TR}>
+                            <TD><AlgoLink slug={r.slug} name={r.name} /></TD>
+                            <TD><ComplexityBadge c={r.find} /></TD>
+                            <TD><ComplexityBadge c={r.union} /></TD>
                             <TD><ComplexityBadge c={r.space} /></TD>
                         </tr>
                     ))}
@@ -274,7 +394,12 @@ const Sep = ({ from = '#6366f1', via = '#8b5cf6', to = 'transparent' }) => (
 );
 
 /* ── main page ──────────────────────────────────────── */
-const TABS = ['All', 'Sorting', 'Searching', 'Graph', 'Data Structures'];
+const TABS = ['All', 'Sorting', 'Searching', 'Graph', 'Data Structures', 'Heaps', 'Dynamic Programming', 'Strings', 'Union-Find'];
+
+const TOTAL_ROWS = [SORTING, SEARCHING, GRAPH, DATA_STRUCTURES, HEAPS, DP, STRINGS, UNION_FIND]
+    .reduce((n, rows) => n + rows.length, 0);
+
+const match = (rows, q) => rows.filter(r => !q || r.name.toLowerCase().includes(q));
 
 export default function CheatsheetPage() {
     const [query, setQuery] = useState('');
@@ -282,13 +407,20 @@ export default function CheatsheetPage() {
 
     const q = query.toLowerCase().trim();
 
-    const filteredSorting   = useMemo(() => SORTING.filter(r       => !q || r.name.toLowerCase().includes(q)), [q]);
-    const filteredSearching = useMemo(() => SEARCHING.filter(r     => !q || r.name.toLowerCase().includes(q)), [q]);
-    const filteredGraph     = useMemo(() => GRAPH.filter(r         => !q || r.name.toLowerCase().includes(q)), [q]);
-    const filteredDS        = useMemo(() => DATA_STRUCTURES.filter(r => !q || r.name.toLowerCase().includes(q)), [q]);
+    const filteredSorting   = useMemo(() => match(SORTING,         q), [q]);
+    const filteredSearching = useMemo(() => match(SEARCHING,       q), [q]);
+    const filteredGraph     = useMemo(() => match(GRAPH,           q), [q]);
+    const filteredDS        = useMemo(() => match(DATA_STRUCTURES, q), [q]);
+    const filteredHeaps     = useMemo(() => match(HEAPS,           q), [q]);
+    const filteredDP        = useMemo(() => match(DP,              q), [q]);
+    const filteredStrings   = useMemo(() => match(STRINGS,         q), [q]);
+    const filteredUF        = useMemo(() => match(UNION_FIND,      q), [q]);
 
     const show = s => tab === 'All' || tab === s;
-    const noResults = q && [filteredSorting, filteredSearching, filteredGraph, filteredDS].every(a => a.length === 0);
+    const noResults = q && [
+        filteredSorting, filteredSearching, filteredGraph, filteredDS,
+        filteredHeaps, filteredDP, filteredStrings, filteredUF,
+    ].every(a => a.length === 0);
 
     return (
         <div className="min-h-screen bg-slate-950 text-white">
@@ -333,9 +465,9 @@ export default function CheatsheetPage() {
                         {/* Stat chips */}
                         <div className="flex flex-wrap gap-3">
                             {[
-                                { icon: <BarChart2 className="w-3.5 h-3.5" />, label: '38+ Algorithms' },
-                                { icon: <Layers    className="w-3.5 h-3.5" />, label: '4 Categories'   },
-                                { icon: <GitBranch className="w-3.5 h-3.5" />, label: 'Graph & Trees'  },
+                                { icon: <BarChart2 className="w-3.5 h-3.5" />, label: `${TOTAL_ROWS} Entries` },
+                                { icon: <Layers    className="w-3.5 h-3.5" />, label: '8 Categories'   },
+                                { icon: <GitBranch className="w-3.5 h-3.5" />, label: 'Every row links to its visualizer' },
                                 { icon: <Database  className="w-3.5 h-3.5" />, label: 'Data Structures'},
                             ].map(c => (
                                 <span key={c.label}
@@ -456,6 +588,54 @@ export default function CheatsheetPage() {
                     </>
                 )}
 
+                {/* Heap-like structures */}
+                {show('Heaps') && filteredHeaps.length > 0 && (
+                    <>
+                        <Sep from="#f59e0b" via="#f97316" />
+                        <Section id="heaps" icon={<Layers className="w-4 h-4" />}
+                            title="Heap-like Structures" subtitle="Priority-queue variants compared on merge cost"
+                            accent="from-amber-500 to-orange-600">
+                            <HeapTable rows={filteredHeaps} />
+                        </Section>
+                    </>
+                )}
+
+                {/* Dynamic Programming */}
+                {show('Dynamic Programming') && filteredDP.length > 0 && (
+                    <>
+                        <Sep from="#f43f5e" via="#ec4899" />
+                        <Section id="dp" icon={<BarChart2 className="w-4 h-4" />}
+                            title="Dynamic Programming" subtitle="Classic DP problems and their table shapes"
+                            accent="from-rose-500 to-pink-600">
+                            <DPTable rows={filteredDP} />
+                        </Section>
+                    </>
+                )}
+
+                {/* String algorithms */}
+                {show('Strings') && filteredStrings.length > 0 && (
+                    <>
+                        <Sep from="#d946ef" via="#ec4899" />
+                        <Section id="strings" icon={<Search className="w-4 h-4" />}
+                            title="String Algorithms" subtitle="Pattern matching — n = text length, m = pattern length"
+                            accent="from-fuchsia-500 to-pink-600">
+                            <StringTable rows={filteredStrings} />
+                        </Section>
+                    </>
+                )}
+
+                {/* Union-Find */}
+                {show('Union-Find') && filteredUF.length > 0 && (
+                    <>
+                        <Sep from="#a855f7" via="#8b5cf6" />
+                        <Section id="union-find" icon={<GitBranch className="w-4 h-4" />}
+                            title="Union-Find" subtitle="Disjoint sets — rank plus path compression reaches O(α(n)) amortised"
+                            accent="from-purple-500 to-violet-600">
+                            <UnionFindTable rows={filteredUF} />
+                        </Section>
+                    </>
+                )}
+
                 {/* No results */}
                 {noResults && (
                     <div className="text-center py-24">
@@ -493,7 +673,7 @@ export default function CheatsheetPage() {
 
                 {/* Footnote */}
                 <p className="text-xs text-slate-600 text-center pb-6 font-mono">
-                    n = input size · V = vertices · E = edges · k = range/digit count · m = string/key length · * = amortised
+                    n = input size · V = vertices · E = edges · k = range/digit count · m = string/key/pattern length · W = knapsack capacity · α = inverse Ackermann · * = amortised
                 </p>
             </div>
         </div>
