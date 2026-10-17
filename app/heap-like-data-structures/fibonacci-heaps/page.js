@@ -481,8 +481,8 @@ class FibonacciHeap:
                                 <h2 className="text-lg font-bold text-slate-100">Why It Matters</h2>
                             </div>
                             <ul className="space-y-2 text-sm text-slate-300">
-                                <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Dijkstra's</strong> — O(E + V log V) with Fibonacci heap vs O((E+V) log V) with binary heap</span></li>
-                                <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Prim's MST</strong> — same improvement for dense graphs</span></li>
+                                <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Dijkstra&apos;s</strong> — O(E + V log V) with Fibonacci heap vs O((E+V) log V) with binary heap</span></li>
+                                <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Prim&apos;s MST</strong> — same improvement for dense graphs</span></li>
                                 <li className="flex gap-2"><span className="text-amber-400">•</span><span>Primarily <strong>theoretical value</strong> — large constants make binary heaps faster in practice for typical n</span></li>
                             </ul>
                         </div>
