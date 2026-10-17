@@ -120,7 +120,7 @@ export default function ContactPage() {
                         </h1>
                         <p className="text-slate-400 text-lg leading-relaxed">
                             Found a bug? Have a feature idea? Want to collaborate?
-                            We'd love to hear from you.
+                            We&apos;d love to hear from you.
                         </p>
                     </div>
                 </div>
