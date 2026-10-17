@@ -7,6 +7,6 @@ export const metadata = {
         description: "Interactive LCS DP visualization with 2D table fill and backtracking animations.",
         images: [{ url: "/og-image.png" }],
     },
-    alternates: { canonical: "/dynamic-programming/largest-common-subsequence" },
+    alternates: { canonical: "/dynamic-programming/longest-common-subsequence" },
 };
 export default function Layout({ children }) { return children; }
