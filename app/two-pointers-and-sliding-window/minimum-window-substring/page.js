@@ -242,7 +242,7 @@ print(minWindow("ADOBECODEBANC", "ABC"))  # "BANC"`;
                                     <button key={i}
                                         onClick={() => { setExample(i); setIsPlaying(false); setCurrentStep(0); }}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${example === i ? 'bg-violet-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>
-                                        s="{ex.s.length > 10 ? ex.s.slice(0, 10) + '…' : ex.s}" t="{ex.t}"
+                                        s=&quot;{ex.s.length > 10 ? ex.s.slice(0, 10) + '…' : ex.s}&quot; t=&quot;{ex.t}&quot;
                                     </button>
                                 ))}
                             </div>
@@ -251,11 +251,11 @@ print(minWindow("ADOBECODEBANC", "ABC"))  # "BANC"`;
                             <div className="flex gap-4 mb-4 text-sm">
                                 <div className="bg-slate-800/60 rounded-lg px-3 py-2">
                                     <span className="text-slate-400">s = </span>
-                                    <span className="text-slate-200 font-mono">"{s}"</span>
+                                    <span className="text-slate-200 font-mono">&quot;{s}&quot;</span>
                                 </div>
                                 <div className="bg-slate-800/60 rounded-lg px-3 py-2">
                                     <span className="text-slate-400">t = </span>
-                                    <span className="text-violet-300 font-mono">"{t}"</span>
+                                    <span className="text-violet-300 font-mono">&quot;{t}&quot;</span>
                                 </div>
                             </div>
 
@@ -356,7 +356,7 @@ print(minWindow("ADOBECODEBANC", "ABC"))  # "BANC"`;
                             {cur.minLeft !== -1 && (
                                 <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 mb-4">
                                     <span className="text-xs text-green-400 font-semibold">Best window so far: </span>
-                                    <span className="font-mono text-green-300 text-sm">"{s.slice(cur.minLeft, cur.minRight + 1)}"</span>
+                                    <span className="font-mono text-green-300 text-sm">&quot;{s.slice(cur.minLeft, cur.minRight + 1)}&quot;</span>
                                     <span className="text-xs text-slate-400 ml-2">(length {cur.minLen}, [{cur.minLeft}–{cur.minRight}])</span>
                                 </div>
                             )}
