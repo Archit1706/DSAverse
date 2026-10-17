@@ -101,6 +101,7 @@ const SECTIONS = {
         "longest-increasing-subsequence",
         "making-change",
         "matrix-chain-multiplication",
+        "maximum-subarray",
     ],
     "graph-algorithms": [
         "breadth-first-search",
