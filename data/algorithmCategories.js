@@ -186,7 +186,8 @@ export const algorithmCategories = [
             "House Robber",
             "Longest Increasing Subsequence",
             "Edit Distance",
-            "Matrix Chain Multiplication"
+            "Matrix Chain Multiplication",
+            "Maximum Subarray"
         ]
     },
     {
