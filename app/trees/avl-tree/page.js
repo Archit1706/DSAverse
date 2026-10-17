@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, RotateCcw, Info, SkipBack, SkipForward, Play, Pause, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import BinaryTreeCanvas from '@/components/BinaryTreeCanvas';
 
 // ─── AVL helpers ──────────────────────────────────────────────────────────────
 
@@ -83,33 +84,7 @@ function detectRotation(before, val, after) {
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
-function computeLayout(node, depth = 0, counter = { n: 0 }, xGap = 72) {
-    if (!node) return { pos: {}, edges: [] };
-    const left = computeLayout(node.left, depth + 1, counter, xGap);
-    const x = counter.n * xGap + xGap / 2;
-    const y = depth * 90 + 55;
-    counter.n++;
-    const right = computeLayout(node.right, depth + 1, counter, xGap);
-    const pos = { ...left.pos, [node.val]: { x, y, bf: bf(node) }, ...right.pos };
-    const edges = [...left.edges, ...right.edges];
-    if (node.left) edges.push({ from: node.val, to: node.left.val });
-    if (node.right) edges.push({ from: node.val, to: node.right.val });
-    return { pos, edges };
-}
-
-function nodeCount(node) { return node ? 1 + nodeCount(node.left) + nodeCount(node.right) : 0; }
-function treeH(node) { return node ? 1 + Math.max(treeH(node.left), treeH(node.right)) : 0; }
-
 function AVLTreeSVG({ tree, inserted, rotationType }) {
-    if (!tree) return <div className="flex items-center justify-center h-48 text-slate-500 text-sm">Empty tree — waiting for first insertion</div>;
-
-    const n = nodeCount(tree);
-    const depth = treeH(tree);
-    const xGap = Math.max(52, Math.min(88, 600 / n));
-    const { pos, edges } = computeLayout(tree, 0, { n: 0 }, xGap);
-    const svgW = n * xGap;
-    const svgH = depth * 90 + 60;
-
     function nodeFill(val, balance) {
         if (val === inserted) return '#84cc16';  // lime — newly inserted
         if (Math.abs(balance) > 1) return '#ef4444'; // red — unbalanced
@@ -123,27 +98,25 @@ function AVLTreeSVG({ tree, inserted, rotationType }) {
     }
 
     return (
-        <svg viewBox={`0 0 ${svgW} ${svgH}`} width="100%" className="overflow-visible">
-            {edges.map((e, i) => {
-                const p1 = pos[e.from]; const p2 = pos[e.to];
-                if (!p1 || !p2) return null;
-                return <line key={i} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="#334155" strokeWidth="2" />;
+        <BinaryTreeCanvas
+            tree={tree}
+            emptyLabel="Empty tree — waiting for first insertion"
+            yGap={90}
+            yOffset={55}
+            minXGap={52}
+            maxXGap={88}
+            widthBudget={600}
+            styleFor={(node) => ({
+                fill: nodeFill(node.val, bf(node)),
+                stroke: node.val === inserted ? '#d9f99d' : '#4ade80',
+                text: '#ffffff',
+                radius: 22,
             })}
-            {Object.entries(pos).map(([val, { x, y, bf: balance }]) => {
-                const v = +val;
-                const fill = nodeFill(v, balance);
-                return (
-                    <g key={val} transform={`translate(${x},${y})`}>
-                        <circle r="22" fill={fill} stroke={v === inserted ? '#d9f99d' : '#4ade80'} strokeWidth="1.5"
-                            style={{ transition: 'fill 0.4s ease' }} />
-                        <text textAnchor="middle" dominantBaseline="middle" fontSize="12" fontWeight="700" fill="white" dy="-3">{val}</text>
-                        <text textAnchor="middle" dominantBaseline="middle" fontSize="9" fill={bfColor(balance)} dy="10">
-                            bf={balance > 0 ? '+' : ''}{balance}
-                        </text>
-                    </g>
-                );
-            })}
-        </svg>
+            subLabelFor={(node) => {
+                const balance = bf(node);
+                return { text: `bf=${balance > 0 ? '+' : ''}${balance}`, fill: bfColor(balance) };
+            }}
+        />
     );
 }
 
