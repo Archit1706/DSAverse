@@ -314,7 +314,7 @@ export default function ZAlgorithmPage() {
                                 <div className="mt-3 flex items-center gap-2 text-xs">
                                     <span className="text-slate-400">Z-box:</span>
                                     <span className="bg-fuchsia-800/40 text-fuchsia-300 px-2 py-0.5 rounded font-mono">[{l}, {r})</span>
-                                    <span className="text-slate-500">= "{combined.slice(l, r)}"</span>
+                                    <span className="text-slate-500">= &quot;{combined.slice(l, r)}&quot;</span>
                                 </div>
                             )}
 
