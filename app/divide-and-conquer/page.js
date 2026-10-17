@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, GitMerge, Search, Grid, MapPin } from 'lucide-react';
 
 export const metadata = {
-    title: 'Divide & Conquer | DSAverse',
+    title: 'Divide & Conquer',
     description: 'Interactive visualizations for Divide & Conquer algorithms — merge sort recursion tree, binary search decision tree, Strassen\'s matrix multiplication, and closest pair of points.',
 };
 
