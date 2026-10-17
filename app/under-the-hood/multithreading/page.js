@@ -621,7 +621,7 @@ export default function MultithreadingPage() {
                     </Link>
                     <h1 className="text-3xl md:text-4xl font-bold mb-2">Race Conditions, Mutex &amp; Deadlock</h1>
                     <p className="text-zinc-200 max-w-2xl text-sm">
-                        Why counter++ isn't atomic, how a mutex prevents data corruption,
+                        Why counter++ isn&apos;t atomic, how a mutex prevents data corruption,
                         what creates a deadlock, and how lock ordering breaks the cycle.
                     </p>
                 </div>
