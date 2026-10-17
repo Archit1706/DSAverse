@@ -636,7 +636,7 @@ function SceneMemory({ step }) {
                                 <div className={`font-bold mb-1.5 ${tc}`}>PyLongObject — int({obj.val})</div>
                                 <div className="space-y-0.5 text-slate-400">
                                     <div className="flex justify-between"><span className="text-slate-500">ob_refcnt</span><span>{obj.refcnt}</span></div>
-                                    <div className="flex justify-between"><span className="text-slate-500">ob_type  </span><span className="text-blue-400/70">→ &lt;class 'int'&gt;</span></div>
+                                    <div className="flex justify-between"><span className="text-slate-500">ob_type  </span><span className="text-blue-400/70">→ &lt;class &apos;int&apos;&gt;</span></div>
                                     <div className="flex justify-between"><span className="text-slate-500">ob_digit </span><span className={tc}>{obj.val}</span></div>
                                 </div>
                             </div>
@@ -663,7 +663,7 @@ function SceneMemory({ step }) {
                 </div>
                 <div className="mt-4 p-3 bg-slate-900/40 border border-slate-700/40 rounded-xl text-[10px] text-slate-500 leading-relaxed">
                     Local variables are NOT values — they are <span className="text-slate-300">named PyObject* pointers</span>.
-                    Assignment rebinds the pointer, not the object. This is why Python variables are "names, not boxes".
+                    Assignment rebinds the pointer, not the object. This is why Python variables are &quot;names, not boxes&quot;.
                 </div>
             </div>
         </div>
@@ -782,7 +782,7 @@ function SceneGIL({ step }) {
                     </div>
                 </div>
                 <p className="text-center text-[10px] text-slate-500 mt-2">
-                    CPython's eval loop fits in L1 cache — bytecode dispatch is always a cache hit
+                    CPython&apos;s eval loop fits in L1 cache — bytecode dispatch is always a cache hit
                 </p>
             </div>
 
@@ -1096,7 +1096,7 @@ export default function PythonExecutionPipelinePage() {
                         <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-4">
                             <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mb-2">Example</p>
                             <div className="font-mono text-xs bg-slate-900 rounded-lg p-3 border border-slate-800 text-slate-400 leading-relaxed">
-                                <div className="text-green-400/70"># The function we're tracing</div>
+                                <div className="text-green-400/70"># The function we&apos;re tracing</div>
                                 <div><span className="text-blue-400">def</span> <span className="text-green-300">add</span>(x, y):</div>
                                 <div className="ml-4">result = x + y</div>
                                 <div className="ml-4"><span className="text-blue-400">return</span> result</div>
