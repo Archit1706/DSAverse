@@ -12,6 +12,7 @@ export const metadata = {
      - built here          -> links to /indexing/<slug>
      - covered elsewhere   -> `href` + `coveredIn` link out to the existing page
      - not built yet       -> available: false, renders as a dead Coming Soon card
+                              (none left — every topic below is now reachable)
    The order mirrors data/algorithmCategories.js. */
 const algorithms = [
     {
@@ -62,7 +63,7 @@ const algorithms = [
         space: 'O(n)',
         pattern: 'Recolour / Rotate',
         difficulty: 'Advanced',
-        available: false,
+        available: true,
     },
     {
         name: 'Splay Trees',
@@ -73,7 +74,7 @@ const algorithms = [
         space: 'O(n)',
         pattern: 'Splaying',
         difficulty: 'Advanced',
-        available: false,
+        available: true,
     },
     {
         name: 'Open Hash Tables',
@@ -130,7 +131,7 @@ const algorithms = [
         space: 'O(n)',
         pattern: 'Path Compression',
         difficulty: 'Advanced',
-        available: false,
+        available: true,
     },
     {
         name: 'Ternary Search Tree',
@@ -141,7 +142,7 @@ const algorithms = [
         space: 'O(n)',
         pattern: 'Three-way Branch',
         difficulty: 'Advanced',
-        available: false,
+        available: true,
     },
     {
         name: 'B Trees',
