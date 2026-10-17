@@ -97,7 +97,7 @@ const SECTIONS = {
         "edit-distance",
         "fibonacci-numbers",
         "house-robber",
-        "largest-common-subsequence",
+        "longest-common-subsequence",
         "longest-increasing-subsequence",
         "making-change",
         "matrix-chain-multiplication",
