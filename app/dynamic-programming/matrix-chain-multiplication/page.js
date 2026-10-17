@@ -295,7 +295,7 @@ export default function MCMPage() {
                             {/* Input */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium mb-1 text-slate-300">
-                                    Dimension array <span className="text-slate-500">(n+1 values for n matrices — e.g. "30 35 15 5" = M1:30×35, M2:35×15, M3:15×5)</span>
+                                    Dimension array <span className="text-slate-500">(n+1 values for n matrices — e.g. &quot;30 35 15 5&quot; = M1:30×35, M2:35×15, M3:15×5)</span>
                                 </label>
                                 <div className="flex gap-2">
                                     <input type="text" value={inputText} onChange={e => setInputText(e.target.value)}
