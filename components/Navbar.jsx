@@ -175,7 +175,15 @@ const PAGES_EXIST = new Set([
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
-const toSlug = (name) => name.toLowerCase().replace(/[:\s]+/g, '-').replace(/[()]/g, '');
+/* Entries whose display name does not round-trip to their directory name.
+   Keep the parenthetical in the label — it is informative — but the page
+   directories deliberately leave it out. */
+const SLUG_OVERRIDES = {
+    'Single Number (XOR)': 'single-number',
+    'Count Set Bits (Brian Kernighan)': 'count-set-bits',
+};
+
+const toSlug = (name) => SLUG_OVERRIDES[name] ?? name.toLowerCase().replace(/['’]/g, '').replace(/[:\s]+/g, '-').replace(/[()]/g, '');
 
 /* ── Mega-menu dropdown ───────────────────────────────── */
 function MegaMenu({ onClose }) {
