@@ -41,7 +41,7 @@ const dpAlgorithms = [
     },
     {
         name: "Longest Common Subsequence",
-        slug: "largest-common-subsequence",
+        slug: "longest-common-subsequence",
         icon: AlignLeft,
         description: "2D DP table approach to find the longest subsequence common to two strings. Foundation for diff tools, version control, and DNA analysis.",
         timeComplexity: "O(m × n)",
