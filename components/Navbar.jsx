@@ -6,7 +6,7 @@ import {
     ChevronDown, Menu, X, BookOpen, ArrowRight,
     Layers, RefreshCw, ArrowUpDown, Search as SearchIcon,
     Database, Brain, GitBranch, BarChart2, ArrowLeftRight,
-    Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor,
+    Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -55,6 +55,7 @@ const CAT_META = {
     'Trees':                              { icon: <TreePine      className="w-3.5 h-3.5" />, grad: 'from-lime-500    to-green-600'   },
     'Divide and Conquer':                 { icon: <Scissors      className="w-3.5 h-3.5" />, grad: 'from-sky-500     to-blue-600'    },
     'Union-Find':                         { icon: <Share2        className="w-3.5 h-3.5" />, grad: 'from-purple-500  to-violet-600'  },
+    'Indexing':                           { icon: <Table         className="w-3.5 h-3.5" />, grad: 'from-emerald-500 to-teal-600'    },
     'Under the Hood':                     { icon: <Monitor       className="w-3.5 h-3.5" />, grad: 'from-zinc-500    to-slate-600'    },
 };
 
@@ -171,7 +172,7 @@ const PAGES_EXIST = new Set([
     'Heap-like Data Structures', 'Dynamic Programming',
     'Graph Algorithms', 'Two Pointers and Sliding Window',
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
-    'Divide and Conquer', 'Union-Find', 'Under the Hood',
+    'Divide and Conquer', 'Union-Find', 'Indexing', 'Under the Hood',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
@@ -181,6 +182,8 @@ const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 const SLUG_OVERRIDES = {
     'Single Number (XOR)': 'single-number',
     'Count Set Bits (Brian Kernighan)': 'count-set-bits',
+    // toSlug leaves '+' alone, which would yield the unsafe slug 'b+-trees'.
+    'B+ Trees': 'b-plus-trees',
 };
 
 const toSlug = (name) => SLUG_OVERRIDES[name] ?? name.toLowerCase().replace(/['’]/g, '').replace(/[:\s]+/g, '-').replace(/[()]/g, '');
