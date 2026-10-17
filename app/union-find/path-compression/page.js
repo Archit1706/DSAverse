@@ -1,6 +1,54 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info } from 'lucide-react';
+import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Code2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
+
+const CODE_EXAMPLE = `class PathCompression:
+    """After find(x), every node on that path points straight at the root."""
+
+    def __init__(self, n):
+        self.parent = list(range(n))
+
+    def find(self, p):
+        # First pass: locate the root.
+        root = p
+        while root != self.parent[root]:
+            root = self.parent[root]
+
+        # Second pass: flatten the path we just walked.
+        while p != root:
+            self.parent[p], p = root, self.parent[p]
+        return root
+
+    def union(self, p, q):
+        root_p, root_q = self.find(p), self.find(q)
+        if root_p != root_q:
+            self.parent[root_p] = root_q
+
+
+def find_halving(uf, p):
+    """One-pass variant: point each node at its grandparent.
+
+    Half the flattening for a single walk up the tree -- the version
+    most libraries actually ship.
+    """
+    while p != uf.parent[p]:
+        uf.parent[p] = uf.parent[uf.parent[p]]
+        p = uf.parent[p]
+    return p`;
+
+function CodePanel() {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+            <button onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                <Code2 className="h-4 w-4" />{open ? 'Hide' : 'Show'} Python Code
+            </button>
+            {open && <div className="mt-3"><CodeBlock code={CODE_EXAMPLE} language="python" /></div>}
+        </div>
+    );
+}
 
 // ─── Union-Find with path compression ────────────────────────────────────────
 
@@ -424,6 +472,7 @@ export default function PathCompressionPage() {
                                 ))}
                             </div>
                         </div>
+                        <CodePanel />
                         <QuizPanel qs={quizState} setQs={setQuizState} />
                     </div>
                 </div>
