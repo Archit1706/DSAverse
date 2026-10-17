@@ -1,6 +1,42 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info } from 'lucide-react';
+import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Code2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
+
+const CODE_EXAMPLE = `class QuickUnion:
+    """parent[] forms a forest; union() re-points a single root."""
+
+    def __init__(self, n):
+        self.parent = list(range(n))  # parent[i] == i means i is a root
+
+    def find(self, p):
+        while p != self.parent[p]:    # walk up until we hit a root
+            p = self.parent[p]
+        return p
+
+    def connected(self, p, q):
+        return self.find(p) == self.find(q)
+
+    def union(self, p, q):
+        root_p, root_q = self.find(p), self.find(q)
+        if root_p != root_q:
+            self.parent[root_p] = root_q   # exactly one pointer changes
+
+# union() is cheap, but an unlucky order builds a tall chain and
+# find() degrades to O(n) -- fixed by union by rank.`;
+
+function CodePanel() {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+            <button onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                <Code2 className="h-4 w-4" />{open ? 'Hide' : 'Show'} Python Code
+            </button>
+            {open && <div className="mt-3"><CodeBlock code={CODE_EXAMPLE} language="python" /></div>}
+        </div>
+    );
+}
 
 // ─── Union-Find logic ─────────────────────────────────────────────────────────
 
@@ -410,6 +446,7 @@ export default function QuickUnionPage() {
                                 ))}
                             </div>
                         </div>
+                        <CodePanel />
                         <QuizPanel qs={quizState} setQs={setQuizState} />
                     </div>
                 </div>
