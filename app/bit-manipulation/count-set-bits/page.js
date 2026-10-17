@@ -196,7 +196,7 @@ export default function CountSetBitsPage() {
                     <div className="text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">Count Set Bits</h1>
                         <p className="text-xl text-teal-100 mb-6 max-w-3xl mx-auto">
-                            Brian Kernighan's algorithm counts 1-bits in O(set bits) time by repeatedly clearing the lowest set bit with <code className="bg-white/20 px-2 rounded">n & (n−1)</code>.
+                            Brian Kernighan&apos;s algorithm counts 1-bits in O(set bits) time by repeatedly clearing the lowest set bit with <code className="bg-white/20 px-2 rounded">n & (n−1)</code>.
                         </p>
                         <div className="flex flex-wrap justify-center gap-3 text-sm">
                             <span className="bg-white/20 px-3 py-1 rounded-full">Time: O(set bits)</span>
