@@ -39,11 +39,37 @@ DSAverse is an **interactive web platform** that brings Data Structures and Algo
 
 ### 🔧 Algorithm Visualizations
 
--   **Sorting Algorithms**: Bubble Sort, Quick Sort, Merge Sort, Heap Sort, and more
--   **Searching Algorithms**: Binary Search, Linear Search, BFS, DFS
--   **Graph Algorithms**: Dijkstra's Algorithm, A\* Search, Minimum Spanning Tree
--   **Tree Algorithms**: Tree Traversals, AVL Trees, Binary Search Trees
--   **Dynamic Programming**: Classic DP problems with visual breakdowns
+**111 interactive pages across 15 sections:**
+
+| Section | Pages | Highlights |
+| --- | --- | --- |
+| **Under the Hood** | 26 | CPU caches, virtual memory, TLS, garbage collection, how Git works |
+| **Basics** | 9 | Stacks, queues, lists, singly/doubly/circular linked lists |
+| **Recursion** | 9 | Factorial, Tower of Hanoi, N-Queens, Sudoku solver, permutations |
+| **Graph Algorithms** | 9 | BFS, DFS, Dijkstra, Prim, Kruskal, Floyd-Warshall, topological sort |
+| **Sorting** | 8 | Bubble, Selection, Insertion, Merge, Quick, Heap, Radix, Bucket |
+| **Searching** | 8 | Binary, Linear, Jump, Interpolation, Exponential, Fibonacci, Ternary |
+| **Dynamic Programming** | 8 | LCS, 0/1 Knapsack, Edit Distance, Matrix Chain, House Robber |
+| **Two Pointers & Sliding Window** | 7 | 3Sum, Container With Most Water, Minimum Window Substring |
+| **Trees** | 5 | BST, AVL rotations, traversals, segment tree, trie |
+| **Heap-like Structures** | 5 | Binary, binomial, Fibonacci, leftist and skew heaps |
+| **Divide and Conquer** | 4 | Recursion trees, Strassen's algorithm, closest pair of points |
+| **Union-Find** | 4 | Quick find, quick union, path compression, union by rank |
+| **Backtracking** | 3 | N-Queens, Word Search, Rat in a Maze |
+| **Bit Manipulation** | 3 | XOR single number, Brian Kernighan's bit count, power of two |
+| **String Algorithms** | 3 | KMP, Rabin-Karp, Z-Algorithm |
+
+Plus a searchable [**complexity cheatsheet**](https://dsa-verse.vercel.app/cheatsheet) covering time and space bounds for every major data structure and algorithm.
+
+### 🔬 Under the Hood
+
+Beyond the algorithm catalogue, DSAverse has **26 animated CS-internals explainers** — multi-act walkthroughs of what actually happens inside a computer:
+
+-   **Language runtimes**: Python and C++ execution pipelines, JIT compilation, garbage collection, floating point and IEEE 754, Unicode and UTF-8
+-   **Concurrency**: processes vs threads, multithreading, async/await and the event loop
+-   **The web**: what happens when you search a URL, HTTPS and TLS, packet routing, browser rendering, REST APIs
+-   **Object orientation**: classes and memory, inheritance and MRO, virtual dispatch, composition vs inheritance
+-   **Systems**: system calls and kernel mode, virtual memory and paging, CPU cache hierarchy, containers, file systems, database query execution, Git internals
 
 ### 🎛️ Interactive Controls
 
@@ -55,11 +81,10 @@ DSAverse is an **interactive web platform** that brings Data Structures and Algo
 
 ### 📈 Learning Tools
 
--   📝 **Algorithm Explanations** - Detailed breakdowns of how each algorithm works
--   ⏱️ **Complexity Analysis** - Time and space complexity for every algorithm
--   💡 **Code Examples** - Clean, commented code in multiple languages
--   🎓 **Learning Paths** - Structured curriculum for systematic learning
--   🏆 **Progress Tracking** - Monitor your learning journey
+-   📝 **Algorithm Explanations** - A written explanation for every single step, not just the end result
+-   ⏱️ **Complexity Analysis** - Time and space complexity on every page and in the cheatsheet
+-   💡 **Code Examples** - Clean, commented Python and JavaScript implementations
+-   🧠 **Active Recall Quizzes** - A short quiz on each page to test what you just watched
 
 ---
 
@@ -114,28 +139,38 @@ npm start
 
 ```
 DSAverse/
-├── .next/                      # Next.js build output (auto-generated)
-├── app/                        # Next.js App Router pages and layouts
-│   ├── page.js                 # Main homepage
-│   ├── layout.js               # Root layout component
-│   ├── globals.css             # Global styles
-│   └── [algorithm]/            # Dynamic algorithm pages
-├── components/                 # Reusable React components
-├── data/                       # Static data and configurations
-│   ├── algorithmCategories.js  # Algorithm metadata and info
-│   ├── dataStructures.js       # Data structure definitions
-│   └── examples.js             # Example datasets
-├── node_modules/               # Dependencies (auto-generated)
-├── public/                     # Static assets
-├── .gitignore                  # Git ignore rules
-├── CONTRIBUTING.md             # This file
-├── eslint.config.mjs           # ESLint configuration
-├── jsconfig.json               # JavaScript/TypeScript config
-├── next.config.mjs             # Next.js configuration
-├── package.json                # Dependencies and scripts
-├── package-lock.json           # Locked dependency versions
-├── postcss.config.mjs          # PostCSS configuration
-└── README.md                   # Project documentation
+├── app/                           # Next.js App Router
+│   ├── page.js                    # Homepage
+│   ├── layout.js                  # Root layout, site-wide metadata, JSON-LD
+│   ├── globals.css                # Global styles and theme tokens
+│   ├── sitemap.js                 # Generates /sitemap.xml for all routes
+│   ├── robots.js                  # Generates /robots.txt
+│   ├── favicon.ico                # Served at /favicon.ico
+│   ├── cheatsheet/                # Searchable Big-O reference table
+│   ├── contact/                   # Contact / GitHub page
+│   ├── under-the-hood/            # CS-internals explainers
+│   └── [section]/                 # One directory per algorithm section
+│       ├── layout.js              # Navbar + Footer + section metadata
+│       ├── loading.js             # Section loading animation
+│       ├── page.js                # Section index (server component)
+│       └── [algorithm]/
+│           ├── layout.js          # Per-page metadata + canonical
+│           └── page.js            # The visualizer ("use client")
+├── components/                    # Shared React components
+│   ├── Navbar.jsx                 # Mega-menu driven by algorithmCategories
+│   ├── CodeBlock.jsx              # Syntax-highlighted code block
+│   ├── GraphCustomizer.jsx        # Custom graph input modal
+│   └── Hero.jsx, Footer.jsx, ...  # Homepage sections
+├── data/
+│   └── algorithmCategories.js     # Single source of truth for nav structure
+├── public/                        # Static assets (icons, og-image, manifest)
+├── AGENTS.md / CLAUDE.md          # Architecture guide for coding agents
+├── CONTRIBUTING.md                # Contribution guide
+├── eslint.config.mjs              # ESLint configuration
+├── jsconfig.json                  # Path aliases
+├── next.config.mjs                # Next.js configuration
+├── postcss.config.mjs             # PostCSS configuration
+└── package.json                   # Dependencies and scripts
 ```
 
 ---
@@ -145,8 +180,9 @@ DSAverse/
 | Technology                                                                                                 | Purpose         | Version |
 | ---------------------------------------------------------------------------------------------------------- | --------------- | ------- |
 | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white)            | React Framework | 15.x    |
-| ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)                  | UI Library      | 18.x    |
-| ![Tailwind CSS](https://img.shields.io/badge/Tailwind-38B2AC?style=flat&logo=tailwind-css&logoColor=white) | Styling         | 3.x     |
+| ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)                  | UI Library      | 19.x    |
+| ![Tailwind CSS](https://img.shields.io/badge/Tailwind-38B2AC?style=flat&logo=tailwind-css&logoColor=white) | Styling         | 4.x     |
+| ![Lucide](https://img.shields.io/badge/Lucide-F56565?style=flat&logo=lucide&logoColor=white)               | Icons           | 0.5x    |
 | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)               | Deployment      | -       |
 
 ## 🎓 Related Projects
