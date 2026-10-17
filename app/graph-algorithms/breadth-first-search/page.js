@@ -363,7 +363,7 @@ export default function BFSPage() {
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Shortest path in unweighted graphs</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Finding all nodes within a given distance</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Checking if a graph is bipartite</span></li>
-                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Weighted shortest path (use Dijkstra's)</span></li>
+                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Weighted shortest path (use Dijkstra&apos;s)</span></li>
                             </ul>
                         </div>
 
