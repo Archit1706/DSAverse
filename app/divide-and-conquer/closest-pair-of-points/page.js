@@ -1,6 +1,60 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info } from 'lucide-react';
+import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Code2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
+
+const CODE_EXAMPLE = `from math import dist
+
+
+def closest_pair(points):
+    """O(n log n): sort once up front, then divide and conquer."""
+    px = sorted(points)                       # by x
+    py = sorted(points, key=lambda p: p[1])   # by y
+    return _closest(px, py)
+
+
+def _closest(px, py):
+    n = len(px)
+    if n <= 3:                                # base case: brute force
+        return min((dist(a, b), a, b)
+                   for i, a in enumerate(px)
+                   for b in px[i + 1:])
+
+    mid = n // 2
+    mid_x = px[mid][0]
+
+    left_py = [p for p in py if p[0] <= mid_x]
+    right_py = [p for p in py if p[0] > mid_x]
+
+    best = min(_closest(px[:mid], left_py),
+               _closest(px[mid:], right_py))
+
+    # Only points within best[0] of the dividing line can beat it.
+    strip = [p for p in py if abs(p[0] - mid_x) < best[0]]
+
+    # Strip is sorted by y, so each point needs at most 7 comparisons.
+    for i, a in enumerate(strip):
+        for b in strip[i + 1:i + 8]:
+            if b[1] - a[1] >= best[0]:
+                break
+            best = min(best, (dist(a, b), a, b))
+
+    return best
+
+# T(n) = 2T(n/2) + O(n)  ->  O(n log n) after the initial sort.`;
+
+function CodePanel() {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+            <button onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-2 text-sky-400 hover:text-sky-300 text-sm font-medium transition-colors">
+                <Code2 className="h-4 w-4" />{open ? 'Hide' : 'Show'} Python Code
+            </button>
+            {open && <div className="mt-3"><CodeBlock code={CODE_EXAMPLE} language="python" /></div>}
+        </div>
+    );
+}
 
 // ─── Geometry helpers ─────────────────────────────────────────────────────────
 
@@ -472,6 +526,7 @@ export default function ClosestPairPage() {
                             </div>
                         </div>
 
+                        <CodePanel />
                         <QuizPanel qs={quizState} setQs={setQuizState} />
                     </div>
                 </div>
