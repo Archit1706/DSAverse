@@ -545,7 +545,7 @@ export default function WordSearchVisualizer() {
                                     <h4 className="font-bold text-indigo-400 text-sm mb-2">Key Insight</h4>
                                     <p className="text-slate-400 text-xs leading-relaxed">
                                         The visited set prevents using a cell twice in one path. On backtrack,
-                                        the cell is removed from the set — this is the "unchoose" step that makes
+                                        the cell is removed from the set — this is the &quot;unchoose&quot; step that makes
                                         other starting paths still able to use that cell.
                                     </p>
                                 </div>
