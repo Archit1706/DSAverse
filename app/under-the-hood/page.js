@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, Monitor, Globe, Zap, Code2, Cpu, Layers, Construction } from 'lucide-react';
 
 export const metadata = {
-    title: 'Under the Hood | DSAverse',
+    title: 'Under the Hood',
     description: 'Visualize what really happens inside computers — DNS resolution, TCP/TLS handshakes, Python bytecode, CPU caches, garbage collection, and more.',
 };
 
