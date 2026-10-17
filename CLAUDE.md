@@ -103,8 +103,11 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Divide and Conquer | `from-sky-600 to-blue-700` | `sky-400` / `sky-500` |
 | Union-Find | `from-purple-600 to-violet-700` | `purple-400` / `violet-400` |
 | Under the Hood | `from-zinc-600 to-slate-700` | `zinc-300` / `zinc-400` |
+| Indexing | `from-emerald-600 to-teal-700` | `emerald-400` / `emerald-500` |
 
-> **Note:** `Indexing` is listed in `data/algorithmCategories.js` (and `app/indexing/` is an empty dir) but is **not** in `PAGES_EXIST`, so it is intentionally not navigable — treat it as planned, not built.
+> **Note:** `Indexing` is built and navigable, but only partly. Its section index at `app/indexing/page.js` lists all 13 topics from the original curriculum in three states: 5 built in the section, 4 **cross-linked** to where they already live (Binary and Linear Search → `/searching/…`, Binary Search Trees / AVL Trees / Trie → `/trees/…`), and 4 still `available: false`. Cross-linked cards carry an `href` that overrides the default `/indexing/${slug}` plus a `coveredIn` label.
+>
+> **`data/algorithmCategories.js` deliberately lists only the 5 built Indexing pages**, not all 13. The Navbar generates a link for every entry of a `PAGES_EXIST` category, so a name without a page becomes a dead link. Add a topic there only when its page ships.
 
 ### Algorithm Visualizer Pattern
 
@@ -396,7 +399,9 @@ This keeps the index flip — the commit that actually makes the page reachable 
 
 ### Build Status
 
-**Every entry across all section indexes is now `available: true`** — there is no unbuilt page the indexes advertise. 130 routes in total: 112 algorithm/explainer pages, 17 section indexes and the homepage. Under the Hood has 26 explainers. Every one of the 112 pages carries a 3-question active-recall quiz.
+136 routes in total: 117 algorithm/explainer pages, 18 section indexes and the homepage. Under the Hood has 26 explainers. Every one of the 117 pages carries a 3-question active-recall quiz.
+
+The only `available: false` entries anywhere are the 4 unbuilt Indexing topics (Red-Black Trees, Splay Trees, Radix Tree, Ternary Search Tree). Every other section index advertises only pages that exist.
 
 When asked to work on "what's left": check `available: false` first, then look for gaps against `data/algorithmCategories.js`. Because the listed sections are essentially complete, a new topic usually means *adding* an entry to both the section index and `algorithmCategories.js` rather than flipping an existing flag — which is a scope decision worth confirming rather than assuming.
 
