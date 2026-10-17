@@ -9,6 +9,26 @@ import {
 /* ─── Cycling words ──────────────────────────────────── */
 const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find'];
 
+/* ─── Quick-nav chips ──────────────────────────── */
+/* Label and href are listed separately on purpose: several labels are
+   abbreviations ("Dynamic Prog.", "Heaps", "Graphs") that do not derive
+   from their route, so building the href from the label breaks them. */
+const QUICK_NAV = [
+    { label: 'Sorting', href: '/sorting' },
+    { label: 'Searching', href: '/searching' },
+    { label: 'Recursion', href: '/recursion' },
+    { label: 'Graphs', href: '/graph-algorithms' },
+    { label: 'Dynamic Prog.', href: '/dynamic-programming' },
+    { label: 'Heaps', href: '/heap-like-data-structures' },
+    { label: 'Basics', href: '/basics' },
+    { label: 'Backtracking', href: '/backtracking' },
+    { label: 'Bit Manipulation', href: '/bit-manipulation' },
+    { label: 'String Algorithms', href: '/string-algorithms' },
+    { label: 'Trees', href: '/trees' },
+    { label: 'Divide & Conquer', href: '/divide-and-conquer' },
+    { label: 'Union-Find', href: '/union-find' },
+];
+
 function WordCycler() {
     const [idx, setIdx] = useState(0);
     const [visible, setVisible] = useState(true);
@@ -292,14 +312,14 @@ export default function Hero() {
 
                             {/* Quick-nav chips */}
                             <div className="animate-fade-in-up delay-700 flex flex-wrap gap-2">
-                                {['Sorting', 'Searching', 'Recursion', 'Dynamic Prog.', 'Heaps', 'Basics', 'Backtracking', 'Bit Manipulation', 'String Algorithms', 'Trees', 'Divide & Conquer', 'Union-Find'].map((cat, i) => (
+                                {QUICK_NAV.map(({ label, href }, i) => (
                                     <Link
-                                        key={cat}
-                                        href={`/${cat.toLowerCase().replace(/&\s*/g, 'and-').replace(/[.\s]+/g, '-').replace(/-$/, '')}`}
+                                        key={label}
+                                        href={href}
                                         className="px-3 py-1 rounded-full text-xs font-medium text-slate-300 border border-slate-700 hover:border-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-all duration-200"
                                         style={{ animationDelay: `${0.7 + i * 0.05}s` }}
                                     >
-                                        {cat}
+                                        {label}
                                     </Link>
                                 ))}
                             </div>
