@@ -210,7 +210,7 @@ export default function KruskalMSTPage() {
                         </Link>
                     </div>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Kruskal's Minimum Spanning Tree</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Kruskal&apos;s Minimum Spanning Tree</h1>
                         <p className="text-xl text-cyan-100 mb-6 max-w-3xl mx-auto">
                             Build an MST by sorting every edge and greedily keeping the cheapest ones — using union-find to skip any edge that would close a cycle. Watch separate forests merge into one tree.
                         </p>
@@ -377,12 +377,12 @@ export default function KruskalMSTPage() {
                         </div>
 
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="font-bold text-white mb-4">Kruskal's vs Prim's</h3>
+                            <h3 className="font-bold text-white mb-4">Kruskal&apos;s vs Prim&apos;s</h3>
                             <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Sorts edges globally — great when edges are few (sparse)</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Union-Find makes the cycle check near O(1)</span></li>
-                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Merges a forest of trees; Prim's grows one tree</span></li>
-                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Sorting cost hurts on very dense graphs — prefer Prim's there</span></li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Merges a forest of trees; Prim&apos;s grows one tree</span></li>
+                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Sorting cost hurts on very dense graphs — prefer Prim&apos;s there</span></li>
                             </ul>
                         </div>
 
