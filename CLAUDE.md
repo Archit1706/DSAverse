@@ -350,11 +350,22 @@ const PAGES_EXIST = new Set([
     'Divide and Conquer', 'Union-Find', 'Under the Hood',
 ]);
 ```
-Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, spaces/colons → hyphens, parentheses removed. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.
+Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, apostrophes stripped, spaces/colons → hyphens, parentheses removed — so `Dijkstra's Shortest Path` → `dijkstras-shortest-path` and `Subsets (Power Set)` → `subsets-power-set`. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.
+
+A name whose slug still does not match its directory goes in the `SLUG_OVERRIDES` map just above `toSlug()`, which short-circuits the whole derivation:
+
+```js
+const SLUG_OVERRIDES = {
+    'Single Number (XOR)': 'single-number',
+    'Count Set Bits (Brian Kernighan)': 'count-set-bits',
+};
+```
+
+Use it rather than widening `toSlug()`: dropping parenthetical content wholesale would break `Subsets (Power Set)`, whose directory keeps it.
 
 ### `data/algorithmCategories.js`
 
-The single source of truth for nav structure. Algorithm names here must match their directory slugs (via `toSlug()`). The Navbar filters to `PAGES_EXIST` categories, so adding an algorithm to this file without adding a page won't break anything — it just won't be navigable.
+The single source of truth for nav structure. Algorithm names here must match their directory slugs (via `toSlug()`, or an entry in `SLUG_OVERRIDES`). The Navbar filters to `PAGES_EXIST` categories, but it does **not** check that the page exists — an entry here with no directory renders a dead mega-menu link, so only list algorithms that are actually built.
 
 ### Adding a New Algorithm Page — Checklist
 
