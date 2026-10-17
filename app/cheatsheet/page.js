@@ -118,6 +118,8 @@ const DATA_STRUCTURES = [
     { name: 'Hash Table',         slug: '/indexing/open-hash-tables',       access: 'N/A',      search: 'O(1)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
     { name: 'Binary Search Tree', slug: '/trees/binary-search-tree',        access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
     { name: 'AVL Tree',           slug: '/trees/avl-tree',                  access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
+    { name: 'Red-Black Tree',     slug: '/indexing/red-black-trees',        access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
+    { name: 'Splay Tree',         slug: '/indexing/splay-trees',            access: 'O(log n)*', search: 'O(log n)*', insert: 'O(log n)*', delete: 'O(log n)*', space: 'O(n)' },
     { name: 'Heap (Min/Max)',     slug: '/heap-like-data-structures/heaps', access: 'O(1)',     search: 'O(n)',     insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
     { name: 'Trie',               slug: '/trees/trie',                      access: 'O(m)',     search: 'O(m)',     insert: 'O(m)',     delete: 'O(m)',     space: 'O(n×m)' },
     { name: 'Segment Tree',       slug: '/trees/segment-tree',              access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'N/A',      space: 'O(n)'   },
