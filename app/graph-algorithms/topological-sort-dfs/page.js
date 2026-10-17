@@ -165,7 +165,7 @@ export default function TopoSortDFSPage() {
                     <div className="text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">Topological Sort — DFS</h1>
                         <p className="text-xl text-cyan-100 mb-6 max-w-3xl mx-auto">
-                            Run depth-first search on a DAG, push each node onto a stack the moment it finishes, then reverse the stack — that's your topological order.
+                            Run depth-first search on a DAG, push each node onto a stack the moment it finishes, then reverse the stack — that&apos;s your topological order.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 text-sm">
                             <div className="bg-white/20 px-3 py-1 rounded-full">Time: O(V + E)</div>
@@ -341,11 +341,11 @@ export default function TopoSortDFSPage() {
                         </div>
 
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="font-bold text-white mb-4">DFS vs Kahn's</h3>
+                            <h3 className="font-bold text-white mb-4">DFS vs Kahn&apos;s</h3>
                             <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Elegant recursion — record each node as it finishes</span></li>
-                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Reuses ordinary DFS; also finds cycles via a "gray" node revisit</span></li>
-                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Same O(V + E) as Kahn's, just a different bookkeeping</span></li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Reuses ordinary DFS; also finds cycles via a &quot;gray&quot; node revisit</span></li>
+                                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Same O(V + E) as Kahn&apos;s, just a different bookkeeping</span></li>
                                 <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Deep graphs can overflow the recursion stack (use an explicit stack)</span></li>
                             </ul>
                         </div>
