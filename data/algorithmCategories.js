@@ -125,7 +125,11 @@ export const algorithmCategories = [
             "Closed Hash Tables",
             "Closed Hash Tables with Buckets",
             "B Trees",
-            "B+ Trees"
+            "B+ Trees",
+            "Red-Black Trees",
+            "Splay Trees",
+            "Radix Tree",
+            "Ternary Search Tree"
         ]
     },
     {
