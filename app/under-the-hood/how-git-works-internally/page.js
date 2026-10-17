@@ -325,7 +325,7 @@ function SceneBlob({ step }) {
             <div className="flex flex-col items-center justify-center gap-5 py-10 w-full">
                 <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center gap-1">
-                        <div className="px-4 py-3 rounded-xl border border-slate-700/60 bg-slate-950/60 font-mono text-sm text-slate-300">"{step.blob.content}"</div>
+                        <div className="px-4 py-3 rounded-xl border border-slate-700/60 bg-slate-950/60 font-mono text-sm text-slate-300">&quot;{step.blob.content}&quot;</div>
                         <span className="text-[10px] text-slate-600">file content</span>
                     </div>
                     <div className="flex flex-col items-center">
