@@ -396,7 +396,7 @@ def coin_change_with_reconstruction(amount, coins):
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Optimal Substructure:</strong> optimal solution for i uses optimal for i−coin</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Recurrence:</strong> dp[i] = min(dp[i], dp[i−coin]+1)</span></li>
                                 <li className="flex items-start gap-2"><Info className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Base Case:</strong> dp[0] = 0</span></li>
-                                <li className="flex items-start gap-2"><Info className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Sentinel:</strong> ∞ means "impossible so far"</span></li>
+                                <li className="flex items-start gap-2"><Info className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" /><span><strong className="text-slate-200">Sentinel:</strong> ∞ means &quot;impossible so far&quot;</span></li>
                             </ul>
                         </div>
 
