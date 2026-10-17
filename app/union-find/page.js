@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, GitMerge, Layers, Zap, GitBranch } from 'lucide-react';
 
 export const metadata = {
-    title: 'Union-Find | DSAverse',
+    title: 'Union-Find',
     description: 'Interactive Union-Find visualizations — Quick Find flat array, Quick Union tree pointers, path compression before/after, and union by rank.',
 };
 
