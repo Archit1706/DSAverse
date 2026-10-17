@@ -197,7 +197,7 @@ export default function PrimsMSTPage() {
                         </Link>
                     </div>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Prim's Minimum Spanning Tree</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Prim&apos;s Minimum Spanning Tree</h1>
                         <p className="text-xl text-cyan-100 mb-6 max-w-3xl mx-auto">
                             Watch a minimum spanning tree grow outward from a start node — at every step, the cheapest edge crossing the cut pulls one new node into the tree.
                         </p>
@@ -371,7 +371,7 @@ export default function PrimsMSTPage() {
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>The cheapest edge crossing any cut is always safe to add to the MST</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Great for dense graphs with an adjacency-matrix variant</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Always yields one connected tree as it grows</span></li>
-                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Not for shortest paths — that's Dijkstra's job</span></li>
+                                <li className="flex items-start gap-2"><XCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" /><span>Not for shortest paths — that&apos;s Dijkstra&apos;s job</span></li>
                             </ul>
                         </div>
 
