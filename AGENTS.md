@@ -358,11 +358,12 @@ The single source of truth for nav structure. Algorithm names here must match th
 
 ### Adding a New Algorithm Page — Checklist
 
-1. Create `app/[section]/[slug]/layout.js` — metadata + passthrough layout
+1. Create `app/[section]/[slug]/layout.js` — metadata + passthrough layout, **including `alternates: { canonical: "/[section]/[slug]" }`** (see SEO below)
 2. Create `app/[section]/[slug]/page.js` — `"use client"` visualizer
 3. Add the algorithm name to `data/algorithmCategories.js` under the correct section
 4. If the section index has an `available` flag, flip it to `true` (or add the entry)
-5. Run `npm run build` to confirm no errors
+5. Add the slug to its section's array in `app/sitemap.js`
+6. Run `npm run build` to confirm no errors
 
 The repo history commits a new page as **three separate commits**, in this order — keep it up:
 
@@ -373,6 +374,14 @@ Mark <Name> as available in <Section> index   # index page.js (+ algorithmCatego
 ```
 
 This keeps the index flip — the commit that actually makes the page reachable — separate from the page itself, so a half-finished visualizer is never linked from the site.
+
+### SEO
+
+**Every `layout.js` must set its own `alternates: { canonical: "/its/route" }`.** Next.js merges metadata shallowly and `alternates` is inherited, so a layout that omits it silently adopts its parent's canonical — which previously made all 128 routes declare the homepage as their canonical URL. Paths are relative; `metadataBase` in `app/layout.js` resolves them.
+
+`app/sitemap.js` lists every route explicitly instead of deriving them from `data/algorithmCategories.js`. That file drives the nav menu, and several of its entry names do not round-trip through `toSlug()` to a real directory, so generating the sitemap from it would publish URLs that 404. Keep the two in sync by hand (step 5 above).
+
+`app/robots.js` allows everything and points at `/sitemap.xml`.
 
 ### Build Status
 
