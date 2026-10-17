@@ -577,7 +577,7 @@ function ScenePyObject({ step }) {
                         <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-6 py-3 text-center">
                             <div className="text-red-400 font-bold text-sm mb-1">⟲ Circular Reference Leak</div>
                             <div className="text-slate-400 text-xs">a → b → a. No name points here, but refcnt ≠ 0.</div>
-                            <div className="text-slate-400 text-xs mt-1">Python's cyclic GC (gc module) detects and frees these.</div>
+                            <div className="text-slate-400 text-xs mt-1">Python&apos;s cyclic GC (gc module) detects and frees these.</div>
                         </div>
                     </div>
                 </div>
