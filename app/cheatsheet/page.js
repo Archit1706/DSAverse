@@ -115,11 +115,14 @@ const DATA_STRUCTURES = [
     { name: 'Linked List',        slug: '/basics/lists-linked-list',        access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
     { name: 'Stack',              slug: '/basics/stack-array',              access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
     { name: 'Queue',              slug: '/basics/queues-array',             access: 'O(n)',     search: 'O(n)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
+    { name: 'Hash Table',         slug: '/indexing/open-hash-tables',       access: 'N/A',      search: 'O(1)',     insert: 'O(1)',     delete: 'O(1)',     space: 'O(n)'   },
     { name: 'Binary Search Tree', slug: '/trees/binary-search-tree',        access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
     { name: 'AVL Tree',           slug: '/trees/avl-tree',                  access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
     { name: 'Heap (Min/Max)',     slug: '/heap-like-data-structures/heaps', access: 'O(1)',     search: 'O(n)',     insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
     { name: 'Trie',               slug: '/trees/trie',                      access: 'O(m)',     search: 'O(m)',     insert: 'O(m)',     delete: 'O(m)',     space: 'O(n×m)' },
     { name: 'Segment Tree',       slug: '/trees/segment-tree',              access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'N/A',      space: 'O(n)'   },
+    { name: 'B-Tree',             slug: '/indexing/b-trees',                access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
+    { name: 'B+ Tree',            slug: '/indexing/b-plus-trees',           access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', delete: 'O(log n)', space: 'O(n)'   },
 ];
 
 /* Heap-like structures compare on different operations than the
