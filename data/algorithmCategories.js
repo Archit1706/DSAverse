@@ -113,22 +113,17 @@ export const algorithmCategories = [
     },
     {
         name: "Indexing",
-        color: "bg-purple-500",
-        lightColor: "bg-purple-50",
-        borderColor: "border-purple-200",
-        textColor: "text-purple-700",
+        color: "bg-emerald-500",
+        lightColor: "bg-emerald-50",
+        borderColor: "border-emerald-200",
+        textColor: "text-emerald-700",
+        // Only pages that exist — the Navbar links every entry here, so an
+        // unbuilt name becomes a dead link. The section index at
+        // app/indexing/page.js carries the full 13-topic curriculum.
         algorithms: [
-            "Binary and Linear Search",
-            "Binary Search Trees",
-            "AVL Trees",
-            "Red-Black Trees",
-            "Splay Trees",
             "Open Hash Tables",
             "Closed Hash Tables",
             "Closed Hash Tables with Buckets",
-            "Trie (Prefix Tree)",
-            "Radix Tree",
-            "Ternary Search Tree",
             "B Trees",
             "B+ Trees"
         ]
