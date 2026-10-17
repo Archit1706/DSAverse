@@ -300,7 +300,7 @@ print(isPalindrome("race a car"))                   # False`;
                             {/* Cleaned string label */}
                             <div className="mb-2">
                                 <span className="text-xs text-slate-400">Cleaned string: </span>
-                                <span className="text-xs text-slate-300 font-mono">"{cur.cleanStr}"</span>
+                                <span className="text-xs text-slate-300 font-mono">&quot;{cur.cleanStr}&quot;</span>
                             </div>
 
                             {/* Character boxes */}
