@@ -45,11 +45,9 @@ export const algorithmCategories = [
             "Bubble Sort",
             "Selection Sort",
             "Insertion Sort",
-            "Shell Sort",
             "Merge Sort",
             "Quick Sort",
             "Bucket Sort",
-            "Counting Sort",
             "Radix Sort",
             "Heap Sort"
         ]
