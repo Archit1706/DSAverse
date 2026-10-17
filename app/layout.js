@@ -86,7 +86,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${outfit.variable} ${jetbrainsMono.variable} antialiased text-gray-900`}
+        className={`${outfit.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
       </body>
