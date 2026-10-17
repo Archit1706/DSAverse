@@ -1,6 +1,48 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info } from 'lucide-react';
+import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Code2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
+
+const CODE_EXAMPLE = `def merge_sort(arr):
+    """Divide down to single elements, then merge sorted halves up."""
+    if len(arr) <= 1:              # base case: already sorted
+        return arr
+
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])   # conquer the left half
+    right = merge_sort(arr[mid:])  # conquer the right half
+    return merge(left, right)      # combine
+
+
+def merge(left, right):
+    out, i, j = [], 0, 0
+
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:    # <= is what keeps the sort stable
+            out.append(left[i])
+            i += 1
+        else:
+            out.append(right[j])
+            j += 1
+
+    out.extend(left[i:])           # one side is already exhausted
+    out.extend(right[j:])
+    return out
+
+# T(n) = 2T(n/2) + O(n)  ->  O(n log n) time, O(n) auxiliary space.`;
+
+function CodePanel() {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+            <button onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-2 text-sky-400 hover:text-sky-300 text-sm font-medium transition-colors">
+                <Code2 className="h-4 w-4" />{open ? 'Hide' : 'Show'} Python Code
+            </button>
+            {open && <div className="mt-3"><CodeBlock code={CODE_EXAMPLE} language="python" /></div>}
+        </div>
+    );
+}
 
 // ─── Step generation ──────────────────────────────────────────────────────────
 
@@ -401,6 +443,7 @@ export default function MergeSortPage() {
                         </div>
 
                         {/* Quiz */}
+                        <CodePanel />
                         <QuizPanel qs={quizState} setQs={setQuizState} />
                     </div>
                 </div>
