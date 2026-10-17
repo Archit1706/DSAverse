@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, TreePine, GitBranch, RotateCcw, Layers, Type } from 'lucide-react';
 
 export const metadata = {
-    title: 'Trees | DSAverse',
+    title: 'Trees',
     description: 'Interactive visualizations for BST, AVL trees, binary tree traversals, segment trees, and tries.',
 };
 
