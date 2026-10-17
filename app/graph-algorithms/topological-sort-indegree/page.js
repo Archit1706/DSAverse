@@ -177,7 +177,7 @@ export default function TopoSortIndegreePage() {
                         </Link>
                     </div>
                     <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Topological Sort — Kahn's Algorithm</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">Topological Sort — Kahn&apos;s Algorithm</h1>
                         <p className="text-xl text-cyan-100 mb-6 max-w-3xl mx-auto">
                             Order a directed acyclic graph so every edge points forward — by repeatedly peeling off nodes that have no remaining prerequisites (in-degree 0).
                         </p>
@@ -341,7 +341,7 @@ export default function TopoSortIndegreePage() {
                         </div>
 
                         <div className="bg-slate-900/70 rounded-xl border border-slate-700/50 shadow-xl p-6">
-                            <h3 className="font-bold text-white mb-4">Where It's Used</h3>
+                            <h3 className="font-bold text-white mb-4">Where It&apos;s Used</h3>
                             <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Build systems & task scheduling (dependencies first)</span></li>
                                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span>Course prerequisites, package installation order</span></li>
