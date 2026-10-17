@@ -396,7 +396,7 @@ This keeps the index flip — the commit that actually makes the page reachable 
 
 ### Build Status
 
-Every entry across all section indexes is `available: true` **except Maximum Subarray (Kadane's) in `app/dynamic-programming/page.js`** — that is the only unbuilt page the indexes advertise. Under the Hood has 26 explainers.
+**Every entry across all section indexes is now `available: true`** — there is no unbuilt page the indexes advertise. 130 routes in total: 112 algorithm/explainer pages, 17 section indexes and the homepage. Under the Hood has 26 explainers. Every one of the 112 pages carries a 3-question active-recall quiz.
 
 When asked to work on "what's left": check `available: false` first, then look for gaps against `data/algorithmCategories.js`. Because the listed sections are essentially complete, a new topic usually means *adding* an entry to both the section index and `algorithmCategories.js` rather than flipping an existing flag — which is a scope decision worth confirming rather than assuming.
 
