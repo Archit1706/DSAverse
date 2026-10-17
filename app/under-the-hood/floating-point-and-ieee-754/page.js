@@ -265,7 +265,7 @@ function CompareScene({ mode }) {
 
             <div className={`rounded-xl border p-4 transition-colors duration-500 ${mode === 'eq' ? 'border-red-500/50 bg-red-500/5' : 'border-slate-800 bg-slate-900/40'}`}>
                 <div className="text-xs text-slate-400 mb-2">the wrong way to compare</div>
-                <div className="text-sm"><span className="text-red-400">if</span> <span className="text-slate-200">(a === b)</span> <span className="text-slate-600">// exact equality on computed floats</span></div>
+                <div className="text-sm"><span className="text-red-400">if</span> <span className="text-slate-200">(a === b)</span> <span className="text-slate-600">{'// exact equality on computed floats'}</span></div>
                 <div className="text-[11px] text-slate-500 mt-2">two values that are mathematically equal can differ in the last bit or two.</div>
             </div>
 
