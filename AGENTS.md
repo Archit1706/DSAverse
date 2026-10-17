@@ -46,6 +46,8 @@ components/
   Navbar.jsx                     # Mega-menu driven by algorithmCategories.js + PAGES_EXIST set
   CodeBlock.jsx                  # Syntax-highlighted code block (wraps react-syntax-highlighter)
   GraphCustomizer.jsx            # Shared modal for custom graph input (BFS/DFS/Dijkstra)
+  BinaryTreeCanvas.jsx           # Inorder-index SVG layout for binary trees (BST/AVL/red-black/splay)
+  BTreeCanvas.jsx                # Width-aware n-ary SVG layout for B-trees and B+ trees
   Hero.jsx, Features.jsx, AlgorithmsGrid.jsx, CTA.jsx, Footer.jsx
 data/
   algorithmCategories.js         # Single source of truth for nav categories and algorithm names
@@ -105,9 +107,9 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Under the Hood | `from-zinc-600 to-slate-700` | `zinc-300` / `zinc-400` |
 | Indexing | `from-emerald-600 to-teal-700` | `emerald-400` / `emerald-500` |
 
-> **Note:** `Indexing` is built and navigable, but only partly. Its section index at `app/indexing/page.js` lists all 13 topics from the original curriculum in three states: 5 built in the section, 4 **cross-linked** to where they already live (Binary and Linear Search → `/searching/…`, Binary Search Trees / AVL Trees / Trie → `/trees/…`), and 4 still `available: false`. Cross-linked cards carry an `href` that overrides the default `/indexing/${slug}` plus a `coveredIn` label.
+> **Note:** `Indexing` covers all 13 topics of the original curriculum, in two states: **9 built in the section**, and **4 cross-linked** to where they already live (Binary and Linear Search → `/searching/…`, Binary Search Trees / AVL Trees / Trie → `/trees/…`). Cross-linked cards carry an `href` that overrides the default `/indexing/${slug}` plus a `coveredIn` label; the card footer reads "Open in Trees →" rather than "Start Visualization →".
 >
-> **`data/algorithmCategories.js` deliberately lists only the 5 built Indexing pages**, not all 13. The Navbar generates a link for every entry of a `PAGES_EXIST` category, so a name without a page becomes a dead link. Add a topic there only when its page ships.
+> **`data/algorithmCategories.js` lists only the 9 pages built inside the section**, not the 4 cross-linked ones — those already appear under Searching and Trees, and listing them here would point the nav at `/indexing/…` routes that do not exist. The Navbar links every entry of a `PAGES_EXIST` category without checking, so only add a name here once its page is in place.
 
 ### Algorithm Visualizer Pattern
 
@@ -250,25 +252,25 @@ This keeps the quiz reusable within the file without polluting the global compon
 
 ### Tree Visualizer SVG Pattern
 
-Tree pages use **inorder-based SVG layout** so nodes never overlap regardless of tree shape:
+Binary tree pages share **`components/BinaryTreeCanvas.jsx`** — an inorder-index layout (x = inorder position, y = depth) so nodes never overlap whatever shape the tree takes, including a fully degenerate spine. Pages pass a `styleFor(node)` callback instead of re-deriving geometry:
 
-```js
-// computeLayout: x = inorder index × spacing, y = depth × spacing
-function computeLayout(node, depth = 0, counter = { n: 0 }, xGap = 64) {
-    if (!node) return { pos: {}, edges: [] };
-    const left = computeLayout(node.left, depth + 1, counter, xGap);
-    const x = counter.n * xGap + xGap / 2;
-    const y = depth * 80 + 50;
-    counter.n++;
-    const right = computeLayout(node.right, depth + 1, counter, xGap);
-    // merge pos + edges...
-}
+```jsx
+import BinaryTreeCanvas from '@/components/BinaryTreeCanvas';
 
-// Dynamic viewBox so tree fits any size
-const svgW = nodeCount(tree) * xGap;
-const svgH = treeHeight(tree) * 80 + 40;
-<svg viewBox={`0 0 ${svgW} ${svgH}`} width="100%" ...>
+<BinaryTreeCanvas
+    tree={step.tree}
+    yGap={78} minXGap={52} maxXGap={84} widthBudget={600}
+    styleFor={(node) => ({ fill, stroke, text, radius, strokeWidth })}
+    subLabelFor={(node) => ({ text: `bf=${bf(node)}`, fill })}   // optional second line
+    edgeStrokeFor={(parent, child) => '#334155'}                 // optional
+/>
 ```
+
+Used by `binary-search-tree`, `avl-tree` (balance factors via `subLabelFor`), `red-black-trees` (colour via `styleFor`) and `splay-trees`. It also exports `computeLayout`, `nodeCount` and `treeHeight`.
+
+**`components/BTreeCanvas.jsx`** is the n-ary counterpart for B-trees and B+ trees: nodes are sized by key count and a parent is centred over the span of its children, which the binary helper cannot express. It takes `showLeafLinks` for the B+ leaf chain and `scanRange` / `foundKeys` for range scans.
+
+Pages with their own node model (`trie`, `radix-tree`, `ternary-search-tree`, `segment-tree`) keep a local SVG, since edge labels and three-way branching do not fit either shared canvas.
 
 **Tree page specifics:**
 - BST (`binary-search-tree`) — search + insert operations with traversal path highlighting; `visited[]` array tracks path, `current` is the node being compared; "Keep this tree" button lets user chain inserts
@@ -399,9 +401,9 @@ This keeps the index flip — the commit that actually makes the page reachable 
 
 ### Build Status
 
-136 routes in total: 117 algorithm/explainer pages, 18 section indexes and the homepage. Under the Hood has 26 explainers. Every one of the 117 pages carries a 3-question active-recall quiz.
+140 routes in total: 121 algorithm/explainer pages, 18 section indexes and the homepage. Under the Hood has 26 explainers. Every one of the 121 pages carries a 3-question active-recall quiz.
 
-The only `available: false` entries anywhere are the 4 unbuilt Indexing topics (Red-Black Trees, Splay Trees, Radix Tree, Ternary Search Tree). Every other section index advertises only pages that exist.
+**There are no `available: false` entries left anywhere** — every section index advertises only pages that exist. The flag and its Coming Soon rendering are still supported, so a newly planned topic can use them.
 
 When asked to work on "what's left": check `available: false` first, then look for gaps against `data/algorithmCategories.js`. Because the listed sections are essentially complete, a new topic usually means *adding* an entry to both the section index and `algorithmCategories.js` rather than flipping an existing flag — which is a scope decision worth confirming rather than assuming.
 
