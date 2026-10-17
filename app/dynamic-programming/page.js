@@ -121,7 +121,7 @@ const dpAlgorithms = [
         difficulty: "Beginner",
         type: "Optimized DP",
         pattern: "Subarray",
-        available: false,
+        available: true,
     }
 ];
 
