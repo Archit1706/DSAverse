@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, TreePine, Info, SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import BinaryTreeCanvas from '@/components/BinaryTreeCanvas';
 
 // ─── BST helpers ──────────────────────────────────────────────────────────────
 
@@ -17,32 +18,6 @@ function buildTree(vals) {
     let t = null;
     for (const v of vals) t = insertNode(t, v);
     return t;
-}
-
-function nodeCount(node) {
-    if (!node) return 0;
-    return 1 + nodeCount(node.left) + nodeCount(node.right);
-}
-
-function treeHeight(node) {
-    if (!node) return 0;
-    return 1 + Math.max(treeHeight(node.left), treeHeight(node.right));
-}
-
-// Inorder layout: x positions are inorder index × spacing, y is depth × spacing
-function computeLayout(node, depth = 0, counter = { n: 0 }, xGap = 64) {
-    if (!node) return { pos: {}, edges: [] };
-    const left = computeLayout(node.left, depth + 1, counter, xGap);
-    const x = counter.n * xGap + xGap / 2;
-    const y = depth * 80 + 50;
-    counter.n++;
-    const right = computeLayout(node.right, depth + 1, counter, xGap);
-
-    const pos = { ...left.pos, [node.val]: { x, y }, ...right.pos };
-    const edges = [...left.edges, ...right.edges];
-    if (node.left) edges.push({ from: node.val, to: node.left.val });
-    if (node.right) edges.push({ from: node.val, to: node.right.val });
-    return { pos, edges };
 }
 
 // ─── Step generators ──────────────────────────────────────────────────────────
@@ -108,15 +83,6 @@ function genInsert(tree, val) {
 // ─── Tree SVG ─────────────────────────────────────────────────────────────────
 
 function TreeSVG({ tree, visited, current, phase }) {
-    if (!tree) return <div className="flex items-center justify-center h-48 text-slate-500 text-sm">Empty tree</div>;
-
-    const n = nodeCount(tree);
-    const h = treeHeight(tree);
-    const xGap = Math.max(48, Math.min(80, 560 / n));
-    const { pos, edges } = computeLayout(tree, 0, { n: 0 }, xGap);
-    const svgW = n * xGap;
-    const svgH = h * 80 + 40;
-
     function fillColor(v) {
         if (phase === 'found' && v === current) return '#22c55e';
         if (phase === 'inserted' && v === current) return '#84cc16';
@@ -125,37 +91,23 @@ function TreeSVG({ tree, visited, current, phase }) {
         if (visited.includes(v)) return '#6366f1';
         return '#1e293b';
     }
-    function strokeColor(v) {
-        if (v === current) return '#fde68a';
-        if (visited.includes(v)) return '#818cf8';
-        return '#475569';
-    }
-    function textColor(v) {
-        const f = fillColor(v);
-        return f === '#1e293b' ? '#e2e8f0' : '#0f172a';
-    }
 
     return (
-        <svg viewBox={`0 0 ${svgW} ${svgH}`} width="100%" className="overflow-visible">
-            {edges.map((e, i) => {
-                const p1 = pos[e.from]; const p2 = pos[e.to];
-                if (!p1 || !p2) return null;
-                return <line key={i} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="#334155" strokeWidth="2" />;
-            })}
-            {Object.entries(pos).map(([val, { x, y }]) => {
-                const v = +val;
+        <BinaryTreeCanvas
+            tree={tree}
+            styleFor={(node) => {
+                const v = node.val;
+                const fill = fillColor(v);
                 const isActive = v === current;
-                return (
-                    <g key={val} transform={`translate(${x},${y})`} style={{ transition: 'transform 0.4s ease' }}>
-                        <circle r={isActive ? 22 : 20} fill={fillColor(v)} stroke={strokeColor(v)} strokeWidth={isActive ? 2.5 : 1.5}
-                            style={{ transition: 'fill 0.35s ease, r 0.2s ease' }} />
-                        <text textAnchor="middle" dominantBaseline="middle" fontSize="13" fontWeight="700" fill={textColor(v)}>
-                            {val}
-                        </text>
-                    </g>
-                );
-            })}
-        </svg>
+                return {
+                    fill,
+                    stroke: isActive ? '#fde68a' : visited.includes(v) ? '#818cf8' : '#475569',
+                    text: fill === '#1e293b' ? '#e2e8f0' : '#0f172a',
+                    radius: isActive ? 22 : 20,
+                    strokeWidth: isActive ? 2.5 : 1.5,
+                };
+            }}
+        />
     );
 }
 
