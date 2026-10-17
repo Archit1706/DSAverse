@@ -488,7 +488,7 @@ class SkewHeap:
                                 </li>
                                 <li className="flex gap-3 items-start">
                                     <span className="flex-shrink-0 w-5 h-5 bg-amber-500/20 text-amber-300 rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                                    <span>Recursively merge the larger root's subtree with the smaller root's right child</span>
+                                    <span>Recursively merge the larger root&apos;s subtree with the smaller root&apos;s right child</span>
                                 </li>
                                 <li className="flex gap-3 items-start">
                                     <span className="flex-shrink-0 w-5 h-5 bg-orange-500/20 text-orange-300 rounded-full flex items-center justify-center text-xs font-bold">3</span>
@@ -496,7 +496,7 @@ class SkewHeap:
                                 </li>
                             </ol>
                             <div className="mt-4 p-3 bg-slate-800/60 rounded-lg text-xs text-slate-400">
-                                The unconditional swap distributes "heavy" nodes across the tree over time, ensuring the amortized O(log n) bound without storing any balance information.
+                                The unconditional swap distributes &quot;heavy&quot; nodes across the tree over time, ensuring the amortized O(log n) bound without storing any balance information.
                             </div>
                         </div>
 
