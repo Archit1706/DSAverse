@@ -486,7 +486,7 @@ class LeftistHeap:
                                 <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Leftist property</strong> — npl(left) ≥ npl(right) at every node</span></li>
                                 <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Short right spine</strong> — guaranteed O(log n) length; merge stays on the right</span></li>
                                 <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>All operations via merge</strong> — insert and extract-min both reduce to merge</span></li>
-                                <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Not balanced</strong> — the tree is intentionally skewed leftward; that's the design</span></li>
+                                <li className="flex gap-2"><span className="text-amber-400">•</span><span><strong>Not balanced</strong> — the tree is intentionally skewed leftward; that&apos;s the design</span></li>
                             </ul>
                         </div>
 
