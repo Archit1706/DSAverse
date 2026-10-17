@@ -1,6 +1,44 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info } from 'lucide-react';
+import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Code2 } from 'lucide-react';
+import CodeBlock from '@/components/CodeBlock';
+
+const CODE_EXAMPLE = `class QuickFind:
+    """find() is O(1); union() repaints the whole array, so it is O(n)."""
+
+    def __init__(self, n):
+        self.id = list(range(n))      # id[i] = component label of i
+
+    def find(self, p):
+        return self.id[p]             # the label IS the answer
+
+    def connected(self, p, q):
+        return self.id[p] == self.id[q]
+
+    def union(self, p, q):
+        pid, qid = self.id[p], self.id[q]
+        if pid == qid:
+            return                    # already in the same component
+
+        # Every element labelled pid has to be relabelled qid.
+        for i in range(len(self.id)):
+            if self.id[i] == pid:
+                self.id[i] = qid
+
+# n-1 unions cost O(n^2) overall -- the reason quick union exists.`;
+
+function CodePanel() {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+            <button onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                <Code2 className="h-4 w-4" />{open ? 'Hide' : 'Show'} Python Code
+            </button>
+            {open && <div className="mt-3"><CodeBlock code={CODE_EXAMPLE} language="python" /></div>}
+        </div>
+    );
+}
 
 // Component colours (cycle through these for up to 10 components)
 const COMP_COLORS = [
@@ -347,6 +385,7 @@ export default function QuickFindPage() {
                             </div>
                         </div>
 
+                        <CodePanel />
                         <QuizPanel qs={quizState} setQs={setQuizState} />
                     </div>
                 </div>
