@@ -206,7 +206,7 @@ function fibMemo(n, memo = {}) {
                     <div className="text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">Fibonacci Sequence</h1>
                         <p className="text-xl text-green-100 mb-6 max-w-3xl mx-auto">
-                            Compare naive recursion's explosive growth with memoization's dramatic efficiency — same result, radically fewer calls.
+                            Compare naive recursion&apos;s explosive growth with memoization&apos;s dramatic efficiency — same result, radically fewer calls.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 text-sm">
                             <div className="flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full"><TrendingUp className="h-4 w-4" /> Exponential vs Linear</div>
