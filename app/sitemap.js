@@ -103,6 +103,13 @@ const SECTIONS = {
         "matrix-chain-multiplication",
         "maximum-subarray",
     ],
+    "indexing": [
+        "b-plus-trees",
+        "b-trees",
+        "closed-hash-tables",
+        "closed-hash-tables-with-buckets",
+        "open-hash-tables",
+    ],
     "graph-algorithms": [
         "breadth-first-search",
         "connected-components",
