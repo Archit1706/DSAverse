@@ -356,7 +356,7 @@ print(twoSum(numbers, 9))  # [1, 2]`;
                             <ul className="space-y-2 text-sm text-slate-300">
                                 <li className="flex gap-2"><span className="text-violet-400">•</span><span>Sorted order gives a decision rule: sum too small means move left right; sum too large means move right left</span></li>
                                 <li className="flex gap-2"><span className="text-violet-400">•</span><span>Without sorting the same sum could be achieved by many pairs, so no single pointer move is safe</span></li>
-                                <li className="flex gap-2"><span className="text-violet-400">•</span><span>The problem name "Two Sum II" refers to LeetCode 167 where the input is guaranteed sorted</span></li>
+                                <li className="flex gap-2"><span className="text-violet-400">•</span><span>The problem name &quot;Two Sum II&quot; refers to LeetCode 167 where the input is guaranteed sorted</span></li>
                             </ul>
                         </div>
 
