@@ -27,6 +27,7 @@ const QUICK_NAV = [
     { label: 'Trees', href: '/trees' },
     { label: 'Divide & Conquer', href: '/divide-and-conquer' },
     { label: 'Union-Find', href: '/union-find' },
+    { label: 'Indexing', href: '/indexing' },
 ];
 
 function WordCycler() {
