@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     ArrowRight, ArrowLeftRight, Layers, RefreshCw, ArrowUpDown, Search,
-    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor
+    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -182,6 +182,18 @@ const CATEGORIES = [
         badge:       'bg-fuchsia-500/10 text-fuchsia-300',
     },
     // ── CS Internals ─────────────────────────────────────────────────────────
+    {
+        name:        'Indexing',
+        slug:        'indexing',
+        icon:        <Table className="w-6 h-6" />,
+        description: 'The Structures Behind Fast Lookups',
+        algorithms:  ['Open Hash Tables', 'Closed Hash Tables', 'B Trees', 'B+ Trees', 'Red-Black Trees', 'Splay Trees', 'Radix Tree', 'Ternary Search Tree'],
+        gradient:    'from-emerald-500 to-teal-600',
+        border:      'border-emerald-500/30',
+        hoverBorder: 'hover:border-emerald-400',
+        glow:        'hover:shadow-emerald-500/20',
+        badge:       'bg-emerald-500/10 text-emerald-300',
+    },
     {
         name:        'Under the Hood',
         slug:        'under-the-hood',
