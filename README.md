@@ -39,7 +39,7 @@ DSAverse is an **interactive web platform** that brings Data Structures and Algo
 
 ### 🔧 Algorithm Visualizations
 
-**111 interactive pages across 15 sections:**
+**121 interactive pages across 16 sections:**
 
 | Section | Pages | Highlights |
 | --- | --- | --- |
@@ -47,9 +47,10 @@ DSAverse is an **interactive web platform** that brings Data Structures and Algo
 | **Basics** | 9 | Stacks, queues, lists, singly/doubly/circular linked lists |
 | **Recursion** | 9 | Factorial, Tower of Hanoi, N-Queens, Sudoku solver, permutations |
 | **Graph Algorithms** | 9 | BFS, DFS, Dijkstra, Prim, Kruskal, Floyd-Warshall, topological sort |
+| **Indexing** | 9 | Hash tables, B-trees, B+ trees, red-black, splay, radix, ternary search |
+| **Dynamic Programming** | 9 | LCS, 0/1 Knapsack, Edit Distance, Matrix Chain, Kadane's |
 | **Sorting** | 8 | Bubble, Selection, Insertion, Merge, Quick, Heap, Radix, Bucket |
 | **Searching** | 8 | Binary, Linear, Jump, Interpolation, Exponential, Fibonacci, Ternary |
-| **Dynamic Programming** | 8 | LCS, 0/1 Knapsack, Edit Distance, Matrix Chain, House Robber |
 | **Two Pointers & Sliding Window** | 7 | 3Sum, Container With Most Water, Minimum Window Substring |
 | **Trees** | 5 | BST, AVL rotations, traversals, segment tree, trie |
 | **Heap-like Structures** | 5 | Binary, binomial, Fibonacci, leftist and skew heaps |
