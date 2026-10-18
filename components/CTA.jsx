@@ -1,6 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, BookOpen, BarChart2 } from 'lucide-react';
+import { algorithmCategories } from '../data/algorithmCategories';
+
+// Counted from the nav data rather than hard-coded, so it cannot drift out of
+// date the way the previous "38+ algorithms" chip did.
+const VISUALIZER_COUNT = algorithmCategories.reduce((n, c) => n + c.algorithms.length, 0);
 
 export default function CTA() {
     return (
@@ -66,7 +71,7 @@ export default function CTA() {
 
                 {/* Mini feature chips */}
                 <div className="animate-fade-in-up delay-400 flex flex-wrap justify-center gap-3 text-sm text-slate-500">
-                    {['No sign-up required', '38+ algorithms', 'Free forever', 'Mobile friendly'].map(t => (
+                    {['No sign-up required', `${VISUALIZER_COUNT} visualizers`, 'Free forever', 'Mobile friendly'].map(t => (
                         <span key={t} className="flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                             {t}
