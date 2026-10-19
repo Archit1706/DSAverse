@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle , Settings2 } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { GraphCustomizer, layoutNodes } from '@/components/GraphCustomizer';
 
 const quizQuestions = [
     {
@@ -42,19 +43,19 @@ const quizQuestions = [
 ];
 
 // Directed acyclic graph (fixed) — layered left→right
-const NODES = [
+const DEFAULT_NODES = [
     { id: 0, x: 70,  y: 180 },
     { id: 1, x: 190, y: 90  }, { id: 2, x: 190, y: 270 },
     { id: 3, x: 310, y: 180 },
     { id: 4, x: 430, y: 90  }, { id: 5, x: 430, y: 270 },
     { id: 6, x: 520, y: 180 },
 ];
-const DIRECTED_EDGES = [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [3, 5], [4, 6], [5, 6]];
-const OUT = (() => {
-    const o = {}; NODES.forEach(n => o[n.id] = []);
-    DIRECTED_EDGES.forEach(([a, b]) => o[a].push(b));
+const DEFAULT_EDGES = [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [3, 5], [4, 6], [5, 6]];
+function buildOut(nodes, edges) {
+    const o = {}; nodes.forEach(n => o[n.id] = []);
+    edges.forEach(([a, b]) => o[a].push(b));
     return o;
-})();
+}
 
 const NODE_COLORS = {
     unprocessed: { fill: '#334155', stroke: '#64748b', text: '#94a3b8' },
@@ -64,7 +65,8 @@ const NODE_COLORS = {
 };
 const ekey = (a, b) => `${a}->${b}`;
 
-function generateSteps() {
+function generateSteps(NODES, DIRECTED_EDGES) {
+    const OUT = buildOut(NODES, DIRECTED_EDGES);
     const steps = [];
     const indeg = {};
     NODES.forEach(n => indeg[n.id] = 0);
@@ -146,8 +148,15 @@ export default function TopoSortIndegreePage() {
     const [speed, setSpeed] = useState(1000);
     const [showCode, setShowCode] = useState(false);
     const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+    const [customGraph, setCustomGraph] = useState(null);
+    const [showCustomizer, setShowCustomizer] = useState(false);
 
-    useEffect(() => { setStepHistory(generateSteps()); setCurrentStep(0); setIsPlaying(false); }, []);
+    const NODES = customGraph ? layoutNodes(customGraph.nodeCount) : DEFAULT_NODES;
+    const DIRECTED_EDGES = customGraph ? customGraph.edges : DEFAULT_EDGES;
+
+    // Keyed on customGraph, not the derived arrays: layoutNodes() returns a
+    // fresh array each render, which would re-fire this effect forever.
+    useEffect(() => { setStepHistory(generateSteps(NODES, DIRECTED_EDGES)); setCurrentStep(0); setIsPlaying(false); }, [customGraph]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (isPlaying && currentStep < stepHistory.length - 1) {
@@ -216,6 +225,16 @@ export default function TopoSortIndegreePage() {
                                     className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium">
                                     <RotateCcw size={18} />Reset
                                 </button>
+                                <button onClick={() => { setIsPlaying(false); setShowCustomizer(true); }}
+                                    className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium">
+                                    <Settings2 size={18} />Custom Graph
+                                </button>
+                                {customGraph && (
+                                    <button onClick={() => { setIsPlaying(false); setCustomGraph(null); }}
+                                        className="flex items-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium">
+                                        Default Graph
+                                    </button>
+                                )}
                             </div>
 
                             <div className="mb-6">
@@ -395,6 +414,14 @@ export default function TopoSortIndegreePage() {
                     </div>
                 </div>
             </div>
+
+            <GraphCustomizer
+                open={showCustomizer}
+                onClose={() => setShowCustomizer(false)}
+                onApply={g => { setCustomGraph(g); setCurrentStep(0); }}
+                directed
+                requireAcyclic
+            />
         </div>
     );
 }
