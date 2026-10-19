@@ -16,24 +16,47 @@ export function layoutNodes(nodeCount) {
 }
 
 /* ── Parsers ─────────────────────────────────────────────── */
-function buildAdj(nodeCount, edges, weighted) {
+/* `directed` defaults to false so every existing caller (BFS, DFS, Dijkstra,
+   Connected Components, Prim, Kruskal) keeps the undirected behaviour it was
+   written against. Only Floyd-Warshall and the topological sorts opt in. */
+function buildAdj(nodeCount, edges, weighted, directed = false) {
     const adj = {};
-    for (let i = 0; i < nodeCount; i++) adj[i] = weighted ? [] : [];
+    for (let i = 0; i < nodeCount; i++) adj[i] = [];
     for (const e of edges) {
         if (weighted) {
             const [a, b, w] = e;
             adj[a].push([b, w]);
-            adj[b].push([a, w]);
+            if (!directed) adj[b].push([a, w]);
         } else {
             const [a, b] = e;
             if (!adj[a].includes(b)) adj[a].push(b);
-            if (!adj[b].includes(a)) adj[b].push(a);
+            if (!directed && !adj[b].includes(a)) adj[b].push(a);
         }
     }
     return adj;
 }
 
-function parseEdgeList(text, weighted) {
+/** Kahn's algorithm, used only to reject cyclic input for the topo sorts. */
+export function hasCycle(nodeCount, adj) {
+    const indeg = new Array(nodeCount).fill(0);
+    for (let i = 0; i < nodeCount; i++) {
+        for (const nb of adj[i] ?? []) indeg[Array.isArray(nb) ? nb[0] : nb]++;
+    }
+    const queue = [];
+    for (let i = 0; i < nodeCount; i++) if (indeg[i] === 0) queue.push(i);
+    let seen = 0;
+    while (queue.length) {
+        const n = queue.shift();
+        seen++;
+        for (const nb of adj[n] ?? []) {
+            const t = Array.isArray(nb) ? nb[0] : nb;
+            if (--indeg[t] === 0) queue.push(t);
+        }
+    }
+    return seen !== nodeCount;
+}
+
+function parseEdgeList(text, weighted, directed) {
     const parts = text.split(/[,\n]+/).map(s => s.trim()).filter(Boolean);
     const nodeSet = new Set();
     const edges = [];
@@ -54,10 +77,10 @@ function parseEdgeList(text, weighted) {
     }
     if (!nodeSet.size) return null;
     const nodeCount = Math.max(...nodeSet) + 1;
-    return { nodeCount, edges, adj: buildAdj(nodeCount, edges, weighted) };
+    return { nodeCount, edges, adj: buildAdj(nodeCount, edges, weighted, directed) };
 }
 
-function parseAdjList(text, weighted) {
+function parseAdjList(text, weighted, directed) {
     const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
     const nodeSet = new Set();
     const rawAdj = {};
@@ -90,14 +113,16 @@ function parseAdjList(text, weighted) {
         const n = +nStr;
         for (const nb of neighbors) {
             const [a, b, w] = weighted ? [n, nb[0], nb[1]] : [n, nb, null];
-            const key = `${Math.min(a, b)}-${Math.max(a, b)}`;
+            // Undirected input lists each edge from both ends, so collapse
+            // a-b and b-a. Directed input must keep them as distinct edges.
+            const key = directed ? `${a}->${b}` : `${Math.min(a, b)}-${Math.max(a, b)}`;
             if (!seen.has(key)) { seen.add(key); edges.push(weighted ? [a, b, w] : [a, b]); }
         }
     }
     return { nodeCount, edges, adj: rawAdj };
 }
 
-function parseMatrix(text, weighted) {
+function parseMatrix(text, weighted, directed) {
     const lines = text.trim().split('\n')
         .map(l => l.trim().split(/[\s,\t]+/).map(Number).filter(v => !isNaN(v)))
         .filter(l => l.length);
@@ -105,32 +130,36 @@ function parseMatrix(text, weighted) {
     const n = lines.length;
     const edges = [];
     const adj = {};
-    for (let i = 0; i < n; i++) adj[i] = weighted ? [] : [];
+    for (let i = 0; i < n; i++) adj[i] = [];
     for (let i = 0; i < n; i++) {
-        for (let j = i + 1; j < n; j++) {
+        // Undirected reads only the upper triangle and mirrors it; directed
+        // reads the whole matrix, where cell [i][j] means i -> j alone.
+        for (let j = directed ? 0 : i + 1; j < n; j++) {
+            if (directed && i === j) continue;
             const v = lines[i]?.[j] ?? 0;
-            if (v) {
-                if (weighted) {
-                    edges.push([i, j, v]);
-                    adj[i].push([j, v]); adj[j].push([i, v]);
-                } else {
-                    edges.push([i, j]);
-                    adj[i].push(j); adj[j].push(i);
-                }
+            if (!v) continue;
+            if (weighted) {
+                edges.push([i, j, v]);
+                adj[i].push([j, v]);
+                if (!directed) adj[j].push([i, v]);
+            } else {
+                edges.push([i, j]);
+                adj[i].push(j);
+                if (!directed) adj[j].push(i);
             }
         }
     }
     return { nodeCount: n, edges, adj };
 }
 
-export function parseGraphInput(text, format, weighted = false) {
+export function parseGraphInput(text, format, weighted = false, directed = false) {
     try {
         const cleaned = text.trim();
         if (!cleaned) return null;
         switch (format) {
-            case 'edgelist': return parseEdgeList(cleaned, weighted);
-            case 'adjlist':  return parseAdjList(cleaned, weighted);
-            case 'matrix':   return parseMatrix(cleaned, weighted);
+            case 'edgelist': return parseEdgeList(cleaned, weighted, directed);
+            case 'adjlist':  return parseAdjList(cleaned, weighted, directed);
+            case 'matrix':   return parseMatrix(cleaned, weighted, directed);
             default:         return null;
         }
     } catch { return null; }
@@ -152,8 +181,25 @@ const EXAMPLES = {
     },
 };
 
+/* Directed examples are acyclic, so they work for the topological sorts as
+   well as Floyd-Warshall. Each entry reads strictly a -> b. */
+const DIRECTED_EXAMPLES = {
+    edgelist: {
+        unweighted: '0-1, 0-2, 1-3, 2-3, 3-4, 3-5, 4-6, 5-6',
+        weighted:   '0-1:4, 0-2:2, 1-3:5, 2-3:3, 3-4:2, 3-5:8, 4-6:7, 5-6:6',
+    },
+    adjlist: {
+        unweighted: '0: 1 2\n1: 3\n2: 3\n3: 4 5\n4: 6\n5: 6\n6:',
+        weighted:   '0: 1:4 2:2\n1: 3:5\n2: 3:3\n3: 4:2 5:8\n4: 6:7\n5: 6:6\n6:',
+    },
+    matrix: {
+        unweighted: '0 1 1 0 0 0 0\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n0 0 0 0 1 1 0\n0 0 0 0 0 0 1\n0 0 0 0 0 0 1\n0 0 0 0 0 0 0',
+        weighted:   '0 4 2 0 0 0 0\n0 0 0 5 0 0 0\n0 0 0 3 0 0 0\n0 0 0 0 2 8 0\n0 0 0 0 0 0 7\n0 0 0 0 0 0 6\n0 0 0 0 0 0 0',
+    },
+};
+
 /* ── Modal ────────────────────────────────────────────────── */
-export function GraphCustomizer({ open, onClose, onApply, weighted = false }) {
+export function GraphCustomizer({ open, onClose, onApply, weighted = false, directed = false, requireAcyclic = false }) {
     const [format, setFormat] = useState('edgelist');
     const [text, setText]     = useState('');
     const [error, setError]   = useState('');
@@ -162,17 +208,26 @@ export function GraphCustomizer({ open, onClose, onApply, weighted = false }) {
 
     const handleApply = () => {
         setError('');
-        const result = parseGraphInput(text, format, weighted);
+        const result = parseGraphInput(text, format, weighted, directed);
         if (!result) { setError('Could not parse input. Check the format and try again.'); return; }
         if (result.nodeCount < 2) { setError('Graph must have at least 2 nodes.'); return; }
         if (result.nodeCount > 12) { setError('Limit to 12 nodes for a clear visualization.'); return; }
         if (!result.edges.length) { setError('No edges found. Add at least one edge.'); return; }
+        // A topological order only exists for a DAG, so reject a cycle here
+        // rather than letting the visualizer produce a partial ordering.
+        if (requireAcyclic && hasCycle(result.nodeCount, result.adj)) {
+            setError('This graph contains a cycle, so it has no topological order. Remove the cycle and try again.');
+            return;
+        }
         onApply(result);
         onClose();
     };
 
+    const examples = directed ? DIRECTED_EXAMPLES : EXAMPLES;
+    const exampleText = weighted ? examples[format].weighted : examples[format].unweighted;
+
     const loadExample = () => {
-        setText(weighted ? EXAMPLES[format].weighted : EXAMPLES[format].unweighted);
+        setText(exampleText);
         setError('');
     };
 
@@ -253,9 +308,16 @@ export function GraphCustomizer({ open, onClose, onApply, weighted = false }) {
                             value={text}
                             onChange={e => { setText(e.target.value); setError(''); }}
                             className="w-full h-32 px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 text-sm font-mono resize-none focus:outline-none focus:border-cyan-500 placeholder-slate-600 leading-relaxed"
-                            placeholder={weighted ? EXAMPLES[format].weighted : EXAMPLES[format].unweighted}
+                            placeholder={exampleText}
                             spellCheck={false}
                         />
+                        {directed && (
+                            <p className="mt-2 text-xs text-slate-500">
+                                Edges are <strong className="text-slate-400">directed</strong>: <code className="text-slate-400">0-1</code> means 0 → 1 only.
+                                {format === 'matrix' && ' The whole matrix is read, so cell [i][j] is the edge i → j.'}
+                                {requireAcyclic && ' The graph must be acyclic — a cycle has no topological order.'}
+                            </p>
+                        )}
                         {error && (
                             <div className="flex items-center gap-2 mt-2 text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
                                 <AlertCircle className="h-4 w-4 flex-shrink-0" />{error}
