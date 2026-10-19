@@ -69,11 +69,11 @@ const jsonLd = {
   url: BASE_URL,
   description:
     "Interactive data structures and algorithms visualizer for students and developers.",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: { "@type": "EntryPoint", urlTemplate: `${BASE_URL}/searching/{search_term_string}` },
-    "query-input": "required name=search_term_string",
-  },
+  // No `potentialAction` here on purpose: the site has no search endpoint.
+  // It previously advertised a SearchAction pointing at /searching/{term},
+  // which is the searching-algorithms index, not a query handler — so the
+  // markup claimed a capability that does not exist. Restore it only if a
+  // real search route is added.
 };
 
 export default function RootLayout({ children }) {
