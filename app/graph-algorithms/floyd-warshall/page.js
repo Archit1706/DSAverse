@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Settings2 } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { GraphCustomizer, layoutNodes } from '@/components/GraphCustomizer';
 
 const quizQuestions = [
     {
@@ -41,23 +42,23 @@ const quizQuestions = [
     },
 ];
 
-const V = 4;
-const NODES = [
+const DEFAULT_NODES = [
     { id: 0, x: 120, y: 80 }, { id: 1, x: 400, y: 80 },
     { id: 2, x: 400, y: 280 }, { id: 3, x: 120, y: 280 },
 ];
-const EDGES = [[0, 1, 5], [0, 3, 10], [1, 2, 3], [2, 3, 1], [3, 0, 2]];
+// Directed and asymmetric on purpose: 0 → 3 costs 10 while 3 → 0 costs 2.
+const DEFAULT_EDGES = [[0, 1, 5], [0, 3, 10], [1, 2, 3], [2, 3, 1], [3, 0, 2]];
 const INF = Infinity;
 
-function initMatrix() {
+function initMatrix(V, edges) {
     const d = Array.from({ length: V }, (_, i) => Array.from({ length: V }, (_, j) => (i === j ? 0 : INF)));
-    for (const [a, b, w] of EDGES) d[a][b] = w;
+    for (const [a, b, w] of edges) d[a][b] = w;
     return d;
 }
 
-function generateSteps() {
+function generateSteps(V, edges) {
     const steps = [];
-    const dist = initMatrix();
+    const dist = initMatrix(V, edges);
     const copy = m => m.map(r => [...r]);
     const push = (data, explanation) => steps.push({ matrix: copy(dist), k: null, i: null, j: null, changed: null, phase: 'init', explanation, ...data });
 
@@ -103,8 +104,16 @@ export default function FloydWarshallPage() {
     const [speed, setSpeed] = useState(900);
     const [showCode, setShowCode] = useState(false);
     const [quizState, setQuizState] = useState({ current: 0, selected: null, answered: false, score: 0, complete: false });
+    const [customGraph, setCustomGraph] = useState(null);
+    const [showCustomizer, setShowCustomizer] = useState(false);
 
-    useEffect(() => { setStepHistory(generateSteps()); setCurrentStep(0); setIsPlaying(false); }, []);
+    const NODES = customGraph ? layoutNodes(customGraph.nodeCount) : DEFAULT_NODES;
+    const EDGES = customGraph ? customGraph.edges : DEFAULT_EDGES;
+    const V = NODES.length;
+
+    // Keyed on customGraph, not the derived arrays: layoutNodes() returns a
+    // fresh array each render, which would re-fire this effect forever.
+    useEffect(() => { setStepHistory(generateSteps(V, EDGES)); setCurrentStep(0); setIsPlaying(false); }, [customGraph]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (isPlaying && currentStep < stepHistory.length - 1) {
@@ -113,7 +122,7 @@ export default function FloydWarshallPage() {
         } else if (currentStep >= stepHistory.length - 1) setIsPlaying(false);
     }, [isPlaying, currentStep, stepHistory, speed]);
 
-    const state = stepHistory[currentStep] || { matrix: initMatrix(), k: null, i: null, j: null, changed: null, phase: 'init', explanation: '' };
+    const state = stepHistory[currentStep] || { matrix: initMatrix(V, EDGES), k: null, i: null, j: null, changed: null, phase: 'init', explanation: '' };
 
     const cellClass = (r, c) => {
         const { k, i, j, phase, changed } = state;
@@ -196,6 +205,16 @@ export default function FloydWarshallPage() {
                                     className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium">
                                     <RotateCcw size={18} />Reset
                                 </button>
+                                <button onClick={() => { setIsPlaying(false); setShowCustomizer(true); }}
+                                    className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium">
+                                    <Settings2 size={18} />Custom Graph
+                                </button>
+                                {customGraph && (
+                                    <button onClick={() => { setIsPlaying(false); setCustomGraph(null); }}
+                                        className="flex items-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium">
+                                        Default Graph
+                                    </button>
+                                )}
                             </div>
 
                             <div className="mb-6">
@@ -360,6 +379,14 @@ export default function FloydWarshallPage() {
                     </div>
                 </div>
             </div>
+
+            <GraphCustomizer
+                open={showCustomizer}
+                onClose={() => setShowCustomizer(false)}
+                onApply={g => { setCustomGraph(g); setCurrentStep(0); }}
+                weighted
+                directed
+            />
         </div>
     );
 }
