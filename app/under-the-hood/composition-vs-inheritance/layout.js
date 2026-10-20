@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Composition vs Inheritance',
     description: 'Visualize is-a vs has-a relationships, the fragile base class problem, and why composition leads to more flexible designs.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/composition-vs-inheritance' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/composition-vs-inheritance" />
+        </>
+    );
+}
