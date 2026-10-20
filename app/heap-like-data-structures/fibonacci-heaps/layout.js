@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Fibonacci Heap Visualizer – Amortized O(1) Insert Animation",
     description: "Visualize a Fibonacci Heap with amortized O(1) insert and decrease-key, O(log n) extract-min. See lazy merging of trees and consolidation. The heap powering optimal Dijkstra's algorithm.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/heap-like-data-structures/fibonacci-heaps" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/heap-like-data-structures/fibonacci-heaps" />
+        </>
+    );
+}
