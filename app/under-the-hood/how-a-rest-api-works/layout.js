@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'How a REST API Works',
     description: 'Visualize HTTP verbs, status codes, request/response headers, JSON serialization, and REST architectural constraints.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/how-a-rest-api-works' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/how-a-rest-api-works" />
+        </>
+    );
+}
