@@ -163,8 +163,14 @@ const SECTIONS = {
 
 const STANDALONE = [
     "cheatsheet",
+    "compare",
+    "review",
     "contact",
 ];
+
+// Reference and practice pages earn a higher priority than /contact, which is
+// a single link to a GitHub profile.
+const HIGH_PRIORITY_STANDALONE = new Set(["cheatsheet", "compare", "review"]);
 
 export default function sitemap() {
     const lastModified = new Date();
@@ -180,7 +186,7 @@ export default function sitemap() {
         url: `${BASE_URL}/${slug}`,
         lastModified,
         changeFrequency: "monthly",
-        priority: slug === "cheatsheet" ? 0.8 : 0.3,
+        priority: HIGH_PRIORITY_STANDALONE.has(slug) ? 0.8 : 0.3,
     }));
 
     const sections = Object.keys(SECTIONS).map((section) => ({
