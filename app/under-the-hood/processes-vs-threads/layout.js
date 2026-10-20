@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Processes vs Threads',
     description: 'Visualize virtual address spaces, process control blocks, fork() semantics, and why threads share heap but not stack.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/processes-vs-threads' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/processes-vs-threads" />
+        </>
+    );
+}
