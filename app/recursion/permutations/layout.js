@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Permutations Visualizer – Swap-Based Recursion Tree",
     description: "Visualize all permutations of an array using swap-based backtracking. Watch how elements are fixed left-to-right through recursive swaps and backtrack steps.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/permutations" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/permutations" />
+        </>
+    );
+}
