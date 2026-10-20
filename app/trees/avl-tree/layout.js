@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'AVL Tree Visualizer',
     description: 'Watch LL, RR, LR, and RL rotations in action as insertions unbalance and rebalance an AVL tree.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/trees/avl-tree' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/trees/avl-tree" />
+        </>
+    );
+}
