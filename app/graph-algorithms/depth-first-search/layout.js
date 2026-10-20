@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Depth-First Search Visualizer – Recursive Graph Traversal",
     description: "Interactively visualize DFS on a graph: watch the algorithm plunge deep into each branch then backtrack using a call stack. Understand O(V+E) complexity, cycle detection, and topological sort foundations.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/depth-first-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/depth-first-search" />
+        </>
+    );
+}
