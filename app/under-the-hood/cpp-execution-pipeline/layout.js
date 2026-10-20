@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'C++ Execution Pipeline',
     description: 'Visualize how C++ source code becomes machine code: preprocessor, compiler, assembler, linker, loader, and CPU execution.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/cpp-execution-pipeline' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/cpp-execution-pipeline" />
+        </>
+    );
+}
