@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Garbage Collection',
     description: 'Visualize garbage collection strategies: reference counting, cyclic GC, mark-and-sweep, and generational collection.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/garbage-collection' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/garbage-collection" />
+        </>
+    );
+}
