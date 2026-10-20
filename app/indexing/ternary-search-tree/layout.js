@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Ternary Search Tree Visualizer – Three-Way Branching',
     description: 'Visualize a ternary search tree: one character per node with lower, equal and higher children. See how three-way branching trades a little speed for a large memory saving over a wide trie.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/ternary-search-tree' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/ternary-search-tree" />
+        </>
+    );
+}
