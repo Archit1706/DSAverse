@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'How the Browser Renders a Page',
     description: 'Visualize the browser rendering pipeline — HTML parsing into the DOM, CSSOM construction, the render tree, layout, paint, and compositing — plus why reflow costs more than repaint.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/how-the-browser-renders-a-page' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/how-the-browser-renders-a-page" />
+        </>
+    );
+}
