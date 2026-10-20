@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Closest Pair of Points',
     description: 'Visualize the geometric divide & conquer algorithm: split the point set by a vertical line, recurse on each half, then check the δ-wide strip for cross-half pairs.',
@@ -11,5 +13,10 @@ export const metadata = {
 };
 
 export default function Layout({ children }) {
-    return children;
+    return (
+        <>
+            {children}
+            <RelatedPages route="/divide-and-conquer/closest-pair-of-points" />
+        </>
+    );
 }
