@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Count Set Bits (Brian Kernighan) – Bit Manipulation Visualizer",
     description: "Visualize Brian Kernighan's algorithm for counting set bits. Each iteration clears the lowest set bit with n & (n−1), running in O(set bits) — far fewer iterations than a naive O(32) approach.",
@@ -5,4 +7,11 @@ export const metadata = {
     openGraph: { title: "Count Set Bits Visualizer – DSAverse", images: [{ url: "/og-image.png" }] },
     alternates: { canonical: "/bit-manipulation/count-set-bits" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/bit-manipulation/count-set-bits" />
+        </>
+    );
+}
