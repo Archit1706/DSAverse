@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Maximum Sum Subarray Visualizer – Fixed Sliding Window",
     description: "Visualize the Maximum Sum Subarray algorithm using a fixed-size sliding window of length k. Add the incoming element, remove the outgoing one, and update the maximum — all in O(n).",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/two-pointers-and-sliding-window/maximum-sum-subarray" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/two-pointers-and-sliding-window/maximum-sum-subarray" />
+        </>
+    );
+}
