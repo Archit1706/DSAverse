@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Dijkstra's Shortest Path Visualizer – Weighted Graph Animation",
     description: "Interactively visualize Dijkstra's algorithm on a weighted graph: watch edge relaxation, the min-heap priority queue, and the live distance table update step by step. Understand O((V+E) log V) complexity.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/dijkstras-shortest-path" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/dijkstras-shortest-path" />
+        </>
+    );
+}
