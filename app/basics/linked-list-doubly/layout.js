@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Doubly Linked List Visualizer",
     description: "Interactive doubly linked list visualization with bidirectional prev and next pointers. Insert at head/tail/index, delete, search, and traverse backward in real time.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/linked-list-doubly" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/linked-list-doubly" />
+        </>
+    );
+}
