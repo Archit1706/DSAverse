@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Floyd-Warshall Visualizer – All-Pairs Shortest Path",
     description: "Visualize the Floyd-Warshall algorithm computing shortest paths between every pair of nodes. Watch the distance matrix evolve as each intermediate node k is considered and paths are relaxed.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/floyd-warshall" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/floyd-warshall" />
+        </>
+    );
+}
