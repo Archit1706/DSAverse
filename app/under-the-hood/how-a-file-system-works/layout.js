@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'How a File System Works',
     description: 'Visualize disk blocks, inodes, directory entries, path resolution, hard links vs symlinks, the page cache, and journaling for crash consistency.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/how-a-file-system-works' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/how-a-file-system-works" />
+        </>
+    );
+}
