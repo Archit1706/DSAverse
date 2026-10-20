@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Single Number (XOR) – Bit Manipulation Visualizer",
     description: "Visualize how XOR cancels duplicate pairs to find the single non-repeated element in O(n) time with O(1) space. Watch the binary register change bit by bit.",
@@ -5,4 +7,11 @@ export const metadata = {
     openGraph: { title: "Single Number (XOR) Visualizer – DSAverse", images: [{ url: "/og-image.png" }] },
     alternates: { canonical: "/bit-manipulation/single-number" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/bit-manipulation/single-number" />
+        </>
+    );
+}
