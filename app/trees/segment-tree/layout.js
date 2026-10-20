@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Segment Tree Visualizer',
     description: 'Build a segment tree from an array, then animate range-sum queries and point updates in O(log n).',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/trees/segment-tree' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/trees/segment-tree" />
+        </>
+    );
+}
