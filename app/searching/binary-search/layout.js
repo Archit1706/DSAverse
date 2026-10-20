@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Binary Search Visualizer – O(log n) Search Animation",
     description: "Visualize Binary Search halving the search range on each step. O(log n) time on sorted arrays. The fastest comparison-based search algorithm — essential for coding interviews.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/binary-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/binary-search" />
+        </>
+    );
+}
