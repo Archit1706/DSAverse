@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Queue (Linked List) Visualizer – Node-Based Queue Animation",
     description: "Visualize a Queue implemented with a linked list: enqueue by adding a node at the tail, dequeue by removing from the head. FIFO with O(1) operations and dynamic sizing.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/queues-linked-list" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/queues-linked-list" />
+        </>
+    );
+}
