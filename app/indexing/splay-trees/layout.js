@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Splay Tree Visualizer – Zig, Zig-Zig and Zig-Zag',
     description: 'Visualize a splay tree rotating every accessed node to the root. Step through the zig, zig-zig and zig-zag cases and watch a repeated lookup get progressively cheaper.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/splay-trees' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/splay-trees" />
+        </>
+    );
+}
