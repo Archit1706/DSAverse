@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Radix Tree Visualizer – Compressing a Trie',
     description: 'Visualize a radix tree built by collapsing a trie\'s single-child chains into one labelled edge. Watch the node count fall and see why path compression pays off on sparse key sets.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/radix-tree' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/radix-tree" />
+        </>
+    );
+}
