@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Edit Distance (Levenshtein) – DP Visualizer",
     description: "Visualize the Edit Distance (Levenshtein) algorithm with a 2D DP table. Watch how insertions, deletions, and substitutions are computed step by step. O(m×n) time and space.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/edit-distance" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/edit-distance" />
+        </>
+    );
+}
