@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Kruskal's Minimum Spanning Tree Visualizer",
     description: "Visualize Kruskal's algorithm building a minimum spanning tree: sort edges by weight and greedily add each one unless it forms a cycle, tested with a union-find (disjoint set) structure.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/kruskal-minimum-spanning-tree" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/kruskal-minimum-spanning-tree" />
+        </>
+    );
+}
