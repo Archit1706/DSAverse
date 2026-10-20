@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Bubble Sort Visualizer – Step-by-Step Animation",
     description: "Interactively visualize Bubble Sort: watch adjacent elements being compared and swapped in real time. Understand O(n²) time complexity, O(1) space, and stable sort properties with Python code example.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/sorting/bubble-sort" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/sorting/bubble-sort" />
+        </>
+    );
+}
