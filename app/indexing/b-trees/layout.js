@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'B-Tree Visualizer – Node Splits and Promotion',
     description: 'Visualize a B-tree growing: keys fill wide nodes, overflowing nodes split, and the median key is promoted to the parent. See why a B-tree stays shallow and every leaf ends at the same depth.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/b-trees' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/b-trees" />
+        </>
+    );
+}
