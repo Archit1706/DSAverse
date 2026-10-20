@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'How Git Works Internally',
     description: 'Visualize Git\'s object model: blobs, trees, commits, SHA-1 addressing, branches as pointers, and merge vs rebase as DAG transformations.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/how-git-works-internally' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/how-git-works-internally" />
+        </>
+    );
+}
