@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "String Reversal Recursion Visualizer – Recursive Stack Animation",
     description: "Visualize reversing a string recursively: reverse(s) = reverse(s[1:]) + s[0]. Watch how characters are peeled off and reassembled during the unwinding phase of recursion.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/string-reversal" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/string-reversal" />
+        </>
+    );
+}
