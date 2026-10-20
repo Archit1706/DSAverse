@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "House Robber – Dynamic Programming Visualizer",
     description: "Visualize the House Robber DP problem: find the maximum sum without selecting adjacent houses. Watch the DP array fill with rob/skip decisions. Classic 1D DP with O(n) time, O(1) space.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/house-robber" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/house-robber" />
+        </>
+    );
+}
