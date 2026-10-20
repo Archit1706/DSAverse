@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Circular Linked List Visualizer",
     description: "Visualize a circular singly linked list where the tail node points back to head. Insert, delete, and search while seeing the circular connection animate in real time.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/linked-list-circular" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/linked-list-circular" />
+        </>
+    );
+}
