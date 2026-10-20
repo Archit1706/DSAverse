@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Circular Doubly Linked List Visualizer",
     description: "Visualize a circular doubly linked list with bidirectional pointers that wrap around. Insert, delete, and traverse forward or backward through a true ring structure.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/linked-list-circular-doubly" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/linked-list-circular-doubly" />
+        </>
+    );
+}
