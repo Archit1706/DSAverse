@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Skew Heap Visualizer – Self-Adjusting Heap Animation",
     description: "Visualize a Skew Heap: a self-adjusting leftist heap that always swaps children during merge. Amortized O(log n) operations without maintaining null-path-length. Simple and cache-friendly.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/heap-like-data-structures/skew-heaps" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/heap-like-data-structures/skew-heaps" />
+        </>
+    );
+}
