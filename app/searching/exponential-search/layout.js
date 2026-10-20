@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Exponential Search Visualizer – Unbounded Array Search",
     description: "Visualize Exponential Search doubling the range to find bounds then applying Binary Search. O(log n) time, ideal for unbounded or infinite sorted arrays.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/exponential-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/exponential-search" />
+        </>
+    );
+}
