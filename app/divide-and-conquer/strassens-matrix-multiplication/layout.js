@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Strassen's Matrix Multiplication",
     description: "Visualize Strassen's algorithm: step through all 7 sub-matrix multiplications that replace the naive 8, and watch how M1–M7 combine to assemble the result matrix.",
@@ -11,5 +13,10 @@ export const metadata = {
 };
 
 export default function Layout({ children }) {
-    return children;
+    return (
+        <>
+            {children}
+            <RelatedPages route="/divide-and-conquer/strassens-matrix-multiplication" />
+        </>
+    );
 }
