@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Quick Sort Visualizer – Pivot & Partition Animation",
     description: "Visualize Quick Sort choosing a pivot and partitioning elements around it. O(n log n) average, O(n²) worst case. Efficient in-place sorting algorithm used in production systems.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/sorting/quick-sort" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/sorting/quick-sort" />
+        </>
+    );
+}
