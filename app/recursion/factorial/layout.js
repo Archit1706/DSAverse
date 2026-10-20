@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Factorial Recursion Visualizer – Recursive Call Stack Animation",
     description: "Visualize how factorial(n) = n × factorial(n-1) unwinds through recursive calls. Watch the call stack build up and resolve. The canonical introduction to recursion and base cases.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/factorial" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/factorial" />
+        </>
+    );
+}
