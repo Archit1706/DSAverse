@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Two Sum II Visualizer – Two Pointer Technique",
     description: "Visualize the Two Sum II algorithm using the two-pointer technique on a sorted array. O(n) time, O(1) space — converge pointers inward to find the target sum.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/two-pointers-and-sliding-window/two-sum-ii" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/two-pointers-and-sliding-window/two-sum-ii" />
+        </>
+    );
+}
