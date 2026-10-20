@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Classes, Objects and Memory',
     description: 'Visualize how Python classes and instances live in memory: __dict__, __class__ pointer, method lookup chain, and metaclasses.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/classes-objects-and-memory' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/classes-objects-and-memory" />
+        </>
+    );
+}
