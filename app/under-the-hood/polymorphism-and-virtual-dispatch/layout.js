@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Polymorphism and Virtual Dispatch',
     description: 'Visualize C++ vtables in memory, vptr layout, virtual function dispatch chain, and the cost of virtual vs non-virtual calls.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/polymorphism-and-virtual-dispatch' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/polymorphism-and-virtual-dispatch" />
+        </>
+    );
+}
