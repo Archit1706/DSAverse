@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Binary Heap Visualizer – Min/Max Heap Animation",
     description: "Visualize a Binary Heap (min-heap or max-heap): insert elements with heapify-up, extract root with heapify-down, and peek at the min/max. O(log n) insert and extract, O(1) peek.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/heap-like-data-structures/heaps" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/heap-like-data-structures/heaps" />
+        </>
+    );
+}
