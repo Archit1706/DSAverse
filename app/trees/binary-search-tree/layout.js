@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Binary Search Tree Visualizer',
     description: 'Step-by-step BST insert and search visualizer. Watch the traversal path light up as each comparison is made.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/trees/binary-search-tree' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/trees/binary-search-tree" />
+        </>
+    );
+}
