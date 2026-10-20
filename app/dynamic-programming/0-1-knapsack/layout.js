@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "0-1 Knapsack – Dynamic Programming Visualizer",
     description: "Visualize the 0-1 Knapsack problem: select items to maximize value within a weight limit. Watch the DP table build with include/exclude decisions. O(n×W) time and space.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/0-1-knapsack" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/0-1-knapsack" />
+        </>
+    );
+}
