@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Stack (Linked List) Visualizer – Node-Based Stack Animation",
     description: "Visualize a Stack implemented with a singly linked list: push nodes at the head, pop from the head. Dynamic memory allocation, no fixed-size limit. LIFO with O(1) push and pop.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/stack-linked-list" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/stack-linked-list" />
+        </>
+    );
+}
