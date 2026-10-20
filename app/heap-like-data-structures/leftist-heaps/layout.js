@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Leftist Heap Visualizer – Left-Biased Merge Animation",
     description: "Visualize a Leftist Heap maintaining the leftist property (null path length) for efficient O(log n) merge. Useful when frequent heap merges are required. See null-path-length rebalancing.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/heap-like-data-structures/leftist-heaps" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/heap-like-data-structures/leftist-heaps" />
+        </>
+    );
+}
