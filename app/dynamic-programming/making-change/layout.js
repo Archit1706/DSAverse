@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Making Change – Coin Change DP Visualizer",
     description: "Visualize the classic coin change problem using dynamic programming. Find minimum number of coins to make a target amount. See the DP table fill up row by row with optimal substructure.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/making-change" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/making-change" />
+        </>
+    );
+}
