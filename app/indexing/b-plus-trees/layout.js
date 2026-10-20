@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'B+ Tree Visualizer – Linked Leaves and Range Scans',
     description: 'Visualize a B+ tree: every value lives in a leaf, internal nodes hold only separators, and the leaves form a linked list. Watch a split copy its key upward and a range scan walk sideways.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/b-plus-trees' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/b-plus-trees" />
+        </>
+    );
+}
