@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Sudoku Solver Visualizer – Backtracking Grid",
     description: "Watch a Sudoku puzzle get solved step by step using recursive backtracking. See digits placed, constraints checked, and cells backtracked in real time on a live 9×9 grid.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/sudoku-solver" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/sudoku-solver" />
+        </>
+    );
+}
