@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Heap Sort Visualizer – Binary Heap Sort Animation",
     description: "Visualize Heap Sort building a max-heap then extracting elements one by one. O(n log n) guaranteed, O(1) space, in-place and unstable sort. Includes Python code example.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/sorting/heap-sort" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/sorting/heap-sort" />
+        </>
+    );
+}
