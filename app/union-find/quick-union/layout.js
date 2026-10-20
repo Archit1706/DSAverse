@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Quick Union',
     description: 'Visualize Quick Union: each element stores a parent pointer forming a forest. union() re-points one root; find() walks the chain to the root.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/union-find/quick-union' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/union-find/quick-union" />
+        </>
+    );
+}
