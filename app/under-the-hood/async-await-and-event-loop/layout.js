@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Async/Await and the Event Loop',
     description: 'Visualize the event loop, microtask queue, macrotask queue, and how async/await suspends coroutines without blocking the thread.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/async-await-and-event-loop' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/async-await-and-event-loop" />
+        </>
+    );
+}
