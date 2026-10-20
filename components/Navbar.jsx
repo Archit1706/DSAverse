@@ -9,6 +9,7 @@ import {
     Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
 } from 'lucide-react';
 import Link from 'next/link';
+import CommandPalette from './CommandPalette';
 
 /* ── Logo ─────────────────────────────────────────────── */
 const DSAverseLogo = () => (
@@ -359,6 +360,21 @@ export default function Navbar() {
                             <BookOpen className="h-3.5 w-3.5" />
                             Cheatsheet
                         </Link>
+                        <Link href="/review"
+                            className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-lg
+                                      text-indigo-400 hover:text-indigo-200 hover:bg-white/10
+                                      transition-all duration-200">
+                            <Brain className="h-3.5 w-3.5" />
+                            Review
+                        </Link>
+
+                        <Link href="/compare"
+                            className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-lg
+                                      text-sky-400 hover:text-sky-200 hover:bg-white/10
+                                      transition-all duration-200">
+                            <ArrowLeftRight className="h-3.5 w-3.5" />
+                            Compare
+                        </Link>
 
                         <Link href="/contact"
                             className="text-sm font-medium px-3 py-2 rounded-lg
@@ -366,6 +382,8 @@ export default function Navbar() {
                                       transition-all duration-200">
                             Contact
                         </Link>
+
+                        <div className="ml-1"><CommandPalette /></div>
 
                         {/* CTA pill — homepage only */}
                         {isHome && (
@@ -410,6 +428,18 @@ export default function Navbar() {
                                       text-violet-400 hover:text-violet-200 hover:bg-white/10 transition-colors">
                             <BookOpen className="h-4 w-4" />
                             Cheatsheet
+                        </Link>
+                        <Link href="/review" onClick={() => setMobileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium
+                                      text-indigo-400 hover:text-indigo-200 hover:bg-white/10 transition-colors">
+                            <Brain className="h-4 w-4" />
+                            Review
+                        </Link>
+                        <Link href="/compare" onClick={() => setMobileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium
+                                      text-sky-400 hover:text-sky-200 hover:bg-white/10 transition-colors">
+                            <ArrowLeftRight className="h-4 w-4" />
+                            Compare
                         </Link>
                         <Link href="/contact" onClick={() => setMobileOpen(false)}
                             className="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium
