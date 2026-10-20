@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Valid Palindrome Visualizer – Two Pointer Technique",
     description: "Visualize the Valid Palindrome algorithm using two pointers converging from both ends. Skip non-alphanumeric characters and compare in O(n) time with O(1) extra space.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/two-pointers-and-sliding-window/valid-palindrome" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/two-pointers-and-sliding-window/valid-palindrome" />
+        </>
+    );
+}
