@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Merge Sort — Recursion Tree',
     description: 'Visualize merge sort as a recursion tree: watch the array split down to single elements, then see sorted subarrays merge back up level by level.',
@@ -11,5 +13,10 @@ export const metadata = {
 };
 
 export default function Layout({ children }) {
-    return children;
+    return (
+        <>
+            {children}
+            <RelatedPages route="/divide-and-conquer/merge-sort" />
+        </>
+    );
 }
