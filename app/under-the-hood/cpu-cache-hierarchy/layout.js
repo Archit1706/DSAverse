@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'CPU Cache Hierarchy',
     description: 'Visualize L1/L2/L3 cache lines, spatial locality, cache hit vs miss, and why column-major array access causes cache thrashing.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/cpu-cache-hierarchy' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/cpu-cache-hierarchy" />
+        </>
+    );
+}
