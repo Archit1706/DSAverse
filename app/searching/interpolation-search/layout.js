@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Interpolation Search Visualizer – Probe Position Animation",
     description: "Visualize Interpolation Search estimating the probe position using value distribution. O(log log n) average on uniformly distributed sorted arrays. Smarter than binary search for numerical data.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/interpolation-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/interpolation-search" />
+        </>
+    );
+}
