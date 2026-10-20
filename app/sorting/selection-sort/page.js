@@ -1,9 +1,29 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* Selection sort does not swap at a comparison — it decides whether the
+   running minimum moves. The next step carries the updated minIndex. */
+const predictFor = (step, next) => {
+    if (!step || !next) return null;
+    const pair = step.comparisons;
+    if (!pair || pair.length !== 2) return null;
+    const [minIdx, j] = pair;
+    const currentMin = step.array[minIdx], candidate = step.array[j];
+    const moves = next.minIndex === j && next.minIndex !== step.minIndex;
+    return {
+        question: `The running minimum is ${currentMin}. Comparing it with ${candidate} \u2014 what happens next?`,
+        options: [`${candidate} becomes the new minimum`, `${currentMin} stays the minimum`],
+        correct: moves ? 0 : 1,
+        because: moves
+            ? `${candidate} < ${currentMin}, so the minimum candidate moves to position ${j}. Note that nothing is swapped yet \u2014 selection sort swaps once per pass, at the end.`
+            : `${candidate} \u2265 ${currentMin}, so the candidate is rejected and the scan continues.`,
+    };
+};
 
 const quizQuestions = [
     {
@@ -148,6 +168,9 @@ const SelectionSortPage = () => {
         currentPass: 0, totalPasses: 0
     };
 
+    const pauseForPredict = useCallback(() => setIsPlaying(false), []);
+    const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
+
     const getBarColor = (index) => {
         if (currentState.sorted.includes(index)) return 'bg-green-500 border-green-600';
         if (currentState.swaps.includes(index)) return 'bg-red-500 border-red-600 animate-pulse';
@@ -241,6 +264,7 @@ const SelectionSortPage = () => {
                                 <button onClick={resetToOriginal} className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium">
                                     Original Array
                                 </button>
+                                <PredictToggle predict={predict} accent="orange" />
                             </div>
 
                             <div className="mb-6">
@@ -279,12 +303,22 @@ const SelectionSortPage = () => {
                                 </div>
                             </div>
 
+                            {predict.prompt && (
+                                <div className="mb-4">
+                                    <PredictPrompt predict={predict} accent="orange" />
+                                </div>
+                            )}
+
                             <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Info className="h-5 w-5 text-orange-400 mt-0.5 flex-shrink-0" />
                                     <div>
                                         <h3 className="font-semibold text-orange-300 mb-1">Current Step</h3>
-                                        <p className="text-orange-200 leading-relaxed">{currentState.explanation}</p>
+                                        <p className="text-orange-200 leading-relaxed">
+                                            {predict.hideExplanation
+                                                ? 'Make your prediction above to reveal this step.'
+                                                : currentState.explanation}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
