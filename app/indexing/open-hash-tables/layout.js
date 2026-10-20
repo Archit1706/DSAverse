@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Open Hash Tables (Separate Chaining) Visualizer',
     description: 'Visualize separate chaining: watch keys hash to slots, collide, and extend a chain instead of hunting for free space. See how the load factor drives average chain length and lookup cost.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/open-hash-tables' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/open-hash-tables" />
+        </>
+    );
+}
