@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Fibonacci Search Visualizer – Fibonacci-Based Search Animation",
     description: "Visualize Fibonacci Search using Fibonacci numbers to divide sorted arrays. O(log n) time with only addition and subtraction — no division required. Great for disk-stored data.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/fibonacci-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/fibonacci-search" />
+        </>
+    );
+}
