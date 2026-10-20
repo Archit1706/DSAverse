@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Fibonacci Sequence Recursion Visualizer – Recursive Tree Animation",
     description: "Visualize Fibonacci's recursive tree: fib(n) = fib(n-1) + fib(n-2). See overlapping subproblems and exponential call explosion — the perfect intro to why memoization matters.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/fibonacci-sequence" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/fibonacci-sequence" />
+        </>
+    );
+}
