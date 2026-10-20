@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Z-Algorithm – String Algorithms Visualizer",
     description: "Visualize the Z-Algorithm: watch the Z-array fill as each Z[i] records the longest prefix match starting at position i. Enables linear-time pattern matching with a single pass.",
@@ -5,4 +7,11 @@ export const metadata = {
     openGraph: { title: "Z-Algorithm Visualizer – DSAverse", images: [{ url: "/og-image.png" }] },
     alternates: { canonical: "/string-algorithms/z-algorithm" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/string-algorithms/z-algorithm" />
+        </>
+    );
+}
