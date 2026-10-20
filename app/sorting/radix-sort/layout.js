@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Radix Sort Visualizer – Digit-by-Digit Sort Animation",
     description: "Visualize Radix Sort processing elements digit by digit from least to most significant. O(d × (n + k)) time, non-comparison based stable sort. Efficient for integers and fixed-length strings.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/sorting/radix-sort" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/sorting/radix-sort" />
+        </>
+    );
+}
