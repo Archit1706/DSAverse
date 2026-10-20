@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Topological Sort (DFS) Visualizer",
     description: "Visualize DFS-based topological sorting: run depth-first search on a DAG and push each node onto a stack when it finishes. Reversing the finish order yields a valid topological order.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/topological-sort-dfs" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/topological-sort-dfs" />
+        </>
+    );
+}
