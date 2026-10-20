@@ -11,6 +11,8 @@ npm start        # Run production build
 npm run lint     # ESLint check (must be run manually — build ignores lint errors)
 ```
 
+`npm run build` first runs `prebuild`, which is `node scripts/build-learning-data.mjs`. That regenerates the four files in `data/` that the review, compare, palette and "See also" features read, so they can never drift from the pages. Run it on its own when you want the data refreshed without a full build.
+
 `next.config.mjs` sets `ignoreBuildErrors: true` and `ignoreDuringBuilds: true`, so **always run `npm run build` after changes** to catch React/JSX errors that lint won't catch.
 
 **Stop the dev server before building.** `next dev` and `next build` share the `.next` directory — running a build while the dev server is up deletes files out from under it, producing an ENOENT storm in the dev log and leaving pages that serve HTML but never hydrate (buttons render, clicks do nothing). Recovery is `rm -rf .next` and a dev-server restart.
@@ -40,6 +42,8 @@ app/
       layout.js                  # Per-page metadata only (exports metadata + passthrough Layout)
       page.js                    # Algorithm visualizer ("use client")
   cheatsheet/                    # Searchable Big-O complexity reference table ("use client")
+  compare/                       # Side-by-side algorithm comparison ("use client")
+  review/                        # Spaced-repetition practice over every quiz ("use client")
   contact/                       # Contact / GitHub page ("use client")
   under-the-hood/                # CS-internals explainers — own track-based index + stage-model pages
 components/
@@ -48,9 +52,20 @@ components/
   GraphCustomizer.jsx            # Shared modal for custom graph input (BFS/DFS/Dijkstra)
   BinaryTreeCanvas.jsx           # Inorder-index SVG layout for binary trees (BST/AVL/red-black/splay)
   BTreeCanvas.jsx                # Width-aware n-ary SVG layout for B-trees and B+ trees
+  CommandPalette.jsx             # Cmd/Ctrl-K search over every page (lazily loads pageIndex)
+  RelatedPages.jsx               # "See also" block, mounted from each algorithm layout
+  PredictStep.jsx                # Optional "what happens next?" prompts for step-based pages
   Hero.jsx, Features.jsx, AlgorithmsGrid.jsx, CTA.jsx, Footer.jsx
 data/
   algorithmCategories.js         # Single source of truth for nav categories and algorithm names
+  quizBank.js                    # GENERATED — every quiz question on the site
+  pageIndex.js                   # GENERATED — every page's metadata
+  related.js                     # GENERATED — sibling links per route
+  learningStats.js               # GENERATED — headline counts
+lib/
+  progress.js                    # localStorage: visited pages + spaced-repetition schedule
+scripts/
+  build-learning-data.mjs        # Emits the four generated data files (runs on prebuild)
 ```
 
 ### Two-Layout Pattern
@@ -379,7 +394,7 @@ The single source of truth for nav structure. Algorithm names here must match th
 3. Add the algorithm name to `data/algorithmCategories.js` under the correct section
 4. If the section index has an `available` flag, flip it to `true` (or add the entry)
 5. Add the slug to its section's array in `app/sitemap.js`
-6. Run `npm run build` to confirm no errors
+6. Run `npm run build` to confirm no errors — `prebuild` picks the new page's quiz and metadata up automatically, so `data/` needs no hand editing
 
 The repo history commits a new page as **three separate commits**, in this order — keep it up:
 
@@ -399,9 +414,71 @@ This keeps the index flip — the commit that actually makes the page reachable 
 
 `app/robots.js` allows everything and points at `/sitemap.xml`.
 
+### Generated Learning Data
+
+`scripts/build-learning-data.mjs` runs on the `prebuild` npm hook, so `npm run build` always regenerates it. It walks `app/*/*/page.js`, slices the balanced array literals out of each file and evaluates them in a Proxy sandbox where every free identifier resolves to `null` — that is what lets `icon: TreePine` evaluate out of context. Self-closing JSX (`icon: <List className="h-7 w-7" />`, which Basics and Heap-like Data Structures use) is replaced with `null` first, since JSX is not valid JS; without that step those two indexes threw and silently lost their metadata.
+
+It emits four files into `data/`, each headed with a do-not-edit warning:
+
+| File | Size | Contents |
+|---|---|---|
+| `quizBank.js` | ~225 KB | All 363 quiz questions, tagged with route and section |
+| `pageIndex.js` | ~47 KB | Every page's name, description, difficulty, pattern, time and space |
+| `related.js` | ~15 KB | Up to 4 sibling pages per route |
+| `learningStats.js` | <200 B | Just `totalQuestions` and `totalPages` |
+
+**Never edit these by hand** — regenerate with `node scripts/build-learning-data.mjs`.
+
+Two things the generator has to get right, both of which were wrong in the first cut:
+
+- **Field aliases.** Section indexes do not agree on key names. `pattern` is also written as `type`, `category` or `tag`; `time` as `timeComplexity` or (in Under the Hood) `complexity`; `space` as `spaceComplexity`. All are mapped.
+- **Relatedness ranking.** `related.js` scores pages against each other with tf-idf over their own prose — title, index blurb, pattern tag, the layout's description and keywords, and the page body's explanation strings (Tailwind class strings are stripped first, or the shared utility vocabulary swamps everything). Ranking on metadata alone was far too thin: it put the array-list page next to the CPU cache page, and within a section it degenerated to alphabetical order, so bubble sort pointed at bucket/heap/insertion/merge sort. Relation kinds, strongest first: `3` same algorithm in another section, `2` shared pattern tag, `1` topical match elsewhere, `0` sibling in the same section.
+
+Because `learningStats.js` is tiny it is imported synchronously, including from `metadata` objects. `quizBank.js` is not: `app/review/page.js` pulls it in with a dynamic `import()` on mount, which keeps the route chunk at ~18 KB instead of ~241 KB.
+
+### Learning Features
+
+Four pieces sit on top of the generated data.
+
+**`lib/progress.js`** — the only state layer in the project. Keys `dsaverse.visited.v1` and `dsaverse.schedule.v1` in localStorage; no account, no backend. The schedule is a small SM-2 variant (intervals `[0, 1, 3, 7, 16, 35]` days, ease clamped to `[1.3, 2.8]`, a wrong answer resets the step to 0). Every read and write is wrapped in `typeof window === 'undefined'` plus try/catch, so private windows and blocked site data degrade to "no progress recorded" rather than throwing.
+
+**`app/review/`** — spaced-repetition practice over the whole quiz bank. Three states in one page: dashboard (due/learning/known/unseen tiles, mastery bar, per-section grid), session card (15 questions, `1`–`4` keyboard shortcuts, `Enter` to advance, a link back to the visualizer), and summary. The quiz bank loads on mount, so `ready` is simply `bank !== null` and the server and first client render agree on an empty shell.
+
+**`app/compare/`** — any two or three pages side by side, from `pageIndex`. Preset comparisons are included so the page is useful before anything is picked. The "lowest" badge on time and space uses the `COMPLEXITY_RANK` table and deliberately shows nothing when the entries tie or are unrecognised.
+
+**`components/RelatedPages.jsx`** — the "See also" block, mounted from each algorithm `layout.js` rather than from the 121 pages:
+
+```jsx
+import RelatedPages from '@/components/RelatedPages';
+
+export default function Layout({ children }) {
+    return (<>{children}<RelatedPages route="/sorting/bubble-sort" /></>);
+}
+```
+
+The `route` prop is always the layout's own `alternates.canonical`. It also calls `markVisited(route)`, which is what the review dashboard reads.
+
+**`components/CommandPalette.jsx`** — ⌘K / Ctrl+K search over every page, mounted in the Navbar. It imports `pageIndex` dynamically on first open, because the Navbar is on every route and the index is ~47 KB.
+
+**`components/PredictStep.jsx`** — optional "what happens next?" prompts, currently on bubble, selection and insertion sort. The page supplies `predictFor(step, nextStep)` returning `{ question, options, correct, because }` or `null`:
+
+```jsx
+const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
+<PredictToggle predict={predict} accent="orange" />
+{predict.prompt && <PredictPrompt predict={predict} accent="orange" />}
+```
+
+Three things this pattern depends on:
+
+- `predictFor` lives at **module scope**, so its identity is stable across renders.
+- The prompt **hides the step explanation** (`predict.hideExplanation`) until an answer is in, because these pages write the outcome into the explanation itself ("…need to swap!").
+- The question must be answerable from the step object alone. Insertion sort is the cautionary case: its comparison steps carry `comparisons: [j, i]`, but each shift copies a value into the key's old slot, so from the second comparison onward `step.array[i]` is no longer the key. That page's prompt therefore uses positional wording instead of quoting the key's value.
+
+`accent` is a key into the `ACCENTS` map of complete class strings, not an interpolated colour — Tailwind only emits classes it can see as literals.
+
 ### Build Status
 
-140 routes in total: 121 algorithm/explainer pages, 18 section indexes and the homepage. Under the Hood has 26 explainers. Every one of the 121 pages carries a 3-question active-recall quiz.
+142 routes in total: 121 algorithm/explainer pages, 18 section indexes, the homepage, plus `/review` and `/compare`. Under the Hood has 26 explainers. Every one of the 121 pages carries a 3-question active-recall quiz.
 
 **There are no `available: false` entries left anywhere** — every section index advertises only pages that exist. The flag and its Coming Soon rendering are still supported, so a newly planned topic can use them.
 
