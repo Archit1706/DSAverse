@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'System Calls and Kernel Mode',
     description: 'Visualize the user/kernel privilege boundary — protection rings, the syscall trap instruction, the syscall table, argument validation, sysret, and why a system call costs far more than a function call.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/system-calls-and-kernel-mode' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/system-calls-and-kernel-mode" />
+        </>
+    );
+}
