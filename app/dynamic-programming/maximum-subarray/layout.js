@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Maximum Subarray (Kadane's Algorithm) Visualizer",
     description: "Visualize Kadane's algorithm finding the contiguous subarray with the largest sum in O(n) time. Watch the running sum decide at every element whether to extend the current subarray or restart from it.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/maximum-subarray" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/maximum-subarray" />
+        </>
+    );
+}
