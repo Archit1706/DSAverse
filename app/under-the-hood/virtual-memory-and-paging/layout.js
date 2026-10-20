@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Virtual Memory and Paging',
     description: 'Visualize virtual address spaces, page tables, TLB cache, page faults, and how every process gets its own 4GB address space.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/virtual-memory-and-paging' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/virtual-memory-and-paging" />
+        </>
+    );
+}
