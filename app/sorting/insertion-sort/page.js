@@ -1,9 +1,33 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* Insertion sort's comparison decides between shifting the sorted element
+   right and having found the landing spot for the key. */
+const predictFor = (step, next) => {
+    if (!step || !next) return null;
+    const pair = step.comparisons;
+    if (!pair || pair.length !== 2) return null;
+    const [j] = pair;
+    const sortedVal = step.array[j];
+    const shifts = next.swaps && next.swaps.length === 2;
+    // The key's own value is deliberately not quoted here. Each shift copies a
+    // value into the key's old slot, so from the second comparison onwards the
+    // step's array no longer holds the key anywhere \u2014 only the page's closure
+    // does. Positional wording stays true at every step.
+    return {
+        question: `The element being placed is compared with ${sortedVal}. What happens next?`,
+        options: [`Shift ${sortedVal} one place right`, `Drop it into the gap after ${sortedVal}`],
+        correct: shifts ? 0 : 1,
+        because: shifts
+            ? `${sortedVal} is larger than the element being placed, so it slides right to open a gap and the scan keeps walking left.`
+            : `${sortedVal} is not larger than the element being placed, so position ${j + 1} is where it belongs.`,
+    };
+};
 
 const quizQuestions = [
     {
@@ -148,6 +172,9 @@ const InsertionSortPage = () => {
         currentPass: 0, totalPasses: 0
     };
 
+    const pauseForPredict = useCallback(() => setIsPlaying(false), []);
+    const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
+
     const getBarColor = (index) => {
         if (currentState.sorted.includes(index) && currentState.currentKey !== index) return 'bg-green-500 border-green-600';
         if (currentState.swaps.includes(index)) return 'bg-red-500 border-red-600 animate-pulse';
@@ -240,6 +267,7 @@ const InsertionSortPage = () => {
                                 <button onClick={resetToOriginal} className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium">
                                     Original Array
                                 </button>
+                                <PredictToggle predict={predict} accent="orange" />
                             </div>
 
                             <div className="mb-6">
@@ -278,12 +306,22 @@ const InsertionSortPage = () => {
                                 </div>
                             </div>
 
+                            {predict.prompt && (
+                                <div className="mb-4">
+                                    <PredictPrompt predict={predict} accent="orange" />
+                                </div>
+                            )}
+
                             <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Info className="h-5 w-5 text-orange-400 mt-0.5 flex-shrink-0" />
                                     <div>
                                         <h3 className="font-semibold text-orange-300 mb-1">Current Step</h3>
-                                        <p className="text-orange-200 leading-relaxed">{currentState.explanation}</p>
+                                        <p className="text-orange-200 leading-relaxed">
+                                            {predict.hideExplanation
+                                                ? 'Make your prediction above to reveal this step.'
+                                                : currentState.explanation}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
