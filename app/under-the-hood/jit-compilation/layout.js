@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'JIT Compilation',
     description: 'Visualize just-in-time compilation — profiling counters finding hot code, tiered compilation, type feedback and inline caches, speculative optimization with guards, and deoptimization when an assumption breaks.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/jit-compilation' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/jit-compilation" />
+        </>
+    );
+}
