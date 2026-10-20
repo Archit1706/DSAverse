@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Subsets (Power Set) Visualizer – Binary Decision Tree",
     description: "Visualize power set generation using recursive backtracking with a live binary decision tree. Watch each element get included or excluded step by step to build all 2^n subsets.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/subsets-power-set" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/subsets-power-set" />
+        </>
+    );
+}
