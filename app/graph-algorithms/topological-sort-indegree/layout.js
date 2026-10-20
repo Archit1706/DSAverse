@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Topological Sort (Kahn's Algorithm) Visualizer",
     description: "Visualize Kahn's algorithm for topological sorting: repeatedly remove nodes with in-degree zero and peel the DAG layer by layer. Step through in-degree counts, the ready queue, and the resulting order.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/topological-sort-indegree" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/topological-sort-indegree" />
+        </>
+    );
+}
