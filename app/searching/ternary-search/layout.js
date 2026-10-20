@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Ternary Search Visualizer – Three-Way Divide Search Animation",
     description: "Visualize Ternary Search dividing the array into three parts using two midpoints. O(log₃ n) time on sorted arrays. Useful for unimodal functions and sorted data.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/ternary-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/ternary-search" />
+        </>
+    );
+}
