@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "N-Queens Problem Visualizer – Backtracking Animation",
     description: "Visualize solving the N-Queens problem using recursive backtracking. Watch queens being placed and removed as the algorithm explores the solution space. Classic constraint satisfaction problem.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/n-queens" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/n-queens" />
+        </>
+    );
+}
