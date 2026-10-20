@@ -1,9 +1,30 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* At a comparison step bubble sort either swaps the pair or moves on, and
+   the very next step tells us which. The step's own explanation gives the
+   answer away, so the page blanks it until the guess is in. */
+const predictFor = (step, next) => {
+    if (!step || !next) return null;
+    const pair = step.comparisons;
+    if (!pair || pair.length !== 2) return null;
+    const [i, j] = pair;
+    const a = step.array[i], b = step.array[j];
+    const swaps = next.swaps && next.swaps.length === 2;
+    return {
+        question: `${a} and ${b} are being compared. What happens next?`,
+        options: ['Swap them', 'Leave them as they are'],
+        correct: swaps ? 0 : 1,
+        because: swaps
+            ? `${a} > ${b}, and bubble sort swaps any adjacent pair that is out of order.`
+            : `${a} \u2264 ${b}, so the pair is already in order and nothing moves.`,
+    };
+};
 
 const quizQuestions = [
     {
@@ -146,6 +167,9 @@ const BubbleSortPage = () => {
         currentPass: 0, totalPasses: 0
     };
 
+    const pauseForPredict = useCallback(() => setIsPlaying(false), []);
+    const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
+
     const getBarColor = (index) => {
         if (currentState.sorted.includes(index)) return 'bg-green-500 border-green-600';
         if (currentState.swaps.includes(index)) return 'bg-red-500 border-red-600 animate-pulse';
@@ -251,6 +275,7 @@ const BubbleSortPage = () => {
                                 <button onClick={resetToOriginal} className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium">
                                     Original Array
                                 </button>
+                                <PredictToggle predict={predict} accent="orange" />
                             </div>
 
                             <div className="mb-6">
@@ -291,12 +316,22 @@ const BubbleSortPage = () => {
                                 </div>
                             </div>
 
+                            {predict.prompt && (
+                                <div className="mb-4">
+                                    <PredictPrompt predict={predict} accent="orange" />
+                                </div>
+                            )}
+
                             <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Info className="h-5 w-5 text-orange-400 mt-0.5 flex-shrink-0" />
                                     <div>
                                         <h3 className="font-semibold text-orange-300 mb-1">Current Step</h3>
-                                        <p className="text-orange-200 leading-relaxed">{currentState.explanation}</p>
+                                        <p className="text-orange-200 leading-relaxed">
+                                            {predict.hideExplanation
+                                                ? 'Make your prediction above to reveal this step.'
+                                                : currentState.explanation}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
