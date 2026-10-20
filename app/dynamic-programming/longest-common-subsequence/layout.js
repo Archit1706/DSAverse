@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Longest Common Subsequence – LCS DP Visualizer",
     description: "Visualize the Longest Common Subsequence (LCS) algorithm using a 2D DP table. Watch how the table is filled and the LCS is backtracked. O(m×n) time and space.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/longest-common-subsequence" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/longest-common-subsequence" />
+        </>
+    );
+}
