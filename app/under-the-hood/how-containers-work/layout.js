@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'How Containers Work',
     description: 'Visualize containers as ordinary processes — PID, mount, network, UTS and user namespaces, cgroup resource limits, overlay filesystem layers with copy-on-write, build cache ordering, and how all of it differs from a VM.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/how-containers-work' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/how-containers-work" />
+        </>
+    );
+}
