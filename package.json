@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "node scripts/build-learning-data.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint ."
