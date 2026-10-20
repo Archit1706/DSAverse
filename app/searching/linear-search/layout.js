@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Linear Search Visualizer – Sequential Search Animation",
     description: "Visualize Linear Search scanning each element sequentially until the target is found. O(n) time, works on unsorted arrays. The simplest search algorithm explained step by step.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/linear-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/linear-search" />
+        </>
+    );
+}
