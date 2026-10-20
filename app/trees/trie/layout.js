@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Trie Visualizer',
     description: 'Watch words inserted character by character into a Trie prefix tree, then search and test prefix matching.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/trees/trie' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/trees/trie" />
+        </>
+    );
+}
