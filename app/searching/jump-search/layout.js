@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Jump Search Visualizer – Block Step Search Animation",
     description: "Visualize Jump Search jumping ahead by √n steps then doing linear search within the block. O(√n) time on sorted arrays — faster than linear, simpler than binary search.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/jump-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/jump-search" />
+        </>
+    );
+}
