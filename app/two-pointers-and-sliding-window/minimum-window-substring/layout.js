@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Minimum Window Substring Visualizer",
     description: "Interactive visualization of the Minimum Window Substring problem. See the window expand and shrink step by step with live character frequency tracking.",
@@ -10,4 +12,11 @@ export const metadata = {
     alternates: { canonical: "/two-pointers-and-sliding-window/minimum-window-substring" },
 }
 
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/two-pointers-and-sliding-window/minimum-window-substring" />
+        </>
+    );
+}
