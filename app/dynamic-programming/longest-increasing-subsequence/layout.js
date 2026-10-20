@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Longest Increasing Subsequence – DP Visualizer",
     description: "Visualize the Longest Increasing Subsequence (LIS) algorithm with a 1D DP array. Watch how dp[i] values are computed by comparing each element with previous ones. O(n²) approach.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/longest-increasing-subsequence" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/longest-increasing-subsequence" />
+        </>
+    );
+}
