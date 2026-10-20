@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Bucket Sort Visualizer – Distribution Sort Animation",
     description: "Visualize Bucket Sort distributing elements into buckets and sorting each individually. O(n + k) average time, suitable for uniformly distributed floating-point numbers.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/sorting/bucket-sort" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/sorting/bucket-sort" />
+        </>
+    );
+}
