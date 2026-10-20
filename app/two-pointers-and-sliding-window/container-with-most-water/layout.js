@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Container With Most Water Visualizer",
     description: "Interactive visualization of the Container With Most Water problem. Watch two pointers converge inward, always moving the shorter bar, and see the water area update in real time.",
@@ -10,4 +12,11 @@ export const metadata = {
     alternates: { canonical: "/two-pointers-and-sliding-window/container-with-most-water" },
 }
 
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/two-pointers-and-sliding-window/container-with-most-water" />
+        </>
+    );
+}
