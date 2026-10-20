@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Closed Hash Tables (Open Addressing) Visualizer',
     description: 'Visualize open addressing: linear probing, quadratic probing, and double hashing side by side. Watch probe sequences hunt for free slots, clustering build up, and tombstones keep deletes honest.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/closed-hash-tables' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/closed-hash-tables" />
+        </>
+    );
+}
