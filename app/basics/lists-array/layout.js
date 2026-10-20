@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Array List Visualizer – Insert, Delete & Access Animation",
     description: "Visualize a dynamic array list: insert at any position, delete elements, and access by index. See how elements shift on insertion/deletion. O(1) access, O(n) insert/delete.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/lists-array" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/lists-array" />
+        </>
+    );
+}
