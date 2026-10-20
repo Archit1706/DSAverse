@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Breadth-First Search Visualizer – Level-by-Level Graph Traversal",
     description: "Interactively visualize BFS on a graph: watch nodes being discovered level by level using a queue. Understand O(V+E) complexity, shortest path guarantees, and the difference between BFS and DFS.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/breadth-first-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/breadth-first-search" />
+        </>
+    );
+}
