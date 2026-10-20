@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'How a Database Query Executes',
     description: 'Visualize the SQL query lifecycle: parser, planner, cost-based optimizer, index scan vs full table scan, and execution.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/under-the-hood/how-a-database-query-executes' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/under-the-hood/how-a-database-query-executes" />
+        </>
+    );
+}
