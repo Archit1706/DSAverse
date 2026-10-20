@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Linked List Visualizer – Insert, Delete & Traverse Animation",
     description: "Visualize a singly linked list: insert nodes at head, tail, or any position; delete nodes; traverse from head. O(1) insert at head, O(n) search. Pointer-based navigation animated.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/lists-linked-list" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/lists-linked-list" />
+        </>
+    );
+}
