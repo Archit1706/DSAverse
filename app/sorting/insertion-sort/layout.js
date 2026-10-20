@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Insertion Sort Visualizer – Step-by-Step Animation",
     description: "Watch Insertion Sort build a sorted array one element at a time by inserting each element into its correct position. O(n²) average, O(n) best case, stable sort. Includes Python code.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/sorting/insertion-sort" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/sorting/insertion-sort" />
+        </>
+    );
+}
