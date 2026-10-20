@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Closed Hash Tables with Buckets Visualizer',
     description: 'Visualize bucketed hashing: each slot holds several entries, so a collision usually lands in the same cache line instead of probing away. Watch buckets fill and spill into the overflow area.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/indexing/closed-hash-tables-with-buckets' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/indexing/closed-hash-tables-with-buckets" />
+        </>
+    );
+}
