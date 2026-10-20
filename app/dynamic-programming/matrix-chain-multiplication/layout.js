@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Matrix Chain Multiplication – DP Visualizer",
     description: "Visualize the Matrix Chain Multiplication algorithm. Watch the DP table fill diagonally as the algorithm finds the optimal parenthesization to minimize scalar multiplications. O(n³) time.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/matrix-chain-multiplication" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/matrix-chain-multiplication" />
+        </>
+    );
+}
