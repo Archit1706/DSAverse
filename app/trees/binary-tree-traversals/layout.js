@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: 'Binary Tree Traversals Visualizer',
     description: 'Animate Inorder, Preorder, Postorder, and Level-Order traversals with a recursive call-stack panel.',
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: '/trees/binary-tree-traversals' },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/trees/binary-tree-traversals" />
+        </>
+    );
+}
