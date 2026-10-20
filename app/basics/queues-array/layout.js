@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Queue (Array) Visualizer – Enqueue & Dequeue Animation",
     description: "Visualize a Queue implemented with an array: enqueue at the rear, dequeue from the front. FIFO (First In First Out) data structure. See circular buffer behavior with O(1) operations.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/basics/queues-array" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/basics/queues-array" />
+        </>
+    );
+}
