@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Tower of Hanoi Visualizer – Recursive Disk Move Animation",
     description: "Visualize the Tower of Hanoi puzzle solved recursively: move n disks from source to destination using an auxiliary peg. Watch 2ⁿ-1 moves unfold. The iconic example of recursion.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/recursion/tower-of-hanoi" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/recursion/tower-of-hanoi" />
+        </>
+    );
+}
