@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "3Sum Visualizer",
     description: "Interactive visualization of the 3Sum problem. Watch the pivot advance through the sorted array while two pointers sweep the remainder to find all unique zero-sum triplets.",
@@ -10,4 +12,11 @@ export const metadata = {
     alternates: { canonical: "/two-pointers-and-sliding-window/3sum" },
 }
 
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/two-pointers-and-sliding-window/3sum" />
+        </>
+    );
+}
