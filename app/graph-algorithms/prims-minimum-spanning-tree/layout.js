@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Prim's Minimum Spanning Tree Visualizer",
     description: "Visualize Prim's algorithm building a minimum spanning tree: grow the tree from a start node, always adding the cheapest edge that crosses to a new node. Step through the cut and watch the MST form.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/graph-algorithms/prims-minimum-spanning-tree" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/graph-algorithms/prims-minimum-spanning-tree" />
+        </>
+    );
+}
