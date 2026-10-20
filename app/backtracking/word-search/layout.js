@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Word Search – Backtracking Visualizer",
     description: "Visualize the Word Search backtracking algorithm on a 2D character grid. Watch the DFS explore all four directions, mark cells as visited, and backtrack when the path fails.",
@@ -5,4 +7,11 @@ export const metadata = {
     openGraph: { title: "Word Search Backtracking Visualizer – DSAverse", images: [{ url: "/og-image.png" }] },
     alternates: { canonical: "/backtracking/word-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/backtracking/word-search" />
+        </>
+    );
+}
