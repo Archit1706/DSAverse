@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Fibonacci Numbers – Dynamic Programming Visualizer",
     description: "Visualize computing Fibonacci numbers using bottom-up dynamic programming (tabulation). See how DP avoids redundant calculations with O(n) time and O(n) space vs O(2ⁿ) naive recursion.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/dynamic-programming/fibonacci-numbers" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/dynamic-programming/fibonacci-numbers" />
+        </>
+    );
+}
