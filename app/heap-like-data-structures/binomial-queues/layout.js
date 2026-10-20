@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Binomial Queue Visualizer – Binomial Heap Animation",
     description: "Visualize a Binomial Queue (Binomial Heap): a collection of Binomial Trees supporting O(log n) insert, union, and extract-min. See tree merging and cascading links animated.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/heap-like-data-structures/binomial-queues" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/heap-like-data-structures/binomial-queues" />
+        </>
+    );
+}
