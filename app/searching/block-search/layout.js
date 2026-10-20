@@ -1,3 +1,5 @@
+import RelatedPages from '@/components/RelatedPages';
+
 export const metadata = {
     title: "Block Search Visualizer – Block-Based Search Animation",
     description: "Visualize Block Search (also known as Jump Search) dividing sorted arrays into fixed-size blocks. O(√n) time complexity, balancing the cost of jumping and linear scanning.",
@@ -9,4 +11,11 @@ export const metadata = {
     },
     alternates: { canonical: "/searching/block-search" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) {
+    return (
+        <>
+            {children}
+            <RelatedPages route="/searching/block-search" />
+        </>
+    );
+}
