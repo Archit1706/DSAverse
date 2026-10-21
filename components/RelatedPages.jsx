@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, Repeat2, Layers, Compass, Shuffle } from 'lucide-react';
 import { related } from '@/data/related';
 import { markVisited } from '@/lib/progress';
+import { SUBJECTS, subjectOfPath } from '@/data/subjects';
 
 /* Mirrors the kinds emitted by scripts/build-learning-data.mjs. Numeric order
    is display order there too, so sorting the groups descending is enough. */
@@ -27,15 +28,22 @@ export default function RelatedPages({ route }) {
     if (!entry || !entry.length) return null;
 
     // Group by kind so each heading is accurate rather than a generic "related".
+    // Topical matches (kind 1) are further split by subject: a link that
+    // crosses from DSA into CS Core — LRU cache to page replacement, Dijkstra to
+    // link-state routing — is the most useful kind on the site, so it gets its
+    // own heading naming the subject it leads into.
+    const here = subjectOfPath(route);
     const groups = new Map();
     for (const [idx, kind] of entry) {
-        if (!groups.has(kind)) groups.set(kind, []);
-        groups.get(kind).push({
-            route: related.routes[idx],
-            title: related.titles[idx],
-        });
+        const target = related.routes[idx];
+        const there = kind === 1 ? subjectOfPath(target) : null;
+        const key = kind === 1 ? `1|${there ?? ''}` : String(kind);
+        if (!groups.has(key)) groups.set(key, { kind, there, items: [] });
+        groups.get(key).items.push({ route: target, title: related.titles[idx] });
     }
-    const ordered = [...groups.entries()].sort((a, b) => b[0] - a[0]);
+    const crosses = (g) => (g.kind === 1 && g.there && g.there !== here ? 1 : 0);
+    const ordered = [...groups.entries()]
+        .sort(([, a], [, b]) => b.kind - a.kind || crosses(b) - crosses(a));
 
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -44,13 +52,20 @@ export default function RelatedPages({ route }) {
                     See also
                 </h2>
                 <div className="space-y-5">
-                    {ordered.map(([kind, items]) => {
+                    {ordered.map(([key, { kind, there, items }]) => {
                         const meta = KIND[kind] ?? KIND[0];
                         const Icon = meta.icon;
+                        let label = meta.label;
+                        if (kind === 1 && there) {
+                            const subject = SUBJECTS.find(s => s.id === there);
+                            label = there !== here
+                                ? `Related in ${subject.name}`
+                                : `Related elsewhere in ${subject.shortName}`;
+                        }
                         return (
-                            <div key={kind}>
+                            <div key={key}>
                                 <div className={`flex items-center gap-1.5 text-[11px] uppercase tracking-wide mb-2 ${meta.tone}`}>
-                                    <Icon className="h-3 w-3" />{meta.label}
+                                    <Icon className="h-3 w-3" />{label}
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                                     {items.map(it => (
