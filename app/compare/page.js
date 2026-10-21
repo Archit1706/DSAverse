@@ -7,6 +7,7 @@ import {
     Clock, HardDrive, Gauge, Tag, BookOpen, Shuffle,
 } from 'lucide-react';
 import { pageIndex } from '@/data/pageIndex';
+import { SUBJECTS } from '@/data/subjects';
 
 const BY_ROUTE = Object.fromEntries(pageIndex.map(p => [p.route, p]));
 const MAX_COLUMNS = 3;
@@ -54,8 +55,12 @@ const SECTION_LABEL = (s) => s.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUppe
 
 /* ── picker ───────────────────────────────────────────────── */
 
+/* Only subjects that actually have pages get a filter chip. */
+const PICKER_SUBJECTS = SUBJECTS.filter(s => pageIndex.some(p => p.subject === s.id));
+
 function AlgorithmPicker({ onPick, chosen, onClose }) {
     const [query, setQuery] = useState('');
+    const [subject, setSubject] = useState(null);   // null = every subject
     const inputRef = useRef(null);
 
     useEffect(() => { inputRef.current?.focus(); }, []);
@@ -64,11 +69,12 @@ function AlgorithmPicker({ onPick, chosen, onClose }) {
         const q = query.trim().toLowerCase();
         return pageIndex
             .filter(p => !chosen.includes(p.route))
+            .filter(p => !subject || p.subject === subject)
             .filter(p => !q || p.name.toLowerCase().includes(q)
                 || p.section.includes(q.replace(/ /g, '-'))
                 || (p.pattern ?? '').toLowerCase().includes(q))
             .slice(0, 60);
-    }, [query, chosen]);
+    }, [query, chosen, subject]);
 
     return (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4" onClick={onClose}>
@@ -86,6 +92,19 @@ function AlgorithmPicker({ onPick, chosen, onClose }) {
                         <X className="w-4 h-4" />
                     </button>
                 </div>
+                {PICKER_SUBJECTS.length > 1 && (
+                    <div className="flex items-center gap-1.5 px-4 py-2 border-b border-slate-800">
+                        {[{ id: null, shortName: 'All' }, ...PICKER_SUBJECTS].map(s => (
+                            <button key={s.id ?? 'all'} onClick={() => setSubject(s.id)}
+                                aria-pressed={subject === s.id}
+                                className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${subject === s.id
+                                    ? 'bg-indigo-500/20 border-indigo-500/60 text-indigo-200'
+                                    : 'border-slate-700 text-slate-400 hover:text-slate-200'}`}>
+                                {s.shortName}
+                            </button>
+                        ))}
+                    </div>
+                )}
                 <div className="max-h-[55vh] overflow-y-auto py-2">
                     {results.length === 0 ? (
                         <p className="px-4 py-8 text-center text-sm text-slate-600">Nothing matches &ldquo;{query}&rdquo;</p>
