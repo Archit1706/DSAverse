@@ -1,10 +1,42 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Settings2 } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 import { GraphCustomizer, layoutNodes } from '@/components/GraphCustomizer';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* The one step where BFS makes a choice the learner can be held to: a node has
+   just been fully processed, nothing is current, and the queue still holds two
+   or more nodes. Whatever the graph looks like, the next step dequeues
+   queue[0] — the whole FIFO lesson, answerable from the step's own queue.
+   "Which neighbours get discovered?" is deliberately not asked: that needs the
+   adjacency list, which the step does not carry.
+
+   The candidates are rotated by a count that is part of the step, so the front
+   of the queue is not always the first button. */
+const predictFor = (step) => {
+    if (!step || step.currentNode !== -1) return null;
+    const q = step.queue;
+    if (!q || q.length < 2) return null;
+
+    const front = q[0], back = q[q.length - 1];
+    const picks = [front, back];
+    for (const n of q) {
+        if (picks.length >= 3) break;
+        if (!picks.includes(n)) picks.push(n);
+    }
+    const rot = (step.bfsOrder?.length ?? 0) % picks.length;
+    const order = [...picks.slice(rot), ...picks.slice(0, rot)];
+
+    return {
+        question: `Queue (front → back): ${q.join(' → ')}. Which node does BFS dequeue next?`,
+        options: order.map(n => `Node ${n}`),
+        correct: order.indexOf(front),
+        because: `A queue is first-in, first-out: node ${front} has been waiting longest, so it comes off the front. Node ${back} was enqueued last and waits for everything ahead of it — that ordering is what makes BFS sweep the graph level by level.`,
+    };
+};
 
 const quizQuestions = [
     {
@@ -144,6 +176,9 @@ export default function BFSPage() {
         } else if (currentStep >= stepHistory.length - 1) setIsPlaying(false);
     }, [isPlaying, currentStep, stepHistory, speed]);
 
+    const pauseForPredict = useCallback(() => setIsPlaying(false), []);
+    const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
+
     const state = stepHistory[currentStep] || { nodeStates: {}, queue: [], bfsOrder: [], currentNode: -1, level: {}, explanation: '' };
 
     const edgeIsTree = (a, b) => {
@@ -241,6 +276,7 @@ export default function BFSPage() {
                                     className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium">
                                     <RotateCcw size={18} />Reset
                                 </button>
+                                <PredictToggle predict={predict} accent="cyan" />
                             </div>
 
                             <div className="mb-6">
@@ -327,12 +363,22 @@ export default function BFSPage() {
                                 </div>
                             )}
 
+                            {predict.prompt && (
+                                <div className="mb-4">
+                                    <PredictPrompt predict={predict} accent="cyan" />
+                                </div>
+                            )}
+
                             <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Info className="h-5 w-5 text-cyan-400 mt-0.5 flex-shrink-0" />
                                     <div>
                                         <h3 className="font-semibold text-cyan-300 mb-1">Current Step</h3>
-                                        <p className="text-cyan-200 text-sm leading-relaxed">{state.explanation}</p>
+                                        <p className="text-cyan-200 text-sm leading-relaxed">
+                                            {predict.hideExplanation
+                                                ? 'Make your prediction above to reveal this step.'
+                                                : state.explanation}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
