@@ -3,8 +3,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     ArrowRight, ArrowLeftRight, Layers, RefreshCw, ArrowUpDown, Search,
-    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table
+    GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
+    Columns3,
 } from 'lucide-react';
+import { SUBJECTS, subjectOfSection } from '@/data/subjects';
+import { pagesBySection, pagesBySubject, totalPages, totalQuestions } from '@/data/learningStats';
 
 const CATEGORIES = [
     // ── 1. Foundations ──────────────────────────────────────────────────────
@@ -181,7 +184,7 @@ const CATEGORIES = [
         glow:        'hover:shadow-fuchsia-500/20',
         badge:       'bg-fuchsia-500/10 text-fuchsia-300',
     },
-    // ── CS Internals ─────────────────────────────────────────────────────────
+    // ── 7. Indexing ──────────────────────────────────────────────────────────
     {
         name:        'Indexing',
         slug:        'indexing',
@@ -194,6 +197,7 @@ const CATEGORIES = [
         glow:        'hover:shadow-emerald-500/20',
         badge:       'bg-emerald-500/10 text-emerald-300',
     },
+    // ── CS Core ──────────────────────────────────────────────────────────────
     {
         name:        'Under the Hood',
         slug:        'under-the-hood',
@@ -206,10 +210,13 @@ const CATEGORIES = [
         glow:        'hover:shadow-zinc-500/20',
         badge:       'bg-zinc-500/10 text-zinc-300',
     },
-    // ── Reference ────────────────────────────────────────────────────────────
+    // ── Tools ────────────────────────────────────────────────────────────────
+    // Not sections: these sit below the subjects, and their badge names what
+    // they are instead of counting pages.
     {
         name:        'Cheatsheet',
         slug:        'cheatsheet',
+        kicker:      'Reference',
         icon:        <BarChart2 className="w-6 h-6" />,
         description: 'Quick Complexity Reference',
         algorithms:  ['Time Complexity', 'Space Complexity', 'Big-O', 'Sorting Table', 'Graph Table', 'Data Structures'],
@@ -219,7 +226,43 @@ const CATEGORIES = [
         glow:        'hover:shadow-violet-500/20',
         badge:       'bg-violet-500/10 text-violet-300',
     },
+    {
+        name:        'Review',
+        slug:        'review',
+        kicker:      'Practice',
+        icon:        <Brain className="w-6 h-6" />,
+        description: 'Spaced Repetition Over Every Quiz',
+        algorithms:  [`${totalQuestions} questions`, 'Due today', 'By subject', 'By section'],
+        gradient:    'from-indigo-500 to-violet-600',
+        border:      'border-indigo-500/30',
+        hoverBorder: 'hover:border-indigo-400',
+        glow:        'hover:shadow-indigo-500/20',
+        badge:       'bg-indigo-500/10 text-indigo-300',
+    },
+    {
+        name:        'Compare',
+        slug:        'compare',
+        kicker:      'Reference',
+        icon:        <Columns3 className="w-6 h-6" />,
+        description: 'Two or Three Algorithms Side by Side',
+        algorithms:  ['Quick vs Merge', 'BFS vs DFS', 'Hash vs B-tree', 'Prim vs Kruskal'],
+        gradient:    'from-sky-500 to-cyan-600',
+        border:      'border-sky-500/30',
+        hoverBorder: 'hover:border-sky-400',
+        glow:        'hover:shadow-sky-500/20',
+        badge:       'bg-sky-500/10 text-sky-300',
+    },
 ];
+
+/* Section cards grouped by subject. Within a subject the cards keep the
+   learning order written above (foundations first), not data/subjects.js order. */
+const GROUPS = SUBJECTS
+    .map(subject => ({
+        ...subject,
+        cats: CATEGORIES.filter(c => !c.kicker && subjectOfSection(c.slug) === subject.id),
+    }))
+    .filter(g => g.cats.length > 0);
+const TOOLS = CATEGORIES.filter(c => c.kicker);
 
 function CategoryCard({ cat, index }) {
     const [hovered, setHovered] = useState(false);
@@ -238,7 +281,7 @@ function CategoryCard({ cat, index }) {
                     {cat.icon}
                 </div>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${cat.badge}`}>
-                    {cat.algorithms.length} topics
+                    {cat.kicker ?? `${pagesBySection[cat.slug] ?? cat.algorithms.length} visualizers`}
                 </span>
             </div>
 
@@ -299,15 +342,43 @@ export default function AlgorithmsGrid() {
                         </span>
                     </h2>
                     <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                        15 categories, 80+ topics — from foundations to advanced, plus CS internals under the hood. Each with animations, explanations, and code.
+                        {totalPages} interactive visualizers across {GROUPS.length} subjects — each with animations, explanations, code and an active-recall quiz.
                     </p>
                 </div>
 
-                {/* Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {CATEGORIES.map((cat, i) => (
-                        <CategoryCard key={cat.slug} cat={cat} index={i} />
+                {/* One block per subject */}
+                <div className="space-y-16">
+                    {GROUPS.map(group => (
+                        <div key={group.id}>
+                            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 mb-6 border-b border-slate-800 pb-3">
+                                <div>
+                                    <h3 className="text-2xl font-bold text-white">{group.name}</h3>
+                                    <p className="text-slate-400 text-sm mt-1">{group.tagline}</p>
+                                </div>
+                                <span className="text-xs font-mono text-slate-500">
+                                    {pagesBySubject[group.id] ?? 0} visualizers · {group.cats.length} sections
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                                {group.cats.map((cat, i) => (
+                                    <CategoryCard key={cat.slug} cat={cat} index={i} />
+                                ))}
+                            </div>
+                        </div>
                     ))}
+
+                    {/* Tools that span every subject */}
+                    <div>
+                        <div className="mb-6 border-b border-slate-800 pb-3">
+                            <h3 className="text-2xl font-bold text-white">Practice and reference</h3>
+                            <p className="text-slate-400 text-sm mt-1">Work across every subject at once.</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                            {TOOLS.map((cat, i) => (
+                                <CategoryCard key={cat.slug} cat={cat} index={i} />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
