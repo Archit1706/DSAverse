@@ -17,6 +17,10 @@ npm run lint     # ESLint check (must be run manually — build ignores lint err
 
 **Stop the dev server before building.** `next dev` and `next build` share the `.next` directory — running a build while the dev server is up deletes files out from under it, producing an ENOENT storm in the dev log and leaving pages that serve HTML but never hydrate (buttons render, clicks do nothing). Recovery is `rm -rf .next` and a dev-server restart.
 
+**Several sessions in one checkout.** `next.config.mjs` sets `distDir` from `NEXT_DIST_DIR`, defaulting to `.next` (deployments never set it). When more than one session works in this checkout at once, each builds and previews into its own directory — `NEXT_DIST_DIR=.next-os npx next build` — so they cannot corrupt each other. `.next-*/` is git-ignored and lint-ignored. Use `npx next build` rather than `npm run build` there, since `prebuild` rewrites the shared `data/` files, and check generator output with `node scripts/build-learning-data.mjs --out <dir>`.
+
+`npm run lint` only matches `.js`/`.mjs` files: the flat config has no entry for `.jsx`, so nothing under `components/` is linted today.
+
 ## Architecture
 
 **DSAverse** is a Next.js 15 App Router educational platform for visualizing data structures and algorithms. Live at https://dsa-verse.vercel.app.
@@ -57,6 +61,7 @@ components/
   PredictStep.jsx                # Optional "what happens next?" prompts for step-based pages
   Hero.jsx, Features.jsx, AlgorithmsGrid.jsx, CTA.jsx, Footer.jsx
 data/
+  subjects.js                    # Subjects → sections: the top level of the site (plain data)
   algorithmCategories.js         # Single source of truth for nav categories and algorithm names
   quizBank.js                    # GENERATED — every quiz question on the site
   pageIndex.js                   # GENERATED — every page's metadata
@@ -67,6 +72,37 @@ lib/
 scripts/
   build-learning-data.mjs        # Emits the four generated data files (runs on prebuild)
 ```
+
+### Subjects
+
+The site has three levels: **subject → section → page**. `data/subjects.js` is the top level, and the only place that decides which subject a section belongs to:
+
+```js
+export const SUBJECTS = [
+    { id: 'dsa', name: 'Data Structures & Algorithms', shortName: 'DSA', tagline: '…', sections: ['basics', 'recursion', …, 'indexing'] },
+    { id: 'cs-core', name: 'CS Core', shortName: 'CS Core', tagline: '…', sections: ['under-the-hood'] },
+];
+export function subjectOfSection(sectionSlug) { … }   // 'sorting' → 'dsa'
+export function subjectOfPath(pathname) { … }         // '/sorting/bubble-sort' → 'dsa'
+```
+
+Sections are listed by their `app/` directory name, in display order. The file is **plain data — no icons, JSX or imports** — because the Node generator reads it as well as the app.
+
+Everything that groups by subject reads it:
+
+| Reader | What it does with subjects |
+|---|---|
+| `components/Navbar.jsx` | Mega-menu tabs, one per subject, opening on the subject of the current page; mobile panel headings |
+| `components/AlgorithmsGrid.jsx` | One homepage block per subject, then a "Practice and reference" row (Cheatsheet, Review, Compare). Within a subject the cards keep the grid's own learning order, not `subjects.js` order |
+| `components/Footer.jsx` | One link column per subject |
+| `app/review/page.js` | Section progress grouped by subject, plus "Practise all of <subject>" (`buildQueue` takes `{ subject }` as well as `{ section }`) |
+| `app/compare/page.js` | Subject filter chips in the picker |
+| `components/RelatedPages.jsx` | Splits topical matches by subject — a link into another subject is headed "Related in <subject name>" |
+| `scripts/build-learning-data.mjs` | Stamps `subject` on every `pageIndex` and `quizBank` entry, and counts pages per section and subject |
+
+URLs do **not** carry the subject: pages stay at `/sorting/bubble-sort`, not `/dsa/sorting/bubble-sort`. Moving them would break every canonical URL in the sitemap and every inbound link.
+
+A section with pages but no entry in `subjects.js` is never silently dropped: the generator prints a warning, and the Navbar and Review put it in a trailing "More" group. Only list a section once its index page exists.
 
 ### Two-Layout Pattern
 
@@ -370,7 +406,7 @@ const PAGES_EXIST = new Set([
     'Divide and Conquer', 'Union-Find', 'Under the Hood',
 ]);
 ```
-Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, apostrophes stripped, spaces/colons → hyphens, parentheses removed — so `Dijkstra's Shortest Path` → `dijkstras-shortest-path` and `Subsets (Power Set)` → `subsets-power-set`. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too.
+Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, apostrophes stripped, spaces/colons → hyphens, parentheses removed — so `Dijkstra's Shortest Path` → `dijkstras-shortest-path` and `Subsets (Power Set)` → `subsets-power-set`. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too. Then add the section's directory name to its subject in `data/subjects.js`, which decides which mega-menu tab it appears under.
 
 A name whose slug still does not match its directory goes in the `SLUG_OVERRIDES` map just above `toSlug()`, which short-circuits the whole derivation:
 
@@ -425,12 +461,15 @@ It emits four files into `data/`, each headed with a do-not-edit warning:
 | `quizBank.js` | ~225 KB | All 363 quiz questions, tagged with route and section |
 | `pageIndex.js` | ~47 KB | Every page's name, description, difficulty, pattern, time and space |
 | `related.js` | ~15 KB | Up to 4 sibling pages per route |
-| `learningStats.js` | <200 B | Just `totalQuestions` and `totalPages` |
+| `learningStats.js` | <1 KB | `totalQuestions`, `totalPages`, `pagesBySection`, `pagesBySubject` |
 
 **Never edit these by hand** — regenerate with `node scripts/build-learning-data.mjs`.
 
-Two things the generator has to get right, both of which were wrong in the first cut:
+Every `pageIndex` and `quizBank` entry carries a `subject` as well as its `section` (see Subjects above). The homepage stats, the CTA chip and the per-section badges all read `learningStats.js`, so none of those numbers are typed by hand any more — the Hero's had drifted to half the real figures.
 
+Three things the generator has to get right, all of which were wrong at first:
+
+- **Cross-link cards do not describe the page.** A card with an `href` outside its own section (Indexing's "Binary Search Trees", pointing at `/trees/binary-search-tree`) is skipped when collecting metadata; the owning section's entry is the one that counts. It used to be keyed by its `href` and overwrite the owner's entry whenever its index happened to be read last — right only by alphabetical luck.
 - **Field aliases.** Section indexes do not agree on key names. `pattern` is also written as `type`, `category` or `tag`; `time` as `timeComplexity` or (in Under the Hood) `complexity`; `space` as `spaceComplexity`. All are mapped.
 - **Relatedness ranking.** `related.js` scores pages against each other with tf-idf over their own prose — title, index blurb, pattern tag, the layout's description and keywords, and the page body's explanation strings (Tailwind class strings are stripped first, or the shared utility vocabulary swamps everything). Ranking on metadata alone was far too thin: it put the array-list page next to the CPU cache page, and within a section it degenerated to alphabetical order, so bubble sort pointed at bucket/heap/insertion/merge sort. Relation kinds, strongest first: `3` same algorithm in another section, `2` shared pattern tag, `1` topical match elsewhere, `0` sibling in the same section.
 
