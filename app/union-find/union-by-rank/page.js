@@ -2,6 +2,39 @@
 import { useState, useEffect, useCallback } from 'react';
 import { SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle, Info, Code2 } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* The find-paths step shows both roots and carries the rank array as it stood
+   before the merge, which is exactly what decides the winner — so the question
+   is answerable from the step and nothing has been overwritten yet. The next
+   step spells the decision out, hence the blanking. Prompting is limited to
+   unions that actually merge something; when both roots are the same there is
+   no decision to predict. */
+const predictFor = (step) => {
+    if (!step || step.decision || !step.rank) return null;
+    const { rootA, rootB, rank } = step;
+    if (rootA == null || rootB == null || rootA === rootB) return null;
+
+    const rA = rank[rootA], rB = rank[rootB];
+    // Equal ranks: this implementation keeps rootA and bumps its rank.
+    const aWins = rA >= rB;
+    /* Listing the roots in find order would put the winner first on every tie
+       and every rank[A] > rank[B] — always-pick-the-first would score well. Node
+       order has nothing to do with rank, so it makes the position carry no hint. */
+    const pair = rootA < rootB ? [rootA, rootB] : [rootB, rootA];
+    const because = rA === rB
+        ? `The ranks tie at ${rA}, so either root could win — this implementation keeps ${rootA} and bumps its rank to ${rA + 1}. A tie is the only case where any rank ever changes.`
+        : aWins
+            ? `rank[${rootA}] = ${rA} > rank[${rootB}] = ${rB}, so ${rootB} hangs under ${rootA}. Attaching the shallower tree under the deeper one adds no height at all.`
+            : `rank[${rootA}] = ${rA} < rank[${rootB}] = ${rB}, so ${rootA} hangs under ${rootB} — again the shallower tree is the one that moves.`;
+
+    return {
+        question: `Merging the tree at ${rootA} (rank ${rA}) with the tree at ${rootB} (rank ${rB}). Which node ends up as the root?`,
+        options: pair.map(n => `Node ${n}`),
+        correct: pair.indexOf(aWins ? rootA : rootB),
+        because,
+    };
+};
 
 const CODE_EXAMPLE = `class UnionByRank:
     """Always attach the shorter tree under the taller one."""
@@ -297,6 +330,9 @@ export default function UnionByRankPage() {
         return () => clearTimeout(t);
     }, [playing, cur, steps, speed]);
 
+    const pauseForPredict = useCallback(() => setPlaying(false), []);
+    const predict = usePredict(steps, cur, predictFor, pauseForPredict);
+
     const step = steps[cur] || {};
     const parent = step.parent || Array.from({ length: preset.n }, (_, i) => i);
     const rank   = step.rank   || Array(preset.n).fill(0);
@@ -350,6 +386,7 @@ export default function UnionByRankPage() {
                         </button>
                         <button onClick={() => setCur(s => Math.min(steps.length - 1, s + 1))} disabled={cur >= steps.length - 1} className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 transition-colors"><SkipForward className="h-4 w-4" /></button>
                         <button onClick={() => { const n = 6 + Math.floor(Math.random() * 5); setPreset({ n, ops: randomOps(n) }); }} className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors"><Shuffle className="h-4 w-4" /></button>
+                        <PredictToggle predict={predict} accent="purple" />
                     </div>
                     <div className="flex items-center gap-3 flex-1 min-w-[180px]">
                         <span className="text-xs text-slate-400">Speed</span>
@@ -453,10 +490,16 @@ export default function UnionByRankPage() {
 
                     {/* Sidebar */}
                     <div className="space-y-4">
+                        {predict.prompt && <PredictPrompt predict={predict} accent="purple" />}
+
                         <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
                             <div className="flex items-start gap-2">
                                 <Info className="h-4 w-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                                <p className="text-purple-300 text-sm leading-relaxed">{step.explanation || '…'}</p>
+                                <p className="text-purple-300 text-sm leading-relaxed">
+                                    {predict.hideExplanation
+                                        ? 'Make your prediction above to reveal this step.'
+                                        : (step.explanation || '…')}
+                                </p>
                             </div>
                         </div>
                         <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
