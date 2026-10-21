@@ -37,6 +37,30 @@ const ACCENTS = {
         text: 'text-indigo-200',
         on: 'bg-indigo-500/20 border-indigo-500/60 text-indigo-300',
     },
+    red: {
+        panel: 'bg-red-500/10 border-red-500/30',
+        icon: 'text-red-400',
+        text: 'text-red-200',
+        on: 'bg-red-500/20 border-red-500/60 text-red-300',
+    },
+    cyan: {
+        panel: 'bg-cyan-500/10 border-cyan-500/30',
+        icon: 'text-cyan-400',
+        text: 'text-cyan-200',
+        on: 'bg-cyan-500/20 border-cyan-500/60 text-cyan-300',
+    },
+    lime: {
+        panel: 'bg-lime-500/10 border-lime-500/30',
+        icon: 'text-lime-400',
+        text: 'text-lime-200',
+        on: 'bg-lime-500/20 border-lime-500/60 text-lime-300',
+    },
+    purple: {
+        panel: 'bg-purple-500/10 border-purple-500/30',
+        icon: 'text-purple-400',
+        text: 'text-purple-200',
+        on: 'bg-purple-500/20 border-purple-500/60 text-purple-300',
+    },
 };
 const accentOf = (name) => ACCENTS[name] ?? ACCENTS.indigo;
 
