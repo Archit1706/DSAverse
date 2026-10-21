@@ -61,6 +61,25 @@ const ACCENTS = {
         text: 'text-purple-200',
         on: 'bg-purple-500/20 border-purple-500/60 text-purple-300',
     },
+    // CS Core sections: Operating Systems, Computer Networks, Database Systems.
+    yellow: {
+        panel: 'bg-yellow-500/10 border-yellow-500/30',
+        icon: 'text-yellow-400',
+        text: 'text-yellow-200',
+        on: 'bg-yellow-500/20 border-yellow-500/60 text-yellow-300',
+    },
+    pink: {
+        panel: 'bg-pink-500/10 border-pink-500/30',
+        icon: 'text-pink-400',
+        text: 'text-pink-200',
+        on: 'bg-pink-500/20 border-pink-500/60 text-pink-300',
+    },
+    blue: {
+        panel: 'bg-blue-500/10 border-blue-500/30',
+        icon: 'text-blue-400',
+        text: 'text-blue-200',
+        on: 'bg-blue-500/20 border-blue-500/60 text-blue-300',
+    },
 };
 const accentOf = (name) => ACCENTS[name] ?? ACCENTS.indigo;
 
