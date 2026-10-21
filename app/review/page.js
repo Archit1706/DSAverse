@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { totalQuestions as TOTAL_QUESTIONS, totalPages as TOTAL_PAGES } from '@/data/learningStats';
 import { buildQueue, queueStats, recordAnswer, resetProgress, getSchedule } from '@/lib/progress';
+import { SUBJECTS } from '@/data/subjects';
 
 const SECTION_LABELS = {
     'backtracking': 'Backtracking',
@@ -28,6 +29,11 @@ const SECTION_LABELS = {
     'union-find': 'Union-Find',
 };
 
+/* Sections without an entry above (a newly added one, say) fall back to their
+   directory name in title case rather than showing a raw slug. */
+const sectionLabel = (slug) => SECTION_LABELS[slug]
+    ?? slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
 const SESSION_SIZE = 15;
 
 export default function ReviewPage() {
@@ -38,7 +44,9 @@ export default function ReviewPage() {
        and the first client render both produce the same empty shell. */
     const [bank, setBank] = useState(null);
     const [stats, setStats] = useState({ due: 0, learning: 0, known: 0, unseen: 0, total: TOTAL_QUESTIONS });
-    const [section, setSection] = useState(null);
+    // null for everything, or { section } / { subject } — remembered so
+    // "Go again" from the summary repeats the same kind of session.
+    const [scope, setScope] = useState(null);
 
     const [queue, setQueue] = useState([]);
     const [index, setIndex] = useState(0);
@@ -86,9 +94,9 @@ export default function ReviewPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ready, bank, stats]);
 
-    const start = (onlySection = null) => {
-        const q = buildQueue(bank, { limit: SESSION_SIZE, section: onlySection });
-        setSection(onlySection);
+    const start = (nextScope = null) => {
+        const q = buildQueue(bank, { limit: SESSION_SIZE, ...(nextScope ?? {}) });
+        setScope(nextScope);
         setQueue(q);
         setIndex(0);
         setSelected(null);
@@ -175,7 +183,7 @@ export default function ReviewPage() {
                         onAnswer={answer} onNext={next}
                     />
                 ) : finished ? (
-                    <Summary results={results} onAgain={() => start(section)} onHome={() => setQueue([])} />
+                    <Summary results={results} onAgain={() => start(scope)} onHome={() => setQueue([])} />
                 ) : (
                     <Dashboard
                         stats={stats} pct={pct} sectionStats={sectionStats}
@@ -241,17 +249,36 @@ function Dashboard({ stats, pct, sectionStats, onStart, onReset }) {
                 )}
             </div>
 
-            <div>
-                <h2 className="text-lg font-bold text-white mb-4">Practise one section</h2>
+            {groupBySubject(sectionStats).map(group => {
+                const gp = group.total ? Math.round((group.known / group.total) * 100) : 0;
+                return (
+            <div key={group.id}>
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h2 className="text-lg font-bold text-white">{group.name}</h2>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                            {group.known}/{group.total} known · {gp}%{group.due > 0 ? ` · ${group.due} due` : ''}
+                        </p>
+                    </div>
+                    {/* "More" only exists when a section is missing from data/subjects.js;
+                        its questions carry no subject, so there is nothing to filter on. */}
+                    {group.id !== 'more' && (
+                    <button onClick={() => onStart({ subject: group.id })}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-indigo-500/40 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/20 transition-colors text-sm">
+                        <Sparkles className="h-4 w-4" />
+                        Practise all of {group.shortName}
+                    </button>
+                    )}
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {sectionStats.map(s => {
+                    {group.rows.map(s => {
                         const p = s.total ? Math.round((s.known / s.total) * 100) : 0;
                         return (
-                            <button key={s.section} onClick={() => onStart(s.section)}
+                            <button key={s.section} onClick={() => onStart({ section: s.section })}
                                 className="text-left bg-slate-900/70 rounded-xl border border-slate-700/50 p-4 hover:border-indigo-500/60 transition-colors group">
                                 <div className="flex items-center justify-between mb-2">
                                     <span className="font-medium text-slate-200 text-sm group-hover:text-white">
-                                        {SECTION_LABELS[s.section] ?? s.section}
+                                        {sectionLabel(s.section)}
                                     </span>
                                     {s.due > 0 && (
                                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">
@@ -268,8 +295,32 @@ function Dashboard({ stats, pct, sectionStats, onStart, onReset }) {
                     })}
                 </div>
             </div>
+                );
+            })}
         </div>
     );
+}
+
+/* Per-section rows grouped in data/subjects.js order, with subject totals.
+   A section with questions but no subject lands in a trailing "More" group. */
+function groupBySubject(rows) {
+    const bySection = new Map(rows.map(r => [r.section, r]));
+    const placed = new Set();
+    const groups = SUBJECTS.map(subject => {
+        const mine = subject.sections.map(s => bySection.get(s)).filter(Boolean);
+        mine.forEach(r => placed.add(r.section));
+        return { id: subject.id, name: subject.name, shortName: subject.shortName, rows: mine };
+    });
+    const rest = rows.filter(r => !placed.has(r.section));
+    if (rest.length) groups.push({ id: 'more', name: 'More', shortName: 'More', rows: rest });
+    return groups
+        .filter(g => g.rows.length > 0)
+        .map(g => ({
+            ...g,
+            total: g.rows.reduce((n, r) => n + r.total, 0),
+            known: g.rows.reduce((n, r) => n + r.known, 0),
+            due: g.rows.reduce((n, r) => n + r.due, 0),
+        }));
 }
 
 /* ── one question ───────────────────────────────────────── */
