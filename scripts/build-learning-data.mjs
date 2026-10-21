@@ -122,6 +122,13 @@ for (const section of readdirSync(APP, { withFileTypes: true })) {
     try { parsed = evalLiteral(literal); } catch { continue; }
 
     for (const a of flattenEntries(parsed)) {
+        /* A cross-link card (Indexing's "Binary Search Trees", which points at
+           /trees/binary-search-tree) describes a page another section owns.
+           Letting it write metadata meant the result depended on which index
+           directory happened to be read last — correct today only because
+           Trees sorts after Indexing. The owning section's entry is the one
+           that counts, so cross-links are skipped. */
+        if (a.href && !a.href.startsWith(`/${section.name}/`)) continue;
         const route = a.href ?? `/${section.name}/${a.slug}`;
         meta[route] = {
             name: a.name ?? a.slug,
@@ -133,9 +140,22 @@ for (const section of readdirSync(APP, { withFileTypes: true })) {
             pattern: a.pattern ?? a.type ?? a.category ?? a.tag ?? null,
             time: a.time ?? a.timeComplexity ?? a.complexity ?? null,
             space: a.space ?? a.spaceComplexity ?? null,
-            coveredIn: a.coveredIn ?? null,
         };
     }
+}
+
+/* ── subjects ───────────────────────────────────────────── */
+/* data/subjects.js decides which subject each section belongs to. It is read
+   as a literal, like everything else here, rather than imported. */
+const SUBJECTS = (() => {
+    const src = readFileSync(join(ROOT, 'data', 'subjects.js'), 'utf8');
+    const literal = findArray(src, ['SUBJECTS']);
+    if (!literal) throw new Error('data/subjects.js: SUBJECTS array not found');
+    return evalLiteral(literal);
+})();
+const sectionSubject = new Map();
+for (const subject of SUBJECTS) {
+    for (const section of subject.sections) sectionSubject.set(section, subject.id);
 }
 
 /* ── page prose (corpus for relatedness) ────────────────── */
@@ -181,6 +201,7 @@ const KEYWORDS_RE = /\n {4}keywords:\s*\[([\s\S]*?)\]/;
 const bank = [];
 const index = [];
 const skipped = [];
+const unlisted = new Set();  // sections with pages but no entry in data/subjects.js
 const corpus = {};       // "/section/slug" -> prose used only for relatedness scoring
 
 for (const { section, slug, file } of pages) {
@@ -209,8 +230,10 @@ for (const { section, slug, file } of pages) {
     // outweighs any single line of body prose.
     const metaText = [title, m.name || '', m.description || '', m.pattern || '', layoutText].join(' ');
     corpus[route] = [metaText, metaText, pageProse(src)].join(' ');
+    const subject = sectionSubject.get(section) ?? null;
+    if (!subject) unlisted.add(section);
     index.push({
-        route, section, slug, title,
+        route, section, subject, slug, title,
         name: m.name ?? title,
         description: m.description ?? '',
         difficulty: m.difficulty ?? null,
@@ -233,7 +256,7 @@ for (const { section, slug, file } of pages) {
         }
         bank.push({
             id: `${section}/${slug}#${i}`,
-            route, section, title,
+            route, section, subject, title,
             question: q.question,
             options: q.options,
             correct: q.correct ?? 0,
@@ -388,11 +411,16 @@ writeFileSync(join(dataDir, 'related.js'),
 writeFileSync(join(dataDir, 'learningStats.js'),
     header('Headline counts for shells that render before the quiz bank loads.') +
     `export const totalQuestions = ${bank.length};\n` +
-    `export const totalPages = ${index.length};\n`);
+    `export const totalPages = ${index.length};\n` +
+    `export const pagesBySection = ${JSON.stringify(Object.fromEntries([...index.reduce((m, p) => m.set(p.section, (m.get(p.section) ?? 0) + 1), new Map())]))};\n` +
+    `export const pagesBySubject = ${JSON.stringify(Object.fromEntries([...index.reduce((m, p) => m.set(p.subject, (m.get(p.subject) ?? 0) + 1), new Map())]))};\n`);
 
 console.log(`quizBank:  ${bank.length} questions from ${pages.length} pages`);
 console.log(`pageIndex: ${index.length} pages, ${index.filter(p => p.pattern).length} with a pattern tag`);
 console.log(`related:   ${Object.keys(relatedMap).length} routes with sibling links`);
+if (unlisted.size) {
+    console.log(`WARNING: sections with pages but no subject in data/subjects.js: ${[...unlisted].join(', ')}`);
+}
 if (skipped.length) {
     console.log(`skipped ${skipped.length}:`);
     skipped.slice(0, 12).forEach(s => console.log('  ' + s));
