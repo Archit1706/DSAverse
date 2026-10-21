@@ -12,7 +12,7 @@
  *   node scripts/build-learning-data.mjs
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 
 const ROOT = process.cwd();
 const APP = join(ROOT, 'app');
@@ -243,7 +243,13 @@ for (const { section, slug, file } of pages) {
 }
 
 /* ── emit ───────────────────────────────────────────────── */
-const dataDir = join(ROOT, 'data');
+/* `--out <dir>` writes the four files somewhere other than data/. Sessions
+   working in this checkout in parallel use it to check that their pages are
+   picked up without rewriting the shared, committed copies under each other. */
+const outFlag = process.argv.indexOf('--out');
+const dataDir = outFlag !== -1 && process.argv[outFlag + 1]
+    ? resolve(process.argv[outFlag + 1])
+    : join(ROOT, 'data');
 if (!existsSync(dataDir)) mkdirSync(dataDir);
 
 const header = (what) =>
