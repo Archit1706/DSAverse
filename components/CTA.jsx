@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, BookOpen, BarChart2 } from 'lucide-react';
-import { algorithmCategories } from '../data/algorithmCategories';
+import { totalPages } from '@/data/learningStats';
 
-// Counted from the nav data rather than hard-coded, so it cannot drift out of
-// date the way the previous "38+ algorithms" chip did.
-const VISUALIZER_COUNT = algorithmCategories.reduce((n, c) => n + c.algorithms.length, 0);
+// Generated rather than hard-coded, so it cannot drift out of date the way the
+// previous "38+ algorithms" chip did. It counts real pages, not nav entries.
+const VISUALIZER_COUNT = totalPages;
 
 export default function CTA() {
     return (
