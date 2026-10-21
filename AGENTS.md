@@ -460,7 +460,20 @@ The `route` prop is always the layout's own `alternates.canonical`. It also call
 
 **`components/CommandPalette.jsx`** — ⌘K / Ctrl+K search over every page, mounted in the Navbar. It imports `pageIndex` dynamically on first open, because the Navbar is on every route and the index is ~47 KB.
 
-**`components/PredictStep.jsx`** — optional "what happens next?" prompts, currently on bubble, selection and insertion sort. The page supplies `predictFor(step, nextStep)` returning `{ question, options, correct, because }` or `null`:
+**`components/PredictStep.jsx`** — optional "what happens next?" prompts, currently on eight pages:
+
+| Page | The question | Decided by |
+|---|---|---|
+| `sorting/bubble-sort` | Does this pair swap? | `next.swaps` |
+| `sorting/selection-sort` | Does the running minimum move? | `next.minIndex` |
+| `sorting/insertion-sort` | Does this element shift right? | `next.swaps` |
+| `searching/binary-search` | Left half, right half, or found? | `midVal` vs `target`, on the step |
+| `graph-algorithms/breadth-first-search` | Which node comes off the queue? | `step.queue[0]` — FIFO |
+| `graph-algorithms/depth-first-search` | Where does backtracking return to? | top of `step.stack` — LIFO |
+| `trees/binary-search-tree` | Does the walk go left or right? | `step.target` vs `step.current` |
+| `union-find/union-by-rank` | Which root wins the merge? | `step.rank[rootA]` vs `step.rank[rootB]` |
+
+The page supplies `predictFor(step, nextStep)` returning `{ question, options, correct, because }` or `null`:
 
 ```jsx
 const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
@@ -468,13 +481,23 @@ const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict
 {predict.prompt && <PredictPrompt predict={predict} accent="orange" />}
 ```
 
-Three things this pattern depends on:
+Four things this pattern depends on:
 
 - `predictFor` lives at **module scope**, so its identity is stable across renders.
-- The prompt **hides the step explanation** (`predict.hideExplanation`) until an answer is in, because these pages write the outcome into the explanation itself ("…need to swap!").
-- The question must be answerable from the step object alone. Insertion sort is the cautionary case: its comparison steps carry `comparisons: [j, i]`, but each shift copies a value into the key's old slot, so from the second comparison onward `step.array[i]` is no longer the key. That page's prompt therefore uses positional wording instead of quoting the key's value.
+- The prompt **hides the step explanation** (`predict.hideExplanation`) until an answer is in, because these pages write the outcome into the explanation itself ("…need to swap!", "23 < 50 → go left").
+- The question must be answerable from the step object alone. Insertion sort is the cautionary case: its comparison steps carry `comparisons: [j, i]`, but each shift copies a value into the key's old slot, so from the second comparison onward `step.array[i]` is no longer the key. That page's prompt therefore uses positional wording instead of quoting the key's value. Where a step genuinely lacked the data, the **generator** was given the missing field rather than the predicate inferring it: binary search's mid-check step gained `probe`/`midVal`/`target`, and the BST comparison steps gained `target`.
+- When the options come from live data rather than a fixed list, their **order is derived from the step**, so "always click the first button" does not score. BFS and DFS rotate their candidates by the traversal-order length; union by rank lists the two roots by node number, which is uncorrelated with rank (listing them in find order would have put the winner first on every tie).
 
-`accent` is a key into the `ACCENTS` map of complete class strings, not an interpolated colour — Tailwind only emits classes it can see as literals.
+`accent` is a key into the `ACCENTS` map of complete class strings, not an interpolated colour — Tailwind only emits classes it can see as literals. Entries exist for `orange`, `indigo`, `red`, `cyan`, `lime` and `purple`; add one per section colour before using it.
+
+Before shipping a new prompt, property-test it: slice the real `generateSteps` and `predictFor` out of the page source, run them over a few hundred random inputs, and assert that `correct` matches ground truth computed independently **and** matches what the next step in the real stream actually does, with no `undefined`/`NaN` in any generated string and no duplicate option labels (`PredictPrompt` keys its buttons by label). The sorting pass checked 12,723 prompts this way, the five pages above another 6,252; both runs caught real bugs.
+
+Pages deliberately left without prompts, because the next step is not determined by the step the learner is looking at:
+
+- `union-find/quick-find` — the only real question ("does `id[i]` change?") compares `id[i]` with the component label the union started from, but the scan overwrites `id[p]` on the way past, so from then on the step no longer holds that label. The insertion-sort hazard again, with no positional rewording available.
+- `union-find/quick-union` — the single branch is which root wins, and naive quick-union has no rule: it is `parent[rootA] = rootB` every time. Nothing on screen implies that, so the first prompt is a coin toss.
+- `union-find/path-compression` — every step is forced (walk the chain, then re-point each node on it). There is no decision to predict.
+- "Which neighbour does the traversal discover next?" on the graph pages — that needs the adjacency list, which the steps do not carry and whose order the drawing does not show.
 
 ### Build Status
 
