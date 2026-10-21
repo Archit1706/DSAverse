@@ -5,6 +5,7 @@ import {
     Play, ArrowRight, Github, ChevronDown,
     Zap, BookOpen, BarChart2, Network,
 } from 'lucide-react';
+import { totalPages, totalQuestions, pagesBySection } from '@/data/learningStats';
 
 /* ─── Cycling words ──────────────────────────────────── */
 const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find'];
@@ -152,11 +153,13 @@ function useCountUp(target, duration = 1600, trigger = true) {
     return val;
 }
 
+/* Counted by scripts/build-learning-data.mjs on every build. These were once
+   typed in by hand and drifted to half the real figures. */
 const STATS = [
-    { label: 'Algorithms',       value: 63, suffix: '+', icon: <Zap className="w-5 h-5" />        },
-    { label: 'Categories',       value: 14, suffix: '',  icon: <Network className="w-5 h-5" />     },
-    { label: 'Interactive Demos',value: 54, suffix: '+', icon: <BarChart2 className="w-5 h-5" />   },
-    { label: 'Completely Free',  value: 100,suffix: '%', icon: <BookOpen className="w-5 h-5" />    },
+    { label: 'Visualizers',      value: totalPages,                           suffix: '',  icon: <Zap className="w-5 h-5" />        },
+    { label: 'Sections',         value: Object.keys(pagesBySection).length,   suffix: '',  icon: <Network className="w-5 h-5" />     },
+    { label: 'Quiz Questions',   value: totalQuestions,                       suffix: '',  icon: <BarChart2 className="w-5 h-5" />   },
+    { label: 'Completely Free',  value: 100,                                  suffix: '%', icon: <BookOpen className="w-5 h-5" />    },
 ];
 
 function StatCard({ stat, index }) {
