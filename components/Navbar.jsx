@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { algorithmCategories } from '../data/algorithmCategories';
+import { SUBJECTS, subjectOfPath } from '../data/subjects';
 import {
     ChevronDown, Menu, X, BookOpen, ArrowRight,
     Layers, RefreshCw, ArrowUpDown, Search as SearchIcon,
@@ -189,8 +190,32 @@ const SLUG_OVERRIDES = {
 
 const toSlug = (name) => SLUG_OVERRIDES[name] ?? name.toLowerCase().replace(/['’]/g, '').replace(/[:\s]+/g, '-').replace(/[()]/g, '');
 
+/* Categories grouped by subject, in data/subjects.js order. A category missing
+   from that file still shows up — in a trailing "More" group — so forgetting
+   to register a section is visible in the menu rather than silently hiding it. */
+const SUBJECT_GROUPS = (() => {
+    const bySlug = new Map(VALID_CATS.map(c => [toSlug(c.name), c]));
+    const placed = new Set();
+    const groups = SUBJECTS.map(subject => {
+        const cats = subject.sections.map(slug => bySlug.get(slug)).filter(Boolean);
+        cats.forEach(c => placed.add(c));
+        return { ...subject, cats };
+    }).filter(g => g.cats.length > 0);
+    const rest = VALID_CATS.filter(c => !placed.has(c));
+    if (rest.length) groups.push({ id: 'more', name: 'More', shortName: 'More', tagline: '', cats: rest });
+    return groups;
+})();
+
+const pageCountOf = (cats) => cats.reduce((n, c) => n + c.algorithms.length, 0);
+
 /* ── Mega-menu dropdown ───────────────────────────────── */
-function MegaMenu({ onClose }) {
+function MegaMenu({ onClose, initialSubject }) {
+    // Open on the subject of the page you are on, so the menu starts where you are.
+    const [activeId, setActiveId] = useState(
+        SUBJECT_GROUPS.some(g => g.id === initialSubject) ? initialSubject : SUBJECT_GROUPS[0]?.id
+    );
+    const group = SUBJECT_GROUPS.find(g => g.id === activeId) ?? SUBJECT_GROUPS[0];
+
     return (
         <div className="absolute top-full right-0 mt-2 z-[60]
                         w-[700px] max-w-[calc(100vw-2rem)]
@@ -204,19 +229,33 @@ function MegaMenu({ onClose }) {
             <div className="h-px w-full"
                 style={{ background: 'linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899)' }} />
 
-            {/* header row */}
-            <div className="px-4 pt-3 pb-2 flex items-center justify-between flex-shrink-0">
-                <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
-                    Visualize
-                </span>
-                <span className="text-[11px] text-slate-600 font-mono">
-                    {VALID_CATS.reduce((n, c) => n + c.algorithms.length, 0)}+ algorithms
+            {/* subject tabs */}
+            <div className="px-3 pt-3 pb-2 flex items-center justify-between gap-3 flex-shrink-0">
+                <div role="tablist" aria-label="Subjects" className="flex items-center gap-1">
+                    {SUBJECT_GROUPS.map(g => {
+                        const active = g.id === group.id;
+                        return (
+                            <button key={g.id} role="tab" aria-selected={active}
+                                onClick={() => setActiveId(g.id)}
+                                className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${active
+                                    ? 'bg-white/10 text-white border-white/15'
+                                    : 'text-slate-500 border-transparent hover:text-slate-300 hover:bg-white/5'}`}>
+                                {g.shortName}
+                                <span className={`ml-1.5 font-mono text-[10px] ${active ? 'text-slate-400' : 'text-slate-600'}`}>
+                                    {pageCountOf(g.cats)}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+                <span className="text-[11px] text-slate-600 truncate hidden sm:block">
+                    {group.tagline}
                 </span>
             </div>
 
-            {/* 3-column category grid */}
-            <div className="px-3 pb-3 overflow-y-auto flex-1 grid grid-cols-3 gap-1">
-                {VALID_CATS.map((cat) => {
+            {/* 3-column category grid for the active subject */}
+            <div role="tabpanel" className="px-3 pb-3 overflow-y-auto flex-1 grid grid-cols-3 gap-1 content-start">
+                {group.cats.map((cat) => {
                     const meta = CAT_META[cat.name] ?? { icon: <BarChart2 className="w-3.5 h-3.5"/>, grad: 'from-slate-500 to-slate-600' };
                     const slug = toSlug(cat.name);
                     return (
@@ -350,7 +389,7 @@ export default function Navbar() {
                                 <ChevronDown className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200
                                                         ${activeDropdown ? 'rotate-180' : ''}`} />
                             </button>
-                            {activeDropdown && <MegaMenu onClose={() => setActiveDropdown(false)} />}
+                            {activeDropdown && <MegaMenu onClose={() => setActiveDropdown(false)} initialSubject={subjectOfPath(pathname)} />}
                         </div>
 
                         <Link href="/cheatsheet"
@@ -447,15 +486,16 @@ export default function Navbar() {
                             Contact
                         </Link>
 
-                        {/* Categories */}
-                        <div className="pt-3">
+                        {/* Categories, grouped by subject */}
+                        {SUBJECT_GROUPS.map(group => (
+                        <div key={group.id} className="pt-3">
                             <p className="px-3 py-1 text-[11px] font-semibold uppercase
                                         tracking-widest text-slate-600 mb-2">
-                                Visualize
+                                {group.name}
                             </p>
 
                             <div className="space-y-2">
-                                {VALID_CATS.map((cat) => {
+                                {group.cats.map((cat) => {
                                     const meta = CAT_META[cat.name] ?? { icon: null, grad: 'from-slate-500 to-slate-600' };
                                     const slug = toSlug(cat.name);
                                     return (
@@ -497,6 +537,7 @@ export default function Navbar() {
                                 })}
                             </div>
                         </div>
+                        ))}
 
                         {/* CTA */}
                         <div className="pt-4">
