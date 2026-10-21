@@ -1,10 +1,44 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Play, Pause, RotateCcw, SkipForward, SkipBack, ArrowLeft, Info, Clock, Code2, CheckCircle, XCircle, Settings2 } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 import { GraphCustomizer, layoutNodes } from '@/components/GraphCustomizer';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* This traversal is recursive, so the "stack" in each step is the call stack —
+   the ancestors of the current node, not a frontier of candidates. That rules
+   out asking which node is visited next: that depends on the order of the
+   adjacency list, which the step does not carry and the drawing does not show.
+   What the step does determine is the backtrack target. A branch has just been
+   exhausted, nothing is current, and control returns to the frame on top of
+   the stack — LIFO, every time.
+
+   The candidates are rotated by a count that is part of the step, so the top
+   of the stack is not always the first button. */
+const predictFor = (step) => {
+    if (!step || step.currentNode !== -1) return null;
+    const st = step.stack;
+    if (!st || st.length < 2) return null;
+
+    const top = st[st.length - 1], bottom = st[0];
+    const picks = [top, bottom];
+    for (const n of st) {
+        if (picks.length >= 3) break;
+        if (!picks.includes(n)) picks.push(n);
+    }
+    const rot = (step.dfsOrder?.length ?? 0) % picks.length;
+    const order = [...picks.slice(rot), ...picks.slice(0, rot)];
+
+    return {
+        // Read out top → bottom, the same direction as the page's own stack panel.
+        question: `That branch is exhausted. Call stack (top → bottom): ${[...st].reverse().join(' → ')}. Which node does DFS return to?`,
+        options: order.map(n => `Node ${n}`),
+        correct: order.indexOf(top),
+        because: `The call stack is last-in, first-out: control returns to the frame on top, node ${top}, which picks up its neighbour loop where it left off. Node ${bottom} is the start node — DFS only lands back there once every branch beneath it is finished.`,
+    };
+};
 
 const quizQuestions = [
     {
@@ -153,6 +187,9 @@ export default function DFSPage() {
         } else if (currentStep >= stepHistory.length - 1) setIsPlaying(false);
     }, [isPlaying, currentStep, stepHistory, speed]);
 
+    const pauseForPredict = useCallback(() => setIsPlaying(false), []);
+    const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
+
     const state = stepHistory[currentStep] || { nodeStates: {}, stack: [], dfsOrder: [], currentNode: -1, explanation: '' };
 
     const edgeIsTree = (a, b) => {
@@ -250,6 +287,7 @@ export default function DFSPage() {
                                     className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium">
                                     <RotateCcw size={18} />Reset
                                 </button>
+                                <PredictToggle predict={predict} accent="cyan" />
                             </div>
 
                             <div className="mb-6">
@@ -330,12 +368,22 @@ export default function DFSPage() {
                                 </div>
                             )}
 
+                            {predict.prompt && (
+                                <div className="mb-4">
+                                    <PredictPrompt predict={predict} accent="cyan" />
+                                </div>
+                            )}
+
                             <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <Info className="h-5 w-5 text-cyan-400 mt-0.5 flex-shrink-0" />
                                     <div>
                                         <h3 className="font-semibold text-cyan-300 mb-1">Current Step</h3>
-                                        <p className="text-cyan-200 text-sm leading-relaxed">{state.explanation}</p>
+                                        <p className="text-cyan-200 text-sm leading-relaxed">
+                                            {predict.hideExplanation
+                                                ? 'Make your prediction above to reveal this step.'
+                                                : state.explanation}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
