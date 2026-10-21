@@ -3,6 +3,29 @@ import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Pause, Play, RotateCcw, SkipBack, SkipForward, Code, Shuffle, Info, CheckCircle, XCircle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* Every probe step carries the midpoint's value and the target, so the branch
+   is decided by the step alone — and the array never mutates during a search,
+   so quoting arr[mid] back at the learner is safe. The step's explanation
+   states the branch outright, which is why the page blanks it while a guess is
+   outstanding. */
+const predictFor = (step) => {
+    if (!step?.probe) return null;
+    const { midVal, target, mid } = step;
+    const correct = midVal === target ? 2 : midVal < target ? 1 : 0;
+    const because = midVal === target
+        ? `arr[${mid}] = ${midVal} is the target, so the search stops here.`
+        : midVal < target
+            ? `${midVal} < ${target}, so index ${mid} and everything left of it is too small — left moves to ${mid + 1}.`
+            : `${midVal} > ${target}, so index ${mid} and everything right of it is too large — right moves to ${mid - 1}.`;
+    return {
+        question: `arr[${mid}] = ${midVal} and the target is ${target}. What does binary search do next?`,
+        options: ['Keep the left half', 'Keep the right half', 'Stop — this is the target'],
+        correct,
+        because,
+    };
+};
 
 const quizQuestions = [
     {
@@ -47,7 +70,7 @@ export default function BinarySearchPage() {
             const mid = Math.floor((left + right) / 2);
             comparisons++;
 
-            steps.push({ left, right, mid, found: false, foundIndex: -1, explanation: `Range [${left}, ${right}]. Mid = floor((${left}+${right})/2) = ${mid}. Checking arr[${mid}] = ${arr[mid]}.`, comparisons });
+            steps.push({ left, right, mid, found: false, foundIndex: -1, explanation: `Range [${left}, ${right}]. Mid = floor((${left}+${right})/2) = ${mid}. Checking arr[${mid}] = ${arr[mid]}.`, comparisons, probe: true, midVal: arr[mid], target });
 
             if (arr[mid] === target) {
                 found = true; foundIndex = mid;
@@ -69,6 +92,9 @@ export default function BinarySearchPage() {
     }, [array, target]);
 
     useEffect(() => { setStepHistory(generateSteps()); setCurrentStep(0); }, [generateSteps]);
+
+    const pauseForPredict = useCallback(() => setIsPlaying(false), []);
+    const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
 
     useEffect(() => {
         if (!isPlaying || stepHistory.length === 0) return;
@@ -204,6 +230,7 @@ print(binary_search(arr, 23))  # 5`;
                                     className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200">
                                     <SkipForward className="h-4 w-4" />
                                 </button>
+                                <PredictToggle predict={predict} accent="red" />
                                 <div className="flex items-center gap-2 ml-auto">
                                     <span className="text-xs text-slate-400">Speed</span>
                                     <input type="range" min={150} max={1800} step={50} value={1950 - speed}
@@ -255,10 +282,20 @@ print(binary_search(arr, 23))  # 5`;
                                 ))}
                             </div>
 
+                            {predict.prompt && (
+                                <div className="mb-4">
+                                    <PredictPrompt predict={predict} accent="red" />
+                                </div>
+                            )}
+
                             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
                                 <div className="flex items-start gap-2">
                                     <Info className="h-4 w-4 text-red-400 mt-0.5 flex-shrink-0" />
-                                    <p className="text-red-300 text-sm leading-relaxed">{cur.explanation}</p>
+                                    <p className="text-red-300 text-sm leading-relaxed">
+                                        {predict.hideExplanation
+                                            ? 'Make your prediction above to reveal this step.'
+                                            : cur.explanation}
+                                    </p>
                                 </div>
                             </div>
                         </div>
