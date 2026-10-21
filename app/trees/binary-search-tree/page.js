@@ -4,6 +4,37 @@ import Link from 'next/link';
 import { ArrowLeft, TreePine, Info, SkipBack, SkipForward, Play, Pause, RotateCcw, Shuffle } from 'lucide-react';
 import CodeBlock from '@/components/CodeBlock';
 import BinaryTreeCanvas from '@/components/BinaryTreeCanvas';
+import { usePredict, PredictToggle, PredictPrompt } from '@/components/PredictStep';
+
+/* Comparison steps carry the probe value alongside the node being compared, so
+   the branch follows from the step alone. The children are looked up by
+   descending the step's own tree — safe because the tree is immutable until the
+   final 'inserted' step, which this never prompts on. The step's explanation is
+   the answer ("40 < 50 → go left"), hence the blanking. */
+const nodeByVal = (root, val) => {
+    let n = root;
+    while (n) {
+        if (val === n.val) return n;
+        n = val < n.val ? n.left : n.right;
+    }
+    return null;
+};
+
+const predictFor = (step) => {
+    if (step?.phase !== 'comparing' || typeof step.target !== 'number') return null;
+    const node = nodeByVal(step.tree, step.current);
+    if (!node) return null;
+    const label = (child, side) => (child ? `Go ${side}, to ${child.val}` : `Go ${side} — no child there`);
+    const goesLeft = step.target < step.current;
+    return {
+        question: `Comparing ${step.target} with node ${step.current}. Which way does the walk go?`,
+        options: [label(node.left, 'left'), label(node.right, 'right')],
+        correct: goesLeft ? 0 : 1,
+        because: goesLeft
+            ? `${step.target} < ${step.current}, and every value in a left subtree is smaller than its parent — so the left child is the only place ${step.target} can belong.`
+            : `${step.target} > ${step.current}, so everything in the left subtree is already too small; the walk follows the right child.`,
+    };
+};
 
 // ─── BST helpers ──────────────────────────────────────────────────────────────
 
@@ -33,10 +64,10 @@ function genSearch(tree, target) {
             steps.push({ tree, visited: [...visited], current: cur.val, phase: 'found', explanation: `✓ Found ${target}!` });
             return steps;
         } else if (target < cur.val) {
-            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', explanation: `${target} < ${cur.val} → go left` });
+            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', target, explanation: `${target} < ${cur.val} → go left` });
             cur = cur.left;
         } else {
-            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', explanation: `${target} > ${cur.val} → go right` });
+            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', target, explanation: `${target} > ${cur.val} → go right` });
             cur = cur.right;
         }
     }
@@ -65,7 +96,7 @@ function genInsert(tree, val) {
                 steps.push({ tree: newTree, visited: [...visited, val], current: val, phase: 'inserted', explanation: `${val} < ${cur.val} and left child is null → insert ${val} here!` });
                 return steps;
             }
-            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', explanation: `${val} < ${cur.val} → go left` });
+            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', target: val, explanation: `${val} < ${cur.val} → go left` });
             cur = cur.left;
         } else {
             if (!cur.right) {
@@ -73,7 +104,7 @@ function genInsert(tree, val) {
                 steps.push({ tree: newTree, visited: [...visited, val], current: val, phase: 'inserted', explanation: `${val} > ${cur.val} and right child is null → insert ${val} here!` });
                 return steps;
             }
-            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', explanation: `${val} > ${cur.val} → go right` });
+            steps.push({ tree, visited: [...visited], current: cur.val, phase: 'comparing', target: val, explanation: `${val} > ${cur.val} → go right` });
             cur = cur.right;
         }
     }
@@ -208,6 +239,9 @@ export default function BSTPage() {
         return () => clearTimeout(t);
     }, [isPlaying, currentStep, stepHistory, speed]);
 
+    const pauseForPredict = useCallback(() => setIsPlaying(false), []);
+    const predict = usePredict(stepHistory, currentStep, predictFor, pauseForPredict);
+
     const cur = stepHistory[currentStep] ?? { tree, visited: [], current: null, phase: 'start', explanation: '' };
 
     function pickNextTarget(op) {
@@ -302,6 +336,7 @@ export default function BSTPage() {
                                     <button onClick={() => setCurrentStep(s => Math.min(stepHistory.length - 1, s + 1))} className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"><SkipForward className="h-3 w-3" /></button>
                                     <button onClick={() => { setCurrentStep(0); setIsPlaying(false); }} className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="Reset"><RotateCcw className="h-4 w-4" /></button>
                                     <button onClick={handleShuffle} className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="New tree"><Shuffle className="h-4 w-4" /></button>
+                                    <PredictToggle predict={predict} accent="lime" />
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -330,11 +365,17 @@ export default function BSTPage() {
                             ))}
                         </div>
 
+                        {predict.prompt && <PredictPrompt predict={predict} accent="lime" />}
+
                         {/* Explanation */}
                         <div className={`bg-${phaseAccent}-500/10 border border-${phaseAccent}-500/20 rounded-lg p-4`}>
                             <div className="flex items-start gap-2">
                                 <Info className={`h-4 w-4 text-${phaseAccent}-400 mt-0.5 flex-shrink-0`} />
-                                <p className={`text-${phaseAccent}-300 text-sm leading-relaxed`}>{cur.explanation}</p>
+                                <p className={`text-${phaseAccent}-300 text-sm leading-relaxed`}>
+                                    {predict.hideExplanation
+                                        ? 'Make your prediction above to reveal this step.'
+                                        : cur.explanation}
+                                </p>
                             </div>
                         </div>
 
