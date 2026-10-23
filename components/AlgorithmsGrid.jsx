@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
     ArrowRight, ArrowLeftRight, Layers, RefreshCw, ArrowUpDown, Search,
     GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
-    Columns3,
+    Columns3, MonitorCog, DatabaseZap,
 } from 'lucide-react';
 import { SUBJECTS, subjectOfSection } from '@/data/subjects';
 import { pagesBySection, pagesBySubject, totalPages, totalQuestions } from '@/data/learningStats';
@@ -198,6 +198,30 @@ const CATEGORIES = [
         badge:       'bg-emerald-500/10 text-emerald-300',
     },
     // ── CS Core ──────────────────────────────────────────────────────────────
+    {
+        name:        'Operating Systems',
+        slug:        'operating-systems',
+        icon:        <MonitorCog className="w-6 h-6" />,
+        description: 'Scheduling, Memory & Concurrency',
+        algorithms:  ['CPU Scheduling', 'Page Replacement', "Banker's Algorithm", 'Race Conditions', 'Disk Scheduling', 'Dining Philosophers'],
+        gradient:    'from-yellow-500 to-amber-600',
+        border:      'border-yellow-500/30',
+        hoverBorder: 'hover:border-yellow-400',
+        glow:        'hover:shadow-yellow-500/20',
+        badge:       'bg-yellow-500/10 text-yellow-300',
+    },
+    {
+        name:        'Database Systems',
+        slug:        'database-systems',
+        icon:        <DatabaseZap className="w-6 h-6" />,
+        description: 'Transactions, Recovery & Query Processing',
+        algorithms:  ['Isolation Levels', 'MVCC', 'Two-Phase Locking', 'Write-Ahead Logging', 'Join Algorithms', 'LSM Trees'],
+        gradient:    'from-blue-500 to-teal-600',
+        border:      'border-blue-500/30',
+        hoverBorder: 'hover:border-blue-400',
+        glow:        'hover:shadow-blue-500/20',
+        badge:       'bg-blue-500/10 text-blue-300',
+    },
     {
         name:        'Under the Hood',
         slug:        'under-the-hood',
