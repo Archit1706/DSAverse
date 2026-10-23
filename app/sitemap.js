@@ -143,6 +143,18 @@ const SECTIONS = {
         "race-conditions",
         "round-robin-scheduling",
     ],
+    "computer-networks": [
+        "arp-and-switching",
+        "distance-vector-routing",
+        "dns-resolution",
+        "http1-vs-http2-vs-http3",
+        "link-state-routing",
+        "osi-and-tcp-ip-layers",
+        "sliding-window-protocols",
+        "subnetting-and-cidr",
+        "tcp-congestion-control",
+        "tcp-handshake",
+    ],
     "database-systems": [
         "join-algorithms",
         "lsm-trees",
