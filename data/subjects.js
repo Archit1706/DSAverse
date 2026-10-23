@@ -40,6 +40,8 @@ export const SUBJECTS = [
         shortName: 'CS Core',
         tagline: 'How operating systems, networks, databases and language runtimes actually work.',
         sections: [
+            'operating-systems',
+            'database-systems',
             'under-the-hood',
         ],
     },
