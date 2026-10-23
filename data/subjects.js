@@ -41,6 +41,7 @@ export const SUBJECTS = [
         tagline: 'How operating systems, networks, databases and language runtimes actually work.',
         sections: [
             'operating-systems',
+            'computer-networks',
             'database-systems',
             'under-the-hood',
         ],
