@@ -8,7 +8,7 @@ import {
     Layers, RefreshCw, ArrowUpDown, Search as SearchIcon,
     Database, Brain, GitBranch, BarChart2, ArrowLeftRight,
     Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
-    MonitorCog, DatabaseZap,
+    MonitorCog, Network, DatabaseZap,
 } from 'lucide-react';
 import Link from 'next/link';
 import CommandPalette from './CommandPalette';
@@ -60,6 +60,7 @@ const CAT_META = {
     'Union-Find':                         { icon: <Share2        className="w-3.5 h-3.5" />, grad: 'from-purple-500  to-violet-600'  },
     'Indexing':                           { icon: <Table         className="w-3.5 h-3.5" />, grad: 'from-emerald-500 to-teal-600'    },
     'Operating Systems':                  { icon: <MonitorCog    className="w-3.5 h-3.5" />, grad: 'from-yellow-500  to-amber-600'    },
+    'Computer Networks':                  { icon: <Network       className="w-3.5 h-3.5" />, grad: 'from-pink-500    to-rose-600'     },
     'Database Systems':                   { icon: <DatabaseZap   className="w-3.5 h-3.5" />, grad: 'from-blue-500    to-teal-600'     },
     'Under the Hood':                     { icon: <Monitor       className="w-3.5 h-3.5" />, grad: 'from-zinc-500    to-slate-600'    },
 };
@@ -178,7 +179,7 @@ const PAGES_EXIST = new Set([
     'Graph Algorithms', 'Two Pointers and Sliding Window',
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
     'Divide and Conquer', 'Union-Find', 'Indexing', 'Under the Hood',
-    'Operating Systems', 'Database Systems',
+    'Operating Systems', 'Computer Networks', 'Database Systems',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
@@ -190,6 +191,9 @@ const SLUG_OVERRIDES = {
     'Count Set Bits (Brian Kernighan)': 'count-set-bits',
     // toSlug leaves '+' alone, which would yield the unsafe slug 'b+-trees'.
     'B+ Trees': 'b-plus-trees',
+    // '/' and '.' survive toSlug too, and would put path separators in the URL.
+    'OSI and TCP/IP Layers': 'osi-and-tcp-ip-layers',
+    'HTTP/1.1 vs HTTP/2 vs HTTP/3': 'http1-vs-http2-vs-http3',
 };
 
 const toSlug = (name) => SLUG_OVERRIDES[name] ?? name.toLowerCase().replace(/['’]/g, '').replace(/[:\s]+/g, '-').replace(/[()]/g, '');
