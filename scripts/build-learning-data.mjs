@@ -140,6 +140,10 @@ for (const section of readdirSync(APP, { withFileTypes: true })) {
             pattern: a.pattern ?? a.type ?? a.category ?? a.tag ?? null,
             time: a.time ?? a.timeComplexity ?? a.complexity ?? null,
             space: a.space ?? a.spaceComplexity ?? null,
+            // Math cards describe a page by its key formula and what it builds
+            // on, since time and space complexity mean nothing for "Bayes' Theorem".
+            formula: a.formula ?? null,
+            prereq: a.prereq ?? null,
         };
     }
 }
@@ -240,6 +244,9 @@ for (const { section, slug, file } of pages) {
         pattern: m.pattern ?? null,
         time: m.time ?? null,
         space: m.space ?? null,
+        // Only present when set, so pages without them keep their exact entry.
+        ...(m.formula ? { formula: m.formula } : {}),
+        ...(m.prereq ? { prereq: m.prereq } : {}),
     });
 
     const literal = findArray(src, QUIZ_NAMES);
