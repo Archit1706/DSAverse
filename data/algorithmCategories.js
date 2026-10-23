@@ -252,6 +252,25 @@ export const algorithmCategories = [
         ]
     },
     {
+        name: "Computer Networks",
+        color: "bg-pink-500",
+        lightColor: "bg-pink-50",
+        borderColor: "border-pink-200",
+        textColor: "text-pink-700",
+        algorithms: [
+            "OSI and TCP/IP Layers",
+            "TCP Handshake",
+            "Sliding Window Protocols",
+            "TCP Congestion Control",
+            "DNS Resolution",
+            "Subnetting and CIDR",
+            "Distance Vector Routing",
+            "Link State Routing",
+            "ARP and Switching",
+            "HTTP/1.1 vs HTTP/2 vs HTTP/3"
+        ]
+    },
+    {
         name: "Database Systems",
         color: "bg-blue-500",
         lightColor: "bg-blue-50",
