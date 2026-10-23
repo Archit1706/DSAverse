@@ -83,9 +83,18 @@ const ACCENTS = {
 };
 const accentOf = (name) => ACCENTS[name] ?? ACCENTS.indigo;
 
+const NO_ANSWERS = Object.freeze({});
+
 export function usePredict(stepHistory, currentStep, predictFor, onPause) {
     const [enabled, setEnabled] = useState(false);
-    const [answers, setAnswers] = useState({});   // step index -> chosen option
+    /* Answers are keyed by step index, so they only mean anything for the step
+       stream they were given on. Shuffle, a new preset or a different
+       algorithm produces a new stream, and the old answers used to carry over
+       onto it — the new run's prompts showed up already answered. Storing the
+       stream alongside the answers drops them the moment it changes, during
+       the same render, with no reset effect for every page to remember. */
+    const [record, setRecord] = useState({ stream: null, byStep: {} });
+    const answers = record.stream === stepHistory ? record.byStep : NO_ANSWERS;
 
     const prompt = useMemo(() => {
         if (!enabled) return null;
@@ -104,10 +113,14 @@ export function usePredict(stepHistory, currentStep, predictFor, onPause) {
     useEffect(() => { if (pending) onPause?.(); }, [pending, onPause]);
 
     const choose = useCallback((idx) => {
-        setAnswers(a => (a[currentStep] !== undefined ? a : { ...a, [currentStep]: idx }));
-    }, [currentStep]);
+        setRecord(r => {
+            const byStep = r.stream === stepHistory ? r.byStep : {};
+            if (byStep[currentStep] !== undefined) return r;
+            return { stream: stepHistory, byStep: { ...byStep, [currentStep]: idx } };
+        });
+    }, [currentStep, stepHistory]);
 
-    const reset = useCallback(() => setAnswers({}), []);
+    const reset = useCallback(() => setRecord({ stream: null, byStep: {} }), []);
 
     const score = useMemo(() => {
         let right = 0, total = 0;
