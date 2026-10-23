@@ -8,7 +8,7 @@ import {
 import { totalPages, totalQuestions, pagesBySection } from '@/data/learningStats';
 
 /* ─── Cycling words ──────────────────────────────────── */
-const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find', 'Databases'];
+const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find', 'Networks', 'Databases'];
 
 /* ─── Quick-nav chips ──────────────────────────── */
 /* Label and href are listed separately on purpose: several labels are
@@ -30,6 +30,7 @@ const QUICK_NAV = [
     { label: 'Union-Find', href: '/union-find' },
     { label: 'Indexing', href: '/indexing' },
     { label: 'Operating Systems', href: '/operating-systems' },
+    { label: 'Networks', href: '/computer-networks' },
     { label: 'Databases', href: '/database-systems' },
     { label: 'Under the Hood', href: '/under-the-hood' },
 ];
