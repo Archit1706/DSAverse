@@ -31,6 +31,7 @@ npm run lint     # ESLint check (must be run manually — build ignores lint err
 - **Tailwind CSS 4** — utility classes only; no component library
 - **Lucide React** — all icons (no emojis anywhere in the codebase)
 - **React Syntax Highlighter** — via `@/components/CodeBlock`
+- **KaTeX** and **three.js** (`@react-three/fiber`, `@react-three/drei`) — Math pages only, via `components/math/` (see Math Pattern)
 
 ### Directory Layout
 
@@ -59,6 +60,7 @@ components/
   CommandPalette.jsx             # Cmd/Ctrl-K search over every page (lazily loads pageIndex)
   RelatedPages.jsx               # "See also" block, mounted from each algorithm layout
   PredictStep.jsx                # Optional "what happens next?" prompts for step-based pages
+  math/                          # Tex, Plane2D, Scene3D (+ canvas and primitives), MatrixInput, ParamSlider
   Hero.jsx, Features.jsx, AlgorithmsGrid.jsx, CTA.jsx, Footer.jsx
 data/
   subjects.js                    # Subjects → sections: the top level of the site (plain data)
@@ -69,6 +71,7 @@ data/
   learningStats.js               # GENERATED — headline counts
 lib/
   progress.js                    # localStorage: visited pages + spaced-repetition schedule
+  random.js                      # Seeded RNG (mulberry32) for reproducible simulations
 scripts/
   build-learning-data.mjs        # Emits the four generated data files (runs on prebuild)
 ```
@@ -399,6 +402,47 @@ Key structural pieces:
 
 Because inputs are fixed, the animation effect drops `stepHistory` from its deps: `}, [isPlaying, currentStep, speed]);`.
 
+### Math Pattern (manipulation, formulas and 3D)
+
+The **Math** subject (`math`, registered in `data/subjects.js` once its sections exist) has six sections: Combinatorics, Probability and Statistics, Vectors, Linear Algebra, Differential Calculus and Integral Calculus. Its pages need what step playback alone cannot give: **direct manipulation** (drag a vector, slide `n`), **typeset formulas**, and occasionally **3D**. The shared pieces live in `components/math/` and `lib/random.js`, and every Math page uses them rather than inventing its own.
+
+**Reference implementations** — read both before building a Math page:
+
+- `app/linear-algebra/matrix-as-a-transformation/` — the 2D pattern: draggable vectors, a `MappedGrid`, `MatrixInput` bound both ways, a live formula, a Guided/Explore toggle sharing one picture, and predict prompts.
+- `app/linear-algebra/determinant/` — the same plus a 3D tab: `Scene3D` with a `Parallelepiped`, snap views, a WebGL fallback, and three.js loaded only when the 3D tab opens.
+
+**Components**
+
+| Import | What it is |
+|---|---|
+| `Tex` from `@/components/math/Tex` | KaTeX: `<Tex>{source}</Tex>` inline, `<Tex block>` for display. Pass the source as a `String.raw` template literal so backslashes survive. Also exports `texNum(x, digits)` and `texMatrix(rows)` for substituting live values |
+| `Plane2D` from `@/components/math/Plane2D` | SVG coordinate plane in world units (`xRange`, `yRange`, `grid`), scales to its container. Children: `Vector`, `Point`, `Segment`, `Polygon`, `FunctionPlot`, `ShadeUnder`, `Label`, `MappedGrid`. `onDrag` on `Vector`/`Point` makes the tip a handle (mouse, touch, and arrow keys; `snap` rounds). `usePlane()` gives `toScreen`/`toWorld` for custom shapes. `MATH_COLORS` is the shared palette |
+| `Scene3D` from `@/components/math/Scene3D` | Orbitable 3D scene, maths coordinates (z up). Children are a **render prop** receiving the primitives: `{(P) => <P.Arrow3D to={[1,0,0]} />}` — `Arrow3D`, `Point3D`, `Line3D`, `Label3D`, `Plane3D`, `Polygon3D`, `Parallelepiped`, `Surface3D`, `THREE`. Iso/Top/Front/Side snap views, +/− zoom (wheel zoom is off so the page still scrolls), and a `fallback` prop shown when WebGL is unavailable |
+| `MatrixInput` from `@/components/math/MatrixInput` | Editable 2×2/3×3 matrix (`value` as rows, `onChange`), with per-column colours so a column reads as "where î lands" |
+| `ParamSlider` from `@/components/math/ParamSlider` | Labelled slider with its live value; `accent` is one of the Math colours |
+| `createRng(seed)` from `@/lib/random` | Seeded generator (mulberry32) with `next`, `int`, `chance`, `pick`, `shuffle`, `normal`. Every simulation uses it, with the seed kept in state, so a run can be replayed, stepped backwards and tested. `randomSeed()` makes a new seed for Shuffle |
+
+`MATH_COLORS` gives every page the same meanings: `i` green, `j` red, `k` blue (the basis vectors), `a` amber and `b` purple (generic inputs), `result` pink (an output), `curve` sky and `curve2` orange (f and f′ or g), `area` yellow, `negative` rose (negative area, flipped orientation).
+
+**Rules every Math page follows**
+
+- **The picture and the numbers are bound both ways.** Dragging changes the numbers; typing a number moves the picture. Grabbing a handle during the guided tour switches to Explore, starting from what is on screen.
+- **Each formula is shown with the current values substituted in**, next to the picture — `(2)(1) − (1.5)(0) = 2`, not only `ad − bc`.
+- **Guided and Explore share one picture.** Guided pre-generates steps with the standard controls, the explanation box and predict prompts; Explore lets the learner manipulate freely.
+- **3D only where the idea is three-dimensional** (cross products, volumes, planes, surfaces), with the numbers always visible alongside.
+- **Quiz questions, step explanations and index cards use plain Unicode maths** — n!, √, ∑, x², ≤, θ — never LaTeX. Review and the ⌘K palette show those strings as plain text, so `\frac` would appear raw.
+- **Index cards** carry `formula` (the key formula in Unicode, e.g. `C(n, k) = n! / (k! (n − k)!)`) and `prereq` (the page it builds on) in place of time and space; the generator copies both into `pageIndex`, and Compare shows them as "Key formula" and "Builds on".
+- **`page.js` exports only its default component.** Keep `generateSteps`, `predictFor` and presets as module-level constants without `export`; property tests read them from the source.
+
+**Why the 3D pieces are built the way they are**
+
+- three.js, `@react-three/fiber` and `@react-three/drei` load only on the client and only when a scene mounts: `Scene3D` imports its canvas with `next/dynamic` (`ssr: false`), and pages receive the primitives through the render prop instead of importing them. A non-Math page ships none of it, and the Determinant page fetches three.js only when its 3D tab opens.
+- 3D labels are canvas-texture sprites. drei's `<Html>` creates a separate React root per label and unmounts it synchronously, which under React 19 throws `removeChild` errors on re-render; drei's `<Text>` fetches its font from a CDN.
+- The canvas renders on demand (`frameloop="demand"`), so a still scene costs nothing.
+- KaTeX adds about 75 KB gzipped to a Math page. It runs on the client because the formulas update as you drag.
+
+**Testing.** Property-test the maths against independent identities, not against the page's own helpers: nCr against Pascal's triangle, Bayes against enumeration, determinants against the shoelace formula and cofactor expansion, `det(MN) = det(M)·det(N)`, `Av = λv` for every eigenpair, Riemann sums converging to the exact integral, derivatives against finite differences. Predict prompts follow the rules in Learning Features, including the best-fixed-button and best-fixed-label rates. The reference pages' suite is in `%TEMP%\dsaverse-math-tests\linear-algebra\reference-pages.test.mjs` — it slices the real pure code out of `page.js` (everything above `quizQuestions`, imports stripped) and runs 16,000+ checks.
+
 ### Navbar — Adding a New Section
 
 `components/Navbar.jsx` has a `PAGES_EXIST` set that gates which categories appear in the dropdown:
@@ -535,7 +579,7 @@ Four things this pattern depends on:
 
 `usePredict` stores its answers together with the step stream they were given on (the `stepHistory` array identity), so Shuffle, a new preset or a different algorithm starts the new run unanswered. Pages need no reset effect of their own; this used to carry the old run's answers onto the new one.
 
-`accent` is a key into the `ACCENTS` map of complete class strings, not an interpolated colour — Tailwind only emits classes it can see as literals. Entries exist for `orange`, `indigo`, `red`, `cyan`, `lime`, `purple`, `yellow`, `pink` and `blue`; add one per section colour before using it.
+`accent` is a key into the `ACCENTS` map of complete class strings, not an interpolated colour — Tailwind only emits classes it can see as literals. Entries exist for `orange`, `indigo`, `red`, `cyan`, `lime`, `purple`, `yellow`, `pink`, `blue`, and for Math `fuchsia`, `rose`, `sky`, `violet`, `emerald` and `teal`; add one per section colour before using it.
 
 Before shipping a new prompt, property-test it: slice the real `generateSteps` and `predictFor` out of the page source, run them over a few hundred random inputs, and assert that `correct` matches ground truth computed independently **and** matches what the next step in the real stream actually does, with no `undefined`/`NaN` in any generated string and no duplicate option labels (`PredictPrompt` keys its buttons by label). The sorting pass checked 12,723 prompts this way, the five pages above another 6,252; both runs caught real bugs.
 
