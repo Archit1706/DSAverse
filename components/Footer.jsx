@@ -32,6 +32,7 @@ const COLUMNS = [
         title: 'CS Core',
         links: [
             { href: '/operating-systems', label: 'Operating Systems' },
+            { href: '/computer-networks', label: 'Computer Networks' },
             { href: '/database-systems', label: 'Database Systems' },
             { href: '/under-the-hood', label: 'Under the Hood' },
         ],
