@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
     ArrowRight, ArrowLeftRight, Layers, RefreshCw, ArrowUpDown, Search,
     GitBranch, Database, Brain, BarChart2, Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
-    Columns3, MonitorCog, DatabaseZap,
+    Columns3, MonitorCog, Network, DatabaseZap,
 } from 'lucide-react';
 import { SUBJECTS, subjectOfSection } from '@/data/subjects';
 import { pagesBySection, pagesBySubject, totalPages, totalQuestions } from '@/data/learningStats';
@@ -209,6 +209,18 @@ const CATEGORIES = [
         hoverBorder: 'hover:border-yellow-400',
         glow:        'hover:shadow-yellow-500/20',
         badge:       'bg-yellow-500/10 text-yellow-300',
+    },
+    {
+        name:        'Computer Networks',
+        slug:        'computer-networks',
+        icon:        <Network className="w-6 h-6" />,
+        description: 'From Packets to Protocols',
+        algorithms:  ['TCP Handshake', 'Sliding Window', 'Congestion Control', 'DNS', 'Subnetting', 'Routing'],
+        gradient:    'from-pink-500 to-rose-600',
+        border:      'border-pink-500/30',
+        hoverBorder: 'hover:border-pink-400',
+        glow:        'hover:shadow-pink-500/20',
+        badge:       'bg-pink-500/10 text-pink-300',
     },
     {
         name:        'Database Systems',
