@@ -1,7 +1,7 @@
 {
     "name": "DSAverse",
     "short_name": "DSAverse",
-    "description": "Learn DSA with Visualizations",
+    "description": "Learn DSA and CS core with interactive visualizations",
     "icons": [
         {
             "src": "/favicon.ico",
