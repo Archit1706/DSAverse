@@ -80,7 +80,7 @@ The site has three levels: **subject → section → page**. `data/subjects.js` 
 ```js
 export const SUBJECTS = [
     { id: 'dsa', name: 'Data Structures & Algorithms', shortName: 'DSA', tagline: '…', sections: ['basics', 'recursion', …, 'indexing'] },
-    { id: 'cs-core', name: 'CS Core', shortName: 'CS Core', tagline: '…', sections: ['under-the-hood'] },
+    { id: 'cs-core', name: 'CS Core', shortName: 'CS Core', tagline: '…', sections: ['operating-systems', 'computer-networks', 'database-systems', 'under-the-hood'] },
 ];
 export function subjectOfSection(sectionSlug) { … }   // 'sorting' → 'dsa'
 export function subjectOfPath(pathname) { … }         // '/sorting/bubble-sort' → 'dsa'
@@ -157,10 +157,15 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Union-Find | `from-purple-600 to-violet-700` | `purple-400` / `violet-400` |
 | Under the Hood | `from-zinc-600 to-slate-700` | `zinc-300` / `zinc-400` |
 | Indexing | `from-emerald-600 to-teal-700` | `emerald-400` / `emerald-500` |
+| Operating Systems | `from-yellow-500 to-amber-600` | `yellow-400` / `yellow-500` |
+| Computer Networks | `from-pink-500 to-rose-600` | `pink-400` / `pink-500` |
+| Database Systems | `from-blue-500 to-teal-600` | `blue-400` / `blue-500` |
 
 > **Note:** `Indexing` covers all 13 topics of the original curriculum, in two states: **9 built in the section**, and **4 cross-linked** to where they already live (Binary and Linear Search → `/searching/…`, Binary Search Trees / AVL Trees / Trie → `/trees/…`). Cross-linked cards carry an `href` that overrides the default `/indexing/${slug}` plus a `coveredIn` label; the card footer reads "Open in Trees →" rather than "Start Visualization →".
 >
 > **`data/algorithmCategories.js` lists only the 9 pages built inside the section**, not the 4 cross-linked ones — those already appear under Searching and Trees, and listing them here would point the nav at `/indexing/…` routes that do not exist. The Navbar links every entry of a `PAGES_EXIST` category without checking, so only add a name here once its page is in place.
+
+> **CS Core sections** (Operating Systems, Computer Networks, Database Systems — 10 pages each) use the same cross-link pattern for topics that already live elsewhere: Operating Systems links seven Under the Hood explainers (Processes vs Threads, Virtual Memory and Paging, …), Computer Networks five, and Database Systems links How a Database Query Executes plus B Trees and B+ Trees in Indexing. Where Big-O does not describe a topic, the index card's `time` / `space` hold a short descriptor instead ("1.5 RTT to open", "Per-level read rules"), as Under the Hood does. Two Networks names need `SLUG_OVERRIDES` entries because `toSlug()` keeps `/` and `.`: `OSI and TCP/IP Layers` and `HTTP/1.1 vs HTTP/2 vs HTTP/3`.
 
 ### Algorithm Visualizer Pattern
 
@@ -403,7 +408,8 @@ const PAGES_EXIST = new Set([
     'Heap-like Data Structures', 'Dynamic Programming',
     'Graph Algorithms', 'Two Pointers and Sliding Window',
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
-    'Divide and Conquer', 'Union-Find', 'Under the Hood',
+    'Divide and Conquer', 'Union-Find', 'Indexing', 'Under the Hood',
+    'Operating Systems', 'Computer Networks', 'Database Systems',
 ]);
 ```
 Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, apostrophes stripped, spaces/colons → hyphens, parentheses removed — so `Dijkstra's Shortest Path` → `dijkstras-shortest-path` and `Subsets (Power Set)` → `subsets-power-set`. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too. Then add the section's directory name to its subject in `data/subjects.js`, which decides which mega-menu tab it appears under.
@@ -499,7 +505,7 @@ The `route` prop is always the layout's own `alternates.canonical`. It also call
 
 **`components/CommandPalette.jsx`** — ⌘K / Ctrl+K search over every page, mounted in the Navbar. It imports `pageIndex` dynamically on first open, because the Navbar is on every route and the index is ~47 KB.
 
-**`components/PredictStep.jsx`** — optional "what happens next?" prompts, currently on eight pages:
+**`components/PredictStep.jsx`** — optional "what happens next?" prompts, on 37 pages: the eight below, all ten in Operating Systems and Database Systems, and nine of the ten in Computer Networks (OSI and TCP/IP Layers has none — every step there is forced). The original eight:
 
 | Page | The question | Decided by |
 |---|---|---|
@@ -525,9 +531,11 @@ Four things this pattern depends on:
 - `predictFor` lives at **module scope**, so its identity is stable across renders.
 - The prompt **hides the step explanation** (`predict.hideExplanation`) until an answer is in, because these pages write the outcome into the explanation itself ("…need to swap!", "23 < 50 → go left").
 - The question must be answerable from the step object alone. Insertion sort is the cautionary case: its comparison steps carry `comparisons: [j, i]`, but each shift copies a value into the key's old slot, so from the second comparison onward `step.array[i]` is no longer the key. That page's prompt therefore uses positional wording instead of quoting the key's value. Where a step genuinely lacked the data, the **generator** was given the missing field rather than the predicate inferring it: binary search's mid-check step gained `probe`/`midVal`/`target`, and the BST comparison steps gained `target`.
-- When the options come from live data rather than a fixed list, their **order is derived from the step**, so "always click the first button" does not score. BFS and DFS rotate their candidates by the traversal-order length; union by rank lists the two roots by node number, which is uncorrelated with rank (listing them in find order would have put the winner first on every tie).
+- When the options come from live data rather than a fixed list, their **order is derived from the step**, so "always click the first button" does not score. BFS and DFS rotate their candidates by the traversal-order length; union by rank lists the two roots by node number, which is uncorrelated with rank (listing them in find order would have put the winner first on every tie). Position is not the only leak: if one *answer* is right nearly every time ("Forward" on a switch that has already learned the MAC), shuffling cannot help — ask only when the outcome is genuinely in doubt. Test suites should print the best fixed-button rate against chance; the bar is within about ten points.
 
-`accent` is a key into the `ACCENTS` map of complete class strings, not an interpolated colour — Tailwind only emits classes it can see as literals. Entries exist for `orange`, `indigo`, `red`, `cyan`, `lime` and `purple`; add one per section colour before using it.
+`usePredict` stores its answers together with the step stream they were given on (the `stepHistory` array identity), so Shuffle, a new preset or a different algorithm starts the new run unanswered. Pages need no reset effect of their own; this used to carry the old run's answers onto the new one.
+
+`accent` is a key into the `ACCENTS` map of complete class strings, not an interpolated colour — Tailwind only emits classes it can see as literals. Entries exist for `orange`, `indigo`, `red`, `cyan`, `lime`, `purple`, `yellow`, `pink` and `blue`; add one per section colour before using it.
 
 Before shipping a new prompt, property-test it: slice the real `generateSteps` and `predictFor` out of the page source, run them over a few hundred random inputs, and assert that `correct` matches ground truth computed independently **and** matches what the next step in the real stream actually does, with no `undefined`/`NaN` in any generated string and no duplicate option labels (`PredictPrompt` keys its buttons by label). The sorting pass checked 12,723 prompts this way, the five pages above another 6,252; both runs caught real bugs.
 
@@ -540,7 +548,7 @@ Pages deliberately left without prompts, because the next step is not determined
 
 ### Build Status
 
-142 routes in total: 121 algorithm/explainer pages, 18 section indexes, the homepage, plus `/review` and `/compare`. Under the Hood has 26 explainers. Every one of the 121 pages carries a 3-question active-recall quiz.
+175 routes in total: 151 visualizer and explainer pages, 19 section indexes, the homepage, and `/cheatsheet`, `/contact`, `/review` and `/compare`. Two subjects: DSA (95 pages in 15 sections) and CS Core (56 pages in 4 — Operating Systems, Computer Networks and Database Systems with 10 each, Under the Hood with 26). Every one of the 151 pages carries a 3-question active-recall quiz, 453 questions in all.
 
 **There are no `available: false` entries left anywhere** — every section index advertises only pages that exist. The flag and its Coming Soon rendering are still supported, so a newly planned topic can use them.
 
