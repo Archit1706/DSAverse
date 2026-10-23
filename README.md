@@ -4,7 +4,7 @@
 
 ![DSAverse Logo](https://img.shields.io/badge/DSAverse-Interactive%20Learning-blue?style=for-the-badge&logo=react)
 
-**Transform complex algorithms into beautiful, interactive visualizations**
+**Transform complex algorithms and systems into beautiful, interactive visualizations**
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_DSAverse-success?style=for-the-badge)](https://dsa-verse.vercel.app)
 
@@ -22,28 +22,29 @@
 
 ## 🎯 About DSAverse
 
-DSAverse is an **interactive web platform** that brings Data Structures and Algorithms to life through stunning visualizations and step-by-step animations. Whether you're a student learning your first sorting algorithm or a developer preparing for technical interviews, DSAverse makes complex concepts intuitive and engaging.
+DSAverse is an **interactive web platform** that brings computer science to life through step-by-step visualizations. It started with Data Structures and Algorithms and now also covers the **CS core** every software engineer needs — operating systems, computer networks and databases. Whether you're a student learning your first sorting algorithm or a developer preparing for technical interviews, DSAverse makes complex concepts intuitive and engaging.
 
 ### 🌟 Why DSAverse?
 
--   **🎨 Beautiful Visualizations** - Watch algorithms execute in real-time with smooth animations
--   **🎮 Interactive Learning** - Control playback speed, step through code, and manipulate data
--   **📚 Comprehensive Coverage** - From basic sorting to advanced graph algorithms
+-   **🎨 Beautiful Visualizations** - Watch algorithms and systems run step by step with smooth animations
+-   **🎮 Interactive Learning** - Control playback speed, step forwards and backwards, and change the input
+-   **📚 Comprehensive Coverage** - From basic sorting to TCP congestion control and database recovery
+-   **🧠 Built for Recall** - Quizzes, spaced-repetition review and "what happens next?" prompts, not just animations
 -   **📱 Responsive Design** - Learn anywhere, on any device
--   **🚀 Modern Tech Stack** - Built with Next.js, React, and cutting-edge web technologies
 -   **🌍 Open Source** - Community-driven development and contributions
 
 ---
 
 ## ✨ Features
 
-### 🔧 Algorithm Visualizations
+### 🔧 Visualizations
 
-**121 interactive pages across 16 sections:**
+**151 interactive pages across 19 sections, in two subjects.**
+
+#### Data Structures & Algorithms — 95 pages
 
 | Section | Pages | Highlights |
 | --- | --- | --- |
-| **Under the Hood** | 26 | CPU caches, virtual memory, TLS, garbage collection, how Git works |
 | **Basics** | 9 | Stacks, queues, lists, singly/doubly/circular linked lists |
 | **Recursion** | 9 | Factorial, Tower of Hanoi, N-Queens, Sudoku solver, permutations |
 | **Graph Algorithms** | 9 | BFS, DFS, Dijkstra, Prim, Kruskal, Floyd-Warshall, topological sort |
@@ -60,11 +61,20 @@ DSAverse is an **interactive web platform** that brings Data Structures and Algo
 | **Bit Manipulation** | 3 | XOR single number, Brian Kernighan's bit count, power of two |
 | **String Algorithms** | 3 | KMP, Rabin-Karp, Z-Algorithm |
 
+#### CS Core — 56 pages
+
+| Section | Pages | Highlights |
+| --- | --- | --- |
+| **Under the Hood** | 26 | CPU caches, virtual memory, TLS, garbage collection, how Git works |
+| **Operating Systems** | 10 | CPU scheduling, page replacement and Belady's anomaly, Banker's algorithm, deadlock detection, disk scheduling, race conditions, producer-consumer, dining philosophers |
+| **Computer Networks** | 10 | OSI and TCP/IP layers, TCP handshake, sliding window protocols, congestion control, DNS, subnetting, distance-vector and link-state routing, ARP, HTTP/1.1 vs 2 vs 3 |
+| **Database Systems** | 10 | Isolation levels, serializability, two-phase locking, MVCC, write-ahead logging, normalization, join algorithms, SQL query order, relational algebra, LSM trees |
+
 Plus a searchable [**complexity cheatsheet**](https://dsa-verse.vercel.app/cheatsheet) covering time and space bounds for every major data structure and algorithm.
 
 ### 🔬 Under the Hood
 
-Beyond the algorithm catalogue, DSAverse has **26 animated CS-internals explainers** — multi-act walkthroughs of what actually happens inside a computer:
+Alongside the step-by-step simulations, CS Core includes **26 animated CS-internals explainers** — multi-act walkthroughs of what actually happens inside a computer:
 
 -   **Language runtimes**: Python and C++ execution pipelines, JIT compilation, garbage collection, floating point and IEEE 754, Unicode and UTF-8
 -   **Concurrency**: processes vs threads, multithreading, async/await and the event loop
@@ -72,20 +82,27 @@ Beyond the algorithm catalogue, DSAverse has **26 animated CS-internals explaine
 -   **Object orientation**: classes and memory, inheritance and MRO, virtual dispatch, composition vs inheritance
 -   **Systems**: system calls and kernel mode, virtual memory and paging, CPU cache hierarchy, containers, file systems, database query execution, Git internals
 
+The Operating Systems, Computer Networks and Database Systems sections link to these explainers wherever a topic is already covered, so nothing is taught twice.
+
 ### 🎛️ Interactive Controls
 
 -   ⏯️ **Play/Pause/Reset** - Full control over animation playback
 -   ⚡ **Speed Control** - Adjust animation speed from slow-mo to lightning fast
--   📊 **Step-by-Step Mode** - Understand each operation in detail
--   🎯 **Custom Input** - Test algorithms with your own data sets
+-   📊 **Step-by-Step Mode** - Step forwards and backwards through every operation
+-   🎯 **Custom Input** - Randomize, pick a preset, or test algorithms with your own data
 -   📱 **Touch-Friendly** - Optimized for mobile and tablet interactions
 
 ### 📈 Learning Tools
 
--   📝 **Algorithm Explanations** - A written explanation for every single step, not just the end result
+-   📝 **Step Explanations** - A written explanation for every single step, not just the end result
+-   🔮 **Predict the Next Step** - Turn on **Predict** on 37 pages and the animation pauses at each decision so you can guess what happens before it does
+-   🧠 **Active Recall Quizzes** - A 3-question quiz on every page — 453 questions in all
+-   🔁 **[Review](https://dsa-verse.vercel.app/review)** - Spaced-repetition practice over every quiz on the site, by subject or by section. Questions come back just before you would forget them. Progress stays in your browser — no account, nothing sent anywhere
+-   ⚖️ **[Compare](https://dsa-verse.vercel.app/compare)** - Put any two or three pages side by side: complexity, difficulty, pattern and approach
+-   🔍 **Search** - Press **⌘K** / **Ctrl+K** anywhere to jump to any page
+-   🧭 **See Also** - Every page ends with related pages, including links across subjects — Dijkstra and link-state routing point to each other, and serializability points to topological sort
 -   ⏱️ **Complexity Analysis** - Time and space complexity on every page and in the cheatsheet
--   💡 **Code Examples** - Clean, commented Python and JavaScript implementations
--   🧠 **Active Recall Quizzes** - A short quiz on each page to test what you just watched
+-   💡 **Code Examples** - Clean, commented implementations: Python on most pages, plus JavaScript and SQL where they fit
 
 ---
 
@@ -95,8 +112,8 @@ Beyond the algorithm catalogue, DSAverse has **26 animated CS-internals explaine
 
 Ensure you have the following installed:
 
--   **Node.js** (version 18 or higher)
--   **npm** or **yarn**
+-   **Node.js** 18.18 or higher (required by Next.js 15)
+-   **npm**
 -   **Git**
 
 ### Installation
@@ -112,16 +129,12 @@ cd DSAverse
 
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. **Start the development server**
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 4. **Open your browser**
@@ -132,6 +145,14 @@ yarn dev
 ```bash
 npm run build
 npm start
+```
+
+`npm run build` first regenerates the learning data in `data/` (the quiz bank, page index, related links and page counts) from the pages themselves, so Review, Compare, search and See also always match what is on the site.
+
+### Lint
+
+```bash
+npm run lint
 ```
 
 ---
@@ -148,22 +169,36 @@ DSAverse/
 │   ├── robots.js                  # Generates /robots.txt
 │   ├── favicon.ico                # Served at /favicon.ico
 │   ├── cheatsheet/                # Searchable Big-O reference table
+│   ├── compare/                   # Side-by-side comparison of any two or three pages
+│   ├── review/                    # Spaced-repetition practice over every quiz
 │   ├── contact/                   # Contact / GitHub page
 │   ├── under-the-hood/            # CS-internals explainers
-│   └── [section]/                 # One directory per algorithm section
+│   └── [section]/                 # One directory per section (sorting, operating-systems, ...)
 │       ├── layout.js              # Navbar + Footer + section metadata
 │       ├── loading.js             # Section loading animation
 │       ├── page.js                # Section index (server component)
 │       └── [algorithm]/
-│           ├── layout.js          # Per-page metadata + canonical
+│           ├── layout.js          # Per-page metadata, canonical and See also links
 │           └── page.js            # The visualizer ("use client")
 ├── components/                    # Shared React components
-│   ├── Navbar.jsx                 # Mega-menu driven by algorithmCategories
+│   ├── Navbar.jsx                 # Subject tabs and mega-menu
+│   ├── CommandPalette.jsx         # ⌘K / Ctrl+K search
+│   ├── RelatedPages.jsx           # "See also" links at the foot of every page
+│   ├── PredictStep.jsx            # "What happens next?" prompts
 │   ├── CodeBlock.jsx              # Syntax-highlighted code block
 │   ├── GraphCustomizer.jsx        # Custom graph input modal
-│   └── Hero.jsx, Footer.jsx, ...  # Homepage sections
+│   ├── BinaryTreeCanvas.jsx       # Shared binary-tree layout
+│   ├── BTreeCanvas.jsx            # Shared B-tree / B+ tree layout
+│   └── Hero.jsx, AlgorithmsGrid.jsx, Footer.jsx, ...  # Homepage sections
 ├── data/
-│   └── algorithmCategories.js     # Single source of truth for nav structure
+│   ├── subjects.js                # Subjects → sections (DSA, CS Core)
+│   ├── algorithmCategories.js     # Nav structure: sections → page names
+│   └── quizBank.js, pageIndex.js,
+│       related.js, learningStats.js  # Generated on every build — do not edit by hand
+├── lib/
+│   └── progress.js                # Visited pages and the review schedule (localStorage)
+├── scripts/
+│   └── build-learning-data.mjs    # Generates the data files above (runs before every build)
 ├── public/                        # Static assets (icons, og-image, manifest)
 ├── AGENTS.md / CLAUDE.md          # Architecture guide for coding agents
 ├── CONTRIBUTING.md                # Contribution guide
@@ -216,7 +251,7 @@ Looking for **structured learning** and **practice problems**? Check out **DSA-3
 We welcome contributions from developers of all skill levels! Whether you want to:
 
 -   🐛 **Report bugs** or suggest improvements
--   ✨ **Add new algorithms** or data structures
+-   ✨ **Add new algorithms**, data structures or CS topics
 -   🎨 **Improve visualizations** and animations
 -   📚 **Enhance documentation** and tutorials
 -   🔧 **Optimize performance** and code quality
@@ -229,7 +264,7 @@ We welcome contributions from developers of all skill levels! Whether you want t
 4. **Push** to the branch (`git push origin feature/amazing-feature`)
 5. **Open** a Pull Request
 
-📖 **Read our detailed [Contributing Guide](CONTRIBUTING.md)** for comprehensive instructions, coding standards, and development setup.
+📖 **Read our detailed [Contributing Guide](CONTRIBUTING.md)** for how pages are built, the checklist for adding one, and the coding conventions.
 
 <!-- --- -->
 
