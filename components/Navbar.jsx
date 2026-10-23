@@ -8,6 +8,7 @@ import {
     Layers, RefreshCw, ArrowUpDown, Search as SearchIcon,
     Database, Brain, GitBranch, BarChart2, ArrowLeftRight,
     Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
+    MonitorCog, DatabaseZap,
 } from 'lucide-react';
 import Link from 'next/link';
 import CommandPalette from './CommandPalette';
@@ -58,6 +59,8 @@ const CAT_META = {
     'Divide and Conquer':                 { icon: <Scissors      className="w-3.5 h-3.5" />, grad: 'from-sky-500     to-blue-600'    },
     'Union-Find':                         { icon: <Share2        className="w-3.5 h-3.5" />, grad: 'from-purple-500  to-violet-600'  },
     'Indexing':                           { icon: <Table         className="w-3.5 h-3.5" />, grad: 'from-emerald-500 to-teal-600'    },
+    'Operating Systems':                  { icon: <MonitorCog    className="w-3.5 h-3.5" />, grad: 'from-yellow-500  to-amber-600'    },
+    'Database Systems':                   { icon: <DatabaseZap   className="w-3.5 h-3.5" />, grad: 'from-blue-500    to-teal-600'     },
     'Under the Hood':                     { icon: <Monitor       className="w-3.5 h-3.5" />, grad: 'from-zinc-500    to-slate-600'    },
 };
 
@@ -175,6 +178,7 @@ const PAGES_EXIST = new Set([
     'Graph Algorithms', 'Two Pointers and Sliding Window',
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
     'Divide and Conquer', 'Union-Find', 'Indexing', 'Under the Hood',
+    'Operating Systems', 'Database Systems',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
