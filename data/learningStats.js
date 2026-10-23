@@ -2,7 +2,7 @@
 // Regenerate with `npm run build` (prebuild) or `node scripts/build-learning-data.mjs`.
 // Headline counts for shells that render before the quiz bank loads.
 
-export const totalQuestions = 363;
-export const totalPages = 121;
-export const pagesBySection = {"backtracking":3,"basics":9,"bit-manipulation":3,"divide-and-conquer":4,"dynamic-programming":9,"graph-algorithms":9,"heap-like-data-structures":5,"indexing":9,"recursion":9,"searching":8,"sorting":8,"string-algorithms":3,"trees":5,"two-pointers-and-sliding-window":7,"under-the-hood":26,"union-find":4};
-export const pagesBySubject = {"dsa":95,"cs-core":26};
+export const totalQuestions = 423;
+export const totalPages = 141;
+export const pagesBySection = {"backtracking":3,"basics":9,"bit-manipulation":3,"database-systems":10,"divide-and-conquer":4,"dynamic-programming":9,"graph-algorithms":9,"heap-like-data-structures":5,"indexing":9,"operating-systems":10,"recursion":9,"searching":8,"sorting":8,"string-algorithms":3,"trees":5,"two-pointers-and-sliding-window":7,"under-the-hood":26,"union-find":4};
+export const pagesBySubject = {"dsa":95,"cs-core":46};
