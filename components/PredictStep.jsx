@@ -80,6 +80,44 @@ const ACCENTS = {
         text: 'text-blue-200',
         on: 'bg-blue-500/20 border-blue-500/60 text-blue-300',
     },
+    // Math sections: Combinatorics, Probability and Statistics, Vectors,
+    // Linear Algebra, Differential Calculus, Integral Calculus.
+    fuchsia: {
+        panel: 'bg-fuchsia-500/10 border-fuchsia-500/30',
+        icon: 'text-fuchsia-400',
+        text: 'text-fuchsia-200',
+        on: 'bg-fuchsia-500/20 border-fuchsia-500/60 text-fuchsia-300',
+    },
+    rose: {
+        panel: 'bg-rose-500/10 border-rose-500/30',
+        icon: 'text-rose-400',
+        text: 'text-rose-200',
+        on: 'bg-rose-500/20 border-rose-500/60 text-rose-300',
+    },
+    sky: {
+        panel: 'bg-sky-500/10 border-sky-500/30',
+        icon: 'text-sky-400',
+        text: 'text-sky-200',
+        on: 'bg-sky-500/20 border-sky-500/60 text-sky-300',
+    },
+    violet: {
+        panel: 'bg-violet-500/10 border-violet-500/30',
+        icon: 'text-violet-400',
+        text: 'text-violet-200',
+        on: 'bg-violet-500/20 border-violet-500/60 text-violet-300',
+    },
+    emerald: {
+        panel: 'bg-emerald-500/10 border-emerald-500/30',
+        icon: 'text-emerald-400',
+        text: 'text-emerald-200',
+        on: 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300',
+    },
+    teal: {
+        panel: 'bg-teal-500/10 border-teal-500/30',
+        icon: 'text-teal-400',
+        text: 'text-teal-200',
+        on: 'bg-teal-500/20 border-teal-500/60 text-teal-300',
+    },
 };
 const accentOf = (name) => ACCENTS[name] ?? ACCENTS.indigo;
 
