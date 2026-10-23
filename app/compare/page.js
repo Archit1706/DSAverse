@@ -4,7 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import {
     Columns3, Search, X, Plus, ArrowRight, Info, Scale,
-    Clock, HardDrive, Gauge, Tag, BookOpen, Shuffle,
+    Clock, HardDrive, Gauge, Tag, BookOpen, Shuffle, Sigma, Layers,
 } from 'lucide-react';
 import { pageIndex } from '@/data/pageIndex';
 import { SUBJECTS } from '@/data/subjects';
@@ -247,6 +247,30 @@ export default function ComparePage() {
 
                 {/* Comparison table */}
                 <div className="bg-slate-900/70 border border-slate-700/50 rounded-xl overflow-hidden">
+                    {/* Math pages carry a key formula and a prerequisite instead of
+                        complexity. Each kind of row appears only when at least one
+                        column has it, so a Math-only comparison is not two rows of dashes. */}
+                    {cols.some(c => c.formula) && (
+                        <Row icon={Sigma} label="Key formula">
+                            {cols.map(c => (
+                                <div key={c.route} className="text-sm font-mono text-slate-200 break-words">
+                                    {c.formula || <span className="text-slate-600">—</span>}
+                                </div>
+                            ))}
+                        </Row>
+                    )}
+
+                    {cols.some(c => c.prereq) && (
+                        <Row icon={Layers} label="Builds on">
+                            {cols.map(c => (
+                                <div key={c.route} className="text-sm text-slate-300">
+                                    {c.prereq || <span className="text-slate-600">—</span>}
+                                </div>
+                            ))}
+                        </Row>
+                    )}
+
+                    {cols.some(c => c.time) && (
                     <Row icon={Clock} label="Time complexity" hint="lowest highlighted">
                         {cols.map((c, i) => (
                             <div key={c.route}>
@@ -258,7 +282,9 @@ export default function ComparePage() {
                             </div>
                         ))}
                     </Row>
+                    )}
 
+                    {cols.some(c => c.space) && (
                     <Row icon={HardDrive} label="Space complexity" hint="lowest highlighted">
                         {cols.map((c, i) => (
                             <div key={c.route}>
@@ -270,6 +296,7 @@ export default function ComparePage() {
                             </div>
                         ))}
                     </Row>
+                    )}
 
                     <Row icon={Gauge} label="Difficulty">
                         {cols.map(c => (
