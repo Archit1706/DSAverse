@@ -233,6 +233,44 @@ export const algorithmCategories = [
         ]
     },
     {
+        name: "Operating Systems",
+        color: "bg-yellow-500",
+        lightColor: "bg-yellow-50",
+        borderColor: "border-yellow-200",
+        textColor: "text-yellow-700",
+        algorithms: [
+            "CPU Scheduling",
+            "Round Robin Scheduling",
+            "Page Replacement",
+            "Memory Allocation",
+            "Banker's Algorithm",
+            "Deadlock Detection",
+            "Disk Scheduling",
+            "Race Conditions",
+            "Producer-Consumer",
+            "Dining Philosophers"
+        ]
+    },
+    {
+        name: "Database Systems",
+        color: "bg-blue-500",
+        lightColor: "bg-blue-50",
+        borderColor: "border-blue-200",
+        textColor: "text-blue-700",
+        algorithms: [
+            "Transaction Isolation Levels",
+            "Serializability",
+            "Two-Phase Locking",
+            "MVCC",
+            "Write-Ahead Logging",
+            "Normalization",
+            "Join Algorithms",
+            "SQL Query Order",
+            "Relational Algebra",
+            "LSM Trees"
+        ]
+    },
+    {
         name: "Under the Hood",
         color: "bg-zinc-500",
         lightColor: "bg-zinc-50",
