@@ -18,8 +18,8 @@ const KIND = {
 
 /**
  * Sibling links at the foot of a visualizer, plus the visit record that the
- * review dashboard reads. Rendered from the algorithm layout, so the 121 pages
- * themselves stay untouched.
+ * review dashboard reads. Rendered from each page's layout, so the visualizer
+ * pages themselves stay untouched.
  */
 export default function RelatedPages({ route }) {
     useEffect(() => { markVisited(route); }, [route]);
