@@ -8,7 +8,7 @@ import {
 import { totalPages, totalQuestions, pagesBySection } from '@/data/learningStats';
 
 /* ─── Cycling words ──────────────────────────────────── */
-const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find', 'Networks', 'Databases'];
+const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find', 'Networks', 'Databases', 'Probability', 'Linear Algebra', 'Calculus'];
 
 /* ─── Quick-nav chips ──────────────────────────── */
 /* Label and href are listed separately on purpose: several labels are
@@ -33,6 +33,12 @@ const QUICK_NAV = [
     { label: 'Networks', href: '/computer-networks' },
     { label: 'Databases', href: '/database-systems' },
     { label: 'Under the Hood', href: '/under-the-hood' },
+    { label: 'Combinatorics', href: '/combinatorics' },
+    { label: 'Probability', href: '/probability-and-statistics' },
+    { label: 'Vectors', href: '/vectors' },
+    { label: 'Linear Algebra', href: '/linear-algebra' },
+    { label: 'Derivatives', href: '/differential-calculus' },
+    { label: 'Integrals', href: '/integral-calculus' },
 ];
 
 function WordCycler() {
