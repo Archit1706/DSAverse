@@ -46,6 +46,20 @@ export const SUBJECTS = [
             'under-the-hood',
         ],
     },
+    {
+        id: 'math',
+        name: 'Mathematics',
+        shortName: 'Math',
+        tagline: 'Counting, probability, vectors, linear algebra and calculus you can drag and explore.',
+        sections: [
+            'combinatorics',
+            'probability-and-statistics',
+            'vectors',
+            'linear-algebra',
+            'differential-calculus',
+            'integral-calculus',
+        ],
+    },
 ];
 
 /** The subject id a section directory belongs to, or null if it is unlisted. */
