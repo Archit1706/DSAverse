@@ -323,5 +323,110 @@ export const algorithmCategories = [
             "How a Database Query Executes",
             "How Git Works Internally"
         ]
+    },
+    {
+        name: "Combinatorics",
+        color: "bg-fuchsia-500",
+        lightColor: "bg-fuchsia-50",
+        borderColor: "border-fuchsia-200",
+        textColor: "text-fuchsia-700",
+        algorithms: [
+            "Counting Principle",
+            "Permutations",
+            "Combinations",
+            "Pascal's Triangle",
+            "Binomial Theorem",
+            "Stars and Bars",
+            "Inclusion-Exclusion",
+            "Pigeonhole Principle"
+        ]
+    },
+    {
+        name: "Probability and Statistics",
+        color: "bg-rose-500",
+        lightColor: "bg-rose-50",
+        borderColor: "border-rose-200",
+        textColor: "text-rose-700",
+        algorithms: [
+            "Sample Spaces and Events",
+            "Conditional Probability",
+            "Bayes' Theorem",
+            "Random Variables and Expectation",
+            "Binomial Distribution",
+            "Normal Distribution",
+            "Law of Large Numbers",
+            "Central Limit Theorem",
+            "Birthday Paradox"
+        ]
+    },
+    {
+        name: "Vectors",
+        color: "bg-sky-500",
+        lightColor: "bg-sky-50",
+        borderColor: "border-sky-200",
+        textColor: "text-sky-700",
+        algorithms: [
+            "Vectors and Coordinates",
+            "Vector Addition and Scaling",
+            "Dot Product",
+            "Cross Product",
+            "Vector Projection",
+            "Norms and Unit Vectors",
+            "Lines and Planes in 3D"
+        ]
+    },
+    {
+        name: "Linear Algebra",
+        color: "bg-violet-500",
+        lightColor: "bg-violet-50",
+        borderColor: "border-violet-200",
+        textColor: "text-violet-700",
+        algorithms: [
+            "Linear Combinations and Span",
+            "Matrix as a Transformation",
+            "Matrix Multiplication",
+            "Determinant",
+            "Gaussian Elimination",
+            "Inverse Matrices",
+            "Rank and Null Space",
+            "Eigenvectors and Eigenvalues",
+            "Change of Basis",
+            "Least Squares"
+        ]
+    },
+    {
+        name: "Differential Calculus",
+        color: "bg-emerald-500",
+        lightColor: "bg-emerald-50",
+        borderColor: "border-emerald-200",
+        textColor: "text-emerald-700",
+        algorithms: [
+            "Limits",
+            "The Derivative",
+            "Derivative Rules",
+            "Graphing with Derivatives",
+            "Optimization",
+            "Newton's Method",
+            "Taylor Series",
+            "Partial Derivatives and Gradients",
+            "Gradient Descent"
+        ]
+    },
+    {
+        name: "Integral Calculus",
+        color: "bg-teal-500",
+        lightColor: "bg-teal-50",
+        borderColor: "border-teal-200",
+        textColor: "text-teal-700",
+        algorithms: [
+            "Riemann Sums",
+            "The Definite Integral",
+            "Fundamental Theorem of Calculus",
+            "Integration by Substitution",
+            "Integration by Parts",
+            "Area Between Curves",
+            "Volumes of Revolution",
+            "Numerical Integration"
+        ]
     }
 ];
