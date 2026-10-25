@@ -22,7 +22,7 @@
 
 ## 🎯 About DSAverse
 
-DSAverse is an **interactive web platform** that brings computer science to life through step-by-step visualizations. It started with Data Structures and Algorithms and now also covers the **CS core** every software engineer needs — operating systems, computer networks and databases. Whether you're a student learning your first sorting algorithm or a developer preparing for technical interviews, DSAverse makes complex concepts intuitive and engaging.
+DSAverse is an **interactive web platform** that brings computer science to life through step-by-step visualizations. It started with Data Structures and Algorithms and now also covers the **CS core** every software engineer needs — operating systems, computer networks and databases — and the **mathematics** underneath it: counting, probability, vectors, linear algebra and calculus. Whether you're a student learning your first sorting algorithm or a developer preparing for technical interviews, DSAverse makes complex concepts intuitive and engaging.
 
 ### 🌟 Why DSAverse?
 
@@ -39,7 +39,7 @@ DSAverse is an **interactive web platform** that brings computer science to life
 
 ### 🔧 Visualizations
 
-**151 interactive pages across 19 sections, in two subjects.**
+**202 interactive pages across 25 sections, in three subjects.**
 
 #### Data Structures & Algorithms — 95 pages
 
@@ -70,6 +70,19 @@ DSAverse is an **interactive web platform** that brings computer science to life
 | **Computer Networks** | 10 | OSI and TCP/IP layers, TCP handshake, sliding window protocols, congestion control, DNS, subnetting, distance-vector and link-state routing, ARP, HTTP/1.1 vs 2 vs 3 |
 | **Database Systems** | 10 | Isolation levels, serializability, two-phase locking, MVCC, write-ahead logging, normalization, join algorithms, SQL query order, relational algebra, LSM trees |
 
+#### Math — 51 pages
+
+| Section | Pages | Highlights |
+| --- | --- | --- |
+| **Linear Algebra** | 10 | Span, matrices as transformations, determinants in 2D and 3D, Gaussian elimination, eigenvectors, least squares |
+| **Probability and Statistics** | 9 | Conditional probability, Bayes' theorem, expectation, the normal distribution, the central limit theorem, the birthday paradox |
+| **Differential Calculus** | 9 | Limits, the derivative, optimization, Newton's method, Taylor series, gradient descent on a 3D surface |
+| **Combinatorics** | 8 | Permutations, combinations, Pascal's triangle, the binomial theorem, stars and bars, inclusion-exclusion |
+| **Integral Calculus** | 8 | Riemann sums, the fundamental theorem, substitution, integration by parts, volumes of revolution |
+| **Vectors** | 7 | Dot and cross products, projection, norms, lines and planes in 3D |
+
+Math pages are built to be manipulated, not just watched: drag a vector or slide a parameter and the numbers and formulas update with it, and 3D ideas get an orbitable scene.
+
 Plus a searchable [**complexity cheatsheet**](https://dsa-verse.vercel.app/cheatsheet) covering time and space bounds for every major data structure and algorithm.
 
 ### 🔬 Under the Hood
@@ -95,8 +108,8 @@ The Operating Systems, Computer Networks and Database Systems sections link to t
 ### 📈 Learning Tools
 
 -   📝 **Step Explanations** - A written explanation for every single step, not just the end result
--   🔮 **Predict the Next Step** - Turn on **Predict** on 37 pages and the animation pauses at each decision so you can guess what happens before it does
--   🧠 **Active Recall Quizzes** - A 3-question quiz on every page — 453 questions in all
+-   🔮 **Predict the Next Step** - Turn on **Predict** on 88 pages and the animation pauses at each decision so you can guess what happens before it does
+-   🧠 **Active Recall Quizzes** - A 3-question quiz on every page — 606 questions in all
 -   🔁 **[Review](https://dsa-verse.vercel.app/review)** - Spaced-repetition practice over every quiz on the site, by subject or by section. Questions come back just before you would forget them. Progress stays in your browser — no account, nothing sent anywhere
 -   ⚖️ **[Compare](https://dsa-verse.vercel.app/compare)** - Put any two or three pages side by side: complexity, difficulty, pattern and approach
 -   🔍 **Search** - Press **⌘K** / **Ctrl+K** anywhere to jump to any page
@@ -191,7 +204,7 @@ DSAverse/
 │   ├── BTreeCanvas.jsx            # Shared B-tree / B+ tree layout
 │   └── Hero.jsx, AlgorithmsGrid.jsx, Footer.jsx, ...  # Homepage sections
 ├── data/
-│   ├── subjects.js                # Subjects → sections (DSA, CS Core)
+│   ├── subjects.js                # Subjects → sections (DSA, CS Core, Math)
 │   ├── algorithmCategories.js     # Nav structure: sections → page names
 │   └── quizBank.js, pageIndex.js,
 │       related.js, learningStats.js  # Generated on every build — do not edit by hand
