@@ -84,6 +84,7 @@ The site has three levels: **subject → section → page**. `data/subjects.js` 
 export const SUBJECTS = [
     { id: 'dsa', name: 'Data Structures & Algorithms', shortName: 'DSA', tagline: '…', sections: ['basics', 'recursion', …, 'indexing'] },
     { id: 'cs-core', name: 'CS Core', shortName: 'CS Core', tagline: '…', sections: ['operating-systems', 'computer-networks', 'database-systems', 'under-the-hood'] },
+    { id: 'math', name: 'Mathematics', shortName: 'Math', tagline: '…', sections: ['combinatorics', 'probability-and-statistics', 'vectors', 'linear-algebra', 'differential-calculus', 'integral-calculus'] },
 ];
 export function subjectOfSection(sectionSlug) { … }   // 'sorting' → 'dsa'
 export function subjectOfPath(pathname) { … }         // '/sorting/bubble-sort' → 'dsa'
@@ -163,6 +164,12 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Operating Systems | `from-yellow-500 to-amber-600` | `yellow-400` / `yellow-500` |
 | Computer Networks | `from-pink-500 to-rose-600` | `pink-400` / `pink-500` |
 | Database Systems | `from-blue-500 to-teal-600` | `blue-400` / `blue-500` |
+| Combinatorics | `from-fuchsia-500 to-purple-600` | `fuchsia-400` / `fuchsia-500` |
+| Probability and Statistics | `from-rose-500 to-red-600` | `rose-400` / `rose-500` |
+| Vectors | `from-sky-500 to-blue-600` | `sky-400` / `sky-500` |
+| Linear Algebra | `from-violet-500 to-indigo-600` | `violet-400` / `violet-500` |
+| Differential Calculus | `from-emerald-500 to-green-600` | `emerald-400` / `emerald-500` |
+| Integral Calculus | `from-teal-500 to-cyan-600` | `teal-400` / `teal-500` |
 
 > **Note:** `Indexing` covers all 13 topics of the original curriculum, in two states: **9 built in the section**, and **4 cross-linked** to where they already live (Binary and Linear Search → `/searching/…`, Binary Search Trees / AVL Trees / Trie → `/trees/…`). Cross-linked cards carry an `href` that overrides the default `/indexing/${slug}` plus a `coveredIn` label; the card footer reads "Open in Trees →" rather than "Start Visualization →".
 >
@@ -404,7 +411,7 @@ Because inputs are fixed, the animation effect drops `stepHistory` from its deps
 
 ### Math Pattern (manipulation, formulas and 3D)
 
-The **Math** subject (`math`, registered in `data/subjects.js` once its sections exist) has six sections: Combinatorics, Probability and Statistics, Vectors, Linear Algebra, Differential Calculus and Integral Calculus. Its pages need what step playback alone cannot give: **direct manipulation** (drag a vector, slide `n`), **typeset formulas**, and occasionally **3D**. The shared pieces live in `components/math/` and `lib/random.js`, and every Math page uses them rather than inventing its own.
+The **Math** subject (`math` in `data/subjects.js`) has six sections, 51 pages in all: Combinatorics, Probability and Statistics, Vectors, Linear Algebra, Differential Calculus and Integral Calculus. Its pages need what step playback alone cannot give: **direct manipulation** (drag a vector, slide `n`), **typeset formulas**, and occasionally **3D**. The shared pieces live in `components/math/` and `lib/random.js`, and every Math page uses them rather than inventing its own.
 
 **Reference implementations** — read both before building a Math page:
 
@@ -454,6 +461,8 @@ const PAGES_EXIST = new Set([
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
     'Divide and Conquer', 'Union-Find', 'Indexing', 'Under the Hood',
     'Operating Systems', 'Computer Networks', 'Database Systems',
+    'Combinatorics', 'Probability and Statistics', 'Vectors',
+    'Linear Algebra', 'Differential Calculus', 'Integral Calculus',
 ]);
 ```
 Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, apostrophes stripped, spaces/colons → hyphens, parentheses removed — so `Dijkstra's Shortest Path` → `dijkstras-shortest-path` and `Subsets (Power Set)` → `subsets-power-set`. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too. Then add the section's directory name to its subject in `data/subjects.js`, which decides which mega-menu tab it appears under.
@@ -508,9 +517,9 @@ It emits four files into `data/`, each headed with a do-not-edit warning:
 
 | File | Size | Contents |
 |---|---|---|
-| `quizBank.js` | ~225 KB | All 363 quiz questions, tagged with route and section |
-| `pageIndex.js` | ~47 KB | Every page's name, description, difficulty, pattern, time and space |
-| `related.js` | ~15 KB | Up to 4 sibling pages per route |
+| `quizBank.js` | ~390 KB | All 606 quiz questions, tagged with route, section and subject |
+| `pageIndex.js` | ~94 KB | Every page's name, description, difficulty, pattern, time and space (or formula and prereq) |
+| `related.js` | ~26 KB | Up to 4 sibling pages per route |
 | `learningStats.js` | <1 KB | `totalQuestions`, `totalPages`, `pagesBySection`, `pagesBySubject` |
 
 **Never edit these by hand** — regenerate with `node scripts/build-learning-data.mjs`.
@@ -523,7 +532,7 @@ Three things the generator has to get right, all of which were wrong at first:
 - **Field aliases.** Section indexes do not agree on key names. `pattern` is also written as `type`, `category` or `tag`; `time` as `timeComplexity` or (in Under the Hood) `complexity`; `space` as `spaceComplexity`. All are mapped.
 - **Relatedness ranking.** `related.js` scores pages against each other with tf-idf over their own prose — title, index blurb, pattern tag, the layout's description and keywords, and the page body's explanation strings (Tailwind class strings are stripped first, or the shared utility vocabulary swamps everything). Ranking on metadata alone was far too thin: it put the array-list page next to the CPU cache page, and within a section it degenerated to alphabetical order, so bubble sort pointed at bucket/heap/insertion/merge sort. Relation kinds, strongest first: `3` same algorithm in another section, `2` shared pattern tag, `1` topical match elsewhere, `0` sibling in the same section.
 
-Because `learningStats.js` is tiny it is imported synchronously, including from `metadata` objects. `quizBank.js` is not: `app/review/page.js` pulls it in with a dynamic `import()` on mount, which keeps the route chunk at ~18 KB instead of ~241 KB.
+Because `learningStats.js` is tiny it is imported synchronously, including from `metadata` objects. `quizBank.js` is not: `app/review/page.js` pulls it in with a dynamic `import()` on mount, which keeps the route chunk at ~18 KB instead of ~400 KB.
 
 ### Learning Features
 
@@ -535,7 +544,7 @@ Four pieces sit on top of the generated data.
 
 **`app/compare/`** — any two or three pages side by side, from `pageIndex`. Preset comparisons are included so the page is useful before anything is picked. The "lowest" badge on time and space uses the `COMPLEXITY_RANK` table and deliberately shows nothing when the entries tie or are unrecognised.
 
-**`components/RelatedPages.jsx`** — the "See also" block, mounted from each algorithm `layout.js` rather than from the 121 pages:
+**`components/RelatedPages.jsx`** — the "See also" block, mounted from each algorithm `layout.js` rather than from the 202 pages:
 
 ```jsx
 import RelatedPages from '@/components/RelatedPages';
@@ -547,9 +556,9 @@ export default function Layout({ children }) {
 
 The `route` prop is always the layout's own `alternates.canonical`. It also calls `markVisited(route)`, which is what the review dashboard reads.
 
-**`components/CommandPalette.jsx`** — ⌘K / Ctrl+K search over every page, mounted in the Navbar. It imports `pageIndex` dynamically on first open, because the Navbar is on every route and the index is ~47 KB.
+**`components/CommandPalette.jsx`** — ⌘K / Ctrl+K search over every page, mounted in the Navbar. It imports `pageIndex` dynamically on first open, because the Navbar is on every route and the index is ~94 KB.
 
-**`components/PredictStep.jsx`** — optional "what happens next?" prompts, on 37 pages: the eight below, all ten in Operating Systems and Database Systems, and nine of the ten in Computer Networks (OSI and TCP/IP Layers has none — every step there is forced). The original eight:
+**`components/PredictStep.jsx`** — optional "what happens next?" prompts, on 88 pages: the eight below, all ten in Operating Systems and Database Systems, nine of the ten in Computer Networks (OSI and TCP/IP Layers has none — every step there is forced), and all 51 Math pages. The original eight:
 
 | Page | The question | Decided by |
 |---|---|---|
@@ -592,7 +601,7 @@ Pages deliberately left without prompts, because the next step is not determined
 
 ### Build Status
 
-175 routes in total: 151 visualizer and explainer pages, 19 section indexes, the homepage, and `/cheatsheet`, `/contact`, `/review` and `/compare`. Two subjects: DSA (95 pages in 15 sections) and CS Core (56 pages in 4 — Operating Systems, Computer Networks and Database Systems with 10 each, Under the Hood with 26). Every one of the 151 pages carries a 3-question active-recall quiz, 453 questions in all.
+232 routes in total: 202 visualizer and explainer pages, 25 section indexes, the homepage, and `/cheatsheet`, `/contact`, `/review` and `/compare`. Three subjects: DSA (95 pages in 15 sections), CS Core (56 pages in 4 — Operating Systems, Computer Networks and Database Systems with 10 each, Under the Hood with 26) and Math (51 pages in 6 — Combinatorics 8, Probability and Statistics 9, Vectors 7, Linear Algebra 10, Differential Calculus 9, Integral Calculus 8). Every one of the 202 pages carries a 3-question active-recall quiz, 606 questions in all.
 
 **There are no `available: false` entries left anywhere** — every section index advertises only pages that exist. The flag and its Coming Soon rendering are still supported, so a newly planned topic can use them.
 
