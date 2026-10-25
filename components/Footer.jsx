@@ -37,17 +37,28 @@ const COLUMNS = [
             { href: '/under-the-hood', label: 'Under the Hood' },
         ],
     },
+    {
+        title: 'Math',
+        links: [
+            { href: '/combinatorics', label: 'Combinatorics' },
+            { href: '/probability-and-statistics', label: 'Probability and Statistics' },
+            { href: '/vectors', label: 'Vectors' },
+            { href: '/linear-algebra', label: 'Linear Algebra' },
+            { href: '/differential-calculus', label: 'Differential Calculus' },
+            { href: '/integral-calculus', label: 'Integral Calculus' },
+        ],
+    },
 ];
 
 const Footer = () => {
     return (
         <footer className="bg-gray-900 text-white py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
                     <div>
                         <h3 className="text-xl font-bold mb-4 text-white">DSAverse</h3>
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            Making data structures, algorithms and core computer science accessible through interactive visualizations.
+                            Making data structures, algorithms, core computer science and mathematics accessible through interactive visualizations.
                         </p>
                     </div>
 
