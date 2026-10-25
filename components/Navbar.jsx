@@ -9,6 +9,7 @@ import {
     Database, Brain, GitBranch, BarChart2, ArrowLeftRight,
     Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
     MonitorCog, Network, DatabaseZap,
+    Combine, Dice5, MoveUpRight, Grid3x3, TrendingUp, ChartArea,
 } from 'lucide-react';
 import Link from 'next/link';
 import CommandPalette from './CommandPalette';
@@ -63,6 +64,12 @@ const CAT_META = {
     'Computer Networks':                  { icon: <Network       className="w-3.5 h-3.5" />, grad: 'from-pink-500    to-rose-600'     },
     'Database Systems':                   { icon: <DatabaseZap   className="w-3.5 h-3.5" />, grad: 'from-blue-500    to-teal-600'     },
     'Under the Hood':                     { icon: <Monitor       className="w-3.5 h-3.5" />, grad: 'from-zinc-500    to-slate-600'    },
+    'Combinatorics':                      { icon: <Combine       className="w-3.5 h-3.5" />, grad: 'from-fuchsia-500 to-purple-600'   },
+    'Probability and Statistics':         { icon: <Dice5         className="w-3.5 h-3.5" />, grad: 'from-rose-500    to-red-600'      },
+    'Vectors':                            { icon: <MoveUpRight   className="w-3.5 h-3.5" />, grad: 'from-sky-500     to-blue-600'     },
+    'Linear Algebra':                     { icon: <Grid3x3       className="w-3.5 h-3.5" />, grad: 'from-violet-500  to-indigo-600'   },
+    'Differential Calculus':              { icon: <TrendingUp    className="w-3.5 h-3.5" />, grad: 'from-emerald-500 to-green-600'    },
+    'Integral Calculus':                  { icon: <ChartArea     className="w-3.5 h-3.5" />, grad: 'from-teal-500    to-cyan-600'     },
 };
 
 /* ── Animated brand name ─────────────────────────────── */
@@ -180,6 +187,8 @@ const PAGES_EXIST = new Set([
     'Bit Manipulation', 'String Algorithms', 'Backtracking', 'Trees',
     'Divide and Conquer', 'Union-Find', 'Indexing', 'Under the Hood',
     'Operating Systems', 'Computer Networks', 'Database Systems',
+    'Combinatorics', 'Probability and Statistics', 'Vectors',
+    'Linear Algebra', 'Differential Calculus', 'Integral Calculus',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
