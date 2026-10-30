@@ -12,6 +12,12 @@ const ACCENT = {
     violet: 'accent-violet-500',
     emerald: 'accent-emerald-500',
     teal: 'accent-teal-500',
+    // AI & Machine Learning sections
+    lime: 'accent-lime-500',
+    orange: 'accent-orange-500',
+    yellow: 'accent-yellow-500',
+    cyan: 'accent-cyan-500',
+    pink: 'accent-pink-500',
 };
 
 /**
