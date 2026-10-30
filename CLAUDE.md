@@ -19,6 +19,8 @@ npm run lint     # ESLint check (must be run manually — build ignores lint err
 
 **Several sessions in one checkout.** `next.config.mjs` sets `distDir` from `NEXT_DIST_DIR`, defaulting to `.next` (deployments never set it). When more than one session works in this checkout at once, each builds and previews into its own directory — `NEXT_DIST_DIR=.next-os npx next build` — so they cannot corrupt each other. `.next-*/` is git-ignored and lint-ignored. Use `npx next build` rather than `npm run build` there, since `prebuild` rewrites the shared `data/` files, and check generator output with `node scripts/build-learning-data.mjs --out <dir>`.
 
+**Fonts are self-hosted — do not switch back to `next/font/google`.** `app/layout.js` loads Outfit and JetBrains Mono with `next/font/local` from `app/fonts/` (Google's own variable fonts, OFL, cut to the Unicode ranges Google serves). `next/font/google` downloads fonts at build time, and Google Fonts intermittently returns extensionless `/l/font?kit=` URLs that crash its loader with `Cannot read properties of null (reading '1')` (vercel/next.js#99114); that failed two production deploys.
+
 `npm run lint` only matches `.js`/`.mjs` files: the flat config has no entry for `.jsx`, so nothing under `components/` is linted today.
 
 ## Architecture
