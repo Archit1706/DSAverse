@@ -34,6 +34,7 @@ npm run lint     # ESLint check (must be run manually — build ignores lint err
 - **Lucide React** — all icons (no emojis anywhere in the codebase)
 - **React Syntax Highlighter** — via `@/components/CodeBlock`
 - **KaTeX** and **three.js** (`@react-three/fiber`, `@react-three/drei`) — Math pages only, via `components/math/` (see Math Pattern)
+- **`lib/ml/`** — our own plain-JS machine-learning engine and model runners; AI pages only, no ML runtime dependency (see AI Pattern)
 
 ### Directory Layout
 
@@ -63,6 +64,7 @@ components/
   RelatedPages.jsx               # "See also" block, mounted from each algorithm layout
   PredictStep.jsx                # Optional "what happens next?" prompts for step-based pages
   math/                          # Tex, Plane2D, Scene3D (+ canvas and primitives), MatrixInput, ParamSlider
+  ml/                            # Heatmap, TokenStrip, ShapeTag, ProbBars, NetworkDiagram, ComputeGraph, … (AI Pattern)
   Hero.jsx, Features.jsx, AlgorithmsGrid.jsx, CTA.jsx, Footer.jsx
 data/
   subjects.js                    # Subjects → sections: the top level of the site (plain data)
@@ -74,8 +76,13 @@ data/
 lib/
   progress.js                    # localStorage: visited pages + spaced-repetition schedule
   random.js                      # Seeded RNG (mulberry32) for reproducible simulations
+  ml/                            # Tensors, autograd, MLP, BPE, tiny GPT, digit CNN, vector indexes (AI Pattern)
+public/
+  models/                        # Trained weights the AI pages fetch: tiny-gpt/, digit-cnn/
+  data/ml/                       # GloVe vectors, RAG corpus and MiniLM embeddings
 scripts/
   build-learning-data.mjs        # Emits the four generated data files (runs on prebuild)
+  ml/                            # Dev-only: builds the models and data above (never run by the build)
 ```
 
 ### Subjects
@@ -451,6 +458,100 @@ The **Math** subject (`math` in `data/subjects.js`) has six sections, 51 pages i
 - KaTeX adds about 75 KB gzipped to a Math page. It runs on the client because the formulas update as you drag.
 
 **Testing.** Property-test the maths against independent identities, not against the page's own helpers: nCr against Pascal's triangle, Bayes against enumeration, determinants against the shoelace formula and cofactor expansion, `det(MN) = det(M)·det(N)`, `Av = λv` for every eigenpair, Riemann sums converging to the exact integral, derivatives against finite differences. Predict prompts follow the rules in Learning Features, including the best-fixed-button and best-fixed-label rates. The reference pages' suite is in `%TEMP%\dsaverse-math-tests\linear-algebra\reference-pages.test.mjs` — it slices the real pure code out of `page.js` (everything above `quizQuestions`, imports stripped) and runs 16,000+ checks.
+
+### AI Pattern (real models, live training, honest numbers)
+
+The **AI & Machine Learning** subject is being built: six sections in this learning order — Machine Learning, Neural Networks, Deep Learning Architectures, Transformers, Language Models, RAG and Vector Search — 62 pages in all. Until it is integrated it is not in `data/subjects.js`, the Navbar, the sitemap or the homepage, so its pages are reached by URL on a dev server. The bar every page holds is that **every number on screen is computed** — by a network that really trains in the browser, a transformer with real trained weights, or real word vectors — at sizes small enough to read all of it. Boxes-and-arrows diagrams with invented numbers are what these pages exist to replace.
+
+**Reference implementations** — read both before building an AI page:
+
+- `app/neural-networks/backpropagation/` — the **engine pattern**: the graph `lib/ml/autograd.js` actually built, drawn by `ComputeGraph`; a backward pass stepped one local-gradient product at a time with predict prompts; a live finite-difference check; live XOR training through `useTrainer` with break-it buttons and Repair; the "In code" panel.
+- `app/transformers/self-attention/` — the **real-model pattern**: the tiny GPT fetched with `useLoaded` behind a skeleton and a retry; `TokenStrip` + `Heatmap` + `ShapeTag`; clicking a cell for its substituted arithmetic; a Guided tour that hands over to Explore on the same sentence, head and cell; the "drop the ÷√d" break; the `SourceChip`.
+
+**The eight teaching rules**
+
+1. **Real numbers, small sizes.** Values come from code that runs. Sizes stay readable (2–4 dimensions, 5–15 tokens); a "scale up" view may follow.
+2. **Shapes are always visible.** A `ShapeTag` on every matrix: `[T, d] = [14, 64]`. Losing track of axes is the main way transformer explanations stop making sense.
+3. **Picture and arithmetic are bound together** — the Math rule. Click an attention cell and see `q · k / √16 = 16.08 / 4 = 4.02`.
+4. **Break it on purpose.** At least one failure per page that can be seen and undone: learning rate 20, no nonlinearity, no ÷√d, no causal mask, chunks too small.
+5. **Predict before reveal**, wherever the next step follows from what is on screen (rules in Learning Features, and the leak below).
+6. **One misconception per page, refuted with measured numbers.** Self-Attention's "attention picks the one word that matters" is answered with the mean largest weight per head over 300 generated stories (0.28–0.54) — measured, not asserted.
+7. **"In code" panel** — `InCode`, a short NumPy/PyTorch snippet of what was just watched. Any value its comments quote is checked by running it (the backprop snippet once said −0.9817; PyTorch prints −0.9820).
+8. **Honest labels** — `SourceChip` kind `toy` (models trained for this site), `real` (GloVe, MiniLM, MNIST), `live` (trained in your browser) or `illustrative` (hand-written).
+
+**Engine — `lib/ml/`.** Plain JS with no runtime dependencies. Files import each other by relative path with a `.js` extension, so Node tests load them unbundled (Node prints a harmless `MODULE_TYPELESS` warning; filter it).
+
+| Module | What it is |
+|---|---|
+| `tensor.js` | `Float32Array` matrices `{ rows, cols, data }`: `mat`, `fromRows`, `get`, `row`, `matmul`, `transpose`, `add`, `scale`, `sliceCols`, `concatCols`, stable `softmax` / `softmaxRows` (−∞ → exactly 0), `causalMask`, `layerNormRows`, `gelu`, `argmax`, `dot`, `cosine`. Shape mismatches throw readable errors |
+| `autograd.js` | micrograd-style scalar `Value` (`val(x, label)`); `graphOf(root)` returns the graph it recorded, for drawing; `numericGrad` for finite differences |
+| `mlp.js` | vectorised MLP with hand-written backward: `createMLP(sizes, { activation, output, seed })`, `lossAndGrads`, `predict`, `accuracy`, `createOptimizer` (`sgd`, `momentum`, `rmsprop`, `adam`) |
+| `datasets.js` | seeded 2D sets: `makeDataset('moons' \| 'circles' \| 'spiral' \| 'xor' \| 'blobs' \| 'linear' \| 'line' \| 'curve', { n, noise, seed })`, `splitDataset` |
+| `useTrainer.js` | hook that runs training steps inside a per-frame budget (`budgetMs` 6, `maxStepsPerFrame`), with play/pause/step/reset and a loss history. Same seed, same curve |
+| `pca.js` | `covariance`, `eigSym` (Jacobi), `powerIteration` (its trail, for animation), `pca(rows, k)`. Components are signed so their largest entry is positive |
+| `bpe.js` | byte-level BPE: `trainBPE(text, vocabSize, { trace })` records every merge for playback; `makeTokenizer(merges)` |
+| `stories.js` | the seeded story grammar the tiny GPT was trained on: `generateStories(n, seed)`. Use it to measure model behaviour over many inputs before writing claims into a page |
+| `tinyGpt.js` | `loadTinyGpt()`; `forward(model, ids, { capture, unscaled })` returns every intermediate — `tokEmb`, `posEmb`, and per block `ln1`, `q`/`k`/`v`, per head `{ q, k, v, scores, weights, out }` (scores −∞ above the diagonal), `attnOut`, the FFN and residuals, then `logits`. `unscaled` drops the ÷√d as a deliberate break. Also `nextToken`, `filterTopK`, `filterTopP`, `sampleToken(probs, rng)`, `generate` |
+| `digitCnn.js` | `loadDigitCnn()`, `forward(model, pixels)` with every feature map, `preprocessDrawing` (crops, scales and centres a mouse drawing the way MNIST digits are), `decodeSamples` |
+| `embeddings.js` | `loadWordVectors()` (GloVe) and `loadRagData()` (corpus, MiniLM vectors, cross-encoder scores) |
+| `vectorIndex.js` | `bruteForce`, `kmeans`, IVF (`buildIVF`/`searchIVF`), HNSW (`buildHNSW`/`searchHNSW`), PQ (`trainPQ`, `encodePQ`, `adcTable`, `searchPQ`) and `recallAtK`. Brute force and HNSW take `{ trace }` so pages replay the real search |
+| `useLoaded.js` | `useLoaded(loader)` → `{ data, error, loading, retry }`. Runs after mount, so the server and the first client render are both the empty state |
+
+The loaders memoise their promise (two components share one download) and drop it on failure, so `retry` fetches again only after an error.
+
+**Components — `components/ml/`**
+
+| Component | What it is |
+|---|---|
+| `Heatmap` | labelled matrix of coloured cells; `data` is rows or a tensor. `scale` `sequential` (0–1, attention) or `diverging` (signed: orange negative, blue positive). −∞ and NaN cells are **hatched** — softmax turns masked scores into exact zeros, so put −∞ back before drawing weights, or the future reads as "weight 0". `onSelect` adds click and arrow-key selection. Shrinks to 14-px cells, then scrolls inside its own box |
+| `TokenStrip` | tokens as chips with ids; a leading space shows as a faint dot. `weights` tints them; `null` weights draw faded (masked) |
+| `ShapeTag` | `[T, d] = [14, 64]`; takes a shape array or a tensor |
+| `ProbBars` | distribution bars; `kept: false` greys out a top-k/top-p cut, `chosen` marks the sampled token |
+| `NetworkDiagram` | layered nodes and edges: edge colour is the weight's sign, width its size, node fill the activation |
+| `ComputeGraph` | `layoutGraph` places an autograd graph left to right; draws values, "∂" gradients, parameters outlined and the active backward edge as a dashed reverse arrow |
+| `DecisionField` | a low-resolution `<canvas>` classifier field under SVG points; pass `predictBatch(grid)` to classify the whole grid in one call (much faster than per-point `predict`) and bump `version` to repaint |
+| `LossChart` | loss and metric curves, optional log scale, with an empty state |
+| `EmbeddingMap` | 2D labelled scatter on `Plane2D` with equal aspect, neighbours and analogy arrows |
+| `InCode` | collapsible "In code" panel around `CodeBlock` |
+| `SourceChip` | the honest-label chip (rule 8) |
+| `AiPathRibbon` | server-safe "you are here" ribbon of the six sections, for the section indexes; `AI_PATH` lists them |
+| `colors.js` | `AI_COLORS`, plus `sequential`, `diverging` and `inkOn`: the colour-blind-safe scales `Heatmap` and `TokenStrip` share |
+
+Reused unchanged: `Tex`, `Plane2D`, `Scene3D`, `MatrixInput` and `ParamSlider` from `components/math/` (`ParamSlider` gained `lime`, `orange`, `yellow`, `cyan` and `pink` accents), `createRng` from `lib/random.js`, `PredictStep` (it already has an accent for every AI section colour) and `CodeBlock`.
+
+**Models and data.** Built offline by the dev-only scripts in `scripts/ml/` and committed; the build never trains or downloads anything, and there is deliberately no TensorFlow.js, ONNX or transformers.js — every forward pass is our own readable JS. Pages fetch these on mount, so no other page gets heavier.
+
+| Path | What | Size | Licence |
+|---|---|---|---|
+| `public/models/tiny-gpt/` | GPT-2-style decoder: vocab 640 (our byte-level BPE), context 64, d 64, 4 heads of 16, 3 layers, FFN 256 — 195,136 parameters, float16. Trained on 12,000 stories from `lib/ml/stories.js` (validation loss 0.437). `training-log.json` holds loss curves and samples per checkpoint | 390 KB | ours |
+| `public/models/digit-cnn/` | conv 3×3 (8) → pool → conv 3×3 (16) → pool → dense 32 → 10; 26,698 parameters, 99.0% MNIST test accuracy; `samples.json` holds 40 MNIST test digits | 98 KB | MNIST: CC BY-SA 3.0 |
+| `public/data/ml/glove.*` | GloVe 6B 100d: the 8,000 most frequent words plus every word the RAG corpus and demos use (8,674), int8 with one scale per word | 1.1 MB | PDDL |
+| `public/data/ml/rag-*` | a frozen snapshot of the 202 page descriptions, 28 graded queries and 12 demo sentences; `all-MiniLM-L6-v2` embeddings (384d, int8) and `ms-marco-MiniLM-L-6-v2` rerank scores | 200 KB | ours; models Apache-2.0 |
+
+Each folder has a README with its provenance and licence. To rebuild (PyTorch and sentence-transformers, from local caches):
+
+```bash
+node scripts/ml/export-corpus.mjs          # story corpus + BPE tokenizer
+python scripts/ml/train_tiny_gpt.py        # tiny GPT + parity fixture
+python scripts/ml/train_digit_cnn.py       # digit CNN + parity fixture
+node scripts/ml/export-rag-corpus.mjs      # freeze the RAG corpus
+python scripts/ml/build_embeddings.py      # GloVe subset + MiniLM embeddings
+```
+
+**Retraining changes numbers that pages quote** — Self-Attention's 0.98 on "Mia", Head 4's 63% over 440 pronouns, the misconception card's 0.28–0.54. Re-measure and update those pages in the same change. `scripts/ml/fixtures/` holds reference logits computed from the float16-rounded weights; the JS forward passes must match them (the tiny GPT does to 5e-7).
+
+**Rules every AI page follows** — the Math rules apply too: `page.js` exports only its default component; `generateSteps`, `predictFor` and presets stay module-level constants above `const quizQuestions`, which is where tests slice the pure code; quiz questions, step explanations and index cards use plain Unicode maths (√, Σ, ×, ≤), never LaTeX; index cards carry `formula` and `prereq` in place of time and space. Beyond those:
+
+- **Step generation over a loaded model is a pure function of it**: `useMemo(() => (model ? generateSteps(model, preset) : []), [model, preset])`. Never fetch inside `generateSteps`.
+- **Train live only when it is the point.** `useTrainer` keeps a frame under budget; measure the cost per step (about 7 ms for the backprop page's XOR net in dev) rather than wall-clock rate — a hidden browser pane throttles `requestAnimationFrame`.
+- **Claims about a model are measured over many inputs** (`generateStories`), not read off one example. The scripts that produced a page's numbers live beside its tests.
+- **Speed sliders keep the site convention**: `value={speed}`, higher means slower.
+
+**Predict prompts on model pages — the label leak.** A real model's behaviour is often predictable without reading the step, so check value and label strategies as well as fixed buttons. Self-Attention first asked "which token gets the most weight?": the button rotated perfectly, yet "always pick the name" scored 84% on generated stories, because Head 4 is a name-finding head. It now asks how much weight the top score takes, in four fixed buckets. That is decided only by the score gaps on screen (e^gap), is skipped within 0.04 of a bucket edge, and lands within ten points of chance on the shipped presets (best fixed answer 35.7%). Backprop's prompt picks among four candidate products, with distractors ordered so that every value strategy ("most negative", "largest magnitude", …) stays within ten points of chance.
+
+**Testing.** Suites live in `%TEMP%\dsaverse-ai-tests\<section>\` and run as `node <test> "$(pwd)"` from the repo root. Page suites slice the pure code from `page.js`, inject `lib/ml` imports and stub the Lucide icons the slice references. Ground truth is always independent of the page's helpers: autograd and the MLP against finite differences; the tiny GPT and digit CNN against the PyTorch fixtures; attention recomputed in float64 from the layer's Q/K/V; PCA against reconstruction `Σλvvᵀ`, `Sv = λv`, trace and a closed-form 2×2; IVF with `nprobe = nlist` equal to brute force; HNSW recall@10 ≥ 0.95. Current counts: engine 30,161, tiny GPT parity 30,177, digit CNN 7,953, PCA 54,077, Backpropagation page 168,001, Self-Attention page 166,284 — all passing.
+
+**Parallel sessions.** Each section pair is built in its own session in this checkout, previewing on its own port and `NEXT_DIST_DIR` (`ai-learning-dev` :3031 `.next-ai-a`, `ai-transformers-dev` :3032 `.next-ai-b`, `ai-language-dev` :3033 `.next-ai-c`; foundations :3034 `.next-ai0`), defined in the local-only `.claude/launch.json`. Sessions do not commit; pages land at integration, three commits each.
 
 ### Navbar — Adding a New Section
 
