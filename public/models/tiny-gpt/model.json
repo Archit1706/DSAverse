@@ -1,0 +1,411 @@
+{
+ "config": {
+  "vocab": 640,
+  "ctx": 64,
+  "d": 64,
+  "heads": 4,
+  "layers": 3,
+  "ffn": 256
+ },
+ "dtype": "float16",
+ "tensors": [
+  {
+   "name": "wte",
+   "shape": [
+    640,
+    64
+   ],
+   "offset": 0
+  },
+  {
+   "name": "wpe",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 40960
+  },
+  {
+   "name": "h0.ln1_g",
+   "shape": [
+    64
+   ],
+   "offset": 45056
+  },
+  {
+   "name": "h0.ln1_b",
+   "shape": [
+    64
+   ],
+   "offset": 45120
+  },
+  {
+   "name": "h0.wq",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 45184
+  },
+  {
+   "name": "h0.bq",
+   "shape": [
+    64
+   ],
+   "offset": 49280
+  },
+  {
+   "name": "h0.wk",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 49344
+  },
+  {
+   "name": "h0.bk",
+   "shape": [
+    64
+   ],
+   "offset": 53440
+  },
+  {
+   "name": "h0.wv",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 53504
+  },
+  {
+   "name": "h0.bv",
+   "shape": [
+    64
+   ],
+   "offset": 57600
+  },
+  {
+   "name": "h0.wo",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 57664
+  },
+  {
+   "name": "h0.bo",
+   "shape": [
+    64
+   ],
+   "offset": 61760
+  },
+  {
+   "name": "h0.ln2_g",
+   "shape": [
+    64
+   ],
+   "offset": 61824
+  },
+  {
+   "name": "h0.ln2_b",
+   "shape": [
+    64
+   ],
+   "offset": 61888
+  },
+  {
+   "name": "h0.w1",
+   "shape": [
+    64,
+    256
+   ],
+   "offset": 61952
+  },
+  {
+   "name": "h0.b1",
+   "shape": [
+    256
+   ],
+   "offset": 78336
+  },
+  {
+   "name": "h0.w2",
+   "shape": [
+    256,
+    64
+   ],
+   "offset": 78592
+  },
+  {
+   "name": "h0.b2",
+   "shape": [
+    64
+   ],
+   "offset": 94976
+  },
+  {
+   "name": "h1.ln1_g",
+   "shape": [
+    64
+   ],
+   "offset": 95040
+  },
+  {
+   "name": "h1.ln1_b",
+   "shape": [
+    64
+   ],
+   "offset": 95104
+  },
+  {
+   "name": "h1.wq",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 95168
+  },
+  {
+   "name": "h1.bq",
+   "shape": [
+    64
+   ],
+   "offset": 99264
+  },
+  {
+   "name": "h1.wk",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 99328
+  },
+  {
+   "name": "h1.bk",
+   "shape": [
+    64
+   ],
+   "offset": 103424
+  },
+  {
+   "name": "h1.wv",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 103488
+  },
+  {
+   "name": "h1.bv",
+   "shape": [
+    64
+   ],
+   "offset": 107584
+  },
+  {
+   "name": "h1.wo",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 107648
+  },
+  {
+   "name": "h1.bo",
+   "shape": [
+    64
+   ],
+   "offset": 111744
+  },
+  {
+   "name": "h1.ln2_g",
+   "shape": [
+    64
+   ],
+   "offset": 111808
+  },
+  {
+   "name": "h1.ln2_b",
+   "shape": [
+    64
+   ],
+   "offset": 111872
+  },
+  {
+   "name": "h1.w1",
+   "shape": [
+    64,
+    256
+   ],
+   "offset": 111936
+  },
+  {
+   "name": "h1.b1",
+   "shape": [
+    256
+   ],
+   "offset": 128320
+  },
+  {
+   "name": "h1.w2",
+   "shape": [
+    256,
+    64
+   ],
+   "offset": 128576
+  },
+  {
+   "name": "h1.b2",
+   "shape": [
+    64
+   ],
+   "offset": 144960
+  },
+  {
+   "name": "h2.ln1_g",
+   "shape": [
+    64
+   ],
+   "offset": 145024
+  },
+  {
+   "name": "h2.ln1_b",
+   "shape": [
+    64
+   ],
+   "offset": 145088
+  },
+  {
+   "name": "h2.wq",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 145152
+  },
+  {
+   "name": "h2.bq",
+   "shape": [
+    64
+   ],
+   "offset": 149248
+  },
+  {
+   "name": "h2.wk",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 149312
+  },
+  {
+   "name": "h2.bk",
+   "shape": [
+    64
+   ],
+   "offset": 153408
+  },
+  {
+   "name": "h2.wv",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 153472
+  },
+  {
+   "name": "h2.bv",
+   "shape": [
+    64
+   ],
+   "offset": 157568
+  },
+  {
+   "name": "h2.wo",
+   "shape": [
+    64,
+    64
+   ],
+   "offset": 157632
+  },
+  {
+   "name": "h2.bo",
+   "shape": [
+    64
+   ],
+   "offset": 161728
+  },
+  {
+   "name": "h2.ln2_g",
+   "shape": [
+    64
+   ],
+   "offset": 161792
+  },
+  {
+   "name": "h2.ln2_b",
+   "shape": [
+    64
+   ],
+   "offset": 161856
+  },
+  {
+   "name": "h2.w1",
+   "shape": [
+    64,
+    256
+   ],
+   "offset": 161920
+  },
+  {
+   "name": "h2.b1",
+   "shape": [
+    256
+   ],
+   "offset": 178304
+  },
+  {
+   "name": "h2.w2",
+   "shape": [
+    256,
+    64
+   ],
+   "offset": 178560
+  },
+  {
+   "name": "h2.b2",
+   "shape": [
+    64
+   ],
+   "offset": 194944
+  },
+  {
+   "name": "lnf_g",
+   "shape": [
+    64
+   ],
+   "offset": 195008
+  },
+  {
+   "name": "lnf_b",
+   "shape": [
+    64
+   ],
+   "offset": 195072
+  }
+ ],
+ "params": 195136,
+ "training": {
+  "steps": 6000,
+  "batch": 32,
+  "context": 64,
+  "peakLr": 0.003,
+  "seed": 1706,
+  "trainTokens": 702005,
+  "valTokens": 36948,
+  "finalValLoss": 0.437,
+  "finalPerplexity": 1.548,
+  "seconds": 401
+ },
+ "corpus": "Stories from the seeded grammar in lib/ml/stories.js"
+}
