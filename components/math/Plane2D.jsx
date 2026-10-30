@@ -25,6 +25,16 @@ export const MATH_COLORS = {
 
 const PlaneContext = createContext(null);
 
+/* Every coordinate that reaches an SVG attribute goes through `px`, which keeps
+   0.01 of a screen unit — far below a pixel. Math.sin, Math.log10 and
+   Math.pow can differ in their last bit between Node and the browser, and a
+   raw float printed into an attribute then differs between the server render
+   and the first client render, which React reports as a hydration mismatch. */
+const px = (v) => {
+    const r = Math.round(v * 100) / 100;
+    return Object.is(r, -0) ? 0 : r;
+};
+
 /** The transform for primitives drawn inside a <Plane2D>. */
 export function usePlane() {
     const ctx = useContext(PlaneContext);
@@ -59,10 +69,10 @@ export default function Plane2D({
     const [x0, x1] = xRange;
     const [y0, y1] = yRange;
     const scale = width / (x1 - x0);          // screen units per world unit, both axes
-    const height = (y1 - y0) * scale;
+    const height = px((y1 - y0) * scale);
 
     const value = useMemo(() => {
-        const toScreen = ([x, y]) => [(x - x0) * scale, (y1 - y) * scale];
+        const toScreen = ([x, y]) => [px((x - x0) * scale), px((y1 - y) * scale)];
         const toWorld = ([px, py]) => [x0 + px / scale, y1 - py / scale];
         const clientToWorld = (clientX, clientY) => {
             const svg = svgRef.current;
@@ -201,11 +211,11 @@ export function Point({ at, color = MATH_COLORS.a, r = 5, label, labelOffset = [
     return (
         <g>
             <circle cx={sx} cy={sy} r={r} fill={color} stroke="#020617" strokeWidth={1.5} />
-            {label && <text x={sx + labelOffset[0]} y={sy + labelOffset[1]} fontSize={13} fill={color} fontWeight={600}>{label}</text>}
+            {label && <text x={px(sx + labelOffset[0])} y={px(sy + labelOffset[1])} fontSize={13} fill={color} fontWeight={600}>{label}</text>}
             {interactive && (
                 <circle cx={sx} cy={sy} r={Math.max(r * 2.6, 14)} fill="transparent"
                     style={{ cursor: 'grab' }} tabIndex={0} role="button"
-                    aria-label={ariaLabel ?? `Drag point ${label ?? ''} at (${at[0]}, ${at[1]})`}
+                    aria-label={ariaLabel ?? `Drag point ${label ?? ''} at (${px(at[0])}, ${px(at[1])})`}
                     className="focus:outline-none" {...handlers}>
                 </circle>
             )}
@@ -243,14 +253,14 @@ export function Vector({ from = [0, 0], to, color = MATH_COLORS.a, width = 3, la
     const off = labelOffset ?? [ux * 12 + (uy !== 0 ? 6 : 0), uy * 12 - 6];
     return (
         <g opacity={opacity}>
-            <line x1={x1} y1={y1} x2={bx} y2={by} stroke={color} strokeWidth={width}
+            <line x1={x1} y1={y1} x2={px(bx)} y2={px(by)} stroke={color} strokeWidth={width}
                 strokeDasharray={dashed ? '6 5' : undefined} strokeLinecap="round" />
-            <polygon points={`${x2},${y2} ${bx + nx},${by + ny} ${bx - nx},${by - ny}`} fill={color} />
-            {label && <text x={x2 + off[0]} y={y2 + off[1]} fontSize={14} fontWeight={700} fill={color}>{label}</text>}
+            <polygon points={`${x2},${y2} ${px(bx + nx)},${px(by + ny)} ${px(bx - nx)},${px(by - ny)}`} fill={color} />
+            {label && <text x={px(x2 + off[0])} y={px(y2 + off[1])} fontSize={14} fontWeight={700} fill={color}>{label}</text>}
             {onDrag && (
                 <circle cx={x2} cy={y2} r={16} fill="transparent" style={{ cursor: 'grab' }}
                     tabIndex={0} role="button"
-                    aria-label={ariaLabel ?? `Drag the tip of ${label ?? 'the vector'}, now at (${to[0]}, ${to[1]})`}
+                    aria-label={ariaLabel ?? `Drag the tip of ${label ?? 'the vector'}, now at (${px(to[0])}, ${px(to[1])})`}
                     className="focus:outline-none" {...handlers} />
             )}
         </g>
@@ -321,7 +331,7 @@ export function ShadeUnder({ f, from, to, baseline = 0, color = MATH_COLORS.area
 export function Label({ at, children, color = MATH_COLORS.text, size = 13, anchor = 'start', dx = 0, dy = 0, weight = 500 }) {
     const { toScreen } = usePlane();
     const [sx, sy] = toScreen(at);
-    return <text x={sx + dx} y={sy + dy} fontSize={size} fill={color} textAnchor={anchor} fontWeight={weight}>{children}</text>;
+    return <text x={px(sx + dx)} y={px(sy + dy)} fontSize={size} fill={color} textAnchor={anchor} fontWeight={weight}>{children}</text>;
 }
 
 /**
