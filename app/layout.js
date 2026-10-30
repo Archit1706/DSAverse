@@ -1,17 +1,25 @@
-import { Outfit, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const outfit = Outfit({
+/* Self-hosted rather than loaded through next/font/google. That downloads the
+   fonts from Google at build time, and Google Fonts intermittently answers
+   with extensionless /l/font?kit= URLs that crash next/font's loader
+   (vercel/next.js#99114) — which failed production builds on Vercel.
+
+   The files are Google's own variable fonts from github.com/google/fonts
+   (SIL Open Font License, see app/fonts/OFL-*.txt), cut down to the Unicode
+   ranges Google Fonts serves for them, so every page renders as it did. */
+const outfit = localFont({
+  src: "./fonts/Outfit-Variable.woff2",
   variable: "--font-outfit",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  weight: "100 900",
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrainsMono = localFont({
+  src: "./fonts/JetBrainsMono-Variable.woff2",
   variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "100 800",
   display: "swap",
 });
 
