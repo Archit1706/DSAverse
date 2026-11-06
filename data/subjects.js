@@ -60,6 +60,18 @@ export const SUBJECTS = [
             'integral-calculus',
         ],
     },
+    {
+        id: 'ai-ml',
+        name: 'AI & Machine Learning',
+        shortName: 'AI & ML',
+        tagline: 'From a fitted line to neural networks and transformers, with every number computed by a model running in your browser.',
+        sections: [
+            'machine-learning',
+            'neural-networks',
+            'deep-learning-architectures',
+            'transformers',
+        ],
+    },
 ];
 
 /** The subject id a section directory belongs to, or null if it is unlisted. */
