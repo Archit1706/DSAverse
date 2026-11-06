@@ -10,6 +10,7 @@ import {
     Cpu, Type, GitMerge, TreePine, Scissors, Share2, Monitor, Table,
     MonitorCog, Network, DatabaseZap,
     Combine, Dice5, MoveUpRight, Grid3x3, TrendingUp, ChartArea,
+    BrainCircuit, Focus,
 } from 'lucide-react';
 import Link from 'next/link';
 import CommandPalette from './CommandPalette';
@@ -70,6 +71,10 @@ const CAT_META = {
     'Linear Algebra':                     { icon: <Grid3x3       className="w-3.5 h-3.5" />, grad: 'from-violet-500  to-indigo-600'   },
     'Differential Calculus':              { icon: <TrendingUp    className="w-3.5 h-3.5" />, grad: 'from-emerald-500 to-green-600'    },
     'Integral Calculus':                  { icon: <ChartArea     className="w-3.5 h-3.5" />, grad: 'from-teal-500    to-cyan-600'     },
+    'Machine Learning':                   { icon: <BrainCircuit  className="w-3.5 h-3.5" />, grad: 'from-lime-500    to-green-600'    },
+    'Neural Networks':                    { icon: <Network       className="w-3.5 h-3.5" />, grad: 'from-orange-500  to-red-600'      },
+    'Deep Learning Architectures':        { icon: <Layers        className="w-3.5 h-3.5" />, grad: 'from-yellow-500  to-amber-600'    },
+    'Transformers':                       { icon: <Focus         className="w-3.5 h-3.5" />, grad: 'from-indigo-500  to-violet-600'   },
 };
 
 /* ── Animated brand name ─────────────────────────────── */
@@ -189,6 +194,8 @@ const PAGES_EXIST = new Set([
     'Operating Systems', 'Computer Networks', 'Database Systems',
     'Combinatorics', 'Probability and Statistics', 'Vectors',
     'Linear Algebra', 'Differential Calculus', 'Integral Calculus',
+    'Machine Learning', 'Neural Networks', 'Deep Learning Architectures',
+    'Transformers',
 ]);
 const VALID_CATS = algorithmCategories.filter(c => PAGES_EXIST.has(c.name));
 
@@ -203,6 +210,10 @@ const SLUG_OVERRIDES = {
     // '/' and '.' survive toSlug too, and would put path separators in the URL.
     'OSI and TCP/IP Layers': 'osi-and-tcp-ip-layers',
     'HTTP/1.1 vs HTTP/2 vs HTTP/3': 'http1-vs-http2-vs-http3',
+    // Commas and '?' survive toSlug as well.
+    'What Is Machine Learning?': 'what-is-machine-learning',
+    'Train, Validation and Test': 'train-validation-and-test',
+    'Query, Key and Value': 'query-key-and-value',
 };
 
 const toSlug = (name) => SLUG_OVERRIDES[name] ?? name.toLowerCase().replace(/['’]/g, '').replace(/[:\s]+/g, '-').replace(/[()]/g, '');
