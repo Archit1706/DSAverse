@@ -22,7 +22,7 @@
 
 ## 🎯 About DSAverse
 
-DSAverse is an **interactive web platform** that brings computer science to life through step-by-step visualizations. It started with Data Structures and Algorithms and now also covers the **CS core** every software engineer needs — operating systems, computer networks and databases — and the **mathematics** underneath it: counting, probability, vectors, linear algebra and calculus. Whether you're a student learning your first sorting algorithm or a developer preparing for technical interviews, DSAverse makes complex concepts intuitive and engaging.
+DSAverse is an **interactive web platform** that brings computer science to life through step-by-step visualizations. It started with Data Structures and Algorithms and now also covers the **CS core** every software engineer needs — operating systems, computer networks and databases — the **mathematics** underneath it: counting, probability, vectors, linear algebra and calculus, and **AI and machine learning**, from a fitted line to neural networks and transformers, with real models running in your browser. Whether you're a student learning your first sorting algorithm or a developer preparing for technical interviews, DSAverse makes complex concepts intuitive and engaging.
 
 ### 🌟 Why DSAverse?
 
@@ -39,7 +39,7 @@ DSAverse is an **interactive web platform** that brings computer science to life
 
 ### 🔧 Visualizations
 
-**202 interactive pages across 25 sections, in three subjects.**
+**242 interactive pages across 29 sections, in four subjects.**
 
 #### Data Structures & Algorithms — 95 pages
 
@@ -83,6 +83,17 @@ DSAverse is an **interactive web platform** that brings computer science to life
 
 Math pages are built to be manipulated, not just watched: drag a vector or slide a parameter and the numbers and formulas update with it, and 3D ideas get an orbitable scene.
 
+#### AI & Machine Learning — 40 pages
+
+| Section | Pages | Highlights |
+| --- | --- | --- |
+| **Machine Learning** | 11 | Linear and logistic regression, loss functions, overfitting, cross-validation, k-NN, decision trees, k-means, PCA, ROC curves |
+| **Neural Networks** | 11 | The perceptron, activation functions, forward pass, backpropagation, optimizers, vanishing gradients, normalization, a full playground |
+| **Transformers** | 10 | Query, key and value, self-attention, causal masking, multi-head attention, positional encoding and RoPE, a whole tiny GPT |
+| **Deep Learning Architectures** | 8 | Convolution, a CNN reading your handwriting, RNNs, LSTM and GRU, sequence-to-sequence, residual connections, autoencoders |
+
+Every number on an AI page is computed: networks train live in your browser, and the transformer pages run a small GPT with real trained weights (195,136 parameters, trained for this site) one matrix at a time. Each page has a "break it" control, such as dropping the causal mask or the ÷√d, so you can watch what fails and undo it. Language Models and RAG and Vector Search are coming next.
+
 Plus a searchable [**complexity cheatsheet**](https://dsa-verse.vercel.app/cheatsheet) covering time and space bounds for every major data structure and algorithm.
 
 ### 🔬 Under the Hood
@@ -108,8 +119,8 @@ The Operating Systems, Computer Networks and Database Systems sections link to t
 ### 📈 Learning Tools
 
 -   📝 **Step Explanations** - A written explanation for every single step, not just the end result
--   🔮 **Predict the Next Step** - Turn on **Predict** on 88 pages and the animation pauses at each decision so you can guess what happens before it does
--   🧠 **Active Recall Quizzes** - A 3-question quiz on every page — 606 questions in all
+-   🔮 **Predict the Next Step** - Turn on **Predict** on 127 pages and the animation pauses at each decision so you can guess what happens before it does
+-   🧠 **Active Recall Quizzes** - A 3-question quiz on every page — 726 questions in all
 -   🔁 **[Review](https://dsa-verse.vercel.app/review)** - Spaced-repetition practice over every quiz on the site, by subject or by section. Questions come back just before you would forget them. Progress stays in your browser — no account, nothing sent anywhere
 -   ⚖️ **[Compare](https://dsa-verse.vercel.app/compare)** - Put any two or three pages side by side: complexity, difficulty, pattern and approach
 -   🔍 **Search** - Press **⌘K** / **Ctrl+K** anywhere to jump to any page
@@ -202,17 +213,20 @@ DSAverse/
 │   ├── GraphCustomizer.jsx        # Custom graph input modal
 │   ├── BinaryTreeCanvas.jsx       # Shared binary-tree layout
 │   ├── BTreeCanvas.jsx            # Shared B-tree / B+ tree layout
+│   ├── ml/                        # Heatmaps, token strips and network diagrams for the AI pages
 │   └── Hero.jsx, AlgorithmsGrid.jsx, Footer.jsx, ...  # Homepage sections
 ├── data/
-│   ├── subjects.js                # Subjects → sections (DSA, CS Core, Math)
+│   ├── subjects.js                # Subjects → sections (DSA, CS Core, Math, AI & ML)
 │   ├── algorithmCategories.js     # Nav structure: sections → page names
 │   └── quizBank.js, pageIndex.js,
 │       related.js, learningStats.js  # Generated on every build — do not edit by hand
 ├── lib/
+│   ├── ml/                        # Plain-JS ML engine: tensors, autograd, MLPs, RNNs, a tiny GPT
 │   └── progress.js                # Visited pages and the review schedule (localStorage)
 ├── scripts/
+│   ├── ml/                        # Dev-only: trains the models the AI pages load
 │   └── build-learning-data.mjs    # Generates the data files above (runs before every build)
-├── public/                        # Static assets (icons, og-image, manifest)
+├── public/                        # Static assets, plus trained models and word vectors for the AI pages
 ├── AGENTS.md / CLAUDE.md          # Architecture guide for coding agents
 ├── CONTRIBUTING.md                # Contribution guide
 ├── eslint.config.mjs              # ESLint configuration
