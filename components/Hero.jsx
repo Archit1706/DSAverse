@@ -8,7 +8,7 @@ import {
 import { totalPages, totalQuestions, pagesBySection } from '@/data/learningStats';
 
 /* ─── Cycling words ──────────────────────────────────── */
-const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find', 'Networks', 'Databases', 'Probability', 'Linear Algebra', 'Calculus'];
+const WORDS = ['Sorting', 'Searching', 'Recursion', 'Graphs', 'Heaps', 'Dynamic Prog.', 'Backtracking', 'Bit Manip.', 'Strings', 'Trees', 'Divide & Conquer', 'Union-Find', 'Networks', 'Databases', 'Probability', 'Linear Algebra', 'Calculus', 'Neural Networks', 'Transformers'];
 
 /* ─── Quick-nav chips ──────────────────────────── */
 /* Label and href are listed separately on purpose: several labels are
@@ -39,6 +39,10 @@ const QUICK_NAV = [
     { label: 'Linear Algebra', href: '/linear-algebra' },
     { label: 'Derivatives', href: '/differential-calculus' },
     { label: 'Integrals', href: '/integral-calculus' },
+    { label: 'Machine Learning', href: '/machine-learning' },
+    { label: 'Neural Networks', href: '/neural-networks' },
+    { label: 'Deep Learning', href: '/deep-learning-architectures' },
+    { label: 'Transformers', href: '/transformers' },
 ];
 
 function WordCycler() {
