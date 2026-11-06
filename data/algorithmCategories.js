@@ -428,5 +428,81 @@ export const algorithmCategories = [
             "Volumes of Revolution",
             "Numerical Integration"
         ]
+    },
+    {
+        name: "Machine Learning",
+        color: "bg-lime-500",
+        lightColor: "bg-lime-50",
+        borderColor: "border-lime-200",
+        textColor: "text-lime-700",
+        algorithms: [
+            "What Is Machine Learning?",
+            "Linear Regression",
+            "Loss Functions",
+            "Logistic Regression",
+            "Overfitting and Underfitting",
+            "Train, Validation and Test",
+            "k-Nearest Neighbors",
+            "Decision Trees",
+            "k-Means Clustering",
+            "Principal Component Analysis",
+            "Classification Metrics"
+        ]
+    },
+    {
+        name: "Neural Networks",
+        color: "bg-orange-500",
+        lightColor: "bg-orange-50",
+        borderColor: "border-orange-200",
+        textColor: "text-orange-700",
+        algorithms: [
+            "The Perceptron",
+            "Activation Functions",
+            "Forward Pass",
+            "How Networks Bend Space",
+            "Computational Graphs",
+            "Backpropagation",
+            "Optimizers",
+            "Vanishing and Exploding Gradients",
+            "Normalization",
+            "Dropout and Weight Decay",
+            "Neural Network Playground"
+        ]
+    },
+    {
+        name: "Deep Learning Architectures",
+        color: "bg-yellow-500",
+        lightColor: "bg-yellow-50",
+        borderColor: "border-yellow-200",
+        textColor: "text-yellow-700",
+        algorithms: [
+            "Convolution",
+            "Pooling and Feature Maps",
+            "A CNN Reads a Digit",
+            "Recurrent Neural Networks",
+            "LSTM and GRU",
+            "Sequence-to-Sequence",
+            "Residual Connections",
+            "Autoencoders"
+        ]
+    },
+    {
+        name: "Transformers",
+        color: "bg-indigo-500",
+        lightColor: "bg-indigo-50",
+        borderColor: "border-indigo-200",
+        textColor: "text-indigo-700",
+        algorithms: [
+            "Why Attention",
+            "Query, Key and Value",
+            "Self-Attention",
+            "Scaled Dot-Product Attention",
+            "Causal Masking",
+            "Multi-Head Attention",
+            "Positional Encoding",
+            "The Transformer Block",
+            "Encoder-Decoder and Cross-Attention",
+            "Inside a Tiny GPT"
+        ]
     }
 ];
