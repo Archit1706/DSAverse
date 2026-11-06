@@ -48,17 +48,26 @@ const COLUMNS = [
             { href: '/integral-calculus', label: 'Integral Calculus' },
         ],
     },
+    {
+        title: 'AI & ML',
+        links: [
+            { href: '/machine-learning', label: 'Machine Learning' },
+            { href: '/neural-networks', label: 'Neural Networks' },
+            { href: '/deep-learning-architectures', label: 'Deep Learning Architectures' },
+            { href: '/transformers', label: 'Transformers' },
+        ],
+    },
 ];
 
 const Footer = () => {
     return (
         <footer className="bg-gray-900 text-white py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
                     <div>
                         <h3 className="text-xl font-bold mb-4 text-white">DSAverse</h3>
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            Making data structures, algorithms, core computer science and mathematics accessible through interactive visualizations.
+                            Making data structures, algorithms, core computer science, mathematics and AI accessible through interactive visualizations.
                         </p>
                     </div>
 
