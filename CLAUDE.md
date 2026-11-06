@@ -94,6 +94,7 @@ export const SUBJECTS = [
     { id: 'dsa', name: 'Data Structures & Algorithms', shortName: 'DSA', tagline: '…', sections: ['basics', 'recursion', …, 'indexing'] },
     { id: 'cs-core', name: 'CS Core', shortName: 'CS Core', tagline: '…', sections: ['operating-systems', 'computer-networks', 'database-systems', 'under-the-hood'] },
     { id: 'math', name: 'Mathematics', shortName: 'Math', tagline: '…', sections: ['combinatorics', 'probability-and-statistics', 'vectors', 'linear-algebra', 'differential-calculus', 'integral-calculus'] },
+    { id: 'ai-ml', name: 'AI & Machine Learning', shortName: 'AI & ML', tagline: '…', sections: ['machine-learning', 'neural-networks', 'deep-learning-architectures', 'transformers'] },
 ];
 export function subjectOfSection(sectionSlug) { … }   // 'sorting' → 'dsa'
 export function subjectOfPath(pathname) { … }         // '/sorting/bubble-sort' → 'dsa'
@@ -179,6 +180,12 @@ Section index pages (`app/[section]/page.js`) are **server components** (no `"us
 | Linear Algebra | `from-violet-500 to-indigo-600` | `violet-400` / `violet-500` |
 | Differential Calculus | `from-emerald-500 to-green-600` | `emerald-400` / `emerald-500` |
 | Integral Calculus | `from-teal-500 to-cyan-600` | `teal-400` / `teal-500` |
+| Machine Learning | `from-lime-500 to-green-600` | `lime-400` / `lime-500` |
+| Neural Networks | `from-orange-500 to-red-600` | `orange-400` / `orange-500` |
+| Deep Learning Architectures | `from-yellow-500 to-amber-600` | `yellow-400` / `yellow-500` |
+| Transformers | `from-indigo-500 to-violet-600` | `indigo-400` / `indigo-500` |
+| Language Models *(in progress)* | `from-cyan-500 to-sky-600` | `cyan-400` / `cyan-500` |
+| RAG and Vector Search *(in progress)* | `from-pink-500 to-fuchsia-600` | `pink-400` / `pink-500` |
 
 > **Note:** `Indexing` covers all 13 topics of the original curriculum, in two states: **9 built in the section**, and **4 cross-linked** to where they already live (Binary and Linear Search → `/searching/…`, Binary Search Trees / AVL Trees / Trie → `/trees/…`). Cross-linked cards carry an `href` that overrides the default `/indexing/${slug}` plus a `coveredIn` label; the card footer reads "Open in Trees →" rather than "Start Visualization →".
 >
@@ -461,7 +468,7 @@ The **Math** subject (`math` in `data/subjects.js`) has six sections, 51 pages i
 
 ### AI Pattern (real models, live training, honest numbers)
 
-The **AI & Machine Learning** subject is being built: six sections in this learning order — Machine Learning, Neural Networks, Deep Learning Architectures, Transformers, Language Models, RAG and Vector Search — 62 pages in all. Until it is integrated it is not in `data/subjects.js`, the Navbar, the sitemap or the homepage, so its pages are reached by URL on a dev server. The bar every page holds is that **every number on screen is computed** — by a network that really trains in the browser, a transformer with real trained weights, or real word vectors — at sizes small enough to read all of it. Boxes-and-arrows diagrams with invented numbers are what these pages exist to replace.
+The **AI & Machine Learning** subject (`ai-ml`) has six sections in this learning order — Machine Learning, Neural Networks, Deep Learning Architectures, Transformers, Language Models, RAG and Vector Search — 62 pages when complete. The first four are live (40 pages: 11, 11, 8 and 10) and registered everywhere a section is. Language Models and RAG and Vector Search are still being built: they are not in `data/subjects.js`, the Navbar or the sitemap yet, and `AI_PATH` in `components/ml/AiPathRibbon.jsx` marks them `available: false`, so the ribbon shows them as "soon" labels rather than links that 404. Flip that flag when a section ships. The bar every page holds is that **every number on screen is computed** — by a network that really trains in the browser, a transformer with real trained weights, or real word vectors — at sizes small enough to read all of it. Boxes-and-arrows diagrams with invented numbers are what these pages exist to replace.
 
 **Reference implementations** — read both before building an AI page:
 
@@ -496,6 +503,13 @@ The **AI & Machine Learning** subject is being built: six sections in this learn
 | `embeddings.js` | `loadWordVectors()` (GloVe) and `loadRagData()` (corpus, MiniLM vectors, cross-encoder scores) |
 | `vectorIndex.js` | `bruteForce`, `kmeans`, IVF (`buildIVF`/`searchIVF`), HNSW (`buildHNSW`/`searchHNSW`), PQ (`trainPQ`, `encodePQ`, `adcTable`, `searchPQ`) and `recallAtK`. Brute force and HNSW take `{ trace }` so pages replay the real search |
 | `useLoaded.js` | `useLoaded(loader)` → `{ data, error, loading, retry }`. Runs after mount, so the server and the first client render are both the empty state |
+| `polyfit.js` | Householder-QR polynomial least squares with optional ridge: `fitPolynomial`, `evalPoly`, `polyMse`, `lstsq` |
+| `recurrent.js` | plain RNN, LSTM and GRU with hand-written backprop through time: `createRecurrent`, `runSequence` (optional gate `clamp` for break-it controls), `backward` (also returns ∂L/∂x per step), `batchLossAndGrads`, `clipGrads`, `createAdam`, `unpackRecurrent` |
+| `seq2seq.js` | GRU encoder–decoder with optional dot-product attention: `createSeq2Seq`, `encode`, `forward`, `translate`, `unpackSeq2Seq`, `loadTranslateModels` |
+| `sequenceTasks.js` | the hold-a-number task (`holdExample`, `holdAccuracy`) and the toy translation task (`translateExample`, `SRC_WORDS`, `TGT_WORDS`), plus `loadRecurrentFile` for `public/models/recurrent/` |
+| `gptVariants.js` | the tiny GPT's forward pass with switches for deliberate breaks — `forwardWith(model, ids, { mask, positions, scaled, residual, headsOff, layers })`, defaults identical to `tinyGpt.forward` — plus `nextTokenScore`, `attend`, `sinusoidal` and `rope` |
+| `digitSamples.js` | `loadDigitCnnWithSamples()` (the CNN and its 40 MNIST samples, memoised together) and `channels()` |
+| `predictChoices.js` | numeric predict-prompt options: `rankedChoices` (four ascending options with the answer at a chosen rank), `sortedChoices`, and `slotOf`, a hash that picks that rank per preset so no fixed button wins |
 
 The loaders memoise their promise (two components share one download) and drop it on failure, so `retry` fetches again only after an error.
 
@@ -514,7 +528,10 @@ The loaders memoise their promise (two components share one download) and drop i
 | `EmbeddingMap` | 2D labelled scatter on `Plane2D` with equal aspect, neighbours and analogy arrows |
 | `InCode` | collapsible "In code" panel around `CodeBlock` |
 | `SourceChip` | the honest-label chip (rule 8) |
-| `AiPathRibbon` | server-safe "you are here" ribbon of the six sections, for the section indexes; `AI_PATH` lists them |
+| `AiPathRibbon` | server-safe "you are here" ribbon of the six sections, for the section indexes; `AI_PATH` lists them, and `available: false` renders a section as a "soon" label instead of a link |
+| `TourKit` | the guided-tour chrome Deep Learning Architectures and Transformers share: `useStepPlayback`, `TourPlayer` (act chips, progress bar, standard controls), `ExplanationBox`, `ModeTabs`, `Segmented`, `Misconception`, `BreakNote`, `LoadingCard`, `LoadError`, `FormulaPanel`, `Card`; `toneOf` picks the section colour |
+| `TrainingCurve` | wraps `LossChart` and pads a near-flat range, which otherwise sends `LossChart`'s tick calculation into an endless loop. Use it for any curve that can flatten out |
+| `FeatureMap` | square-cell feature map with overlays, values and `onCell`, scaled to its container (the CNN pages) |
 | `colors.js` | `AI_COLORS`, plus `sequential`, `diverging` and `inkOn`: the colour-blind-safe scales `Heatmap` and `TokenStrip` share |
 
 Reused unchanged: `Tex`, `Plane2D`, `Scene3D`, `MatrixInput` and `ParamSlider` from `components/math/` (`ParamSlider` gained `lime`, `orange`, `yellow`, `cyan` and `pink` accents), `createRng` from `lib/random.js`, `PredictStep` (it already has an accent for every AI section colour) and `CodeBlock`.
@@ -527,6 +544,7 @@ Reused unchanged: `Tex`, `Plane2D`, `Scene3D`, `MatrixInput` and `ParamSlider` f
 | `public/models/digit-cnn/` | conv 3×3 (8) → pool → conv 3×3 (16) → pool → dense 32 → 10; 26,698 parameters, 99.0% MNIST test accuracy; `samples.json` holds 40 MNIST test digits | 98 KB | MNIST: CC BY-SA 3.0 |
 | `public/data/ml/glove.*` | GloVe 6B 100d: the 8,000 most frequent words plus every word the RAG corpus and demos use (8,674), int8 with one scale per word | 1.1 MB | PDDL |
 | `public/data/ml/rag-*` | a frozen snapshot of the 202 page descriptions, 28 graded queries and 12 demo sentences; `all-MiniLM-L6-v2` embeddings (384d, int8) and `ms-marco-MiniLM-L-6-v2` rerank scores | 200 KB | ours; models Apache-2.0 |
+| `public/models/recurrent/` | `hold.json`: an RNN, LSTM and GRU (4 hidden units; 33, 117 and 89 parameters) trained on the hold-a-number task, with a four-seed study. `translate.json`: two GRU encoder–decoders (9,744 and 10,256 parameters), without and with attention, on a toy translation task. Plain JSON, trained in Node by the browser's own engine | 190 KB | ours |
 
 Each folder has a README with its provenance and licence. To rebuild (PyTorch and sentence-transformers, from local caches):
 
@@ -536,6 +554,8 @@ python scripts/ml/train_tiny_gpt.py        # tiny GPT + parity fixture
 python scripts/ml/train_digit_cnn.py       # digit CNN + parity fixture
 node scripts/ml/export-rag-corpus.mjs      # freeze the RAG corpus
 python scripts/ml/build_embeddings.py      # GloVe subset + MiniLM embeddings
+node scripts/ml/train_recurrent.mjs hold   # RNN / LSTM / GRU (reproduces byte for byte)
+node scripts/ml/train_recurrent.mjs translate   # seq2seq without and with attention
 ```
 
 **Retraining changes numbers that pages quote** — Self-Attention's 0.98 on "Mia", Head 4's 63% over 440 pronouns, the misconception card's 0.28–0.54. Re-measure and update those pages in the same change. `scripts/ml/fixtures/` holds reference logits computed from the float16-rounded weights; the JS forward passes must match them (the tiny GPT does to 5e-7).
@@ -549,9 +569,11 @@ python scripts/ml/build_embeddings.py      # GloVe subset + MiniLM embeddings
 
 **Predict prompts on model pages — the label leak.** A real model's behaviour is often predictable without reading the step, so check value and label strategies as well as fixed buttons. Self-Attention first asked "which token gets the most weight?": the button rotated perfectly, yet "always pick the name" scored 84% on generated stories, because Head 4 is a name-finding head. It now asks how much weight the top score takes, in four fixed buckets. That is decided only by the score gaps on screen (e^gap), is skipped within 0.04 of a bucket edge, and lands within ten points of chance on the shipped presets (best fixed answer 35.7%). Backprop's prompt picks among four candidate products, with distractors ordered so that every value strategy ("most negative", "largest magnitude", …) stays within ten points of chance.
 
-**Testing.** Suites live in `%TEMP%\dsaverse-ai-tests\<section>\` and run as `node <test> "$(pwd)"` from the repo root. Page suites slice the pure code from `page.js`, inject `lib/ml` imports and stub the Lucide icons the slice references. Ground truth is always independent of the page's helpers: autograd and the MLP against finite differences; the tiny GPT and digit CNN against the PyTorch fixtures; attention recomputed in float64 from the layer's Q/K/V; PCA against reconstruction `Σλvvᵀ`, `Sv = λv`, trace and a closed-form 2×2; IVF with `nprobe = nlist` equal to brute force; HNSW recall@10 ≥ 0.95. Current counts: engine 30,161, tiny GPT parity 30,177, digit CNN 7,953, PCA 54,077, Backpropagation page 168,001, Self-Attention page 166,284 — all passing.
+**Testing.** Suites live in `%TEMP%\dsaverse-ai-tests\<section>\` and run as `node <test> "$(pwd)"` from the repo root. Page suites slice the pure code from `page.js`, inject `lib/ml` imports and stub the Lucide icons the slice references. Ground truth is always independent of the page's helpers: autograd and the MLP against finite differences; the tiny GPT and digit CNN against the PyTorch fixtures; attention recomputed in float64 from the layer's Q/K/V; PCA against reconstruction `Σλvvᵀ`, `Sv = λv`, trace and a closed-form 2×2; IVF with `nprobe = nlist` equal to brute force; HNSW recall@10 ≥ 0.95. Every page in the four live sections has its own suite, plus engine suites for `recurrent.js`, `seq2seq.js` and `gptVariants.js`, and all pass. They range from about 170 checks (the shape prompts) to over a million (The Perceptron). Foundation counts: engine 30,161, tiny GPT parity 30,177, digit CNN 7,953, PCA 54,077.
 
-**Parallel sessions.** Each section pair is built in its own session in this checkout, previewing on its own port and `NEXT_DIST_DIR` (`ai-learning-dev` :3031 `.next-ai-a`, `ai-transformers-dev` :3032 `.next-ai-b`, `ai-language-dev` :3033 `.next-ai-c`; foundations :3034 `.next-ai0`), defined in the local-only `.claude/launch.json`. Sessions do not commit; pages land at integration, three commits each.
+**Known shared-file follow-ups.** `LossChart` has three problems: `niceTicks` loops forever on a near-flat range (hence `TrainingCurve`); the legend prints `toFixed(4)`, so small or integer series read "0.0000"; and a "0.00001" tick label is clipped by the 40-px left margin. `TourKit` and the Language Models session's `GuidedPlayer` share an API, so they can be merged by joining their tone tables. The fourth preset on Scaled Dot-Product Attention and Causal Masking ("After lunch, Leo played with a big dog. He") falls outside the story grammar: "with" splits into byte tokens and its loss is 10.9. Swap it for "Last week, Lily lost her blue hat. She was sad. She" and rerun both suites.
+
+**Parallel sessions.** Each section pair is built in its own session in this checkout, previewing on its own port and `NEXT_DIST_DIR` (`ai-learning-dev` :3031 `.next-ai-a`, `ai-transformers-dev` :3032 `.next-ai-b`, `ai-language-dev` :3033 `.next-ai-c`; foundations :3034 `.next-ai0`), defined in the local-only `.claude/launch.json`. Sessions do not commit; pages land at integration, three commits each. Machine Learning, Neural Networks, Deep Learning Architectures and Transformers have landed; Language Models and RAG and Vector Search are still in their session.
 
 ### Navbar — Adding a New Section
 
@@ -566,6 +588,8 @@ const PAGES_EXIST = new Set([
     'Operating Systems', 'Computer Networks', 'Database Systems',
     'Combinatorics', 'Probability and Statistics', 'Vectors',
     'Linear Algebra', 'Differential Calculus', 'Integral Calculus',
+    'Machine Learning', 'Neural Networks', 'Deep Learning Architectures',
+    'Transformers',
 ]);
 ```
 Add the new category name here when its section page is ready. The `toSlug()` helper converts algorithm names to URL slugs: lowercased, apostrophes stripped, spaces/colons → hyphens, parentheses removed — so `Dijkstra's Shortest Path` → `dijkstras-shortest-path` and `Subsets (Power Set)` → `subsets-power-set`. `CAT_META` in the same file maps each category name to a Lucide icon and a Tailwind gradient for the mega-menu chip — add an entry there too. Then add the section's directory name to its subject in `data/subjects.js`, which decides which mega-menu tab it appears under.
@@ -620,9 +644,9 @@ It emits four files into `data/`, each headed with a do-not-edit warning:
 
 | File | Size | Contents |
 |---|---|---|
-| `quizBank.js` | ~390 KB | All 606 quiz questions, tagged with route, section and subject |
-| `pageIndex.js` | ~94 KB | Every page's name, description, difficulty, pattern, time and space (or formula and prereq) |
-| `related.js` | ~26 KB | Up to 4 sibling pages per route |
+| `quizBank.js` | ~475 KB | All 726 quiz questions, tagged with route, section and subject |
+| `pageIndex.js` | ~117 KB | Every page's name, description, difficulty, pattern, time and space (or formula and prereq) |
+| `related.js` | ~32 KB | Up to 4 sibling pages per route |
 | `learningStats.js` | <1 KB | `totalQuestions`, `totalPages`, `pagesBySection`, `pagesBySubject` |
 
 **Never edit these by hand** — regenerate with `node scripts/build-learning-data.mjs`.
@@ -659,9 +683,9 @@ export default function Layout({ children }) {
 
 The `route` prop is always the layout's own `alternates.canonical`. It also calls `markVisited(route)`, which is what the review dashboard reads.
 
-**`components/CommandPalette.jsx`** — ⌘K / Ctrl+K search over every page, mounted in the Navbar. It imports `pageIndex` dynamically on first open, because the Navbar is on every route and the index is ~94 KB.
+**`components/CommandPalette.jsx`** — ⌘K / Ctrl+K search over every page, mounted in the Navbar. It imports `pageIndex` dynamically on first open, because the Navbar is on every route and the index is ~117 KB.
 
-**`components/PredictStep.jsx`** — optional "what happens next?" prompts, on 88 pages: the eight below, all ten in Operating Systems and Database Systems, nine of the ten in Computer Networks (OSI and TCP/IP Layers has none — every step there is forced), and all 51 Math pages. The original eight:
+**`components/PredictStep.jsx`** — optional "what happens next?" prompts, on 127 pages: the eight below, all ten in Operating Systems and Database Systems, nine of the ten in Computer Networks (OSI and TCP/IP Layers has none — every step there is forced), all 51 Math pages, and 39 of the 40 live AI pages. Sequence-to-Sequence has none, because every prompt design tried there leaked its answer, as its `page.js` explains. The original eight:
 
 | Page | The question | Decided by |
 |---|---|---|
@@ -704,7 +728,14 @@ Pages deliberately left without prompts, because the next step is not determined
 
 ### Build Status
 
-232 routes in total: 202 visualizer and explainer pages, 25 section indexes, the homepage, and `/cheatsheet`, `/contact`, `/review` and `/compare`. Three subjects: DSA (95 pages in 15 sections), CS Core (56 pages in 4 — Operating Systems, Computer Networks and Database Systems with 10 each, Under the Hood with 26) and Math (51 pages in 6 — Combinatorics 8, Probability and Statistics 9, Vectors 7, Linear Algebra 10, Differential Calculus 9, Integral Calculus 8). Every one of the 202 pages carries a 3-question active-recall quiz, 606 questions in all.
+276 routes in total: 242 visualizer and explainer pages, 29 section indexes, the homepage, and `/cheatsheet`, `/contact`, `/review` and `/compare`. Four subjects:
+
+- DSA: 95 pages in 15 sections.
+- CS Core: 56 pages in 4 sections — Operating Systems, Computer Networks and Database Systems with 10 each, Under the Hood with 26.
+- Math: 51 pages in 6 sections — Combinatorics 8, Probability and Statistics 9, Vectors 7, Linear Algebra 10, Differential Calculus 9, Integral Calculus 8.
+- AI & ML: 40 pages in 4 sections so far — Machine Learning 11, Neural Networks 11, Deep Learning Architectures 8, Transformers 10. Language Models and RAG and Vector Search are in progress.
+
+Every one of the 242 pages carries a 3-question active-recall quiz, 726 questions in all.
 
 **There are no `available: false` entries left anywhere** — every section index advertises only pages that exist. The flag and its Coming Soon rendering are still supported, so a newly planned topic can use them.
 
