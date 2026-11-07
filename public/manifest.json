@@ -1,7 +1,7 @@
 {
     "name": "DSAverse",
     "short_name": "DSAverse",
-    "description": "Learn DSA, CS core and math with interactive visualizations",
+    "description": "Learn DSA, CS core, math and AI with interactive visualizations",
     "icons": [
         {
             "src": "/favicon.ico",
@@ -34,6 +34,7 @@
         "algorithms",
         "data-structures",
         "mathematics",
+        "machine-learning",
         "visualization"
     ],
     "screenshots": [
