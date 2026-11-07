@@ -572,8 +572,7 @@ function SurfaceView({ surface = 'aligned', shape = 'tour', paths }) {
 }
 
 /** Loss against step on a log axis, each run to LONG, with the floor dashed; a loss under 10⁻¹⁵ is
-    drawn at 10⁻¹⁵. That bottom puts the axis ticks at 1 and 10⁻¹⁰, labels short enough for the
-    chart's margin (a 10⁻⁵ tick prints as 0.00001 and is cut off). */
+    drawn at 10⁻¹⁵, so a run that reaches exactly 0 still has a point to plot. */
 const LOG_FLOOR = 1e-15;
 function FloorChart({ traces, keys = OPTIMIZERS.map(o => o.key) }) {
     const series = [
