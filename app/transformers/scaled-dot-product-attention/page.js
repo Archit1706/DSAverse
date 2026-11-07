@@ -40,7 +40,7 @@ const PRESETS = [
     { label: 'Mia … She found', text: 'One day, Mia went to the park. She found a red ball' },
     { label: 'Ruby saw a cat', text: 'After lunch, Ruby saw a cat in the kitchen.' },
     { label: 'Ben and Zoe', text: 'One day, Ben and Zoe went to the farm. Ben was happy.' },
-    { label: 'Leo and a dog', text: 'After lunch, Leo played with a big dog. He' },
+    { label: 'Lily lost her hat', text: 'Last week, Lily lost her blue hat. She was sad. She' },
 ];
 
 /* Measured over 150 generated stories (seed 7, 8,701 next-token predictions),
