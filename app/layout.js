@@ -28,11 +28,11 @@ const BASE_URL = "https://dsa-verse.vercel.app";
 export const metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "DSAverse – Visualize Data Structures, Algorithms, CS Core & Math",
+    default: "DSAverse – Visualize Data Structures, Algorithms, CS Core, Math & AI",
     template: "%s | DSAverse",
   },
   description:
-    "Learn data structures and algorithms, CS core (operating systems, networks, databases) and math (probability, linear algebra, calculus) with interactive visualizations and quizzes.",
+    "Learn data structures and algorithms, CS core (operating systems, networks, databases), math (probability, linear algebra, calculus) and AI (machine learning, neural networks, transformers) with interactive visualizations and quizzes.",
   keywords: [
     "data structures", "algorithms", "DSA", "visualizer", "sorting algorithms",
     "searching algorithms", "dynamic programming", "recursion", "binary heap",
@@ -43,6 +43,8 @@ export const metadata = {
     "CPU scheduling", "page replacement", "TCP congestion control", "transaction isolation",
     "math visualizer", "combinatorics", "probability", "statistics", "vectors",
     "linear algebra", "eigenvectors", "calculus", "derivatives", "integrals",
+    "AI visualizer", "machine learning", "neural networks", "backpropagation",
+    "deep learning", "transformers", "self-attention", "attention mechanism",
   ],
   authors: [{ name: "DSAverse" }],
   creator: "DSAverse",
@@ -52,16 +54,16 @@ export const metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "DSAverse",
-    title: "DSAverse – Visualize Data Structures, Algorithms, CS Core & Math",
+    title: "DSAverse – Visualize Data Structures, Algorithms, CS Core, Math & AI",
     description:
-      "Step-by-step interactive visualizations for DSA, CS core and math: operating systems, networks, databases, probability, linear algebra and calculus. For students, developers and interview prep.",
+      "Step-by-step interactive visualizations for DSA, CS core, math and AI: operating systems, networks, databases, probability, linear algebra, calculus, neural networks and transformers. For students, developers and interview prep.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "DSAverse" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "DSAverse – Interactive DSA, CS Core & Math Visualizer",
+    title: "DSAverse – Interactive DSA, CS Core, Math & AI Visualizer",
     description:
-      "Step-by-step interactive visualizations for DSA, CS core and math topics.",
+      "Step-by-step interactive visualizations for DSA, CS core, math and AI topics.",
     images: ["/og-image.png"],
   },
   manifest: "/manifest.json",
@@ -80,7 +82,7 @@ const jsonLd = {
   name: "DSAverse",
   url: BASE_URL,
   description:
-    "Interactive visualizations of data structures and algorithms, CS core topics (operating systems, computer networks, databases) and math (probability, linear algebra, calculus) for students and developers.",
+    "Interactive visualizations of data structures and algorithms, CS core topics (operating systems, computer networks, databases), math (probability, linear algebra, calculus) and AI (machine learning, neural networks, transformers) for students and developers.",
   // No `potentialAction` here on purpose: the site has no search endpoint.
   // It previously advertised a SearchAction pointing at /searching/{term},
   // which is the searching-algorithms index, not a query handler — so the
